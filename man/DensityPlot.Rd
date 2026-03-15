@@ -1,0 +1,27 @@
+\name{DensityPlot}
+\alias{DensityPlot}
+\title{Plot Cell Density}
+\description{
+Scatter plot with colour scaled by local cell density. Requires
+\code{\link{CellDensity}} to have been run.
+}
+\usage{
+DensityPlot(object, pt_size = 1, title = NULL)
+}
+\arguments{
+  \item{object}{An \code{\link{AkoyaExperiment}} object with a
+    \code{density} column.}
+  \item{pt_size}{Numeric. Point size. Default \code{1}.}
+  \item{title}{Character or \code{NULL}.}
+}
+\value{
+A \code{ggplot} object.
+}
+\examples{
+counts <- matrix(rnorm(100), nrow = 50,
+                 dimnames = list(NULL, c("CD3", "CD8")))
+coords <- data.frame(x = runif(50, 0, 100), y = runif(50, 0, 100))
+obj <- CreateAkoyaObject(counts, coords)
+obj <- CellDensity(obj, radius = 20)
+DensityPlot(obj)
+}

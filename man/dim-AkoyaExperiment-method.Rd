@@ -1,0 +1,23 @@
+\name{dim,AkoyaExperiment-method}
+\alias{dim,AkoyaExperiment-method}
+\title{Get Dimensions of an AkoyaExperiment}
+\description{
+Returns the dimensions (number of cells and number of markers) of an
+\code{\link{AkoyaExperiment}} object.
+}
+\usage{
+\S4method{dim}{AkoyaExperiment}(x)
+}
+\arguments{
+  \item{x}{An \code{\link{AkoyaExperiment}} object.}
+}
+\value{
+Integer vector of length two: number of cells, number of markers.
+}
+\examples{
+counts <- matrix(rnorm(50), nrow = 10,
+                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
+coords <- data.frame(x = runif(10), y = runif(10))
+obj <- CreateAkoyaObject(counts, coords)
+dim(obj)
+}

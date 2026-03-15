@@ -1,11 +1,16 @@
 # phenoscapR 0.1.0
 
 * Initial release.
-* Read Akoya cell segmentation data with `read_akoya()`.
-* Quality control with `qc_filter()`.
-* Marker normalisation with `normalise_markers()`.
-* Cell phenotyping with `phenotype_cells()` and `summarise_phenotypes()`.
-* Spatial analysis: `nearest_neighbours()`, `cell_density()`,
-  `interaction_matrix()`, `spatial_clusters()`.
-* Visualisation: `plot_cell_map()`, `plot_density()`, `plot_heatmap()`,
-  `plot_interactions()`.
+* S4 class `AkoyaExperiment` for storing Akoya spatial biology data.
+* `ReadAkoya()` reads cell segmentation CSV files with auto-detected columns.
+* `CreateAkoyaObject()` constructs objects from raw matrices.
+* `QCFilter()` for quality control filtering.
+* `NormaliseData()` with z-score, min-max, and quantile methods.
+* `PhenotypeCells()` and `PhenotypeSummary()` for marker-based phenotyping.
+* `FindNeighbours()`, `CellDensity()`, `InteractionMatrix()`,
+  `SpatialClusters()` for spatial analysis.
+* `CellMap()`, `DensityPlot()`, `MarkerHeatmap()`, `InteractionPlot()`
+  for visualisation.
+* Accessor methods: `NCells()`, `NMarkers()`, `Markers()`, `Coords()`,
+  `Meta()`, `GetData()`, `Idents()`.
+* Subsetting with `[`, `[[`, and `$`.

@@ -4,13 +4,14 @@ Version: 0.1.0
 Authors@R:
     person("phenoscapR contributors", role = c("aut", "cre"),
            email = "phenoscapr@example.com")
-Description: Tools for reading, processing, analysing, and visualising
-    multiplexed spatial biology data produced by Akoya Biosciences
-    platforms (PhenoCycler, CODEX, PhenoImager). Provides functions to
-    import cell segmentation outputs, perform quality control, normalise
-    marker intensities, compute spatial statistics such as nearest
-    neighbour distances and cell density, and generate publication-ready
-    visualisations of cell phenotype maps and spatial interaction networks.
+Description: Provides an S4 class ('AkoyaExperiment') and a pipe-friendly
+    workflow for reading, processing, analysing, and visualising multiplexed
+    spatial biology data produced by Akoya Biosciences platforms
+    (PhenoCycler, CODEX, PhenoImager). Functions cover the full analysis
+    pipeline from importing cell segmentation outputs through quality
+    control, marker normalisation, cell phenotyping, spatial statistics
+    (nearest neighbour distances, cell density, spatial interaction
+    matrices), spatial clustering, and publication-ready visualisations.
 License: MIT + file LICENSE
 URL: https://github.com/r-heller/phenoscapR
 BugReports: https://github.com/r-heller/phenoscapR/issues
@@ -19,18 +20,25 @@ Depends:
 Imports:
     data.table,
     ggplot2 (>= 3.0.0),
+    methods,
     stats,
     utils,
     grDevices
 Suggests:
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown,
-    withr
+    rmarkdown
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
+Collate:
+    'phenoscapR-package.R'
+    'classes.R'
+    'methods.R'
+    'read.R'
+    'process.R'
+    'spatial.R'
+    'plot.R'
