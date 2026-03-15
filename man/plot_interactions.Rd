@@ -7,7 +7,7 @@
 plot_interactions(interactions, title = NULL)
 }
 \arguments{
-\item{interactions}{A \code{data.table} as returned by \code{\link{interaction_matrix}}.}
+\item{interactions}{A \code{data.table} as returned by \code{\link[=interaction_matrix]{interaction_matrix()}}.}
 
 \item{title}{Character string or \code{NULL}. Plot title.}
 }
@@ -26,4 +26,5 @@ interactions <- data.table::data.table(
   interaction_score = log2(c(50, 30, 25, 40) / 35)
 )
 plot_interactions(interactions)
+
 }

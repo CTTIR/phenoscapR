@@ -7,8 +7,8 @@
 phenotype_cells(dt, thresholds, labels = NULL)
 }
 \arguments{
-\item{dt}{A \code{data.table} as returned by \code{\link{read_akoya}} or
-\code{\link{normalise_markers}}.}
+\item{dt}{A \code{data.table} as returned by \code{\link[=read_akoya]{read_akoya()}} or
+\code{\link[=normalise_markers]{normalise_markers()}}.}
 
 \item{thresholds}{A named list where names are marker column names and
 values are numeric thresholds. Example:
@@ -35,4 +35,5 @@ dt <- data.table::data.table(
 )
 result <- phenotype_cells(dt, thresholds = list(CD3 = 0.5, CD8 = 0.5))
 table(result$phenotype)
+
 }

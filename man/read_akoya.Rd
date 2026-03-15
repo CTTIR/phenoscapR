@@ -21,11 +21,11 @@ columns are retained. Column matching is case-insensitive.}
 \value{
 A \code{data.table} with standardised column names:
 \describe{
-  \item{sample_id}{Sample identifier.}
-  \item{cell_id}{Unique cell identifier (per sample).}
-  \item{x}{Cell centroid x-coordinate.}
-  \item{y}{Cell centroid y-coordinate.}
-  \item{cell_area}{Cell area in pixels (if available).}
+\item{sample_id}{Sample identifier.}
+\item{cell_id}{Unique cell identifier (per sample).}
+\item{x}{Cell centroid x-coordinate.}
+\item{y}{Cell centroid y-coordinate.}
+\item{cell_area}{Cell area in pixels (if available).}
 }
 Additional columns contain marker intensities.
 }
@@ -49,4 +49,5 @@ write.csv(data.frame(
 dat <- read_akoya(tmp)
 head(dat)
 unlink(tmp)
+
 }

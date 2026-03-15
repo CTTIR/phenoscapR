@@ -6,13 +6,7 @@
 \alias{phenoscapR-package}
 \title{phenoscapR: Read, Analyse, and Visualise Akoya Spatial Biology Data}
 \description{
-Tools for reading, processing, analysing, and visualising
-multiplexed spatial biology data produced by Akoya Biosciences
-platforms (PhenoCycler, CODEX, PhenoImager). Provides functions to
-import cell segmentation outputs, perform quality control, normalise
-marker intensities, compute spatial statistics such as nearest
-neighbour distances and cell density, and generate publication-ready
-visualisations of cell phenotype maps and spatial interaction networks.
+Tools for reading, processing, analysing, and visualising multiplexed spatial biology data produced by Akoya Biosciences platforms (PhenoCycler, CODEX, PhenoImager). Provides functions to import cell segmentation outputs, perform quality control, normalise marker intensities, compute spatial statistics such as nearest neighbour distances and cell density, and generate publication-ready visualisations of cell phenotype maps and spatial interaction networks.
 }
 \seealso{
 Useful links:
@@ -20,8 +14,10 @@ Useful links:
   \item \url{https://github.com/r-heller/phenoscapR}
   \item Report bugs at \url{https://github.com/r-heller/phenoscapR/issues}
 }
+
 }
 \author{
 \strong{Maintainer}: phenoscapR contributors \email{phenoscapr@example.com}
+
 }
 \keyword{internal}

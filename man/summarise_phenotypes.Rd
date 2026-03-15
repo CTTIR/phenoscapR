@@ -8,7 +8,7 @@ summarise_phenotypes(dt)
 }
 \arguments{
 \item{dt}{A \code{data.table} with a \code{phenotype} column, as returned by
-\code{\link{phenotype_cells}}.}
+\code{\link[=phenotype_cells]{phenotype_cells()}}.}
 }
 \value{
 A \code{data.table} with columns \code{sample_id}, \code{phenotype}, \code{count},
@@ -23,4 +23,5 @@ dt <- data.table::data.table(
   phenotype = sample(c("CD3+", "CD8+", "Negative"), 100, replace = TRUE)
 )
 summarise_phenotypes(dt)
+
 }

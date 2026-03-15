@@ -30,4 +30,5 @@ dt <- data.table::data.table(
 )
 result <- nearest_neighbours(dt, k = 3)
 head(result[, .(cell_id, nn_distance)])
+
 }

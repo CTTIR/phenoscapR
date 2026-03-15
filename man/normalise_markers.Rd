@@ -4,11 +4,14 @@
 \alias{normalise_markers}
 \title{Normalise Marker Intensities}
 \usage{
-normalise_markers(dt, method = c("zscore", "minmax", "quantile"),
-  markers = NULL)
+normalise_markers(
+  dt,
+  method = c("zscore", "minmax", "quantile"),
+  markers = NULL
+)
 }
 \arguments{
-\item{dt}{A \code{data.table} as returned by \code{\link{read_akoya}}.}
+\item{dt}{A \code{data.table} as returned by \code{\link[=read_akoya]{read_akoya()}}.}
 
 \item{method}{Character string. Normalisation method: \code{"zscore"} (default),
 \code{"minmax"}, or \code{"quantile"}.}
@@ -31,4 +34,5 @@ dt <- data.table::data.table(
 )
 norm_dt <- normalise_markers(dt, method = "zscore")
 head(norm_dt)
+
 }

@@ -29,4 +29,5 @@ dt <- data.table::data.table(
   phenotype = rep(c("CD3+", "CD8+"), each = 30)
 )
 plot_heatmap(dt)
+
 }

@@ -31,4 +31,5 @@ dt <- data.table::data.table(
 )
 interactions <- interaction_matrix(dt, radius = 50)
 interactions
+
 }

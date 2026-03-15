@@ -4,11 +4,16 @@
 \alias{qc_filter}
 \title{Quality Control Filter}
 \usage{
-qc_filter(dt, min_area = NULL, max_area = NULL, min_intensity = 0,
-  max_intensity = NULL)
+qc_filter(
+  dt,
+  min_area = NULL,
+  max_area = NULL,
+  min_intensity = 0,
+  max_intensity = NULL
+)
 }
 \arguments{
-\item{dt}{A \code{data.table} as returned by \code{\link{read_akoya}}.}
+\item{dt}{A \code{data.table} as returned by \code{\link[=read_akoya]{read_akoya()}}.}
 
 \item{min_area}{Numeric or \code{NULL}. Minimum cell area. Cells below this
 threshold are removed.}
@@ -37,4 +42,5 @@ dt <- data.table::data.table(
 )
 filtered <- qc_filter(dt, min_area = 10, max_area = 1000)
 nrow(filtered)
+
 }

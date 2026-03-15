@@ -4,8 +4,13 @@
 \alias{plot_cell_map}
 \title{Plot Cell Map}
 \usage{
-plot_cell_map(dt, colour_by = "phenotype", colours = NULL,
-  point_size = 0.5, title = NULL)
+plot_cell_map(
+  dt,
+  colour_by = "phenotype",
+  colours = NULL,
+  point_size = 0.5,
+  title = NULL
+)
 }
 \arguments{
 \item{dt}{A \code{data.table} with columns \code{x} and \code{y}.}
@@ -33,4 +38,5 @@ dt <- data.table::data.table(
   phenotype = sample(c("CD3+", "CD8+", "Negative"), 50, replace = TRUE)
 )
 plot_cell_map(dt)
+
 }

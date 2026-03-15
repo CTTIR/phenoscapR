@@ -8,7 +8,7 @@ plot_density(dt, point_size = 1, title = NULL)
 }
 \arguments{
 \item{dt}{A \code{data.table} with columns \code{x}, \code{y}, and \code{density} (as
-returned by \code{\link{cell_density}}).}
+returned by \code{\link[=cell_density]{cell_density()}}).}
 
 \item{point_size}{Numeric. Base point size. Default \code{1}.}
 
@@ -28,4 +28,5 @@ dt <- data.table::data.table(
   density = rpois(50, 5)
 )
 plot_density(dt)
+
 }

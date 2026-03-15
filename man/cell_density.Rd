@@ -29,4 +29,5 @@ dt <- data.table::data.table(
 )
 result <- cell_density(dt, radius = 20)
 head(result[, .(cell_id, density)])
+
 }

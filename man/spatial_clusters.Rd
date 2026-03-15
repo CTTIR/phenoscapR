@@ -29,4 +29,5 @@ dt <- data.table::data.table(
 )
 result <- spatial_clusters(dt, k = 2)
 table(result$cluster)
+
 }
