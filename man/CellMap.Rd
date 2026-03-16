@@ -8,16 +8,18 @@ space.
 }
 \usage{
 CellMap(object, colour_by = "phenotype", colours = NULL,
-        pt_size = 0.5, title = NULL)
+        pt_size = 0.5, title = NULL, dark_theme = FALSE)
 }
 \arguments{
   \item{object}{An \code{\link{AkoyaExperiment}} object.}
   \item{colour_by}{Character. Column name in \code{meta_data} to colour
     by. Default \code{"phenotype"}.}
   \item{colours}{Named character vector or \code{NULL} for automatic
-    colours.}
+    colours via the global palette.}
   \item{pt_size}{Numeric. Point size. Default \code{0.5}.}
   \item{title}{Character or \code{NULL}. Plot title.}
+  \item{dark_theme}{Logical. Use a dark background (useful for tissue
+    images). Default \code{FALSE}.}
 }
 \value{
 A \code{ggplot} object.

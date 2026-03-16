@@ -23,7 +23,37 @@ obj <- ReadAkoya("segmentation.csv") |>
   CellDensity(radius = 50)
 
 CellMap(obj)
+FeaturePlot(obj, features = c("CD3", "CD8"))
 }
+}
+\section{Data import}{
+\code{\link{ReadAkoya}}, \code{\link{CreateAkoyaObject}}
+}
+\section{Processing}{
+\code{\link{QCFilter}}, \code{\link{NormaliseData}},
+\code{\link{PhenotypeCells}}, \code{\link{PhenotypeSummary}}
+}
+\section{Spatial analysis}{
+\code{\link{FindNeighbours}}, \code{\link{CellDensity}},
+\code{\link{InteractionMatrix}}, \code{\link{SpatialClusters}},
+\code{\link{DelaunayNetwork}}, \code{\link{NeighbourhoodEnrichment}},
+\code{\link{RipleysK}}, \code{\link{MoransI}},
+\code{\link{QuadratAnalysis}}, \code{\link{PairCorrelation}},
+\code{\link{CrossNNDistance}}, \code{\link{ExpressionClusters}}
+}
+\section{Colour palettes}{
+\code{\link{SetPalette}}, \code{\link{GetPalette}},
+\code{\link{PaletteContinuous}}, \code{\link{PaletteDiscrete}},
+\code{\link{CustomGradient}}
+}
+\section{Visualisation}{
+\code{\link{CellMap}}, \code{\link{FeaturePlot}},
+\code{\link{DensityPlot}}, \code{\link{InteractionPlot}},
+\code{\link{MarkerHeatmap}}, \code{\link{ViolinPlot}},
+\code{\link{BoxPlot}}, \code{\link{DotPlot}},
+\code{\link{CompositionPlot}}, \code{\link{RidgePlot}},
+\code{\link{SpatialNetworkPlot}}, \code{\link{HistogramPlot}},
+\code{\link{QCPlot}}
 }
 \seealso{
 \code{\link{AkoyaExperiment}}, \code{\link{ReadAkoya}},
@@ -33,6 +63,16 @@ CellMap(obj)
 \code{\link{CellDensity}}, \code{\link{InteractionMatrix}},
 \code{\link{SpatialClusters}}, \code{\link{CellMap}},
 \code{\link{DensityPlot}}, \code{\link{InteractionPlot}},
-\code{\link{MarkerHeatmap}}
+\code{\link{MarkerHeatmap}}, \code{\link{SetPalette}},
+\code{\link{PaletteContinuous}}, \code{\link{PaletteDiscrete}},
+\code{\link{CustomGradient}}, \code{\link{FeaturePlot}},
+\code{\link{ViolinPlot}}, \code{\link{BoxPlot}},
+\code{\link{DotPlot}}, \code{\link{CompositionPlot}},
+\code{\link{RidgePlot}}, \code{\link{SpatialNetworkPlot}},
+\code{\link{HistogramPlot}}, \code{\link{QCPlot}},
+\code{\link{DelaunayNetwork}}, \code{\link{NeighbourhoodEnrichment}},
+\code{\link{RipleysK}}, \code{\link{MoransI}},
+\code{\link{QuadratAnalysis}}, \code{\link{PairCorrelation}},
+\code{\link{CrossNNDistance}}, \code{\link{ExpressionClusters}}
 }
 \keyword{internal}
