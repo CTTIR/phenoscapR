@@ -1,0 +1,31 @@
+\name{PhenotypeCells}
+\alias{PhenotypeCells}
+\title{Phenotype Cells by Marker Thresholds}
+\description{
+Assigns phenotype labels to cells based on whether marker intensities
+exceed given thresholds. Uses the normalised \code{data} slot.
+}
+\usage{
+PhenotypeCells(object, thresholds, labels = NULL)
+}
+\arguments{
+  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{thresholds}{Named list. Marker names as names, numeric thresholds
+    as values. Example: \code{list(CD3 = 0.5, CD8 = 0.3)}.}
+  \item{labels}{Named character vector or \code{NULL}. Maps auto-generated
+    signature strings to custom labels. When \code{NULL}, phenotypes are
+    labelled by concatenating positive markers (e.g. \code{"CD3+/CD8+"}).}
+}
+\value{
+An \code{\link{AkoyaExperiment}} with a \code{phenotype} column
+  added to \code{meta_data}.
+}
+\examples{
+counts <- matrix(c(0.8, 0.1, 0.9, 0.1,
+                   0.1, 0.8, 0.7, 0.1), ncol = 2,
+                 dimnames = list(NULL, c("CD3", "CD8")))
+coords <- data.frame(x = runif(4), y = runif(4))
+obj <- CreateAkoyaObject(counts, coords)
+obj <- PhenotypeCells(obj, thresholds = list(CD3 = 0.5, CD8 = 0.5))
+Meta(obj)$phenotype
+}

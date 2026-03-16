@@ -1,0 +1,32 @@
+\name{ExpressionClusters}
+\alias{ExpressionClusters}
+\title{Marker Spatial Clustering (Expression-Based)}
+\description{
+Clusters cells based on marker expression profiles using k-means or
+hierarchical clustering. Unlike \code{\link{SpatialClusters}} which
+uses coordinates, this uses the expression matrix.
+}
+\usage{
+ExpressionClusters(object, k, method = c("kmeans", "hierarchical"),
+                   slot = "data", markers = NULL)
+}
+\arguments{
+  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{k}{Integer. Number of clusters.}
+  \item{method}{Character. \code{"kmeans"} (default) or
+    \code{"hierarchical"}.}
+  \item{slot}{Character. \code{"data"} or \code{"counts"}.}
+  \item{markers}{Character vector or \code{NULL}. Markers to use.}
+}
+\value{
+An \code{\link{AkoyaExperiment}} with an \code{expr_cluster}
+column in \code{meta_data}.
+}
+\examples{
+counts <- matrix(c(rnorm(50, 5), rnorm(50, 0)), ncol = 2,
+                 dimnames = list(NULL, c("CD3", "CD8")))
+coords <- data.frame(x = runif(50), y = runif(50))
+obj <- CreateAkoyaObject(counts, coords)
+obj <- ExpressionClusters(obj, k = 2)
+table(Meta(obj)$expr_cluster)
+}

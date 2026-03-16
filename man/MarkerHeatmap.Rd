@@ -1,0 +1,35 @@
+\name{MarkerHeatmap}
+\alias{MarkerHeatmap}
+\title{Plot Marker Heatmap}
+\description{
+Heatmap of mean marker intensity per phenotype. Analogous to Seurat's
+\code{DoHeatmap}.
+}
+\usage{
+MarkerHeatmap(object, markers = NULL, slot = "data",
+              palette = NULL, title = NULL)
+}
+\arguments{
+  \item{object}{An \code{\link{AkoyaExperiment}} object with a
+    \code{phenotype} column.}
+  \item{markers}{Character vector or \code{NULL}. Markers to include. If
+    \code{NULL}, all markers are shown.}
+  \item{slot}{Character. Data slot to use: \code{"data"} (default) or
+    \code{"counts"}.}
+  \item{palette}{Character or character vector. Default \code{NULL}
+    (global palette).}
+  \item{title}{Character or \code{NULL}.}
+}
+\value{
+A \code{ggplot} object.
+}
+\examples{
+counts <- matrix(c(rnorm(30, 1), rnorm(30, 0), rnorm(30, 0),
+                   rnorm(30, 1)), ncol = 2,
+                 dimnames = list(NULL, c("CD3", "CD8")))
+coords <- data.frame(x = runif(60), y = runif(60))
+meta <- data.frame(cell_id = 1:60, sample_id = "s1",
+                   phenotype = rep(c("A", "B"), each = 30))
+obj <- CreateAkoyaObject(counts, coords, meta)
+MarkerHeatmap(obj)
+}

@@ -1,0 +1,23 @@
+\name{NMarkers}
+\alias{NMarkers}
+\alias{NMarkers,AkoyaExperiment-method}
+\title{Get the Number of Markers}
+\description{
+Returns the number of markers in an \code{\link{AkoyaExperiment}} object.
+}
+\usage{
+NMarkers(object)
+}
+\arguments{
+  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+}
+\value{
+Integer.
+}
+\examples{
+counts <- matrix(rnorm(50), nrow = 10,
+                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
+coords <- data.frame(x = runif(10), y = runif(10))
+obj <- CreateAkoyaObject(counts, coords)
+NMarkers(obj)
+}
