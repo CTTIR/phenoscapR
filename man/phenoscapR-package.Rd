@@ -56,6 +56,12 @@ FeaturePlot(obj, features = c("CD3", "CD8"))
 \code{\link{QCPlot}}
 }
 \seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/r-heller/phenoscapR}
+  \item Report bugs at \url{https://github.com/r-heller/phenoscapR/issues}
+}
+
 \code{\link{AkoyaExperiment}}, \code{\link{ReadAkoya}},
 \code{\link{CreateAkoyaObject}}, \code{\link{QCFilter}},
 \code{\link{NormaliseData}}, \code{\link{PhenotypeCells}},
@@ -74,5 +80,9 @@ FeaturePlot(obj, features = c("CD3", "CD8"))
 \code{\link{RipleysK}}, \code{\link{MoransI}},
 \code{\link{QuadratAnalysis}}, \code{\link{PairCorrelation}},
 \code{\link{CrossNNDistance}}, \code{\link{ExpressionClusters}}
+}
+\author{
+\strong{Maintainer}: phenoscapR contributors \email{phenoscapr@example.com}
+
 }
 \keyword{internal}
