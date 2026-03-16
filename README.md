@@ -3,15 +3,13 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-**phenoscapR** provides an S4 class (`AkoyaExperiment`) and a
-pipe-friendly workflow for reading, processing, analysing, and visualising
-multiplexed spatial biology data from Akoya Biosciences platforms
-(PhenoCycler, CODEX, PhenoImager).
-
-Inspired by [Seurat](https://satijalab.org/seurat/), all data lives in a
-single object and every analysis function takes and returns that object.
+**phenoscapR** provides tools for reading, processing, analysing, and
+visualising multiplexed spatial biology data produced by Akoya Biosciences
+platforms (PhenoCycler, CODEX, PhenoImager).
 
 ## Installation
+
+Install the development version from GitHub:
 
 ```r
 # install.packages("remotes")
@@ -23,51 +21,47 @@ remotes::install_github("r-heller/phenoscapR")
 ```r
 library(phenoscapR)
 
-# Read → QC → Normalise → Phenotype → Spatial analysis (R 4.1+ pipe)
-obj <- ReadAkoya("segmentation.csv") |>
-  QCFilter(min_area = 50, max_area = 500) |>
-  NormaliseData(method = "zscore") |>
-  PhenotypeCells(thresholds = list(CD3 = 0.5, CD8 = 0.3)) |>
-  FindNeighbours(k = 5) |>
-  CellDensity(radius = 50)
+# Read Akoya cell segmentation data
+cells <- read_akoya("path/to/segmentation.csv", sample_id = "sample1")
+
+# Quality control
+cells <- qc_filter(cells, min_area = 50, max_area = 500)
+
+# Normalise marker intensities
+cells <- normalise_markers(cells, method = "zscore")
+
+# Assign phenotypes based on marker thresholds
+cells <- phenotype_cells(cells, thresholds = list(CD3 = 0.5, CD8 = 0.3))
+
+# Spatial analysis
+cells <- nearest_neighbours(cells, k = 5)
+cells <- cell_density(cells, radius = 50)
+interactions <- interaction_matrix(cells, radius = 50)
 
 # Visualise
-CellMap(obj)
-DensityPlot(obj)
-MarkerHeatmap(obj)
-InteractionPlot(InteractionMatrix(obj, radius = 50))
+plot_cell_map(cells)
+plot_density(cells)
+plot_heatmap(cells)
+plot_interactions(interactions)
 ```
 
-## The AkoyaExperiment Object
+## Core Functions
 
-```r
-obj
-# An AkoyaExperiment object
-#   10000 cells across 1 sample
-#   Markers: CD3, CD8, CD20, PanCK, DAPI
-#   Normalised: TRUE
-#   Phenotypes: 4
-#   Project: AkoyaProject
-```
-
-## Core API
-
-| Category | Functions |
+| Function | Description |
 |---|---|
-| **I/O** | `ReadAkoya()`, `CreateAkoyaObject()` |
-| **Processing** | `QCFilter()`, `NormaliseData()`, `PhenotypeCells()`, `PhenotypeSummary()` |
-| **Spatial** | `FindNeighbours()`, `CellDensity()`, `InteractionMatrix()`, `SpatialClusters()` |
-| **Visualisation** | `CellMap()`, `DensityPlot()`, `MarkerHeatmap()`, `InteractionPlot()` |
-| **Accessors** | `NCells()`, `NMarkers()`, `Markers()`, `Coords()`, `Meta()`, `GetData()`, `Idents()` |
-
-## Dependencies
-
-Only CRAN packages with no system requirements:
-
-- **methods** (base R) — S4 classes
-- **data.table** — fast CSV reading
-- **ggplot2** — visualisation
-- **stats**, **utils**, **grDevices** (base R)
+| `read_akoya()` | Read Akoya cell segmentation CSV files |
+| `qc_filter()` | Quality control filtering by area and intensity |
+| `normalise_markers()` | Normalise marker intensities (z-score, min-max, quantile) |
+| `phenotype_cells()` | Assign phenotype labels by marker thresholds |
+| `summarise_phenotypes()` | Summarise phenotype proportions per sample |
+| `nearest_neighbours()` | Compute nearest neighbour distances |
+| `cell_density()` | Estimate local cell density |
+| `interaction_matrix()` | Pairwise spatial interaction scores |
+| `spatial_clusters()` | Spatial clustering (k-means or hierarchical) |
+| `plot_cell_map()` | Scatter plot of cell positions by phenotype |
+| `plot_density()` | Density map visualisation |
+| `plot_heatmap()` | Marker intensity heatmap by phenotype |
+| `plot_interactions()` | Spatial interaction heatmap |
 
 ## License
 

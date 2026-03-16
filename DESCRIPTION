@@ -1,51 +1,36 @@
 Package: phenoscapR
 Title: Read, Analyse, and Visualise Akoya Spatial Biology Data
-Version: 0.2.0
+Version: 0.1.0
 Authors@R:
     person("phenoscapR contributors", role = c("aut", "cre"),
            email = "phenoscapr@example.com")
-Description: Provides an S4 class ('AkoyaExperiment') and a pipe-friendly
-    workflow for reading, processing, analysing, and visualising multiplexed
-    spatial biology data produced by Akoya Biosciences platforms
-    (PhenoCycler, CODEX, PhenoImager) and QuPath. Supports three input
-    formats ('processor', 'inform', 'qupath') with automatic detection.
-    Functions cover the full analysis pipeline from importing cell
-    segmentation outputs through quality control, marker normalisation,
-    cell phenotyping, spatial statistics (nearest neighbour distances,
-    Ripley's K, Moran's I, neighbourhood enrichment, pair correlation),
-    spatial clustering, Delaunay network construction, and publication-ready
-    visualisations including spatial maps, violin plots, dot plots,
-    composition bar plots, ridge plots, and spatial network graphs.
-    A configurable colour palette system supports viridis palettes and
-    custom gradients from user-defined anchor colours.
+Description: Tools for reading, processing, analysing, and visualising
+    multiplexed spatial biology data produced by Akoya Biosciences
+    platforms (PhenoCycler, CODEX, PhenoImager). Provides functions to
+    import cell segmentation outputs, perform quality control, normalise
+    marker intensities, compute spatial statistics such as nearest
+    neighbour distances and cell density, and generate publication-ready
+    visualisations of cell phenotype maps and spatial interaction networks.
 License: MIT + file LICENSE
 URL: https://github.com/r-heller/phenoscapR
 BugReports: https://github.com/r-heller/phenoscapR/issues
 Depends:
-    R (>= 3.6.0)
+    R (>= 3.5.0)
 Imports:
     data.table,
     ggplot2 (>= 3.0.0),
-    methods,
     stats,
     utils,
     grDevices
 Suggests:
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    withr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
-Collate:
-    'phenoscapR-package.R'
-    'classes.R'
-    'methods.R'
-    'colours.R'
-    'read.R'
-    'process.R'
-    'spatial.R'
-    'plot.R'

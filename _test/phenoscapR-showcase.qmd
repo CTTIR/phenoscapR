@@ -1,0 +1,469 @@
+---
+title: "phenoscapR -- Function Showcase"
+subtitle: "Complete walkthrough of all phenoscapR functions using real tFL data"
+author: "phenoscapR contributors"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    theme: cosmo
+    self-contained: true
+execute:
+  warning: false
+  message: false
+---
+
+## Setup
+
+```{r}
+#| label: setup
+library(phenoscapR)
+library(data.table)
+library(ggplot2)
+```
+
+## 1. Reading Data -- `read_akoya()`
+
+The package reads Akoya cell segmentation CSV files and auto-detects column naming
+conventions (PhenoCycler, QuPath, CODEX formats).
+
+### 1.1 Read a single sample
+
+```{r}
+#| label: read-single
+tfl1 <- read_akoya(
+  path = "../_data/Annotations transformierte FL/Annotations tFL1/tFL1.csv",
+  sample_id = "tFL1"
+)
+
+cat("Dimensions:", nrow(tfl1), "cells x", ncol(tfl1), "columns\n")
+cat("Columns:", paste(names(tfl1), collapse = ", "), "\n")
+head(tfl1)
+```
+
+### 1.2 Read multiple samples from a directory
+
+We read two samples (tFL1 and tFL2) by placing their CSVs in a temporary
+directory -- demonstrating the batch-read capability.
+
+```{r}
+#| label: read-multi
+# Read tFL2 separately to combine later
+tfl2 <- read_akoya(
+  path = "../_data/Annotations transformierte FL/Annotations tFL2/tFL2.csv",
+  sample_id = "tFL2"
+)
+
+# Combine into a multi-sample dataset
+dt_multi <- rbindlist(list(tfl1, tfl2))
+cat("Combined:", nrow(dt_multi), "cells across",
+    length(unique(dt_multi$sample_id)), "samples\n")
+table(dt_multi$sample_id)
+```
+
+### 1.3 Read with marker selection
+
+Select only specific markers of interest to reduce data width.
+
+```{r}
+#| label: read-markers
+tfl1_subset <- read_akoya(
+  path = "../_data/Annotations transformierte FL/Annotations tFL1/tFL1.csv",
+  sample_id = "tFL1",
+  markers = c("CD3e: Cell: Mean", "CD20: Cell: Mean", "Ki67: Cell: Mean")
+)
+cat("Selected columns:", paste(names(tfl1_subset), collapse = ", "), "\n")
+```
+
+
+## 2. Quality Control -- `qc_filter()`
+
+Filter cells based on area thresholds and total marker intensity.
+Since the tFL data has no `cell_area` column, we demonstrate intensity-based filtering.
+
+```{r}
+#| label: qc-filter
+cat("Before QC:", nrow(tfl1), "cells\n")
+
+# Remove cells with very low total marker intensity (likely debris)
+# and extremely high intensity (likely artefacts)
+tfl1_qc <- qc_filter(
+  tfl1,
+  min_intensity = 100,
+  max_intensity = 50000
+)
+
+cat("After QC:", nrow(tfl1_qc), "cells\n")
+cat("Removed:", nrow(tfl1) - nrow(tfl1_qc), "cells\n")
+```
+
+
+## 3. Normalisation -- `normalise_markers()`
+
+Three normalisation methods are available: z-score, min-max, and quantile.
+
+### 3.1 Z-score normalisation (default)
+
+```{r}
+#| label: norm-zscore
+tfl1_norm <- normalise_markers(tfl1_qc, method = "zscore")
+
+# Verify: z-scored columns should have mean ~ 0
+marker_cols <- setdiff(
+  names(tfl1_norm)[sapply(tfl1_norm, is.numeric)],
+  c("cell_id", "x", "y")
+)
+cat("Mean of first 3 markers after z-score:\n")
+sapply(marker_cols[1:3], function(m) round(mean(tfl1_norm[[m]], na.rm = TRUE), 4))
+```
+
+### 3.2 Min-max normalisation
+
+```{r}
+#| label: norm-minmax
+tfl1_mm <- normalise_markers(tfl1_qc, method = "minmax")
+
+# Values should be in [0, 1]
+cat("Range of CD3e after minmax:",
+    range(tfl1_mm[["CD3e: Cell: Mean"]], na.rm = TRUE), "\n")
+```
+
+### 3.3 Quantile normalisation
+
+```{r}
+#| label: norm-quantile
+tfl1_qt <- normalise_markers(tfl1_qc, method = "quantile")
+
+# Values should be in [0, 1] with uniform distribution
+cat("Summary of CD20 after quantile normalisation:\n")
+summary(tfl1_qt[["CD20: Cell: Mean"]])
+```
+
+
+## 4. Phenotyping -- `phenotype_cells()`
+
+Assign phenotype labels based on marker intensity thresholds.
+We use the z-score normalised data and define biologically meaningful thresholds.
+
+```{r}
+#| label: phenotype
+tfl1_pheno <- phenotype_cells(
+  tfl1_norm,
+  thresholds = list(
+    "CD3e: Cell: Mean" = 1.0,   # T cells
+    "CD20: Cell: Mean" = 1.0,   # B cells
+    "CD68: Cell: Mean" = 1.0    # Macrophages
+  )
+)
+
+cat("Phenotype distribution:\n")
+table(tfl1_pheno$phenotype)
+```
+
+### Custom labels
+
+```{r}
+#| label: phenotype-labels
+tfl1_labelled <- phenotype_cells(
+  tfl1_norm,
+  thresholds = list(
+    "CD3e: Cell: Mean" = 1.0,
+    "CD20: Cell: Mean" = 1.0
+  ),
+  labels = c(
+    "CD3e: Cell: Mean+" = "T cells",
+    "CD20: Cell: Mean+" = "B cells",
+    "CD3e: Cell: Mean+/CD20: Cell: Mean+" = "Double positive",
+    "Negative" = "Other"
+  )
+)
+table(tfl1_labelled$phenotype)
+```
+
+
+## 5. Phenotype Summary -- `summarise_phenotypes()`
+
+Compute phenotype frequencies and proportions per sample.
+
+```{r}
+#| label: summarise-pheno
+# First phenotype both samples
+tfl2_qc <- qc_filter(tfl2, min_intensity = 100, max_intensity = 50000)
+tfl2_norm <- normalise_markers(tfl2_qc, method = "zscore")
+tfl2_pheno <- phenotype_cells(
+  tfl2_norm,
+  thresholds = list(
+    "CD3e: Cell: Mean" = 1.0,
+    "CD20: Cell: Mean" = 1.0,
+    "CD68: Cell: Mean" = 1.0
+  )
+)
+
+dt_combined <- rbindlist(list(tfl1_pheno, tfl2_pheno))
+pheno_summary <- summarise_phenotypes(dt_combined)
+print(pheno_summary)
+```
+
+```{r}
+#| label: summarise-pheno-plot
+#| fig-width: 8
+#| fig-height: 5
+ggplot(pheno_summary, aes(x = sample_id, y = proportion, fill = phenotype)) +
+  geom_col(position = "stack") +
+  theme_minimal() +
+  labs(x = "Sample", y = "Proportion", fill = "Phenotype",
+       title = "Phenotype proportions per sample")
+```
+
+
+## 6. Spatial Analysis
+
+### 6.1 Nearest Neighbours -- `nearest_neighbours()`
+
+Compute the mean distance to the k nearest neighbours for each cell.
+
+```{r}
+#| label: nn
+# Use a subsample for speed (tFL1 has ~14k cells)
+set.seed(42)
+tfl1_sub <- tfl1_pheno[sample(.N, min(.N, 2000))]
+
+tfl1_nn <- nearest_neighbours(tfl1_sub, k = 5)
+cat("nn_distance summary:\n")
+summary(tfl1_nn$nn_distance)
+```
+
+#### Nearest neighbour distance to a specific phenotype
+
+```{r}
+#| label: nn-target
+tfl1_nn_cd20 <- nearest_neighbours(
+  tfl1_sub,
+  target_phenotype = "CD20: Cell: Mean+",
+  k = 3
+)
+cat("Distance to nearest B cells:\n")
+summary(tfl1_nn_cd20$nn_distance)
+```
+
+
+### 6.2 Cell Density -- `cell_density()`
+
+Count the number of neighbours within a given radius.
+
+```{r}
+#| label: density
+tfl1_dens <- cell_density(tfl1_sub, radius = 50)
+cat("Local density summary (neighbours within 50 units):\n")
+summary(tfl1_dens$density)
+```
+
+#### Density of a specific phenotype
+
+```{r}
+#| label: density-target
+tfl1_dens_t <- cell_density(
+  tfl1_sub,
+  radius = 50,
+  target_phenotype = "CD3e: Cell: Mean+"
+)
+cat("T cell density around each cell:\n")
+summary(tfl1_dens_t$density)
+```
+
+
+### 6.3 Interaction Matrix -- `interaction_matrix()`
+
+Compute pairwise spatial interaction scores between phenotypes.
+Positive scores indicate spatial co-localisation (attraction),
+negative scores indicate avoidance.
+
+```{r}
+#| label: interactions
+interactions <- interaction_matrix(tfl1_sub, radius = 50)
+print(interactions)
+```
+
+
+### 6.4 Spatial Clustering -- `spatial_clusters()`
+
+Cluster cells based on their spatial (x, y) coordinates.
+
+#### K-means clustering
+
+```{r}
+#| label: cluster-kmeans
+tfl1_clust <- spatial_clusters(tfl1_sub, k = 4, method = "kmeans")
+table(tfl1_clust$cluster)
+```
+
+#### Hierarchical clustering
+
+```{r}
+#| label: cluster-hclust
+tfl1_hclust <- spatial_clusters(tfl1_sub, k = 4, method = "hierarchical")
+table(tfl1_hclust$cluster)
+```
+
+
+## 7. Visualisation
+
+### 7.1 Cell Map -- `plot_cell_map()`
+
+Scatter plot of cell positions coloured by phenotype.
+
+```{r}
+#| label: fig-cellmap-phenotype
+#| fig-width: 9
+#| fig-height: 7
+plot_cell_map(tfl1_pheno, colour_by = "phenotype",
+              point_size = 0.3,
+              title = "tFL1 -- Cell phenotype map")
+```
+
+#### Colour by spatial cluster
+
+```{r}
+#| label: fig-cellmap-cluster
+#| fig-width: 9
+#| fig-height: 7
+plot_cell_map(tfl1_clust, colour_by = "cluster",
+              point_size = 0.8,
+              title = "tFL1 subsample -- Spatial clusters (k-means, k=4)")
+```
+
+#### Custom colours
+
+```{r}
+#| label: fig-cellmap-custom
+#| fig-width: 9
+#| fig-height: 7
+plot_cell_map(
+  tfl1_labelled,
+  colour_by = "phenotype",
+  colours = c(
+    "T cells" = "#E41A1C",
+    "B cells" = "#377EB8",
+    "Double positive" = "#984EA3",
+    "Other" = "grey80"
+  ),
+  point_size = 0.3,
+  title = "tFL1 -- Custom phenotype colours"
+)
+```
+
+
+### 7.2 Density Map -- `plot_density()`
+
+Visualise local cell density across the tissue.
+
+```{r}
+#| label: fig-density
+#| fig-width: 9
+#| fig-height: 7
+plot_density(tfl1_dens, point_size = 0.8,
+             title = "tFL1 subsample -- Local cell density (radius=50)")
+```
+
+
+### 7.3 Marker Heatmap -- `plot_heatmap()`
+
+Mean marker intensity per phenotype displayed as a heatmap.
+
+```{r}
+#| label: fig-heatmap
+#| fig-width: 10
+#| fig-height: 5
+plot_heatmap(tfl1_pheno,
+             title = "tFL1 -- Mean marker intensity per phenotype")
+```
+
+#### Heatmap with selected markers
+
+```{r}
+#| label: fig-heatmap-select
+#| fig-width: 8
+#| fig-height: 5
+plot_heatmap(
+  tfl1_pheno,
+  markers = c("CD3e: Cell: Mean", "CD20: Cell: Mean",
+              "CD68: Cell: Mean", "Ki67: Cell: Mean",
+              "Bcl-2: Cell: Mean"),
+  title = "tFL1 -- Selected markers"
+)
+```
+
+
+### 7.4 Interaction Heatmap -- `plot_interactions()`
+
+Visualise spatial interaction scores between phenotypes.
+
+```{r}
+#| label: fig-interactions
+#| fig-width: 7
+#| fig-height: 6
+plot_interactions(interactions,
+                  title = "tFL1 subsample -- Spatial interaction scores")
+```
+
+
+## 8. Full Pipeline Example
+
+Putting it all together in a single streamlined workflow.
+
+```{r}
+#| label: full-pipeline
+# 1. Read
+dat <- read_akoya(
+  "../_data/Annotations transformierte FL/Annotations tFL1/tFL1.csv",
+  sample_id = "tFL1"
+)
+
+# 2. QC
+dat <- qc_filter(dat, min_intensity = 100, max_intensity = 50000)
+
+# 3. Normalise
+dat <- normalise_markers(dat, method = "zscore")
+
+# 4. Phenotype
+dat <- phenotype_cells(dat, thresholds = list(
+  "CD3e: Cell: Mean" = 1.0,
+  "CD20: Cell: Mean" = 1.0,
+  "CD68: Cell: Mean" = 1.0
+))
+
+# 5. Summary
+summarise_phenotypes(dat)
+
+# 6. Spatial analysis (subsample for speed)
+set.seed(123)
+dat_sub <- dat[sample(.N, min(.N, 2000))]
+dat_sub <- nearest_neighbours(dat_sub, k = 5)
+dat_sub <- cell_density(dat_sub, radius = 50)
+int <- interaction_matrix(dat_sub, radius = 50)
+dat_sub <- spatial_clusters(dat_sub, k = 3)
+```
+
+```{r}
+#| label: fig-pipeline-panel
+#| fig-width: 12
+#| fig-height: 10
+#| layout-ncol: 2
+# 7. Visualise
+plot_cell_map(dat, colour_by = "phenotype", point_size = 0.2,
+              title = "Phenotype map")
+plot_density(dat_sub, point_size = 0.8,
+             title = "Cell density")
+plot_heatmap(dat, title = "Marker heatmap")
+plot_interactions(int, title = "Spatial interactions")
+```
+
+
+## Session Info
+
+```{r}
+#| label: session-info
+sessionInfo()
+```

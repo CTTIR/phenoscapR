@@ -1,4 +1,4 @@
-test_that("ReadAkoya reads a single CSV file", {
+test_that("read_akoya reads a single CSV file", {
   tmp <- tempfile(fileext = ".csv")
   on.exit(unlink(tmp))
 
@@ -12,15 +12,13 @@ test_that("ReadAkoya reads a single CSV file", {
     check.names = FALSE
   ), tmp, row.names = FALSE)
 
-  obj <- ReadAkoya(tmp)
-  expect_s4_class(obj, "AkoyaExperiment")
-  expect_equal(NCells(obj), 10L)
-  expect_true("DAPI" %in% Markers(obj))
-  expect_true("CD3" %in% Markers(obj))
-  expect_true("cell_area" %in% names(Meta(obj)))
+  dt <- read_akoya(tmp)
+  expect_s3_class(dt, "data.table")
+  expect_true(all(c("cell_id", "x", "y", "sample_id") %in% names(dt)))
+  expect_equal(nrow(dt), 10L)
 })
 
-test_that("ReadAkoya reads a directory of CSVs", {
+test_that("read_akoya reads a directory of CSVs", {
   dir <- tempfile()
   dir.create(dir)
   on.exit(unlink(dir, recursive = TRUE))
@@ -35,16 +33,16 @@ test_that("ReadAkoya reads a directory of CSVs", {
     ), file.path(dir, paste0("sample_", i, ".csv")), row.names = FALSE)
   }
 
-  obj <- ReadAkoya(dir)
-  expect_equal(NCells(obj), 15L)
-  expect_equal(length(unique(Meta(obj)$sample_id)), 3L)
+  dt <- read_akoya(dir)
+  expect_equal(nrow(dt), 15L)
+  expect_equal(length(unique(dt$sample_id)), 3L)
 })
 
-test_that("ReadAkoya errors on missing path", {
-  expect_error(ReadAkoya("/nonexistent/path"), "does not exist")
+test_that("read_akoya errors on missing path", {
+  expect_error(read_akoya("/nonexistent/path"), "does not exist")
 })
 
-test_that("ReadAkoya filters markers", {
+test_that("read_akoya selects markers when specified", {
   tmp <- tempfile(fileext = ".csv")
   on.exit(unlink(tmp))
 
@@ -56,19 +54,8 @@ test_that("ReadAkoya filters markers", {
     check.names = FALSE
   ), tmp, row.names = FALSE)
 
-  obj <- ReadAkoya(tmp, markers = c("CD3", "CD8"))
-  expect_true("CD3" %in% Markers(obj))
-  expect_true("CD8" %in% Markers(obj))
-  expect_false("DAPI" %in% Markers(obj))
-})
-
-test_that("CreateAkoyaObject works from raw data", {
-  counts <- matrix(rnorm(30), nrow = 10,
-                   dimnames = list(NULL, c("CD3", "CD8", "DAPI")))
-  coords <- data.frame(x = runif(10), y = runif(10))
-  obj <- CreateAkoyaObject(counts, coords, sample_id = "test")
-
-  expect_s4_class(obj, "AkoyaExperiment")
-  expect_equal(NCells(obj), 10L)
-  expect_equal(obj@project, "AkoyaProject")
+  dt <- read_akoya(tmp, markers = c("CD3", "CD8"))
+  expect_true("CD3" %in% names(dt))
+  expect_true("CD8" %in% names(dt))
+  expect_false("DAPI" %in% names(dt))
 })
