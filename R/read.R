@@ -96,6 +96,138 @@ read_akoya <- function(path, sample_id = NULL, markers = NULL) {
   dt
 }
 
+#' Create an AkoyaExperiment from Existing Data
+#'
+#' Constructs an \code{\link{AkoyaExperiment-class}} from a counts matrix,
+#' coordinate data frame, and optional metadata.
+#'
+#' @param counts Numeric matrix (cells x markers). Row names are optional.
+#' @param coords Data frame with columns \code{x} and \code{y}.
+#' @param meta_data Data frame of per-cell metadata, or \code{NULL}.
+#' @param sample_id Character. Sample identifier. Default \code{"sample1"}.
+#' @param project Character. Project name. Default \code{"AkoyaProject"}.
+#'
+#' @return An \code{\link{AkoyaExperiment-class}} object.
+#'
+#' @examples
+#' counts <- matrix(rnorm(50), nrow = 10,
+#'                  dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
+#' coords <- data.frame(x = runif(10, 0, 500), y = runif(10, 0, 500))
+#' obj <- CreateAkoyaObject(counts, coords, sample_id = "mysample")
+#' obj
+#'
+#' @export
+CreateAkoyaObject <- function(counts, coords, meta_data = NULL,
+                              sample_id = "sample1",
+                              project = "AkoyaProject") {
+  counts <- as.matrix(counts)
+  coords <- as.data.frame(coords)
+  n <- nrow(counts)
+
+  if (is.null(meta_data)) {
+    meta_data <- data.frame(
+      cell_id = as.character(seq_len(n)),
+      sample_id = rep(sample_id, n),
+      stringsAsFactors = FALSE
+    )
+  } else {
+    meta_data <- as.data.frame(meta_data)
+    if (!"cell_id" %in% names(meta_data)) {
+      meta_data$cell_id <- as.character(seq_len(n))
+    }
+    if (!"sample_id" %in% names(meta_data)) {
+      meta_data$sample_id <- rep(sample_id, n)
+    }
+  }
+
+  methods::new("AkoyaExperiment",
+    counts    = counts,
+    data      = counts,
+    coords    = coords,
+    meta_data = meta_data,
+    project   = project,
+    spatial   = list()
+  )
+}
+
+#' Read Akoya Cell Segmentation Data (S4 interface)
+#'
+#' Reads cell segmentation CSV files produced by Akoya Biosciences platforms
+#' (PhenoCycler, CODEX, PhenoImager) and returns an
+#' \code{\link{AkoyaExperiment-class}} object.
+#'
+#' @param path Character. Path to a CSV file or a directory containing CSV
+#'   files.
+#' @param type Character. Input format: \code{"auto"} (default),
+#'   \code{"processor"}, \code{"inform"}, or \code{"qupath"}.
+#' @param sample_id Character or \code{NULL}. An identifier for the sample.
+#' @param markers Character vector or \code{NULL}. If provided, only these
+#'   marker columns are retained.
+#' @param filter Character or \code{NA}. Regex pattern for marker names to
+#'   exclude. Default \code{"DAPI|Blank|Empty"}.
+#' @param recursive Logical. Search subdirectories? Default \code{TRUE}.
+#' @param project Character. Project name. Default \code{"AkoyaProject"}.
+#'
+#' @return An \code{\link{AkoyaExperiment-class}} object.
+#'
+#' @examples
+#' tmp <- tempfile(fileext = ".csv")
+#' write.csv(data.frame(
+#'   `Cell ID` = 1:5,
+#'   `Cell X Position` = runif(5, 0, 1000),
+#'   `Cell Y Position` = runif(5, 0, 1000),
+#'   CD3 = rnorm(5, 300, 80),
+#'   CD8 = rnorm(5, 200, 60),
+#'   check.names = FALSE
+#' ), tmp, row.names = FALSE)
+#' obj <- ReadAkoya(tmp, filter = NA)
+#' obj
+#' unlink(tmp)
+#'
+#' @export
+ReadAkoya <- function(path, type = c("auto", "processor", "inform", "qupath"),
+                      sample_id = NULL, markers = NULL,
+                      filter = "DAPI|Blank|Empty",
+                      recursive = TRUE,
+                      project = "AkoyaProject") {
+  type <- match.arg(type)
+  dt <- read_akoya(path, sample_id = sample_id, markers = markers)
+
+  # Filter unwanted markers
+  if (!is.na(filter) && nchar(filter) > 0L) {
+    marker_cols <- .marker_columns(dt)
+    drop <- marker_cols[grepl(filter, marker_cols, ignore.case = TRUE)]
+    if (length(drop) > 0L) {
+      dt[, (drop) := NULL]
+    }
+  }
+
+  # Build AkoyaExperiment
+  meta_cols <- c("sample_id", "cell_id", "cell_area")
+  meta_cols <- intersect(meta_cols, names(dt))
+  marker_cols <- .marker_columns(dt)
+
+  counts <- as.matrix(dt[, marker_cols, with = FALSE])
+  coords <- data.frame(x = dt$x, y = dt$y)
+  meta_data <- as.data.frame(dt[, meta_cols, with = FALSE])
+
+  if (!"cell_id" %in% names(meta_data)) {
+    meta_data$cell_id <- as.character(seq_len(nrow(counts)))
+  }
+  if (!"sample_id" %in% names(meta_data)) {
+    meta_data$sample_id <- "sample1"
+  }
+
+  methods::new("AkoyaExperiment",
+    counts    = counts,
+    data      = counts,
+    coords    = coords,
+    meta_data = meta_data,
+    project   = project,
+    spatial   = list()
+  )
+}
+
 #' Standardise Akoya column names
 #' @noRd
 .standardise_columns <- function(dt) {
