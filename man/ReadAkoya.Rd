@@ -3,24 +3,49 @@
 \title{Read Akoya Cell Segmentation Data}
 \description{
 Reads cell segmentation CSV files produced by Akoya Biosciences platforms
-(PhenoCycler, CODEX, PhenoImager) and returns an
-\code{\link{AkoyaExperiment}} object. Column names are auto-detected and
-standardised.
+(PhenoCycler, CODEX, PhenoImager) or QuPath and returns an
+\code{\link{AkoyaExperiment}} object. Supports three input formats
+(\code{"processor"}, \code{"inform"}, \code{"qupath"}) as well as
+automatic column detection.
 }
 \usage{
-ReadAkoya(path, sample_id = NULL, markers = NULL, project = "AkoyaProject")
+ReadAkoya(path, type = c("auto", "processor", "inform", "qupath"),
+          sample_id = NULL, markers = NULL,
+          filter = "DAPI|Blank|Empty",
+          recursive = TRUE,
+          project = "AkoyaProject")
 }
 \arguments{
   \item{path}{Character. Path to a CSV file or a directory containing CSV
     files. When a directory is given, all \code{.csv} files are read and
     combined into a single object.}
+  \item{type}{Character. Input format: \code{"auto"} (default),
+    \code{"processor"}, \code{"inform"}, or \code{"qupath"}.
+    \code{"auto"} inspects column names to choose the correct parser.}
   \item{sample_id}{Character or \code{NULL}. An identifier for the sample.
     When \code{path} is a directory and \code{sample_id} is \code{NULL}, the
     file name (without extension) is used.}
   \item{markers}{Character vector or \code{NULL}. If provided, only these
     marker columns are retained. Matching is case-insensitive.}
+  \item{filter}{Character or \code{NA}. Regular expression pattern for
+    marker names to exclude (e.g. \code{"DAPI|Blank|Empty"}). Set to
+    \code{NA} to keep all markers. Default \code{"DAPI|Blank|Empty"}.}
+  \item{recursive}{Logical. When \code{path} is a directory, search
+    subdirectories recursively? Default \code{TRUE}.}
   \item{project}{Character. Project name stored in the object. Default
     \code{"AkoyaProject"}.}
+}
+\details{
+\strong{Format detection (\code{type = "auto"}):}
+\itemize{
+  \item \strong{processor}: columns contain \code{"cell_id:cell_id"} or
+    start with \code{"cyc"}.
+  \item \strong{inform}: tab-separated or contains \code{"Cell ID"} and
+    \code{"Normalized Counts"} in column names.
+  \item \strong{qupath}: columns contain \code{"Cell: "} or
+    \code{"Centroid X"}.
+  \item Falls back to generic auto-detection if no pattern matches.
+}
 }
 \value{
 An \code{\link{AkoyaExperiment}} object.
@@ -32,12 +57,11 @@ write.csv(data.frame(
   `Cell ID` = 1:5,
   `Cell X Position` = runif(5, 0, 1000),
   `Cell Y Position` = runif(5, 0, 1000),
-  `Cell Area (px)` = runif(5, 50, 200),
-  DAPI = rnorm(5, 500, 100),
   CD3 = rnorm(5, 300, 80),
+  CD8 = rnorm(5, 200, 60),
   check.names = FALSE
 ), tmp, row.names = FALSE)
-obj <- ReadAkoya(tmp)
+obj <- ReadAkoya(tmp, filter = NA)
 obj
 unlink(tmp)
 }

@@ -6,7 +6,8 @@ Heatmap of mean marker intensity per phenotype. Analogous to Seurat's
 \code{DoHeatmap}.
 }
 \usage{
-MarkerHeatmap(object, markers = NULL, slot = "data", title = NULL)
+MarkerHeatmap(object, markers = NULL, slot = "data",
+              palette = NULL, title = NULL)
 }
 \arguments{
   \item{object}{An \code{\link{AkoyaExperiment}} object with a
@@ -15,6 +16,8 @@ MarkerHeatmap(object, markers = NULL, slot = "data", title = NULL)
     \code{NULL}, all markers are shown.}
   \item{slot}{Character. Data slot to use: \code{"data"} (default) or
     \code{"counts"}.}
+  \item{palette}{Character or character vector. Default \code{NULL}
+    (global palette).}
   \item{title}{Character or \code{NULL}.}
 }
 \value{

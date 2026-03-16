@@ -1,0 +1,30 @@
+\name{HistogramPlot}
+\alias{HistogramPlot}
+\title{Histogram of Marker Expression}
+\description{
+Histogram of marker expression values, optionally grouped by a metadata
+column.
+}
+\usage{
+HistogramPlot(object, feature, group_by = NULL,
+              slot = "data", bins = 50L, colours = NULL)
+}
+\arguments{
+  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{feature}{Character. Single marker name.}
+  \item{group_by}{Character or \code{NULL}. Metadata column for
+    fill grouping.}
+  \item{slot}{Character. \code{"data"} or \code{"counts"}.}
+  \item{bins}{Integer. Number of bins. Default \code{50}.}
+  \item{colours}{Named character vector or \code{NULL}.}
+}
+\value{
+A \code{ggplot} object.
+}
+\examples{
+counts <- matrix(rnorm(100), nrow = 50,
+                 dimnames = list(NULL, c("CD3", "CD8")))
+coords <- data.frame(x = runif(50), y = runif(50))
+obj <- CreateAkoyaObject(counts, coords)
+HistogramPlot(obj, feature = "CD3")
+}
