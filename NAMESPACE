@@ -122,10 +122,7 @@ importFrom(methods,setGeneric)
 importFrom(methods,setMethod)
 importFrom(methods,setValidity)
 importFrom(methods,show)
-<<<<<<< Updated upstream
 importFrom(methods,slot)
-=======
->>>>>>> Stashed changes
 importFrom(methods,validObject)
 importFrom(stats,cutree)
 importFrom(stats,dist)
