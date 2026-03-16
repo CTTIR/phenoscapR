@@ -1,0 +1,721 @@
+---
+title: "Analysis"
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+# Packages
+
+```{r}
+# if (!require("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+
+# BiocManager::install("SpatialExperiment")
+# BiocManager::install("DropletUtils")
+# BiocManager::install("BumpyMatrix")
+# BiocManager::install("hoodscanR")
+
+library(tidyverse)
+
+# install.packages('Seurat')
+library(Seurat)
+
+library(Seurat)
+# library(future); plan("multisession", workers = 24)
+library(dplyr)
+library(ggplot2)
+library(patchwork)  # for combined ggplots
+
+library(pbapply)
+
+
+
+```
+
+
+# Load rds
+
+```{r}
+codex.obj.lst <- readRDS("./data/df.rds")
+
+# names(codex.obj.lst)
+# 
+# tFL1 <- codex.obj.lst$AnnotFL1
+# tFL2 <- codex.obj.lst$tFL2Anno
+# tFL3 <- codex.obj.lst$'tFL3 Anno'
+# tFL4 <- codex.obj.lst$AnnotFL4
+# tFL5 <- codex.obj.lst$AnnoTfl5
+# tFL6 <- codex.obj.lst$'AnnoTfl 6'
+# tFL7 <- codex.obj.lst$'Anno tFL7'
+# tFL8 <- codex.obj.lst$AnnotFL8
+# 
+# 
+# # Define groups
+# FL_samples <- list(tFL6, tFL3, tFL7, tFL8)
+# DLBCL_samples <- list(tFL1, tFL4, tFL2, tFL5)
+# all_samples <- c(FL_samples, DLBCL_samples)
+# names(all_samples) <- c("FL6", "FL3", "FL7", "FL8", "FL1", "FL4", "FL2", "FL5")
+
+# sample_ids <- c("tFL6","tFL3","tFL7","tFL8","tFL1","tFL4","tFL2","tFL5")
+
+
+# Get cell counts per processed sample
+sample_sizes <- sapply(codex.obj.lst, function(obj) ncol(obj))
+min_cells <- min(sample_sizes)
+max_cells <- max(sample_sizes)
+max_cells/min_cells
+
+
+# Downsample Each Sample to min_cells
+set.seed(123)  # for reproducibility
+codex.obj.lst_downsample <- lapply(codex.obj.lst, function(obj) {
+  cells_to_keep <- sample(colnames(obj), size = min_cells, replace = FALSE)
+  subset(obj, cells = cells_to_keep)
+})
+
+
+
+```
+
+
+# Formulary
+
+```{r}
+f_process_sample <- function(obj) {
+  # DefaultAssay(obj) <- "Akoya"
+  obj <- NormalizeData(obj, normalization.method = "CLR", margin = 2) # margin == normalize across features (1) or cells (2)
+  obj <- ScaleData(obj, features = rownames(obj))
+  return(obj)
+}
+
+```
+
+
+
+# Flow
+
+
+
+
+## Preprocess & Z‑Standardise All Samples
+
+```{r}
+# processed_list <- lapply(all_samples, f_process_sample)
+codex.obj.lst_p <- pblapply(codex.obj.lst_downsample, f_process_sample)
+
+```
+
+## Merge Samples While Preserving IDs
+
+```{r}
+# Prepare lists
+sample_ids <- names(codex.obj.lst_p)
+
+# Merge all at once
+codex.obj_all <- merge(
+  x = codex.obj.lst_p[[1]],
+  y = codex.obj.lst_p[-1],
+  add.cell.ids = sample_ids,
+  project = "combined",
+  merge.data = TRUE,
+  merge.dr = FALSE
+)
+
+str(codex.obj_all)
+print(codex.obj_all)
+```
+
+
+
+## 🔄 1. Collapse Layered Assays into a Single Matrix
+
+Your merged Seurat object currently has separate `counts.1`, `data.1`, ..., `scale.data.8` layers for each sample. To operate seamlessly, collapse these into unified assay layers:
+
+```{r}
+
+DefaultAssay(codex.obj_all) <- "Akoya"
+codex.obj_all[["Akoya"]] <- JoinLayers(codex.obj_all[["Akoya"]])
+```
+
+This consolidates all raw counts, normalized data, and scaled data into single-layer sets—ensuring later functions use pooled data ([biostars.org][1]).
+
+
+## 🔬 2. Dimensional Reduction & Clustering
+
+```{r}
+# Switch to protein assay
+DefaultAssay(codex.obj_all) <- "Akoya"
+
+# Identify most variable markers
+codex.obj_all <- FindVariableFeatures(codex.obj_all, 
+                                      selection.method = "vst", 
+                                      nfeatures = nrow(GetAssayData(codex.obj_all)))
+
+# Run PCA
+codex.obj_all <- RunPCA(codex.obj_all, 
+                        features = VariableFeatures(codex.obj_all), 
+                        npcs = 8)
+
+# Find out how many PCs were computed
+num_pcs <- ncol(codex.obj_all[["pca"]]@cell.embeddings)
+
+# Build neighbor graph & cluster
+codex.obj_all <- FindNeighbors(codex.obj_all, 
+                               reduction = "pca", 
+                               dims = 1:num_pcs)
+codex.obj_all <- FindClusters(codex.obj_all, resolution = 0.2)
+
+# Compute UMAP & t-SNE
+codex.obj_all <- RunUMAP(codex.obj_all, reduction = "pca", dims = 1:num_pcs)
+codex.obj_all <- RunTSNE(codex.obj_all, reduction = "pca", dims = 1:num_pcs)
+
+print(codex.obj_all)
+str(codex.obj_all)
+```
+
+
+```{r}
+
+```
+
+
+
+## Assign groups
+
+```{r}
+
+# Example: assign FL vs DLBCL based on sample
+FL_ids <- c("tFL6","tFL3","tFL7","tFL8")
+codex.obj_all$sample <- sapply(strsplit(colnames(codex.obj_all), "_"), `[`, 1)
+codex.obj_all$clinical_group <- ifelse(codex.obj_all$sample %in% FL_ids, "FL", "DLBCL")
+
+Idents(codex.obj_all) <- codex.obj_all$seurat_clusters
+
+markers_groups <- FindAllMarkers(
+  object = codex.obj_all,
+  assay = "Akoya",
+  only.pos = TRUE,
+  group.by = "clinical_group",
+  logfc.threshold = 0.25,
+  min.pct = 0.1
+)
+
+markers_FL_vs_DLBCL <- FindMarkers(
+  object = codex.obj_all,
+  assay = "Akoya",
+  group.by = "clinical_group",
+  ident.1 = "FL",
+  ident.2 = "DLBCL",
+  test.use = "wilcox",
+  logfc.threshold = 0.25,
+  min.pct = 0.1
+)
+
+
+markers <- FindAllMarkers(codex.obj_all, assay = "Akoya", only.pos = TRUE)
+
+
+
+```
+
+
+```{r}
+library(dplyr)
+
+markers <- markers_FL_vs_DLBCL %>%
+  rownames_to_column("feature") %>%
+  mutate(
+    log10_padj = -log10(p_val_adj + 1e-300) * sign(avg_log2FC),
+    threshold = (abs(avg_log2FC) > 1 & p_val_adj < 1e-5 & pct.1 > 0.1)
+  )
+
+library(ggplot2)
+
+ggplot(markers, aes(x = avg_log2FC, y = log10_padj)) +
+  geom_point(aes(color = threshold, size = pct.1 - pct.2), alpha = 0.7) +
+  scale_color_manual(values = c("grey70", "red")) +
+  geom_vline(xintercept = c(-1, 1), linetype = "dashed", color = "blue") +
+  geom_hline(yintercept = -log10(1e-5), linetype = "dashed", color = "blue") +
+  theme_minimal() +
+  labs(
+    x = "Avg log2 Fold Change (FL vs DLBCL)",
+    y = "-log10(Adjusted p-value) * sign(FC)",
+    color = "Significant",
+    size = "Pct.1 – Pct.2"
+  ) +
+  theme(legend.position = "right")
+
+markers <- markers %>% 
+  mutate(mean_expr = (pct.1 + pct.2) / 2)
+
+ggplot(markers, aes(x = mean_expr, y = avg_log2FC)) +
+  geom_point(aes(color = threshold), alpha = 0.7) +
+  scale_color_manual(values = c("grey70", "red")) +
+  geom_hline(yintercept = 0, color = "black") +
+  theme_minimal() +
+  labs(
+    x = "Average Detection Rate (Pct)",
+    y = "Avg log2 Fold Change",
+    color = "Significant"
+  ) +
+  theme(legend.position = "right")
+
+
+library(ggrepel)
+
+top_hits <- markers %>% filter(threshold) %>% arrange(p_val_adj) %>% head(10)
+
+ggplot(markers, aes(avg_log2FC, log10_padj)) +
+  geom_point(aes(color = threshold), alpha = 0.7) +
+  geom_text_repel(data = top_hits, aes(label = feature), size = 3) +
+  scale_color_manual(values = c("grey70", "red")) +
+  theme_minimal()
+
+```
+
+
+
+
+## 🏷️ 3. Manual Cluster Annotation
+
+Identify marker proteins for each cluster:
+
+```{r}
+markers <- FindAllMarkers(codex.obj_all, assay = "Akoya", only.pos = TRUE)
+top5 <- markers %>% group_by(cluster) %>% slice_max(avg_log2FC, n = 5)
+print(top5)
+
+# write markers to xlsx
+writexl::write_xlsx(markers, "markers.xlsx")
+writexl::write_xlsx(markers_FL_vs_DLBCL, "markers_FL_vs_DLBCL.xlsx")
+
+
+
+
+```
+
+Then manually map clusters to cell types:
+
+```{r}
+map_clusters_to_celltypes <- function(cl) {
+  switch(as.character(cl),
+    "0" = "B cells",
+    "1" = "T helper cells",
+    "2" = "proliferative B cells",
+    "3" = "Cytotoxic T cells",
+    "4" = "Myeloid cells",
+    "5" = "ECM",
+    "6" = "immune cell infiltrate",
+    "Unknown")
+}
+codex.obj_all$manual_label <- sapply(codex.obj_all$seurat_clusters, map_clusters_to_celltypes)
+
+
+```
+
+
+
+## 🌐 4. Visualization
+
+* **UMAP** colored by cell types:
+
+```{r}
+  DimPlot(codex.obj_all, reduction = "umap", group.by = "manual_label", label = TRUE)
+```
+
+* **Split by clinical group or sample**:
+
+```{r}
+  DimPlot(codex.obj_all, reduction = "umap", group.by = "manual_label", split.by = "clinical_group")
+```
+
+```{r}
+# UMAP colored by manual cell-type labels
+DimPlot(codex.obj_all, reduction = "umap",
+        group.by = "manual_label",
+        split.by = "clinical_group",
+        label = TRUE, repel = TRUE) +
+  ggtitle("Cell-types by Clinical Group")
+
+# Ki67 expression overlay
+FeaturePlot(codex.obj_all, features = "Ki67..Cell..Mean",
+            reduction = "umap",
+            split.by = "clinical_group",
+            cols = c("lightgrey", "red"))
+
+```
+
+```{r}
+library(Seurat)
+
+# Base UMAP plot
+p <- DimPlot(
+  codex.obj_all,
+  reduction = "umap",
+  group.by = "manual_label",
+  split.by = "clinical_group",
+  # label = TRUE,
+  repel = TRUE,
+  pt.size = 2,       # increase point size
+  alpha = 0.6        # semi-transparent points
+)
+
+# Apply a dark background and remove default title
+p + DarkTheme() +    # black background, white text :contentReference[oaicite:1]{index=1}
+    theme(plot.title = element_blank())  # removes the plot title
+
+```
+
+```{r}
+library(Seurat)
+library(patchwork)
+
+# Base FeaturePlot
+p_f <- FeaturePlot(
+  object    = codex.obj_all,
+  features  = "Ki67..Cell..Mean",
+  reduction = "umap",
+  split.by  = "clinical_group",
+  cols      = c("lightgrey", "red"),
+  pt.size   = .2,
+  order     = TRUE,
+  combine = TRUE  # keep separate for patchwork
+) +
+  scale_color_gradient(low = "lightgrey", high = "red") +
+  labs(color = "Ki67") +   # rename legend title
+  theme_void() +            # minimal plot background
+  theme(
+    legend.position = "right",
+    strip.text = element_text(color = "white", size = 14),
+    legend.title = element_text(color = "white"),
+    legend.text = element_text(color = "white")
+  )
+
+# Add dark backgrounds to each panel
+dark_panels <- theme(
+  panel.background = element_rect(fill = "black", color = NA),
+  plot.background  = element_rect(fill = "black", color = NA)
+)
+
+# Apply across the patchwork layout
+(p_f + plot_layout(ncol = 2)) &
+  dark_panels
+
+
+```
+
+```{r}
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+
+# 1. Reorder clinical_group factor to ensure FL is first
+codex.obj_all$clinical_group <- factor(
+  codex.obj_all$clinical_group,
+  levels = c("FL", "DLBCL")
+)
+
+# 2. Create base FeaturePlot
+p_f <- FeaturePlot(
+  object    = codex.obj_all,
+  features  = "Bcl-2..Cell..Mean",
+  reduction = "umap",
+  split.by  = "clinical_group",
+  cols      = c("lightgrey", "red"),
+  pt.size   = .2,
+  order     = TRUE
+) +
+  scale_color_gradient(low = "lightgrey", high = "red") +
+  labs(color = "Bcl-2") +
+  theme_void() +
+  theme(
+    legend.position = "right",
+    strip.text = element_text(color = "white", size = 14),
+    legend.title = element_text(color = "white"),
+    legend.text = element_text(color = "white")
+  )
+
+# 3. Define dark theme elements
+dark_layers <- theme(
+  panel.background = element_rect(fill = "black", color = NA),
+  plot.background  = element_rect(fill = "black", color = NA),
+  strip.background = element_rect(fill = "black", color = NA)
+)
+
+# 4. Apply dark theme across the patchwork
+final_plot <- (p_f + plot_layout(ncol = 2)) & dark_layers
+
+# 5. Render the plot
+final_plot
+
+```
+
+
+
+
+```{r}
+library(Seurat)
+library(patchwork)
+
+# Ensure t-SNE is computed; if not, run:
+if ( !"tsne" %in% names(codex.obj_all@reductions) ) {
+  codex.obj_all <- RunTSNE(codex.obj_all, reduction = "pca", dims = 1:num_pcs)
+}
+
+# 1️⃣ t-SNE colored by manual annotations
+p1 <- DimPlot(
+  codex.obj_all,
+  reduction = "tsne",
+  group.by = "manual_label",
+  split.by = "clinical_group",
+  label = TRUE,
+  repel = TRUE
+) + ggtitle("t‑SNE: Manual Cell Types")
+
+# 2️⃣ t-SNE showing Ki67 expression
+p2 <- FeaturePlot(
+  codex.obj_all,
+  features = "Ki67..Cell..Mean",
+  reduction = "tsne",
+  split.by = "clinical_group",
+  cols = c("lightgrey", "red"),
+  pt.size = 0.5
+) + ggtitle("t‑SNE: Ki67 Expression")
+
+# Combine with patchwork
+(p1 | p2) + plot_layout(guides = "collect")
+
+```
+
+
+```{r}
+library(Seurat)
+library(patchwork)
+
+# Ensure UMAP is computed; if not, run (using your PCA dims):
+if (! "umap" %in% names(codex.obj_all@reductions)) {
+  codex.obj_all <- RunUMAP(codex.obj_all, reduction = "pca", dims = 1:num_pcs)
+}
+
+# 1️⃣ UMAP styled by manual annotations
+p1 <- DimPlot(
+  codex.obj_all,
+  reduction = "umap",
+  group.by = "manual_label",
+  split.by = "clinical_group",
+  label = TRUE,
+  repel = TRUE
+) + ggtitle("UMAP: Manual Cell Types")
+
+# 2️⃣ UMAP displaying Ki67 expression
+p2 <- FeaturePlot(
+  codex.obj_all,
+  features = "Ki67..Cell..Mean",
+  reduction = "umap",
+  split.by = "clinical_group",
+  cols = c("lightgrey", "red"),
+  pt.size = 0.5
+) + ggtitle("UMAP: Ki67 Expression")
+
+# Combine plots
+p1 | p2 + plot_layout(guides = "collect")
+
+```
+
+
+
+* **Spatial distributions** (if spatial metadata/images are available):
+
+```{r}
+  SpatialDimPlot(codex.obj_all, group.by = "manual_label")
+```
+
+
+## 📊 5. Compare Cell Type Frequencies Across Groups
+
+```{r}
+df <- codex.obj_all@meta.data %>%
+  count(clinical_group, manual_label) %>%
+  group_by(clinical_group) %>%
+  mutate(pct = n / sum(n) * 100)
+ggplot(df, aes(clinical_group, pct, fill = manual_label)) +
+  geom_col(position = "fill") +
+  labs(y = "Proportion (%)")
+```
+
+Run a statistical test:
+
+```{r}
+chisq.test(table(codex.obj_all$clinical_group, codex.obj_all$manual_label))
+```
+
+
+
+
+```{r}
+# 1. Subset the combined Seurat object for tFL6 cells
+tFL6 <- subset(codex.obj_all, subset = sample == "tFL6")
+
+ImageDimPlot(
+  object     = tFL6,
+  group.by   = "manual_label",
+  size = 3,
+  alpha = 0.5
+
+) + ggtitle("tFL6 – Manual Cell-Type Spatial Plot")
+
+```
+
+
+
+
+
+```{r}
+obj <- tFL6
+
+cluster_markers <- FindAllMarkers(obj)
+top_markers <- cluster_markers %>%
+  group_by(cluster) %>%
+  slice_max(order_by = avg_log2FC, n = 5)
+print(top_markers)
+
+
+# Standardize, cluster, annotate (manual annotation placeholder)
+process_obj <- function(obj) {
+  obj <- NormalizeData(obj, normalization.method = "CLR")
+  obj <- ScaleData(obj, features = rownames(obj))
+  obj <- FindVariableFeatures(obj)
+  obj <- RunPCA(obj, features = VariableFeatures(obj))
+  num_pcs <- ncol(obj[["pca"]]@cell.embeddings)
+  obj <- FindNeighbors(obj, dims = 1:num_pcs)
+  obj <- FindClusters(obj, resolution = 0.5, future.seed=TRUE)
+  obj$auto_cluster <- Idents(obj)
+  # Add manual label column here, e.g.:
+  obj$manual_label <- map_clusters_to_celltypes(obj$auto_cluster)
+  return(obj)
+}
+
+FL_processed <- lapply(FL_samples, process_obj)
+DLBCL_processed <- lapply(DLBCL_samples, process_obj)
+all_samples <- c(FL_processed, DLBCL_processed)
+names(all_samples) <- c(paste0("FL", 3:8), paste0("DLBCL", c(1,4,2,5)))
+
+# 4. Run UMAP/t-SNE per sample
+all_samples <- lapply(all_samples, function(obj) {
+  obj <- RunUMAP(obj, dims = 1:20)
+  obj <- RunTSNE(obj, dims = 1:20)
+  return(obj)
+})
+
+# 5. Merge by clinical group
+FL_merged <- merge(FL_processed[[1]], y = FL_processed[-1], add.cell.ids = names(FL_processed), project = "FL_group")
+DLBCL_merged <- merge(DLBCL_processed[[1]], y = DLBCL_processed[-1], add.cell.ids = names(DLBCL_processed), project = "DLBCL_group")
+both <- merge(FL_merged, y = DLBCL_merged, add.cell.ids = c("FL", "DLBCL"), project = "combined")
+
+# 6. Re-process merged
+both <- NormalizeData(both)
+both <- ScaleData(both)
+both <- FindVariableFeatures(both, selection.method = "vst", nfeatures = 2000)
+both <- RunPCA(both, dims = 1:20)
+both <- FindNeighbors(both, dims = 1:20)
+both <- FindClusters(both, resolution = 0.5)
+both <- RunUMAP(both, dims = 1:20)
+both <- RunTSNE(both, dims = 1:20)
+Idents(both) <- both$seurat_clusters
+
+# 7. Add metadata for clinical_group (FL vs DLBCL)
+both$clinical_group <- ifelse(grepl("^FL", both$orig.ident), "FL", "DLBCL")
+
+# 8. Visualizations
+p_umap <- DimPlot(both, reduction = "umap", group.by = "clinical_group", label = TRUE) + ggtitle("UMAP by clinical group")
+p_tsne <- DimPlot(both, reduction = "tsne", group.by = "clinical_group", label = TRUE) + ggtitle("t-SNE by clinical group")
+
+# Optional: colored by manual_label if available
+# p_umap_label <- DimPlot(both, reduction = "umap", group.by = "manual_label", label = TRUE)
+
+# Spatial layout (if spatial coords exist per sample):
+# lapply(all_samples, function(obj) SpatialDimPlot(obj, label = TRUE))
+
+# 9. Proportional barplot of cell types in each group
+df <- both@meta.data %>%
+  count(clinical_group, auto_cluster) %>%
+  group_by(clinical_group) %>%
+  mutate(percent = n / sum(n) * 100)
+
+p_bar <- ggplot(df, aes(x = clinical_group, y = percent, fill = auto_cluster)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(y = "Proportion of cell clusters") +
+  ggtitle("Cell cluster distribution by clinical group")
+
+# 10. Statistical test
+tbl <- table(both$clinical_group, both$auto_cluster)
+chi_res <- chisq.test(tbl)
+
+# 11. Display
+print(p_umap + p_tsne + p_bar)
+print(chi_res)
+```
+
+
+# Analysis
+
+## tFL1
+
+```{r}
+codex.obj <- NormalizeData(object = tFL6, normalization.method = "CLR", margin = 2)
+codex.obj <- ScaleData(codex.obj)
+VariableFeatures(codex.obj) <- rownames(codex.obj)  # since the panel is small, treat all features as variable.
+codex.obj <- RunPCA(object = codex.obj, npcs = 20, verbose = FALSE)
+codex.obj <- RunUMAP(object = codex.obj, dims = 1:10, verbose = FALSE)
+codex.obj <- FindNeighbors(object = codex.obj, dims = 1:10, verbose = FALSE)
+codex.obj <- FindClusters(object = codex.obj, verbose = FALSE, resolution = 0.4, n.start = 1)
+```
+
+
+
+
+
+
+Unsupervised analysis to identify cell clusters.
+
+
+```{r}
+codex.obj <- NormalizeData(object = codex.obj, normalization.method = "CLR", margin = 2)
+codex.obj <- ScaleData(codex.obj)
+VariableFeatures(codex.obj) <- rownames(codex.obj)  # since the panel is small, treat all features as variable.
+codex.obj <- RunPCA(object = codex.obj, npcs = 20, verbose = FALSE)
+codex.obj <- RunUMAP(object = codex.obj, dims = 1:20, verbose = FALSE)
+codex.obj <- FindNeighbors(object = codex.obj, dims = 1:20, verbose = FALSE)
+codex.obj <- FindClusters(object = codex.obj, verbose = FALSE, resolution = 0.4, n.start = 1)
+DimPlot(codex.obj, label = TRUE, label.box = TRUE)
+
+```
+
+
+# Visualisation
+
+Visualize the cell clusters based on a protein intensity-based UMAP embedding, or also based on their spatial location.
+
+## UMAP
+
+```{r}
+DimPlot(codex.obj, label = TRUE, label.box = TRUE)
+```
+
+# Histo overlay / spatial location
+
+```{r}
+ImageDimPlot(codex.obj, cols = "parade")
+```
+
+The expression patters of individual markers clearly denote different cell types and spatial structures, including Lyve1 (lymphatic endothelial cells), CD34 (blood endothelial cells), and CD21 (B cells). As expected, endothelial cells group together into vessels, and B cells are key components of specialized microstructures known as germinal zones.
+
+```{r}
+# p1 <- ImageFeaturePlot(codex.obj, fov = "Test", features = c("CD34", "CD21", "Lyve1"),
+#     min.cutoff = "q10", max.cutoff = "q90")
+# p2 <- ImageDimPlot(codex.obj, fov = "Test", cols = "parade")
+# p1 + p2
+```

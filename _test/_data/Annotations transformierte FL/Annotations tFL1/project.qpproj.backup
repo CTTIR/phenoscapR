@@ -1,0 +1,812 @@
+{
+  "version": "0.5.1",
+  "createTimestamp": 1751633542596,
+  "modifyTimestamp": 1751633542596,
+  "uri": "file:/D:/Data/Fusion/tFL/Annotations%20tfl1/project.qpproj",
+  "lastID": 6,
+  "images": [
+    {
+      "serverBuilder": {
+        "builderType": "uri",
+        "providerClassName": "qupath.lib.images.servers.bioformats.BioFormatsServerBuilder",
+        "uri": "file:/D:/Data/Fusion/tFL/tFL1/Scan1/tFL1_Scan1.er.qptiff",
+        "args": [
+          "--series",
+          "0"
+        ],
+        "metadata": {
+          "name": "tFL1_Scan1.er.qptiff - resolution #1",
+          "width": 17280,
+          "height": 31680,
+          "sizeZ": 1,
+          "sizeT": 1,
+          "channelType": "DEFAULT",
+          "isRGB": false,
+          "pixelType": "UINT16",
+          "levels": [
+            {
+              "downsample": 1.0,
+              "width": 17280,
+              "height": 31680
+            },
+            {
+              "downsample": 2.0,
+              "width": 8640,
+              "height": 15840
+            },
+            {
+              "downsample": 4.0,
+              "width": 4320,
+              "height": 7920
+            },
+            {
+              "downsample": 8.0,
+              "width": 2160,
+              "height": 3960
+            },
+            {
+              "downsample": 16.0,
+              "width": 1080,
+              "height": 1980
+            }
+          ],
+          "channels": [
+            {
+              "name": "DAPI",
+              "color": -16776961
+            },
+            {
+              "name": "CD34",
+              "color": -256
+            },
+            {
+              "name": "CD31",
+              "color": -32768
+            },
+            {
+              "name": "CD4",
+              "color": -16711681
+            },
+            {
+              "name": "CD8",
+              "color": -65281
+            },
+            {
+              "name": "CD21",
+              "color": -5952982
+            },
+            {
+              "name": "CD68",
+              "color": -16181
+            },
+            {
+              "name": "CD38",
+              "color": -1
+            },
+            {
+              "name": "HLA-DR",
+              "color": -65536
+            },
+            {
+              "name": "CD3e",
+              "color": -16711936
+            },
+            {
+              "name": "CD79a",
+              "color": -16776961
+            },
+            {
+              "name": "Ki67",
+              "color": -256
+            },
+            {
+              "name": "Bcl-2",
+              "color": -32768
+            },
+            {
+              "name": "MPO",
+              "color": -16711681
+            },
+            {
+              "name": "CD20",
+              "color": -65281
+            }
+          ],
+          "pixelCalibration": {
+            "pixelWidth": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "pixelHeight": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "zSpacing": {
+              "value": 1.0,
+              "unit": "z-slice"
+            },
+            "timeUnit": "SECONDS",
+            "timepoints": []
+          },
+          "magnification": 20.0,
+          "preferredTileWidth": 512,
+          "preferredTileHeight": 512
+        }
+      },
+      "entryID": 1,
+      "randomizedName": "31a90bc7-e3d0-41d0-8985-989767ae0825",
+      "imageName": "tFL1_Scan1.er.qptiff - resolution #1",
+      "metadata": {}
+    },
+    {
+      "serverBuilder": {
+        "builderType": "uri",
+        "providerClassName": "qupath.lib.images.servers.bioformats.BioFormatsServerBuilder",
+        "uri": "file:/D:/Data/Fusion/tFL/tFL4/Scan1/tFL4_Scan1.er.qptiff",
+        "args": [
+          "--series",
+          "0"
+        ],
+        "metadata": {
+          "name": "tFL4_Scan1.er.qptiff - resolution #1",
+          "width": 20160,
+          "height": 20160,
+          "sizeZ": 1,
+          "sizeT": 1,
+          "channelType": "DEFAULT",
+          "isRGB": false,
+          "pixelType": "UINT16",
+          "levels": [
+            {
+              "downsample": 1.0,
+              "width": 20160,
+              "height": 20160
+            },
+            {
+              "downsample": 2.0,
+              "width": 10080,
+              "height": 10080
+            },
+            {
+              "downsample": 4.0,
+              "width": 5040,
+              "height": 5040
+            },
+            {
+              "downsample": 8.0,
+              "width": 2520,
+              "height": 2520
+            },
+            {
+              "downsample": 16.0,
+              "width": 1260,
+              "height": 1260
+            }
+          ],
+          "channels": [
+            {
+              "name": "DAPI",
+              "color": -16776961
+            },
+            {
+              "name": "CD34",
+              "color": -256
+            },
+            {
+              "name": "CD31",
+              "color": -32768
+            },
+            {
+              "name": "CD4",
+              "color": -16711681
+            },
+            {
+              "name": "CD8",
+              "color": -65281
+            },
+            {
+              "name": "CD21",
+              "color": -5952982
+            },
+            {
+              "name": "CD68",
+              "color": -16181
+            },
+            {
+              "name": "CD38",
+              "color": -1
+            },
+            {
+              "name": "HLA-DR",
+              "color": -65536
+            },
+            {
+              "name": "CD3e",
+              "color": -16711936
+            },
+            {
+              "name": "CD79a",
+              "color": -16776961
+            },
+            {
+              "name": "Ki67",
+              "color": -256
+            },
+            {
+              "name": "Bcl-2",
+              "color": -32768
+            },
+            {
+              "name": "MPO",
+              "color": -16711681
+            },
+            {
+              "name": "CD20",
+              "color": -65281
+            }
+          ],
+          "pixelCalibration": {
+            "pixelWidth": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "pixelHeight": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "zSpacing": {
+              "value": 1.0,
+              "unit": "z-slice"
+            },
+            "timeUnit": "SECONDS",
+            "timepoints": []
+          },
+          "magnification": 20.0,
+          "preferredTileWidth": 512,
+          "preferredTileHeight": 512
+        }
+      },
+      "entryID": 2,
+      "randomizedName": "876d88cb-d5a0-43a1-a9d7-9d5e887905aa",
+      "imageName": "tFL4_Scan1.er.qptiff - resolution #1",
+      "metadata": {}
+    },
+    {
+      "serverBuilder": {
+        "builderType": "uri",
+        "providerClassName": "qupath.lib.images.servers.bioformats.BioFormatsServerBuilder",
+        "uri": "file:/D:/Data/Fusion/tFL/tFL5/Scan1/tFL5_Scan1.er.qptiff",
+        "args": [
+          "--series",
+          "0"
+        ],
+        "metadata": {
+          "name": "tFL5_Scan1.er.qptiff - resolution #1",
+          "width": 28800,
+          "height": 18000,
+          "sizeZ": 1,
+          "sizeT": 1,
+          "channelType": "DEFAULT",
+          "isRGB": false,
+          "pixelType": "UINT16",
+          "levels": [
+            {
+              "downsample": 1.0,
+              "width": 28800,
+              "height": 18000
+            },
+            {
+              "downsample": 2.0,
+              "width": 14400,
+              "height": 9000
+            },
+            {
+              "downsample": 4.0,
+              "width": 7200,
+              "height": 4500
+            },
+            {
+              "downsample": 8.0,
+              "width": 3600,
+              "height": 2250
+            },
+            {
+              "downsample": 16.0,
+              "width": 1800,
+              "height": 1125
+            }
+          ],
+          "channels": [
+            {
+              "name": "DAPI",
+              "color": -16776961
+            },
+            {
+              "name": "CD34",
+              "color": -256
+            },
+            {
+              "name": "CD31",
+              "color": -32768
+            },
+            {
+              "name": "CD4",
+              "color": -16711681
+            },
+            {
+              "name": "CD8",
+              "color": -65281
+            },
+            {
+              "name": "CD21",
+              "color": -5952982
+            },
+            {
+              "name": "CD68",
+              "color": -16181
+            },
+            {
+              "name": "CD38",
+              "color": -1
+            },
+            {
+              "name": "HLA-DR",
+              "color": -65536
+            },
+            {
+              "name": "CD3e",
+              "color": -16711936
+            },
+            {
+              "name": "CD79a",
+              "color": -16776961
+            },
+            {
+              "name": "Ki67",
+              "color": -256
+            },
+            {
+              "name": "Bcl-2",
+              "color": -32768
+            },
+            {
+              "name": "MPO",
+              "color": -16711681
+            },
+            {
+              "name": "CD20",
+              "color": -65281
+            }
+          ],
+          "pixelCalibration": {
+            "pixelWidth": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "pixelHeight": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "zSpacing": {
+              "value": 1.0,
+              "unit": "z-slice"
+            },
+            "timeUnit": "SECONDS",
+            "timepoints": []
+          },
+          "magnification": 20.0,
+          "preferredTileWidth": 512,
+          "preferredTileHeight": 512
+        }
+      },
+      "entryID": 3,
+      "randomizedName": "59041052-2a55-4861-861b-4e28d09eb5fb",
+      "imageName": "tFL5_Scan1.er.qptiff - resolution #1",
+      "metadata": {}
+    },
+    {
+      "serverBuilder": {
+        "builderType": "uri",
+        "providerClassName": "qupath.lib.images.servers.bioformats.BioFormatsServerBuilder",
+        "uri": "file:/D:/Data/Fusion/tFL/tFL6/Scan1/tFL6_Scan1.er.qptiff",
+        "args": [
+          "--series",
+          "0"
+        ],
+        "metadata": {
+          "name": "tFL6_Scan1.er.qptiff - resolution #1",
+          "width": 22080,
+          "height": 20880,
+          "sizeZ": 1,
+          "sizeT": 1,
+          "channelType": "DEFAULT",
+          "isRGB": false,
+          "pixelType": "UINT16",
+          "levels": [
+            {
+              "downsample": 1.0,
+              "width": 22080,
+              "height": 20880
+            },
+            {
+              "downsample": 2.0,
+              "width": 11040,
+              "height": 10440
+            },
+            {
+              "downsample": 4.0,
+              "width": 5520,
+              "height": 5220
+            },
+            {
+              "downsample": 8.0,
+              "width": 2760,
+              "height": 2610
+            },
+            {
+              "downsample": 16.0,
+              "width": 1380,
+              "height": 1305
+            }
+          ],
+          "channels": [
+            {
+              "name": "DAPI",
+              "color": -16776961
+            },
+            {
+              "name": "CD34",
+              "color": -256
+            },
+            {
+              "name": "CD31",
+              "color": -32768
+            },
+            {
+              "name": "CD4",
+              "color": -16711681
+            },
+            {
+              "name": "CD8",
+              "color": -65281
+            },
+            {
+              "name": "CD21",
+              "color": -5952982
+            },
+            {
+              "name": "CD68",
+              "color": -16181
+            },
+            {
+              "name": "CD38",
+              "color": -1
+            },
+            {
+              "name": "HLA-DR",
+              "color": -65536
+            },
+            {
+              "name": "CD3e",
+              "color": -16711936
+            },
+            {
+              "name": "CD79a",
+              "color": -16776961
+            },
+            {
+              "name": "Ki67",
+              "color": -256
+            },
+            {
+              "name": "Bcl-2",
+              "color": -32768
+            },
+            {
+              "name": "MPO",
+              "color": -16711681
+            },
+            {
+              "name": "CD20",
+              "color": -65281
+            }
+          ],
+          "pixelCalibration": {
+            "pixelWidth": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "pixelHeight": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "zSpacing": {
+              "value": 1.0,
+              "unit": "z-slice"
+            },
+            "timeUnit": "SECONDS",
+            "timepoints": []
+          },
+          "magnification": 20.0,
+          "preferredTileWidth": 512,
+          "preferredTileHeight": 512
+        }
+      },
+      "entryID": 4,
+      "randomizedName": "9022f6b0-6ef7-4379-ac40-30cdefd45d71",
+      "imageName": "tFL6_Scan1.er.qptiff - resolution #1",
+      "metadata": {}
+    },
+    {
+      "serverBuilder": {
+        "builderType": "uri",
+        "providerClassName": "qupath.lib.images.servers.bioformats.BioFormatsServerBuilder",
+        "uri": "file:/D:/Data/Fusion/tFL/tFL7/Scan1/tFL7_Scan1.er.qptiff",
+        "args": [
+          "--series",
+          "0"
+        ],
+        "metadata": {
+          "name": "tFL7_Scan1.er.qptiff - resolution #1",
+          "width": 24960,
+          "height": 36000,
+          "sizeZ": 1,
+          "sizeT": 1,
+          "channelType": "DEFAULT",
+          "isRGB": false,
+          "pixelType": "UINT16",
+          "levels": [
+            {
+              "downsample": 1.0,
+              "width": 24960,
+              "height": 36000
+            },
+            {
+              "downsample": 2.0,
+              "width": 12480,
+              "height": 18000
+            },
+            {
+              "downsample": 4.0,
+              "width": 6240,
+              "height": 9000
+            },
+            {
+              "downsample": 8.0,
+              "width": 3120,
+              "height": 4500
+            },
+            {
+              "downsample": 16.0,
+              "width": 1560,
+              "height": 2250
+            },
+            {
+              "downsample": 32.0,
+              "width": 780,
+              "height": 1125
+            }
+          ],
+          "channels": [
+            {
+              "name": "DAPI",
+              "color": -16776961
+            },
+            {
+              "name": "CD34",
+              "color": -256
+            },
+            {
+              "name": "CD31",
+              "color": -32768
+            },
+            {
+              "name": "CD4",
+              "color": -16711681
+            },
+            {
+              "name": "CD8",
+              "color": -65281
+            },
+            {
+              "name": "CD21",
+              "color": -5952982
+            },
+            {
+              "name": "CD68",
+              "color": -16181
+            },
+            {
+              "name": "CD38",
+              "color": -1
+            },
+            {
+              "name": "HLA-DR",
+              "color": -65536
+            },
+            {
+              "name": "CD3e",
+              "color": -16711936
+            },
+            {
+              "name": "CD79a",
+              "color": -16776961
+            },
+            {
+              "name": "Ki67",
+              "color": -256
+            },
+            {
+              "name": "Bcl-2",
+              "color": -32768
+            },
+            {
+              "name": "MPO",
+              "color": -16711681
+            },
+            {
+              "name": "CD20",
+              "color": -65281
+            }
+          ],
+          "pixelCalibration": {
+            "pixelWidth": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "pixelHeight": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "zSpacing": {
+              "value": 1.0,
+              "unit": "z-slice"
+            },
+            "timeUnit": "SECONDS",
+            "timepoints": []
+          },
+          "magnification": 20.0,
+          "preferredTileWidth": 512,
+          "preferredTileHeight": 512
+        }
+      },
+      "entryID": 5,
+      "randomizedName": "f05fd9be-cb8d-4125-a968-79b55a0b0369",
+      "imageName": "tFL7_Scan1.er.qptiff - resolution #1",
+      "metadata": {}
+    },
+    {
+      "serverBuilder": {
+        "builderType": "uri",
+        "providerClassName": "qupath.lib.images.servers.bioformats.BioFormatsServerBuilder",
+        "uri": "file:/D:/Data/Fusion/tFL/tFL8/Scan1/tFL8_Scan1.er.qptiff",
+        "args": [
+          "--series",
+          "0"
+        ],
+        "metadata": {
+          "name": "tFL8_Scan1.er.qptiff - resolution #1",
+          "width": 24960,
+          "height": 31680,
+          "sizeZ": 1,
+          "sizeT": 1,
+          "channelType": "DEFAULT",
+          "isRGB": false,
+          "pixelType": "UINT16",
+          "levels": [
+            {
+              "downsample": 1.0,
+              "width": 24960,
+              "height": 31680
+            },
+            {
+              "downsample": 2.0,
+              "width": 12480,
+              "height": 15840
+            },
+            {
+              "downsample": 4.0,
+              "width": 6240,
+              "height": 7920
+            },
+            {
+              "downsample": 8.0,
+              "width": 3120,
+              "height": 3960
+            },
+            {
+              "downsample": 16.0,
+              "width": 1560,
+              "height": 1980
+            }
+          ],
+          "channels": [
+            {
+              "name": "DAPI",
+              "color": -16776961
+            },
+            {
+              "name": "CD34",
+              "color": -256
+            },
+            {
+              "name": "CD31",
+              "color": -32768
+            },
+            {
+              "name": "CD4",
+              "color": -16711681
+            },
+            {
+              "name": "CD8",
+              "color": -65281
+            },
+            {
+              "name": "CD21",
+              "color": -5952982
+            },
+            {
+              "name": "CD68",
+              "color": -16181
+            },
+            {
+              "name": "CD38",
+              "color": -1
+            },
+            {
+              "name": "HLA-DR",
+              "color": -65536
+            },
+            {
+              "name": "CD3e",
+              "color": -16711936
+            },
+            {
+              "name": "CD79a",
+              "color": -16776961
+            },
+            {
+              "name": "Ki67",
+              "color": -256
+            },
+            {
+              "name": "Bcl-2",
+              "color": -32768
+            },
+            {
+              "name": "MPO",
+              "color": -16711681
+            },
+            {
+              "name": "CD20",
+              "color": -65281
+            }
+          ],
+          "pixelCalibration": {
+            "pixelWidth": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "pixelHeight": {
+              "value": 0.5069451485349286,
+              "unit": "µm"
+            },
+            "zSpacing": {
+              "value": 1.0,
+              "unit": "z-slice"
+            },
+            "timeUnit": "SECONDS",
+            "timepoints": []
+          },
+          "magnification": 20.0,
+          "preferredTileWidth": 512,
+          "preferredTileHeight": 512
+        }
+      },
+      "entryID": 6,
+      "randomizedName": "1cb99d93-df43-4df4-892d-34c38739bfe5",
+      "imageName": "tFL8_Scan1.er.qptiff - resolution #1",
+      "metadata": {}
+    }
+  ]
+}
