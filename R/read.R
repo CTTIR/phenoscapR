@@ -112,7 +112,7 @@ read_akoya <- function(path, sample_id = NULL, markers = NULL) {
   }
 
   # X position
-  x_pat <- which(grepl("cell.*(x|centroid.*x|x.*pos)", lower) |
+  x_pat <- which(grepl("cell.*(x|centroid.*x|x.*pos)|^centroid.*x", lower) |
                    lower %in% c("x", "x_position", "x position",
                                 "centroid x", "centroid_x"))
   if (length(x_pat) > 0L) {
@@ -120,7 +120,7 @@ read_akoya <- function(path, sample_id = NULL, markers = NULL) {
   }
 
   # Y position
-  y_pat <- which(grepl("cell.*(y|centroid.*y|y.*pos)", lower) |
+  y_pat <- which(grepl("cell.*(y|centroid.*y|y.*pos)|^centroid.*y", lower) |
                    lower %in% c("y", "y_position", "y position",
                                 "centroid y", "centroid_y"))
   if (length(y_pat) > 0L) {

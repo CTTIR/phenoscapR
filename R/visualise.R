@@ -75,7 +75,7 @@ plot_density <- function(dt, point_size = 1, title = NULL) {
     colour = .data[["density"]]
   )) +
     ggplot2::geom_point(size = point_size) +
-    ggplot2::scale_fill_viridis_c() +
+    ggplot2::scale_colour_viridis_c() +
     ggplot2::coord_fixed() +
     ggplot2::theme_minimal() +
     ggplot2::labs(x = "X", y = "Y", colour = "Density", title = title)

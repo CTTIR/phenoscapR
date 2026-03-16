@@ -217,7 +217,7 @@ summarise_phenotypes <- function(dt) {
 #' @noRd
 .marker_columns <- function(dt) {
   meta <- c("sample_id", "cell_id", "x", "y", "cell_area", "phenotype",
-            "cluster", "nn_distance")
+            "cluster", "nn_distance", "density")
   cols <- setdiff(names(dt), meta)
   # Keep only numeric columns
   is_num <- vapply(cols, function(col) is.numeric(dt[[col]]), logical(1L))
