@@ -10,5 +10,13 @@
 #' @importFrom data.table melt setcolorder copy
 #' @importFrom stats dist hclust kmeans median quantile sd cutree
 #' @importFrom grDevices colorRampPalette
+#' @importFrom stats pnorm pchisq var
 #' @importFrom utils head
 NULL
+
+# Suppress R CMD check NOTEs for data.table columns used in NSE
+utils::globalVariables(c(
+  "cell_id", "cluster", "count", "density", "expected",
+  "interaction_score", "nn_distance", "observed", "phenotype",
+  "proportion", "sample_id"
+))

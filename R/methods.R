@@ -1,6 +1,6 @@
 #' Show an AkoyaExperiment
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #'
 #' @export
 #' @importFrom methods setMethod show
@@ -43,7 +43,7 @@ setMethod("show", "AkoyaExperiment", function(object) {
 
 #' Get the Number of Cells
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @return Integer.
 #' @export
 #' @importFrom methods setGeneric setMethod
@@ -57,7 +57,7 @@ setMethod("NCells", "AkoyaExperiment", function(object) {
 
 #' Get the Number of Markers
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @return Integer.
 #' @export
 setGeneric("NMarkers", function(object) standardGeneric("NMarkers"))
@@ -70,7 +70,7 @@ setMethod("NMarkers", "AkoyaExperiment", function(object) {
 
 #' Get Marker Names
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @return Character vector.
 #' @export
 setGeneric("Markers", function(object) standardGeneric("Markers"))
@@ -83,7 +83,7 @@ setMethod("Markers", "AkoyaExperiment", function(object) {
 
 #' Get Spatial Coordinates
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @return Data frame with columns \code{x} and \code{y}.
 #' @export
 setGeneric("Coords", function(object) standardGeneric("Coords"))
@@ -96,7 +96,7 @@ setMethod("Coords", "AkoyaExperiment", function(object) {
 
 #' Get or Set Cell Metadata
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @return Data frame of cell metadata.
 #' @export
 setGeneric("Meta", function(object) standardGeneric("Meta"))
@@ -111,7 +111,7 @@ setMethod("Meta", "AkoyaExperiment", function(object) {
 #'
 #' Retrieve raw counts or normalised data from an AkoyaExperiment.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param slot Character. \code{"counts"} for raw data or \code{"data"}
 #'   (default) for normalised data.
 #' @return A numeric matrix (cells x markers).
@@ -130,7 +130,7 @@ setMethod("GetData", "AkoyaExperiment", function(object, slot = "data") {
 #'
 #' Returns the phenotype labels if set, otherwise sample identities.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @return A character vector.
 #' @export
 setGeneric("Idents", function(object) standardGeneric("Idents"))
@@ -146,7 +146,7 @@ setMethod("Idents", "AkoyaExperiment", function(object) {
 
 #' Subset an AkoyaExperiment
 #'
-#' @param x An \code{\link{AkoyaExperiment}} object.
+#' @param x An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param i Cell indices (integer or logical).
 #' @param j Marker indices (integer, logical, or character).
 #' @param drop Ignored.
@@ -170,7 +170,7 @@ setMethod("[", signature(x = "AkoyaExperiment"), function(x, i, j, drop = FALSE)
 
 #' Access metadata columns with [[
 #'
-#' @param x An \code{\link{AkoyaExperiment}} object.
+#' @param x An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param i Column name (character).
 #' @return The requested metadata column.
 #' @export
@@ -180,7 +180,7 @@ setMethod("[[", signature(x = "AkoyaExperiment"), function(x, i) {
 
 #' Access metadata columns with $
 #'
-#' @param x An \code{\link{AkoyaExperiment}} object.
+#' @param x An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param name Column name.
 #' @return The requested metadata column.
 #' @export
@@ -190,7 +190,7 @@ setMethod("$", signature(x = "AkoyaExperiment"), function(x, name) {
 
 #' Get dimensions of an AkoyaExperiment
 #'
-#' @param x An \code{\link{AkoyaExperiment}} object.
+#' @param x An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @return Integer vector: number of cells, number of markers.
 #' @export
 setMethod("dim", "AkoyaExperiment", function(x) {

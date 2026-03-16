@@ -213,6 +213,179 @@ summarise_phenotypes <- function(dt) {
   result
 }
 
+# ---------------------------------------------------------------------------
+# S4-style wrappers operating on AkoyaExperiment objects
+# ---------------------------------------------------------------------------
+
+#' Quality Control Filter (AkoyaExperiment)
+#'
+#' Removes cells that fail quality control criteria based on cell area
+#' and/or total marker intensity.
+#'
+#' @param object An \code{\link{AkoyaExperiment-class}} object.
+#' @param min_area Numeric or \code{NULL}. Minimum cell area.
+#' @param max_area Numeric or \code{NULL}. Maximum cell area.
+#' @param min_intensity Numeric. Minimum total marker intensity. Default \code{0}.
+#' @param max_intensity Numeric or \code{NULL}. Maximum total marker intensity.
+#'
+#' @return A filtered \code{\link{AkoyaExperiment-class}} object.
+#'
+#' @examples
+#' counts <- matrix(rnorm(60, 5), nrow = 20,
+#'                  dimnames = list(NULL, c("CD3", "CD8", "CD20")))
+#' coords <- data.frame(x = runif(20), y = runif(20))
+#' meta <- data.frame(cell_id = 1:20, sample_id = "s1",
+#'                    cell_area = c(5, seq(50, 200, length.out = 18), 5000))
+#' obj <- CreateAkoyaObject(counts, coords, meta)
+#' filtered <- QCFilter(obj, min_area = 10, max_area = 1000)
+#' NCells(filtered)
+#'
+#' @export
+QCFilter <- function(object, min_area = NULL, max_area = NULL,
+                     min_intensity = 0, max_intensity = NULL) {
+  keep <- rep(TRUE, NCells(object))
+  md <- object@meta_data
+
+  if (!is.null(min_area) && "cell_area" %in% names(md)) {
+    keep <- keep & md$cell_area >= min_area
+  }
+  if (!is.null(max_area) && "cell_area" %in% names(md)) {
+    keep <- keep & md$cell_area <= max_area
+  }
+
+  if (min_intensity > 0 || !is.null(max_intensity)) {
+    total <- rowSums(object@counts, na.rm = TRUE)
+    keep <- keep & total >= min_intensity
+    if (!is.null(max_intensity)) {
+      keep <- keep & total <= max_intensity
+    }
+  }
+
+  object[keep, ]
+}
+
+#' Normalise Marker Intensities (AkoyaExperiment)
+#'
+#' Normalises marker intensities and stores the result in the \code{data} slot.
+#' Raw counts remain unchanged.
+#'
+#' @param object An \code{\link{AkoyaExperiment-class}} object.
+#' @param method Character. \code{"zscore"} (default), \code{"minmax"}, or
+#'   \code{"quantile"}.
+#' @param markers Character vector or \code{NULL}. Markers to normalise.
+#'   If \code{NULL}, all markers are normalised.
+#'
+#' @return An \code{\link{AkoyaExperiment-class}} with updated \code{data} slot.
+#'
+#' @examples
+#' counts <- matrix(rnorm(40, 500, 100), nrow = 20,
+#'                  dimnames = list(NULL, c("CD3", "CD8")))
+#' coords <- data.frame(x = runif(20), y = runif(20))
+#' obj <- CreateAkoyaObject(counts, coords)
+#' obj <- NormaliseData(obj, method = "zscore")
+#'
+#' @export
+NormaliseData <- function(object, method = c("zscore", "minmax", "quantile"),
+                          markers = NULL) {
+  method <- match.arg(method)
+  mat <- object@counts
+
+  cols <- if (!is.null(markers)) {
+    intersect(markers, colnames(mat))
+  } else {
+    colnames(mat)
+  }
+
+  norm_mat <- mat
+  for (col in cols) {
+    norm_mat[, col] <- .normalise_vector(mat[, col], method)
+  }
+  object@data <- norm_mat
+  object
+}
+
+#' Phenotype Cells (AkoyaExperiment)
+#'
+#' Assigns phenotype labels to cells based on marker intensity thresholds.
+#' Uses the normalised \code{data} slot.
+#'
+#' @param object An \code{\link{AkoyaExperiment-class}} object.
+#' @param thresholds Named list of thresholds (marker name = value).
+#' @param labels Named character vector mapping signatures to labels, or
+#'   \code{NULL} for automatic labelling.
+#'
+#' @return An \code{\link{AkoyaExperiment-class}} with a \code{phenotype}
+#'   column in \code{meta_data}.
+#'
+#' @examples
+#' counts <- matrix(c(rnorm(10, 5), rnorm(10, 1)), ncol = 2,
+#'                  dimnames = list(NULL, c("CD3", "CD8")))
+#' coords <- data.frame(x = runif(10), y = runif(10))
+#' obj <- CreateAkoyaObject(counts, coords)
+#' obj <- PhenotypeCells(obj, thresholds = list(CD3 = 3, CD8 = 3))
+#' table(Meta(obj)$phenotype)
+#'
+#' @export
+PhenotypeCells <- function(object, thresholds, labels = NULL) {
+  mat <- object@data
+  markers <- names(thresholds)
+
+  missing <- setdiff(markers, colnames(mat))
+  if (length(missing) > 0L) {
+    stop("Markers not found: ", paste(missing, collapse = ", "), call. = FALSE)
+  }
+
+  pos <- vapply(markers, function(m) mat[, m] >= thresholds[[m]],
+                logical(nrow(mat)))
+  if (is.null(dim(pos))) {
+    pos <- matrix(pos, ncol = 1L, dimnames = list(NULL, markers))
+  }
+
+  pheno <- apply(pos, 1L, function(row) {
+    positive <- markers[row]
+    if (length(positive) == 0L) return("Negative")
+    paste0(positive, "+", collapse = "/")
+  })
+
+  if (!is.null(labels)) {
+    matched <- labels[pheno]
+    pheno <- ifelse(is.na(matched), pheno, matched)
+  }
+
+  object@meta_data$phenotype <- pheno
+  object
+}
+
+#' Phenotype Summary (AkoyaExperiment)
+#'
+#' Computes phenotype counts and proportions per sample.
+#'
+#' @param object An \code{\link{AkoyaExperiment-class}} object.
+#'
+#' @return A data frame with columns \code{sample_id}, \code{phenotype},
+#'   \code{count}, and \code{proportion}.
+#'
+#' @examples
+#' counts <- matrix(c(rnorm(15, 5), rnorm(15, 1)), ncol = 2,
+#'                  dimnames = list(NULL, c("CD3", "CD8")))
+#' coords <- data.frame(x = runif(15), y = runif(15))
+#' obj <- CreateAkoyaObject(counts, coords)
+#' obj <- PhenotypeCells(obj, thresholds = list(CD3 = 3, CD8 = 3))
+#' PhenotypeSummary(obj)
+#'
+#' @export
+PhenotypeSummary <- function(object) {
+  md <- object@meta_data
+  if (!"phenotype" %in% names(md)) {
+    stop("No phenotype column. Run PhenotypeCells() first.", call. = FALSE)
+  }
+  dt <- data.table::as.data.table(md)
+  result <- dt[, .N, by = c("sample_id", "phenotype")]
+  data.table::setnames(result, "N", "count")
+  result[, proportion := count / sum(count), by = "sample_id"]
+  as.data.frame(result)
+}
+
 #' Identify marker columns (non-metadata)
 #' @noRd
 .marker_columns <- function(dt) {

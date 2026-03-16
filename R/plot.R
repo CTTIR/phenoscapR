@@ -4,7 +4,7 @@
 #' metadata column. Analogous to Seurat's \code{DimPlot} but in tissue
 #' space.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param colour_by Character. Column name in \code{meta_data} to colour
 #'   by. Default \code{"phenotype"}.
 #' @param colours Named character vector or \code{NULL} for automatic
@@ -69,7 +69,7 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
 #' gets its own panel. Similar to Seurat's \code{FeaturePlot} but in
 #' tissue space.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param features Character vector. Marker names to plot.
 #' @param slot Character. \code{"data"} or \code{"counts"}.
 #' @param pt_size Numeric. Point size. Default \code{0.3}.
@@ -132,7 +132,7 @@ FeaturePlot <- function(object, features, slot = "data", pt_size = 0.3,
 #' Violin plot showing the distribution of marker expression across
 #' phenotypes or other grouping variables.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param features Character vector. Marker names to plot.
 #' @param group_by Character. Metadata column to group by. Default
 #'   \code{"phenotype"}.
@@ -211,7 +211,7 @@ ViolinPlot <- function(object, features, group_by = "phenotype",
 #' Box plot showing the distribution of marker expression across
 #' phenotypes or other grouping variables.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param features Character vector. Marker names to plot.
 #' @param group_by Character. Metadata column to group by. Default
 #'   \code{"phenotype"}.
@@ -281,7 +281,7 @@ BoxPlot <- function(object, features, group_by = "phenotype",
 #' marker (above a threshold) and colour represents the mean expression.
 #' Analogous to Seurat's \code{DotPlot}.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param features Character vector. Marker names to plot.
 #' @param group_by Character. Metadata column to group by. Default
 #'   \code{"phenotype"}.
@@ -354,7 +354,7 @@ DotPlot <- function(object, features, group_by = "phenotype",
 #' within each sample (or other grouping variable). Matches the stacked
 #' bar composition plots from the images.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object with a
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
 #'   \code{phenotype} column.
 #' @param group_by Character. Metadata column for the x-axis grouping.
 #'   Default \code{"sample_id"}.
@@ -418,7 +418,7 @@ CompositionPlot <- function(object, group_by = "sample_id",
 #' Ridge (joy) plot showing the distribution of marker expression for
 #' each group. Implemented with overlapping density plots.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param features Character vector. Marker names to plot.
 #' @param group_by Character. Metadata column to group by. Default
 #'   \code{"phenotype"}.
@@ -490,7 +490,7 @@ RidgePlot <- function(object, features, group_by = "phenotype",
 #' Scatter plot with colour scaled by local cell density. Requires
 #' \code{\link{CellDensity}} to have been run.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object with a
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
 #'   \code{density} column.
 #' @param pt_size Numeric. Point size. Default \code{1}.
 #' @param title Character or \code{NULL}.
@@ -570,7 +570,7 @@ InteractionPlot <- function(interactions, title = NULL) {
 #' Heatmap of mean marker intensity per phenotype. Analogous to Seurat's
 #' \code{DoHeatmap}.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object with a
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
 #'   \code{phenotype} column.
 #' @param markers Character vector or \code{NULL}. Markers to include. If
 #'   \code{NULL}, all markers are shown.
@@ -636,7 +636,7 @@ MarkerHeatmap <- function(object, markers = NULL, slot = "data",
 #' or nearest-neighbour graph, coloured by phenotype. Matches the
 #' network visualisation style with coloured nodes on dark background.
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param edges Data frame with columns \code{from} and \code{to}
 #'   (row indices), as returned by \code{\link{DelaunayNetwork}} or
 #'   \code{\link{FindNeighbours}}. If \code{NULL} and the spatial slot
@@ -727,7 +727,7 @@ SpatialNetworkPlot <- function(object, edges = NULL, colour_by = "phenotype",
 
 #' Histogram of Marker Expression
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param feature Character. Single marker name.
 #' @param group_by Character or \code{NULL}. Metadata column for
 #'   fill grouping.
@@ -781,7 +781,7 @@ HistogramPlot <- function(object, feature, group_by = NULL,
 #'
 #' Scatter plot of two QC metrics (e.g. cell area vs total intensity).
 #'
-#' @param object An \code{\link{AkoyaExperiment}} object.
+#' @param object An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 #' @param x Character. Metadata column for x-axis.
 #' @param y Character. Metadata column for y-axis.
 #' @param colour_by Character or \code{NULL}. Metadata column for colour.
