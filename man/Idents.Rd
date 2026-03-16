@@ -11,7 +11,7 @@ Returns the phenotype labels if set, otherwise sample identities.
 Idents(object)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
 }
 \value{
 A character vector.

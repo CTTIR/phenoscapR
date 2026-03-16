@@ -5,13 +5,13 @@
 \alias{Markers,AkoyaExperiment-method}
 \title{Get Marker Names}
 \description{
-Returns the marker names from an \code{\link{AkoyaExperiment}} object.
+Returns the marker names from an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
 \usage{
 Markers(object)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
 }
 \value{
 Character vector.

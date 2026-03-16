@@ -778,8 +778,9 @@ CrossNNDistance <- function(object, from, to) {
   to_xy   <- xy[to_idx, , drop = FALSE]
 
   vapply(seq_len(nrow(from_xy)), function(i) {
-    dists <- sqrt(rowSums((to_xy - from_xy[i, , drop = FALSE])^2))
-    min(dists)
+    dx <- to_xy[, 1] - from_xy[i, 1]
+    dy <- to_xy[, 2] - from_xy[i, 2]
+    min(sqrt(dx^2 + dy^2))
   }, numeric(1L))
 }
 

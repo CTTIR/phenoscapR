@@ -12,7 +12,7 @@ HistogramPlot(object, feature, group_by = NULL,
               slot = "data", bins = 50L, colours = NULL)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{feature}{Character. Single marker name.}
   \item{group_by}{Character or \code{NULL}. Metadata column for
     fill grouping.}

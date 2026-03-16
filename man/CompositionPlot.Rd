@@ -12,7 +12,7 @@ CompositionPlot(object, group_by = "sample_id",
                 proportion = TRUE, colours = NULL)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object with a
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
     \code{phenotype} column.}
   \item{group_by}{Character. Metadata column for the x-axis grouping.
     Default \code{"sample_id"}.}

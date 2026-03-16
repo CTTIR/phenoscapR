@@ -13,7 +13,7 @@ ViolinPlot(object, features, group_by = "phenotype",
            pt_size = 0)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{features}{Character vector. Marker names to plot.}
   \item{group_by}{Character. Metadata column to group by. Default
     \code{"phenotype"}.}

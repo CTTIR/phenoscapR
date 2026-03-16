@@ -13,7 +13,7 @@ DotPlot(object, features, group_by = "phenotype",
         slot = "data", threshold = 0, palette = NULL)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{features}{Character vector. Marker names to plot.}
   \item{group_by}{Character. Metadata column to group by. Default
     \code{"phenotype"}.}

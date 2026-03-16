@@ -4,7 +4,7 @@
 \alias{show,AkoyaExperiment-method}
 \title{Show an AkoyaExperiment}
 \description{
-Display a summary of an \code{\link{AkoyaExperiment}} object, including
+Display a summary of an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object, including
 the number of cells, samples, markers, normalisation status, phenotypes,
 and spatial results.
 }
@@ -12,7 +12,7 @@ and spatial results.
 \S4method{show}{AkoyaExperiment}(object)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
 }
 \examples{
 counts <- matrix(rnorm(50), nrow = 10,

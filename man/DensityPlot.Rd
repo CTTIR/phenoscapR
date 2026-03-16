@@ -11,7 +11,7 @@ Scatter plot with colour scaled by local cell density. Requires
 DensityPlot(object, pt_size = 1, title = NULL, palette = NULL)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object with a
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
     \code{density} column.}
   \item{pt_size}{Numeric. Point size. Default \code{1}.}
   \item{title}{Character or \code{NULL}.}

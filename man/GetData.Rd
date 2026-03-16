@@ -5,13 +5,13 @@
 \alias{GetData,AkoyaExperiment-method}
 \title{Get Expression Data}
 \description{
-Retrieve raw counts or normalised data from an \code{\link{AkoyaExperiment}}.
+Retrieve raw counts or normalised data from an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}}.
 }
 \usage{
 GetData(object, slot = "data")
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{slot}{Character. \code{"counts"} for raw data or \code{"data"}
     (default) for normalised data.}
 }

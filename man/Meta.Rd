@@ -5,13 +5,13 @@
 \alias{Meta,AkoyaExperiment-method}
 \title{Get or Set Cell Metadata}
 \description{
-Returns the cell metadata data frame from an \code{\link{AkoyaExperiment}} object.
+Returns the cell metadata data frame from an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
 \usage{
 Meta(object)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
 }
 \value{
 Data frame of cell metadata.

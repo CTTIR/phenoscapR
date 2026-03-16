@@ -10,7 +10,7 @@ Scatter plot of two QC metrics (e.g. cell area vs total intensity).
 QCPlot(object, x, y, colour_by = NULL, pt_size = 0.5)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{x}{Character. Metadata column for x-axis.}
   \item{y}{Character. Metadata column for y-axis.}
   \item{colour_by}{Character or \code{NULL}. Metadata column for colour.}

@@ -6,13 +6,13 @@
 \title{Access Metadata Columns with \code{[[}}
 \description{
 Access a column from the \code{meta_data} slot of an
-\code{\link{AkoyaExperiment}} object using \code{[[}.
+\code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object using \code{[[}.
 }
 \usage{
 \S4method{[[}{AkoyaExperiment}(x, i)
 }
 \arguments{
-  \item{x}{An \code{\link{AkoyaExperiment}} object.}
+  \item{x}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{i}{Column name (character).}
 }
 \value{

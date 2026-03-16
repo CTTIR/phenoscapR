@@ -5,13 +5,13 @@
 \alias{NMarkers,AkoyaExperiment-method}
 \title{Get the Number of Markers}
 \description{
-Returns the number of markers in an \code{\link{AkoyaExperiment}} object.
+Returns the number of markers in an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
 \usage{
 NMarkers(object)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
 }
 \value{
 Integer.

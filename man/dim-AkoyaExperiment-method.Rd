@@ -5,13 +5,13 @@
 \title{Get Dimensions of an AkoyaExperiment}
 \description{
 Returns the dimensions (number of cells and number of markers) of an
-\code{\link{AkoyaExperiment}} object.
+\code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
 \usage{
 \S4method{dim}{AkoyaExperiment}(x)
 }
 \arguments{
-  \item{x}{An \code{\link{AkoyaExperiment}} object.}
+  \item{x}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
 }
 \value{
 Integer vector of length two: number of cells, number of markers.

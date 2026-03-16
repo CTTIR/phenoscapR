@@ -5,13 +5,13 @@
 \alias{NCells,AkoyaExperiment-method}
 \title{Get the Number of Cells}
 \description{
-Returns the number of cells in an \code{\link{AkoyaExperiment}} object.
+Returns the number of cells in an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
 \usage{
 NCells(object)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
 }
 \value{
 Integer.

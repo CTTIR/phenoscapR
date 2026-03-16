@@ -13,7 +13,7 @@ CellMap(object, colour_by = "phenotype", colours = NULL,
         pt_size = 0.5, title = NULL, dark_theme = FALSE)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{colour_by}{Character. Column name in \code{meta_data} to colour
     by. Default \code{"phenotype"}.}
   \item{colours}{Named character vector or \code{NULL} for automatic

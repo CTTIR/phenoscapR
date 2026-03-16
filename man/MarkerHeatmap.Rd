@@ -12,7 +12,7 @@ MarkerHeatmap(object, markers = NULL, slot = "data",
               palette = NULL, title = NULL)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object with a
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
     \code{phenotype} column.}
   \item{markers}{Character vector or \code{NULL}. Markers to include. If
     \code{NULL}, all markers are shown.}

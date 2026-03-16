@@ -15,7 +15,7 @@ SpatialNetworkPlot(object, edges = NULL, colour_by = "phenotype",
                    dark_theme = TRUE)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{edges}{Data frame with columns \code{from} and \code{to}
     (row indices), as returned by \code{\link{DelaunayNetwork}} or
     \code{\link{FindNeighbours}}. If \code{NULL} and the spatial slot

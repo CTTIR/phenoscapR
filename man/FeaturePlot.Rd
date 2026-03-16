@@ -13,7 +13,7 @@ FeaturePlot(object, features, slot = "data", pt_size = 0.3,
             ncol = NULL, palette = NULL, dark_theme = FALSE)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{features}{Character vector. Marker names to plot.}
   \item{slot}{Character. \code{"data"} or \code{"counts"}.}
   \item{pt_size}{Numeric. Point size. Default \code{0.3}.}

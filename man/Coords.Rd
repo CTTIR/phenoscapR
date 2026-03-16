@@ -5,13 +5,13 @@
 \alias{Coords,AkoyaExperiment-method}
 \title{Get Spatial Coordinates}
 \description{
-Returns the spatial coordinates from an \code{\link{AkoyaExperiment}} object.
+Returns the spatial coordinates from an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
 \usage{
 Coords(object)
 }
 \arguments{
-  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
 }
 \value{
 Data frame with columns \code{x} and \code{y}.
