@@ -1,0 +1,23 @@
+\name{Markers}
+\alias{Markers}
+\alias{Markers,AkoyaExperiment-method}
+\title{Get Marker Names}
+\description{
+Returns the marker names from an \code{\link{AkoyaExperiment}} object.
+}
+\usage{
+Markers(object)
+}
+\arguments{
+  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+}
+\value{
+Character vector.
+}
+\examples{
+counts <- matrix(rnorm(50), nrow = 10,
+                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
+coords <- data.frame(x = runif(10), y = runif(10))
+obj <- CreateAkoyaObject(counts, coords)
+Markers(obj)
+}

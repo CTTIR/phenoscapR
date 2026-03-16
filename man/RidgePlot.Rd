@@ -1,0 +1,32 @@
+\name{RidgePlot}
+\alias{RidgePlot}
+\title{Ridge Plot of Marker Expression}
+\description{
+Ridge (joy) plot showing the distribution of marker expression for
+each group. Implemented with overlapping density plots.
+}
+\usage{
+RidgePlot(object, features, group_by = "phenotype",
+          slot = "data", colours = NULL, ncol = NULL)
+}
+\arguments{
+  \item{object}{An \code{\link{AkoyaExperiment}} object.}
+  \item{features}{Character vector. Marker names to plot.}
+  \item{group_by}{Character. Metadata column to group by. Default
+    \code{"phenotype"}.}
+  \item{slot}{Character. \code{"data"} or \code{"counts"}.}
+  \item{colours}{Named character vector or \code{NULL}.}
+  \item{ncol}{Integer or \code{NULL}.}
+}
+\value{
+A \code{ggplot} object.
+}
+\examples{
+counts <- matrix(c(rnorm(30, 5), rnorm(30, 1)), ncol = 2,
+                 dimnames = list(NULL, c("CD3", "CD8")))
+coords <- data.frame(x = runif(30), y = runif(30))
+meta <- data.frame(cell_id = 1:30, sample_id = "s1",
+                   phenotype = rep(c("T cell", "Other"), each = 15))
+obj <- CreateAkoyaObject(counts, coords, meta)
+RidgePlot(obj, features = "CD3")
+}

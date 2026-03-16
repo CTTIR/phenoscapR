@@ -1,0 +1,22 @@
+\name{CustomGradient}
+\alias{CustomGradient}
+\title{Create a Custom Gradient Palette from Anchor Colours}
+\description{
+Creates a gradient palette function from 2 or 3 anchor colours. The
+returned function takes an integer \code{n} and returns \code{n} colours.
+}
+\usage{
+CustomGradient(colours)
+}
+\arguments{
+  \item{colours}{Character vector of 2-3 colours (names or hex codes).}
+}
+\value{
+A function that takes integer \code{n} and returns \code{n} hex colour
+codes.
+}
+\examples{
+pal <- CustomGradient(c("navy", "white", "firebrick"))
+cols <- pal(100)
+image(matrix(1:100, ncol = 1), col = cols)
+}

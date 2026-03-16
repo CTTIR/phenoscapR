@@ -18,74 +18,117 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-**phenoscapR** provides tools for reading, processing, analysing, and
-visualising multiplexed spatial biology data from Akoya Biosciences
-platforms (PhenoCycler, CODEX, PhenoImager).
+**phenoscapR** provides an S4 class (`AkoyaExperiment`) and a pipe-friendly
+workflow for analysing multiplexed spatial biology data from Akoya
+Biosciences platforms (PhenoCycler, CODEX, PhenoImager) and QuPath.
 
-A typical workflow involves:
+The design follows the philosophy of the
+[Seurat](https://satijalab.org/seurat/) package: a central object holds
+raw data, normalised data, coordinates, and metadata. All analysis
+functions accept the object as the first argument and return a modified
+copy, enabling clean pipelines.
 
-1. **Reading** cell segmentation data with `read_akoya()`
-2. **Quality control** with `qc_filter()`
-3. **Normalisation** with `normalise_markers()`
-4. **Phenotyping** with `phenotype_cells()`
-5. **Spatial analysis** with `nearest_neighbours()`, `cell_density()`,
-   `interaction_matrix()`, and `spatial_clusters()`
-6. **Visualisation** with `plot_cell_map()`, `plot_density()`,
-   `plot_heatmap()`, and `plot_interactions()`
+## Workflow at a Glance
 
-## Creating Example Data
+```
+ReadAkoya() -> QCFilter() -> NormaliseData() -> PhenotypeCells()
+  -> FindNeighbours() / CellDensity() / InteractionMatrix()
+  -> CellMap() / FeaturePlot() / ViolinPlot() / DotPlot()
+  -> CompositionPlot() / SpatialNetworkPlot()
+```
 
-Since real Akoya data files can be large, we will create a small
-simulated data set for illustration.
+## Simulating Example Data
 
-```{r simulate-data}
+```{r simulate}
 library(phenoscapR)
 
 set.seed(42)
-n_cells <- 500
+n <- 500
 
-# Simulate two cell populations in different spatial regions
-dt <- data.table::data.table(
-  `Cell ID` = seq_len(n_cells),
+# Two spatially distinct populations
+sim <- data.frame(
+  `Cell ID` = seq_len(n),
   `Cell X Position` = c(rnorm(250, 200, 50), rnorm(250, 600, 50)),
   `Cell Y Position` = c(rnorm(250, 300, 50), rnorm(250, 300, 50)),
-  `Cell Area (px)` = rlnorm(n_cells, log(100), 0.3),
-  CD3 = c(rnorm(250, 800, 150), rnorm(250, 200, 100)),
-  CD8 = c(rnorm(250, 200, 100), rnorm(250, 700, 120)),
-  DAPI = rnorm(n_cells, 1000, 200)
+  `Cell Area (px)` = rlnorm(n, log(100), 0.3),
+  CD3  = c(rnorm(250, 800, 150), rnorm(250, 200, 100)),
+  CD8  = c(rnorm(250, 200, 100), rnorm(250, 700, 120)),
+  PanCK = c(rnorm(250, 100, 50), rnorm(250, 600, 100)),
+  check.names = FALSE
 )
 
-# Write to a temporary CSV
 tmp <- tempfile(fileext = ".csv")
-write.csv(dt, tmp, row.names = FALSE)
+write.csv(sim, tmp, row.names = FALSE)
 ```
 
 ## Reading Data
 
-```{r read-data}
-cells <- read_akoya(tmp, sample_id = "example")
-head(cells)
+`ReadAkoya()` reads Akoya cell segmentation CSV files and returns an
+`AkoyaExperiment` object. It supports three formats: `"processor"`,
+`"inform"`, and `"qupath"`, plus automatic detection (`"auto"`).
+
+A `filter` argument removes housekeeping channels (DAPI, Blank, Empty) by default.
+
+```{r read}
+obj <- ReadAkoya(tmp, sample_id = "example", filter = NA)
+obj
+```
+
+To read a directory of QuPath exports:
+
+```{r read-dir, eval = FALSE}
+# Single directory (recursive)
+obj <- ReadAkoya("data/Annotations/", type = "qupath")
+
+# Or pass a specific file
+obj <- ReadAkoya("data/measurements.csv", type = "qupath")
+```
+
+## Colour Palettes
+
+Set a global palette that all plots will use. Supports viridis palettes
+and custom gradients from 2-3 anchor colours.
+
+```{r palette}
+# Use viridis (default)
+SetPalette("viridis")
+
+# Or a custom gradient
+SetPalette(c("navy", "white", "firebrick"))
+
+# Generate discrete colours for 5 groups
+PaletteDiscrete(5)
+
+# Create a reusable gradient function
+pal <- CustomGradient(c("#1b9e77", "#ffffff", "#d95f02"))
+pal(10)
+
+# Reset to viridis for the rest of the vignette
+SetPalette("viridis")
 ```
 
 ## Quality Control
 
 ```{r qc}
-cells <- qc_filter(cells, min_area = 50, max_area = 500)
-nrow(cells)
+obj <- QCFilter(obj, min_area = 50, max_area = 500)
+NCells(obj)
 ```
 
 ## Normalisation
 
+`NormaliseData()` normalises marker intensities and stores the result in
+the `data` slot. The raw `counts` remain untouched.
+
 ```{r normalise}
-cells <- normalise_markers(cells, method = "zscore")
-summary(cells[, c("CD3", "CD8", "DAPI")])
+obj <- NormaliseData(obj, method = "zscore")
+head(GetData(obj)[, 1:3])
 ```
 
 ## Phenotyping
 
 ```{r phenotype}
-cells <- phenotype_cells(cells, thresholds = list(CD3 = 0, CD8 = 0))
-summarise_phenotypes(cells)
+obj <- PhenotypeCells(obj, thresholds = list(CD3 = 0, CD8 = 0, PanCK = 0))
+PhenotypeSummary(obj)
 ```
 
 ## Spatial Analysis
@@ -93,22 +136,66 @@ summarise_phenotypes(cells)
 ### Nearest Neighbours
 
 ```{r nn}
-cells <- nearest_neighbours(cells, k = 5)
-summary(cells$nn_distance)
+obj <- FindNeighbours(obj, k = 5)
+summary(Meta(obj)$nn_distance)
 ```
 
 ### Cell Density
 
 ```{r density}
-cells <- cell_density(cells, radius = 50)
-summary(cells$density)
+obj <- CellDensity(obj, radius = 50)
+summary(Meta(obj)$density)
 ```
 
 ### Interaction Matrix
 
 ```{r interactions}
-interactions <- interaction_matrix(cells, radius = 50)
+interactions <- InteractionMatrix(obj, radius = 50)
 interactions
+```
+
+### Neighbourhood Enrichment
+
+Permutation-based test for spatial enrichment/depletion of phenotype pairs:
+
+```{r enrichment}
+ne <- NeighbourhoodEnrichment(obj, radius = 50, n_perm = 50, seed = 42)
+ne[order(ne$z_score), ]
+```
+
+### Ripley's K and Pair Correlation
+
+```{r ripleys}
+kf <- RipleysK(obj)
+head(kf)
+```
+
+### Moran's I
+
+```{r morans}
+mi <- MoransI(obj, feature = "CD3", radius = 80)
+cat("Moran's I:", round(mi$I, 3), "  p-value:", signif(mi$p_value, 3), "\n")
+```
+
+### Quadrat Analysis
+
+```{r quadrat}
+qa <- QuadratAnalysis(obj, nx = 5, ny = 5)
+cat("VMR:", round(qa$VMR, 2), "  p-value:", signif(qa$p_value, 3), "\n")
+```
+
+### Delaunay Network
+
+```{r delaunay}
+obj <- DelaunayNetwork(obj, max_edge = 100)
+head(obj@spatial$delaunay_edges)
+```
+
+### Expression Clustering
+
+```{r expr-cluster}
+obj <- ExpressionClusters(obj, k = 3)
+table(Meta(obj)$expr_cluster)
 ```
 
 ## Visualisation
@@ -116,25 +203,107 @@ interactions
 ### Cell Map
 
 ```{r cell-map, fig.cap="Cell phenotype map"}
-plot_cell_map(cells, point_size = 1)
+CellMap(obj, pt_size = 1)
+```
+
+### Cell Map (dark theme)
+
+```{r cell-map-dark, fig.cap="Dark tissue-style phenotype map"}
+CellMap(obj, pt_size = 1, dark_theme = TRUE)
+```
+
+### Feature Plot
+
+```{r feature-plot, fig.cap="Marker expression in tissue space"}
+FeaturePlot(obj, features = c("CD3", "CD8", "PanCK"), ncol = 3)
 ```
 
 ### Density Plot
 
 ```{r density-plot, fig.cap="Cell density map"}
-plot_density(cells, point_size = 1)
+DensityPlot(obj, pt_size = 1)
+```
+
+### Spatial Network Plot
+
+```{r network-plot, fig.cap="Delaunay network coloured by phenotype"}
+SpatialNetworkPlot(obj, pt_size = 1.5)
+```
+
+### Violin Plot
+
+```{r violin, fig.cap="Marker distributions by phenotype"}
+ViolinPlot(obj, features = c("CD3", "CD8", "PanCK"))
+```
+
+### Box Plot
+
+```{r boxplot, fig.cap="Marker box plots"}
+BoxPlot(obj, features = c("CD3", "CD8"))
+```
+
+### Dot Plot
+
+```{r dotplot, fig.cap="Dot plot of marker expression"}
+DotPlot(obj, features = c("CD3", "CD8", "PanCK"))
+```
+
+### Composition Plot
+
+```{r composition, fig.cap="Phenotype composition"}
+CompositionPlot(obj)
+```
+
+### Ridge Plot
+
+```{r ridge, fig.cap="Ridge plot of CD3 expression"}
+RidgePlot(obj, features = "CD3")
 ```
 
 ### Marker Heatmap
 
 ```{r heatmap, fig.cap="Mean marker expression per phenotype"}
-plot_heatmap(cells)
+MarkerHeatmap(obj)
 ```
 
 ### Interaction Heatmap
 
 ```{r interaction-plot, fig.cap="Spatial interaction scores"}
-plot_interactions(interactions)
+InteractionPlot(interactions)
+```
+
+### Histogram
+
+```{r histogram, fig.cap="CD3 expression histogram"}
+HistogramPlot(obj, feature = "CD3", group_by = "phenotype")
+```
+
+## Pipe-friendly Workflow
+
+With R 4.1+ you can use the native pipe:
+
+```{r pipe, eval = FALSE}
+obj <- ReadAkoya("segmentation.csv", type = "qupath") |>
+  QCFilter(min_area = 50) |>
+  NormaliseData(method = "zscore") |>
+  PhenotypeCells(thresholds = list(CD3 = 0.5, CD8 = 0.3)) |>
+  FindNeighbours(k = 5) |>
+  CellDensity(radius = 50) |>
+  DelaunayNetwork(max_edge = 100)
+```
+
+## Subsetting
+
+Subset cells or markers using standard R bracket syntax:
+
+```{r subset}
+# First 100 cells
+sub <- obj[1:100, ]
+NCells(sub)
+
+# Select specific markers
+sub2 <- obj[, c("CD3", "CD8")]
+Markers(sub2)
 ```
 
 ```{r cleanup, include = FALSE}
