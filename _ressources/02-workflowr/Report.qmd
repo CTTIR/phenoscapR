@@ -1,0 +1,38 @@
+---
+title: "Report"
+author: "RH"
+date: "XY"
+format:
+  pdf:
+    classoption: landscape
+editor: visual
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Load packages
+library(tidyverse)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Import the Rds data
+# df <- readRDS("./data/tidy/1-df-tidy.rds")
+```
+
+# Data
+
+## Information
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Variables
+ncol(df)
+```
+
+\newpage
+
+# Descriptive statistics
+
+## Clinical characteristics
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Descriptive statistics
+```
