@@ -4,22 +4,21 @@
 \alias{Idents}
 \alias{Idents,AkoyaExperiment-method}
 \title{Get Active Cell Identities}
-\description{
-Returns the phenotype labels if set, otherwise sample identities.
-}
 \usage{
 Idents(object)
+
+\S4method{Idents}{AkoyaExperiment}(object)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object.}
+>>>>>>> Stashed changes
 }
 \value{
 A character vector.
 }
-\examples{
-counts <- matrix(rnorm(50), nrow = 10,
-                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
-coords <- data.frame(x = runif(10), y = runif(10))
-obj <- CreateAkoyaObject(counts, coords)
-Idents(obj)
+\description{
+Returns the phenotype labels if set, otherwise sample identities.
 }

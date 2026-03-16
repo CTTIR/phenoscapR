@@ -2,24 +2,28 @@
 % Please edit documentation in R/methods.R
 \name{dim,AkoyaExperiment-method}
 \alias{dim,AkoyaExperiment-method}
+<<<<<<< Updated upstream
 \title{Get Dimensions of an AkoyaExperiment}
 \description{
 Returns the dimensions (number of cells and number of markers) of an
 \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
+=======
+\title{Get dimensions of an AkoyaExperiment}
+>>>>>>> Stashed changes
 \usage{
 \S4method{dim}{AkoyaExperiment}(x)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{x}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
+=======
+\item{x}{An \code{\link{AkoyaExperiment}} object.}
+>>>>>>> Stashed changes
 }
 \value{
-Integer vector of length two: number of cells, number of markers.
+Integer vector: number of cells, number of markers.
 }
-\examples{
-counts <- matrix(rnorm(50), nrow = 10,
-                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
-coords <- data.frame(x = runif(10), y = runif(10))
-obj <- CreateAkoyaObject(counts, coords)
-dim(obj)
+\description{
+Get dimensions of an AkoyaExperiment
 }

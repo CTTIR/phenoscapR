@@ -3,16 +3,19 @@
 \name{ViolinPlot}
 \alias{ViolinPlot}
 \title{Violin Plot of Marker Expression}
-\description{
-Violin plot showing the distribution of marker expression across
-phenotypes or other grouping variables.
-}
 \usage{
-ViolinPlot(object, features, group_by = "phenotype",
-           slot = "data", colours = NULL, ncol = NULL,
-           pt_size = 0)
+ViolinPlot(
+  object,
+  features,
+  group_by = "phenotype",
+  slot = "data",
+  colours = NULL,
+  ncol = NULL,
+  pt_size = 0
+)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{features}{Character vector. Marker names to plot.}
   \item{group_by}{Character. Metadata column to group by. Default
@@ -22,9 +25,30 @@ ViolinPlot(object, features, group_by = "phenotype",
   \item{ncol}{Integer or \code{NULL}. Number of columns for facets.}
   \item{pt_size}{Numeric. Jitter point size. \code{0} to hide. Default
     \code{0}.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object.}
+
+\item{features}{Character vector. Marker names to plot.}
+
+\item{group_by}{Character. Metadata column to group by. Default
+\code{"phenotype"}.}
+
+\item{slot}{Character. \code{"data"} or \code{"counts"}.}
+
+\item{colours}{Named character vector or \code{NULL}.}
+
+\item{ncol}{Integer or \code{NULL}. Number of columns for facets.}
+
+\item{pt_size}{Numeric. Jitter point size. \code{0} to hide. Default
+\code{0}.}
+>>>>>>> Stashed changes
 }
 \value{
 A \code{ggplot} object.
+}
+\description{
+Violin plot showing the distribution of marker expression across
+phenotypes or other grouping variables.
 }
 \examples{
 counts <- matrix(c(rnorm(30, 5), rnorm(30, 1)), ncol = 2,
@@ -34,4 +58,5 @@ meta <- data.frame(cell_id = 1:30, sample_id = "s1",
                    phenotype = rep(c("T cell", "Other"), each = 15))
 obj <- CreateAkoyaObject(counts, coords, meta)
 ViolinPlot(obj, features = c("CD3", "CD8"))
+
 }

@@ -3,21 +3,22 @@
 \name{PaletteContinuous}
 \alias{PaletteContinuous}
 \title{Generate a Continuous Colour Palette Function}
-\description{
-Returns a character vector of \code{n} colours based on the current or
-specified palette. Works with \code{ggplot2} via
-\code{scale_colour_gradientn} / \code{scale_fill_gradientn}.
-}
 \usage{
 PaletteContinuous(n = 256L, palette = NULL)
 }
 \arguments{
-  \item{n}{Integer. Number of colours to generate. Default \code{256}.}
-  \item{palette}{Character or character vector. Palette specification
-    (see \code{\link{SetPalette}}). If \code{NULL}, uses the global palette.}
+\item{n}{Integer. Number of colours to generate. Default \code{256}.}
+
+\item{palette}{Character or character vector. Palette specification
+(see \code{\link{SetPalette}}). If \code{NULL}, uses the global palette.}
 }
 \value{
 A character vector of \code{n} hex colours.
+}
+\description{
+Returns a function that maps numeric values to colours based on the
+current or specified palette. Works with \code{ggplot2} via
+\code{scale_colour_gradientn} / \code{scale_fill_gradientn}.
 }
 \examples{
 cols <- PaletteContinuous(10)
@@ -25,4 +26,5 @@ plot(1:10, col = cols, pch = 19, cex = 3)
 
 cols <- PaletteContinuous(10, palette = c("blue", "white", "red"))
 plot(1:10, col = cols, pch = 19, cex = 3)
+
 }

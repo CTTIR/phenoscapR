@@ -4,24 +4,32 @@
 \alias{GetData}
 \alias{GetData,AkoyaExperiment-method}
 \title{Get Expression Data}
+<<<<<<< Updated upstream
 \description{
 Retrieve raw counts or normalised data from an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}}.
 }
+=======
+>>>>>>> Stashed changes
 \usage{
 GetData(object, slot = "data")
+
+\S4method{GetData}{AkoyaExperiment}(object, slot = "data")
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{slot}{Character. \code{"counts"} for raw data or \code{"data"}
     (default) for normalised data.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object.}
+
+\item{slot}{Character. \code{"counts"} for raw data or \code{"data"}
+(default) for normalised data.}
+>>>>>>> Stashed changes
 }
 \value{
 A numeric matrix (cells x markers).
 }
-\examples{
-counts <- matrix(rnorm(50), nrow = 10,
-                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
-coords <- data.frame(x = runif(10), y = runif(10))
-obj <- CreateAkoyaObject(counts, coords)
-head(GetData(obj, slot = "counts"))
+\description{
+Retrieve raw counts or normalised data from an AkoyaExperiment.
 }

@@ -3,23 +3,35 @@
 \name{DensityPlot}
 \alias{DensityPlot}
 \title{Plot Cell Density}
-\description{
-Scatter plot with colour scaled by local cell density. Requires
-\code{\link{CellDensity}} to have been run.
-}
 \usage{
 DensityPlot(object, pt_size = 1, title = NULL, palette = NULL)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
     \code{density} column.}
   \item{pt_size}{Numeric. Point size. Default \code{1}.}
   \item{title}{Character or \code{NULL}.}
   \item{palette}{Character or character vector. Default \code{NULL}
     (global palette).}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object with a
+\code{density} column.}
+
+\item{pt_size}{Numeric. Point size. Default \code{1}.}
+
+\item{title}{Character or \code{NULL}.}
+
+\item{palette}{Character or character vector. Default \code{NULL}
+(global palette).}
+>>>>>>> Stashed changes
 }
 \value{
 A \code{ggplot} object.
+}
+\description{
+Scatter plot with colour scaled by local cell density. Requires
+\code{\link{CellDensity}} to have been run.
 }
 \examples{
 counts <- matrix(rnorm(100), nrow = 50,
@@ -28,4 +40,5 @@ coords <- data.frame(x = runif(50, 0, 100), y = runif(50, 0, 100))
 obj <- CreateAkoyaObject(counts, coords)
 obj <- CellDensity(obj, radius = 20)
 DensityPlot(obj)
+
 }

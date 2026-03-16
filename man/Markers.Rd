@@ -4,22 +4,27 @@
 \alias{Markers}
 \alias{Markers,AkoyaExperiment-method}
 \title{Get Marker Names}
+<<<<<<< Updated upstream
 \description{
 Returns the marker names from an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
+=======
+>>>>>>> Stashed changes
 \usage{
 Markers(object)
+
+\S4method{Markers}{AkoyaExperiment}(object)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object.}
+>>>>>>> Stashed changes
 }
 \value{
 Character vector.
 }
-\examples{
-counts <- matrix(rnorm(50), nrow = 10,
-                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
-coords <- data.frame(x = runif(10), y = runif(10))
-obj <- CreateAkoyaObject(counts, coords)
-Markers(obj)
+\description{
+Get Marker Names
 }

@@ -3,15 +3,17 @@
 \name{MarkerHeatmap}
 \alias{MarkerHeatmap}
 \title{Plot Marker Heatmap}
-\description{
-Heatmap of mean marker intensity per phenotype. Analogous to Seurat's
-\code{DoHeatmap}.
-}
 \usage{
-MarkerHeatmap(object, markers = NULL, slot = "data",
-              palette = NULL, title = NULL)
+MarkerHeatmap(
+  object,
+  markers = NULL,
+  slot = "data",
+  palette = NULL,
+  title = NULL
+)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
     \code{phenotype} column.}
   \item{markers}{Character vector or \code{NULL}. Markers to include. If
@@ -21,9 +23,28 @@ MarkerHeatmap(object, markers = NULL, slot = "data",
   \item{palette}{Character or character vector. Default \code{NULL}
     (global palette).}
   \item{title}{Character or \code{NULL}.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object with a
+\code{phenotype} column.}
+
+\item{markers}{Character vector or \code{NULL}. Markers to include. If
+\code{NULL}, all markers are shown.}
+
+\item{slot}{Character. Data slot to use: \code{"data"} (default) or
+\code{"counts"}.}
+
+\item{palette}{Character or character vector. Default \code{NULL}
+(global palette).}
+
+\item{title}{Character or \code{NULL}.}
+>>>>>>> Stashed changes
 }
 \value{
 A \code{ggplot} object.
+}
+\description{
+Heatmap of mean marker intensity per phenotype. Analogous to Seurat's
+\code{DoHeatmap}.
 }
 \examples{
 counts <- matrix(c(rnorm(30, 1), rnorm(30, 0), rnorm(30, 0),
@@ -34,4 +55,5 @@ meta <- data.frame(cell_id = 1:60, sample_id = "s1",
                    phenotype = rep(c("A", "B"), each = 30))
 obj <- CreateAkoyaObject(counts, coords, meta)
 MarkerHeatmap(obj)
+
 }

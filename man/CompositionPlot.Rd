@@ -3,15 +3,16 @@
 \name{CompositionPlot}
 \alias{CompositionPlot}
 \title{Stacked Bar Plot of Phenotype Composition}
-\description{
-Stacked bar plot showing the proportion or count of each phenotype
-within each sample (or other grouping variable).
-}
 \usage{
-CompositionPlot(object, group_by = "sample_id",
-                proportion = TRUE, colours = NULL)
+CompositionPlot(
+  object,
+  group_by = "sample_id",
+  proportion = TRUE,
+  colours = NULL
+)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object with a
     \code{phenotype} column.}
   \item{group_by}{Character. Metadata column for the x-axis grouping.
@@ -19,9 +20,26 @@ CompositionPlot(object, group_by = "sample_id",
   \item{proportion}{Logical. Show proportions instead of counts? Default
     \code{TRUE}.}
   \item{colours}{Named character vector or \code{NULL}.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object with a
+\code{phenotype} column.}
+
+\item{group_by}{Character. Metadata column for the x-axis grouping.
+Default \code{"sample_id"}.}
+
+\item{proportion}{Logical. Show proportions instead of counts? Default
+\code{TRUE}.}
+
+\item{colours}{Named character vector or \code{NULL}.}
+>>>>>>> Stashed changes
 }
 \value{
 A \code{ggplot} object.
+}
+\description{
+Stacked bar plot showing the proportion or count of each phenotype
+within each sample (or other grouping variable). Matches the stacked
+bar composition plots from the images.
 }
 \examples{
 counts <- matrix(rnorm(100), nrow = 50,
@@ -32,4 +50,5 @@ meta <- data.frame(cell_id = 1:50,
                    phenotype = sample(c("T cell", "B cell", "Mac"), 50, TRUE))
 obj <- CreateAkoyaObject(counts, coords, meta)
 CompositionPlot(obj)
+
 }

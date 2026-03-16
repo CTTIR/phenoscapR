@@ -3,21 +3,24 @@
 \name{show,AkoyaExperiment-method}
 \alias{show,AkoyaExperiment-method}
 \title{Show an AkoyaExperiment}
+<<<<<<< Updated upstream
 \description{
 Display a summary of an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object, including
 the number of cells, samples, markers, normalisation status, phenotypes,
 and spatial results.
 }
+=======
+>>>>>>> Stashed changes
 \usage{
 \S4method{show}{AkoyaExperiment}(object)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object.}
+>>>>>>> Stashed changes
 }
-\examples{
-counts <- matrix(rnorm(50), nrow = 10,
-                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
-coords <- data.frame(x = runif(10), y = runif(10))
-obj <- CreateAkoyaObject(counts, coords)
-obj
+\description{
+Show an AkoyaExperiment
 }

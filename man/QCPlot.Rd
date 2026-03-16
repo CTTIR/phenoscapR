@@ -3,21 +3,33 @@
 \name{QCPlot}
 \alias{QCPlot}
 \title{QC Scatter Plot}
-\description{
-Scatter plot of two QC metrics (e.g. cell area vs total intensity).
-}
 \usage{
 QCPlot(object, x, y, colour_by = NULL, pt_size = 0.5)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
   \item{x}{Character. Metadata column for x-axis.}
   \item{y}{Character. Metadata column for y-axis.}
   \item{colour_by}{Character or \code{NULL}. Metadata column for colour.}
   \item{pt_size}{Numeric. Default \code{0.5}.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object.}
+
+\item{x}{Character. Metadata column for x-axis.}
+
+\item{y}{Character. Metadata column for y-axis.}
+
+\item{colour_by}{Character or \code{NULL}. Metadata column for colour.}
+
+\item{pt_size}{Numeric. Default \code{0.5}.}
+>>>>>>> Stashed changes
 }
 \value{
 A \code{ggplot} object.
+}
+\description{
+Scatter plot of two QC metrics (e.g. cell area vs total intensity).
 }
 \examples{
 counts <- matrix(rnorm(100), nrow = 50,
@@ -27,4 +39,5 @@ meta <- data.frame(cell_id = 1:50, sample_id = "s1",
                    cell_area = runif(50, 10, 500))
 obj <- CreateAkoyaObject(counts, coords, meta)
 QCPlot(obj, x = "cell_area", y = "cell_id")
+
 }

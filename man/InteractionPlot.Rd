@@ -3,19 +3,20 @@
 \name{InteractionPlot}
 \alias{InteractionPlot}
 \title{Plot Spatial Interaction Heatmap}
-\description{
-Heatmap of pairwise spatial interaction scores between phenotypes.
-}
 \usage{
 InteractionPlot(interactions, title = NULL)
 }
 \arguments{
-  \item{interactions}{Data frame as returned by
-    \code{\link{InteractionMatrix}}.}
-  \item{title}{Character or \code{NULL}.}
+\item{interactions}{Data frame as returned by
+\code{\link{InteractionMatrix}}.}
+
+\item{title}{Character or \code{NULL}.}
 }
 \value{
 A \code{ggplot} object.
+}
+\description{
+Heatmap of pairwise spatial interaction scores between phenotypes.
 }
 \examples{
 interactions <- data.frame(
@@ -26,4 +27,5 @@ interactions <- data.frame(
   interaction_score = log2(c(50, 30, 25, 40) / 35)
 )
 InteractionPlot(interactions)
+
 }

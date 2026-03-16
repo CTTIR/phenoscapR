@@ -4,22 +4,27 @@
 \alias{NCells}
 \alias{NCells,AkoyaExperiment-method}
 \title{Get the Number of Cells}
+<<<<<<< Updated upstream
 \description{
 Returns the number of cells in an \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.
 }
+=======
+>>>>>>> Stashed changes
 \usage{
 NCells(object)
+
+\S4method{NCells}{AkoyaExperiment}(object)
 }
 \arguments{
+<<<<<<< Updated upstream
   \item{object}{An \code{\link[=AkoyaExperiment-class]{AkoyaExperiment}} object.}
+=======
+\item{object}{An \code{\link{AkoyaExperiment}} object.}
+>>>>>>> Stashed changes
 }
 \value{
 Integer.
 }
-\examples{
-counts <- matrix(rnorm(50), nrow = 10,
-                 dimnames = list(NULL, c("CD3", "CD8", "CD20", "DAPI", "PanCK")))
-coords <- data.frame(x = runif(10), y = runif(10))
-obj <- CreateAkoyaObject(counts, coords)
-NCells(obj)
+\description{
+Get the Number of Cells
 }
