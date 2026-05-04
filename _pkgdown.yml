@@ -1,0 +1,161 @@
+url: https://r-heller.github.io/phenoscapR/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: "phenoscapR — Single-Cell Spatial Biology in R"
+  description: >
+    Read, process, analyse, and visualise single-cell spatial biology data
+    from multiplexed imaging platforms.
+  logo: man/figures/logo.svg
+
+authors:
+  Raban Heller:
+    href: https://github.com/r-heller
+
+navbar:
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Getting Started"
+      href: articles/phenoscapR.html
+    - text: "Vignettes"
+      menu:
+        - text: "Getting Started"
+          href: articles/phenoscapR.html
+        - text: "The SpatialCellData Object"
+          href: articles/phenoscapR-02-object-model.html
+        - text: "Advanced Spatial Analysis"
+          href: articles/phenoscapR-03-spatial-analysis.html
+    - text: "Functions"
+      href: reference/index.html
+    - text: "News"
+      href: news/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/r-heller/phenoscapR
+      aria-label: GitHub
+
+articles:
+  - title: "Vignettes"
+    desc: >
+      Step-by-step guides covering the full phenoscapR workflow — from
+      reading cell segmentation data through quality control, phenotyping,
+      spatial analysis, and publication-ready visualisation.
+    contents:
+      - phenoscapR
+      - phenoscapR-02-object-model
+      - phenoscapR-03-spatial-analysis
+
+reference:
+  - title: "The SpatialCellData Object"
+    desc: >
+      S4 class representing a single-cell spatial biology experiment. Stores
+      raw and normalised expression matrices, spatial coordinates, cell
+      metadata, and spatial analysis results. Accessor methods let you
+      interrogate and subset the object without touching slots directly.
+    contents:
+      - SpatialCellData-class
+      - CreateSpatialObject
+      - ReadSpatial
+      - NCells
+      - NMarkers
+      - Markers
+      - Coords
+      - Meta
+      - GetData
+      - Idents
+      - matches("SpatialCellData-method")
+
+  - title: "Data Import"
+    desc: >
+      Read cell segmentation CSV files from spatial imaging platforms and
+      image analysis software. Three formats are auto-detected: QuPath Full
+      Export, QuPath Minimal, and flat segmentation format.
+    contents:
+      - read_spatial
+
+  - title: "Quality Control & Preprocessing"
+    desc: >
+      Filter cells by area and intensity thresholds, normalise marker
+      intensities, and inspect QC distributions before downstream analysis.
+    contents:
+      - qc_filter
+      - QCFilter
+      - normalise_markers
+      - NormaliseData
+      - QCPlot
+
+  - title: "Phenotyping"
+    desc: >
+      Assign discrete phenotype labels to cells based on marker intensity
+      thresholds and summarise phenotype composition per sample.
+    contents:
+      - phenotype_cells
+      - PhenotypeCells
+      - summarise_phenotypes
+      - PhenotypeSummary
+
+  - title: "Spatial Analysis"
+    desc: >
+      Compute spatial statistics including nearest-neighbour distances, local
+      cell density, pairwise interaction matrices, spatial clustering, Delaunay
+      networks, neighbourhood enrichment, Ripley's K, Moran's I, quadrat
+      analysis, pair correlation, cross-nearest-neighbour distances, and
+      expression-based clustering.
+    contents:
+      - nearest_neighbours
+      - FindNeighbours
+      - cell_density
+      - CellDensity
+      - interaction_matrix
+      - InteractionMatrix
+      - spatial_clusters
+      - SpatialClusters
+      - DelaunayNetwork
+      - NeighbourhoodEnrichment
+      - RipleysK
+      - MoransI
+      - QuadratAnalysis
+      - PairCorrelation
+      - CrossNNDistance
+      - ExpressionClusters
+
+  - title: "Visualisation"
+    desc: >
+      Publication-ready ggplot2 visualisations for cell maps, marker
+      intensities, phenotype composition, spatial networks, and interaction
+      heatmaps. High-level S4 methods work directly on a SpatialCellData
+      object; lower-level helpers accept data.tables.
+    contents:
+      - CellMap
+      - FeaturePlot
+      - DensityPlot
+      - SpatialNetworkPlot
+      - InteractionPlot
+      - MarkerHeatmap
+      - ViolinPlot
+      - BoxPlot
+      - DotPlot
+      - CompositionPlot
+      - RidgePlot
+      - HistogramPlot
+      - QCPlot
+      - plot_cell_map
+      - plot_density
+      - plot_heatmap
+      - plot_interactions
+
+  - title: "Colour Palettes"
+    desc: >
+      Manage the global colour palette used by all plotting functions.
+      Supports viridis options and custom gradients defined by 2-3 anchor
+      colours.
+    contents:
+      - SetPalette
+      - GetPalette
+      - PaletteContinuous
+      - PaletteDiscrete
+      - CustomGradient

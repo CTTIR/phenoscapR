@@ -1,0 +1,15 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.httr-oauth
+.DS_Store
+*.o
+*.so
+*.dll
+src/*.o
+src/*.so
+src/*.dll
+_build.R
+docs/
+inst/doc/

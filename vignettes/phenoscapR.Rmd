@@ -1,0 +1,144 @@
+---
+title: "Getting Started with phenoscapR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with phenoscapR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 5
+)
+```
+
+<img src="../man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"/>
+
+## Overview
+
+**phenoscapR** provides tools for reading, processing, analysing, and
+visualising single-cell spatial biology data from multiplexed imaging
+platforms.
+
+A typical workflow involves:
+
+1. **Reading** cell segmentation data with `read_spatial()`
+2. **Quality control** with `qc_filter()`
+3. **Normalisation** with `normalise_markers()`
+4. **Phenotyping** with `phenotype_cells()`
+5. **Spatial analysis** with `nearest_neighbours()`, `cell_density()`,
+   `interaction_matrix()`, and `spatial_clusters()`
+6. **Visualisation** with `plot_cell_map()`, `plot_density()`,
+   `plot_heatmap()`, and `plot_interactions()`
+
+## Creating Example Data
+
+Since real cell segmentation files can be large, we will create a small
+simulated data set for illustration.
+
+```{r simulate-data}
+library(phenoscapR)
+
+set.seed(42)
+n_cells <- 500
+
+# Simulate two cell populations in different spatial regions
+dt <- data.table::data.table(
+  `Cell ID` = seq_len(n_cells),
+  `Cell X Position` = c(rnorm(250, 200, 50), rnorm(250, 600, 50)),
+  `Cell Y Position` = c(rnorm(250, 300, 50), rnorm(250, 300, 50)),
+  `Cell Area (px)` = rlnorm(n_cells, log(100), 0.3),
+  CD3 = c(rnorm(250, 800, 150), rnorm(250, 200, 100)),
+  CD8 = c(rnorm(250, 200, 100), rnorm(250, 700, 120)),
+  DAPI = rnorm(n_cells, 1000, 200)
+)
+
+# Write to a temporary CSV
+tmp <- tempfile(fileext = ".csv")
+write.csv(dt, tmp, row.names = FALSE)
+```
+
+## Reading Data
+
+```{r read-data}
+cells <- read_spatial(tmp, sample_id = "example")
+head(cells)
+```
+
+## Quality Control
+
+```{r qc}
+cells <- qc_filter(cells, min_area = 50, max_area = 500)
+nrow(cells)
+```
+
+## Normalisation
+
+```{r normalise}
+cells <- normalise_markers(cells, method = "zscore")
+summary(cells[, c("CD3", "CD8", "DAPI")])
+```
+
+## Phenotyping
+
+```{r phenotype}
+cells <- phenotype_cells(cells, thresholds = list(CD3 = 0, CD8 = 0))
+summarise_phenotypes(cells)
+```
+
+## Spatial Analysis
+
+### Nearest Neighbours
+
+```{r nn}
+cells <- nearest_neighbours(cells, k = 5)
+summary(cells$nn_distance)
+```
+
+### Cell Density
+
+```{r density}
+cells <- cell_density(cells, radius = 50)
+summary(cells$density)
+```
+
+### Interaction Matrix
+
+```{r interactions}
+interactions <- interaction_matrix(cells, radius = 50)
+interactions
+```
+
+## Visualisation
+
+### Cell Map
+
+```{r cell-map, fig.cap="Cell phenotype map"}
+plot_cell_map(cells, point_size = 1)
+```
+
+### Density Plot
+
+```{r density-plot, fig.cap="Cell density map"}
+plot_density(cells, point_size = 1)
+```
+
+### Marker Heatmap
+
+```{r heatmap, fig.cap="Mean marker expression per phenotype"}
+plot_heatmap(cells)
+```
+
+### Interaction Heatmap
+
+```{r interaction-plot, fig.cap="Spatial interaction scores"}
+plot_interactions(interactions)
+```
+
+```{r cleanup, include = FALSE}
+unlink(tmp)
+```

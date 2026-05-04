@@ -1,0 +1,17 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^README\.md$
+^\.github$
+^\.git$
+^\.gitignore$
+^NEWS\.md$
+^_test$
+^phenoscapR-pdf\.pdf$
+^_pkgdown\.ya?ml$
+^docs$
+^pkgdown$
+^_build\.R$
+^cran-comments\.md$
+^phenoscapR_icon\.svg$
+^codecov\.yml$

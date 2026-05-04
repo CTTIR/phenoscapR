@@ -1,0 +1,38 @@
+Package: phenoscapR
+Title: Read, Analyse, and Visualise Single-Cell Spatial Biology Data
+Version: 0.1.0
+Authors@R:
+    person("Raban", "Heller", email = "raban.heller@uni-ulm.de",
+           role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8006-9742"))
+Description: Tools for reading, processing, analysing, and visualising
+    single-cell spatial biology data from multiplexed imaging platforms.
+    Provides functions to import cell segmentation outputs from common
+    image analysis software, perform quality control, normalise marker
+    intensities, compute spatial statistics such as nearest-neighbour
+    distances and cell density, and generate publication-ready
+    visualisations of cell phenotype maps and spatial interaction networks.
+License: MIT + file LICENSE
+URL: https://r-heller.github.io/phenoscapR/, https://github.com/r-heller/phenoscapR
+BugReports: https://github.com/r-heller/phenoscapR/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    data.table,
+    ggplot2 (>= 3.0.0),
+    methods,
+    stats,
+    utils,
+    grDevices
+Suggests:
+    covr,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
+Config/Needs/website: pkgdown
+Encoding: UTF-8
+Language: en-GB
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr
