@@ -15,3 +15,4 @@
 ^cran-comments\.md$
 ^phenoscapR_icon\.svg$
 ^codecov\.yml$
+^_pkgdown\.yml$
