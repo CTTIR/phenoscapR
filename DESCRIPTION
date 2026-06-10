@@ -30,7 +30,7 @@ Suggests:
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
-Config/Needs/website: pkgdown
+Config/Needs/website: CTTIR/themakR, pkgdown
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
