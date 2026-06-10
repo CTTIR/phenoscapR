@@ -12,8 +12,8 @@ Description: Tools for reading, processing, analysing, and visualising
     distances and cell density, and generate publication-ready
     visualisations of cell phenotype maps and spatial interaction networks.
 License: MIT + file LICENSE
-URL: https://r-heller.github.io/phenoscapR/, https://github.com/r-heller/phenoscapR
-BugReports: https://github.com/r-heller/phenoscapR/issues
+URL: https://cttir.github.io/phenoscapR/, https://github.com/cttir/phenoscapR
+BugReports: https://github.com/cttir/phenoscapR/issues
 Depends:
     R (>= 4.1.0)
 Imports:

@@ -1,9 +1,9 @@
 # phenoscapR <img src="man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo"/>
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/r-heller/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-heller/phenoscapR/actions/workflows/R-CMD-check.yaml)
-[![pkgdown](https://github.com/r-heller/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg)](https://r-heller.github.io/phenoscapR/)
-[![Codecov test coverage](https://codecov.io/gh/r-heller/phenoscapR/graph/badge.svg)](https://codecov.io/gh/r-heller/phenoscapR)
+[![R-CMD-check](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/cttir/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg)](https://cttir.github.io/phenoscapR/)
+[![Codecov test coverage](https://codecov.io/gh/cttir/phenoscapR/graph/badge.svg)](https://codecov.io/gh/cttir/phenoscapR)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
@@ -55,11 +55,11 @@ statistics, and publication-ready visualisation — using an efficient
 ```r
 # Install the development version from GitHub
 # install.packages("pak")
-pak::pak("r-heller/phenoscapR")
+pak::pak("cttir/phenoscapR")
 
 # Or with remotes
 # install.packages("remotes")
-remotes::install_github("r-heller/phenoscapR")
+remotes::install_github("cttir/phenoscapR")
 ```
 
 ## Quick Start
@@ -97,18 +97,31 @@ SpatialNetworkPlot(obj)
 ## Documentation
 
 Full documentation and vignettes are available at
-**<https://r-heller.github.io/phenoscapR/>**
+**<https://cttir.github.io/phenoscapR/>**
 
 | Vignette | Description |
 |---|---|
-| [Getting Started](https://r-heller.github.io/phenoscapR/articles/phenoscapR.html) | End-to-end workflow with simulated data |
-| [The SpatialCellData Object](https://r-heller.github.io/phenoscapR/articles/phenoscapR-02-object-model.html) | S4 class internals, accessors, and subsetting |
-| [Advanced Spatial Analysis](https://r-heller.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.html) | Ripley's K, Moran's I, neighbourhood enrichment, and more |
+| [Getting Started](https://cttir.github.io/phenoscapR/articles/phenoscapR.html) | End-to-end workflow with simulated data |
+| [The SpatialCellData Object](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.html) | S4 class internals, accessors, and subsetting |
+| [Advanced Spatial Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.html) | Ripley's K, Moran's I, neighbourhood enrichment, and more |
 
 ## Contributing
 
 Bug reports and feature requests are welcome at
-<https://github.com/r-heller/phenoscapR/issues>.
+<https://github.com/cttir/phenoscapR/issues>.
+
+## Use of LLM tools
+
+Portions of this package were prepared with assistance from large language model tooling for
+narrowly defined, non-authorial tasks: copyediting, prose smoothing, Markdown/LaTeX formatting,
+scaffolding of boilerplate files (CI configs, build scripts), code refactoring. The tools used were [Chat AI](https://kisski.gwdg.de/leistungen/2-02-llm-service/),
+the LLM service of KISSKI (GWDG), and a self-hosted **Mistral Small (24B, Apache-2.0)** run locally via
+[Ollama](https://ollama.com/) and the `ollamar` R package — local inference only, with no data sent to
+third parties for the self-hosted model.
+
+All scientific claims, methodological choices, analyses, interpretations, and conclusions are the
+author's own. No LLM-generated text was incorporated without review and revision, and every reference
+was verified against its DOI, arXiv ID, or ISBN.
 
 ## License
 
