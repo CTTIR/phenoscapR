@@ -19,7 +19,7 @@ ExpressionClusters(
 - object:
 
   An
-  [`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - k:
@@ -41,7 +41,7 @@ ExpressionClusters(
 ## Value
 
 An
-[`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+[`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
 with an `expr_cluster` column in `meta_data`.
 
 ## Examples

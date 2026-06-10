@@ -14,7 +14,7 @@ QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL)
 - object:
 
   An
-  [`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - nx:

@@ -13,7 +13,7 @@ CellDensity(object, radius, target = NULL)
 - object:
 
   An
-  [`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - radius:
@@ -27,7 +27,7 @@ CellDensity(object, radius, target = NULL)
 ## Value
 
 An
-[`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+[`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
 with `density` added to `meta_data`.
 
 ## Examples

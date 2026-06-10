@@ -20,7 +20,7 @@ CompositionPlot(
 - object:
 
   An
-  [`SpatialCellData`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object with a `phenotype` column.
 
 - group_by:

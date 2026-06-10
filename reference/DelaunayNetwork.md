@@ -14,7 +14,7 @@ DelaunayNetwork(object, max_edge = NULL)
 - object:
 
   An
-  [`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - max_edge:
@@ -24,7 +24,7 @@ DelaunayNetwork(object, max_edge = NULL)
 ## Value
 
 An
-[`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+[`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
 with `delaunay_edges` stored in the `spatial` slot.
 
 ## Examples

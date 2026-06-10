@@ -19,7 +19,7 @@ PaletteContinuous(n = 256L, palette = NULL)
 - palette:
 
   Character or character vector. Palette specification (see
-  [`SetPalette`](https://r-heller.github.io/phenoscapR/reference/SetPalette.md)).
+  [`SetPalette`](https://cttir.github.io/phenoscapR/reference/SetPalette.md)).
   If `NULL`, uses the global palette.
 
 ## Value

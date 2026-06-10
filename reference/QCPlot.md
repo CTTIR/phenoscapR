@@ -13,7 +13,7 @@ QCPlot(object, x, y, colour_by = NULL, pt_size = 0.5)
 - object:
 
   An
-  [`SpatialCellData`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - x:

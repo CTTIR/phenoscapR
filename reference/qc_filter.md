@@ -20,7 +20,7 @@ qc_filter(
 - dt:
 
   A `data.table` as returned by
-  [`read_spatial()`](https://r-heller.github.io/phenoscapR/reference/read_spatial.md).
+  [`read_spatial()`](https://cttir.github.io/phenoscapR/reference/read_spatial.md).
 
 - min_area:
 

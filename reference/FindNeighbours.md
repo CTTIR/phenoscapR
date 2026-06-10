@@ -13,7 +13,7 @@ FindNeighbours(object, k = 1L, target = NULL)
 - object:
 
   An
-  [`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - k:
@@ -27,7 +27,7 @@ FindNeighbours(object, k = 1L, target = NULL)
 ## Value
 
 An
-[`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+[`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
 with `nn_distance` added to `meta_data` and stored in the `spatial`
 slot.
 

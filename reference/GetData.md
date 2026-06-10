@@ -16,7 +16,7 @@ GetData(object, slot = "data")
 - object:
 
   A
-  [`SpatialCellData`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - slot:

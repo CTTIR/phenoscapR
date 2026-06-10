@@ -17,37 +17,37 @@ backend and a clean S4 object model (`SpatialCellData`).
 - `SpatialCellData` S4 class stores counts, normalised data,
   coordinates, metadata, and spatial results in one object
 - Familiar accessors:
-  [`NCells()`](https://r-heller.github.io/phenoscapR/reference/NCells.md),
-  [`Markers()`](https://r-heller.github.io/phenoscapR/reference/Markers.md),
-  [`Coords()`](https://r-heller.github.io/phenoscapR/reference/Coords.md),
-  [`Meta()`](https://r-heller.github.io/phenoscapR/reference/Meta.md),
-  [`GetData()`](https://r-heller.github.io/phenoscapR/reference/GetData.md),
-  [`Idents()`](https://r-heller.github.io/phenoscapR/reference/Idents.md),
+  [`NCells()`](https://cttir.github.io/phenoscapR/reference/NCells.md),
+  [`Markers()`](https://cttir.github.io/phenoscapR/reference/Markers.md),
+  [`Coords()`](https://cttir.github.io/phenoscapR/reference/Coords.md),
+  [`Meta()`](https://cttir.github.io/phenoscapR/reference/Meta.md),
+  [`GetData()`](https://cttir.github.io/phenoscapR/reference/GetData.md),
+  [`Idents()`](https://cttir.github.io/phenoscapR/reference/Idents.md),
   `[`, `[[`, `$`
 
 ### Quality Control & Preprocessing
 
 - Filter cells by area and intensity range
-  ([`qc_filter()`](https://r-heller.github.io/phenoscapR/reference/qc_filter.md)
+  ([`qc_filter()`](https://cttir.github.io/phenoscapR/reference/qc_filter.md)
   /
-  [`QCFilter()`](https://r-heller.github.io/phenoscapR/reference/QCFilter.md))
+  [`QCFilter()`](https://cttir.github.io/phenoscapR/reference/QCFilter.md))
 - Three normalisation methods: z-score, min-max, quantile
-  ([`normalise_markers()`](https://r-heller.github.io/phenoscapR/reference/normalise_markers.md)
+  ([`normalise_markers()`](https://cttir.github.io/phenoscapR/reference/normalise_markers.md)
   /
-  [`NormaliseData()`](https://r-heller.github.io/phenoscapR/reference/NormaliseData.md))
+  [`NormaliseData()`](https://cttir.github.io/phenoscapR/reference/NormaliseData.md))
 - QC scatter plots
-  ([`QCPlot()`](https://r-heller.github.io/phenoscapR/reference/QCPlot.md))
+  ([`QCPlot()`](https://cttir.github.io/phenoscapR/reference/QCPlot.md))
 
 ### Phenotyping
 
 - Marker-threshold-based cell phenotyping
-  ([`phenotype_cells()`](https://r-heller.github.io/phenoscapR/reference/phenotype_cells.md)
+  ([`phenotype_cells()`](https://cttir.github.io/phenoscapR/reference/phenotype_cells.md)
   /
-  [`PhenotypeCells()`](https://r-heller.github.io/phenoscapR/reference/PhenotypeCells.md))
+  [`PhenotypeCells()`](https://cttir.github.io/phenoscapR/reference/PhenotypeCells.md))
 - Per-sample phenotype proportion summaries
-  ([`summarise_phenotypes()`](https://r-heller.github.io/phenoscapR/reference/summarise_phenotypes.md)
+  ([`summarise_phenotypes()`](https://cttir.github.io/phenoscapR/reference/summarise_phenotypes.md)
   /
-  [`PhenotypeSummary()`](https://r-heller.github.io/phenoscapR/reference/PhenotypeSummary.md))
+  [`PhenotypeSummary()`](https://cttir.github.io/phenoscapR/reference/PhenotypeSummary.md))
 
 ### Spatial Analysis
 
@@ -72,11 +72,11 @@ backend and a clean S4 object model (`SpatialCellData`).
 
 # Install the development version from GitHub
 # install.packages("pak")
-pak::pak("r-heller/phenoscapR")
+pak::pak("cttir/phenoscapR")
 
 # Or with remotes
 # install.packages("remotes")
-remotes::install_github("r-heller/phenoscapR")
+remotes::install_github("cttir/phenoscapR")
 ```
 
 ## Quick Start
@@ -115,18 +115,36 @@ SpatialNetworkPlot(obj)
 ## Documentation
 
 Full documentation and vignettes are available at
-**<https://r-heller.github.io/phenoscapR/>**
+**<https://cttir.github.io/phenoscapR/>**
 
 | Vignette | Description |
 |----|----|
-| [Getting Started](https://r-heller.github.io/phenoscapR/articles/phenoscapR.html) | End-to-end workflow with simulated data |
-| [The SpatialCellData Object](https://r-heller.github.io/phenoscapR/articles/phenoscapR-02-object-model.html) | S4 class internals, accessors, and subsetting |
-| [Advanced Spatial Analysis](https://r-heller.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.html) | Ripley’s K, Moran’s I, neighbourhood enrichment, and more |
+| [Getting Started](https://cttir.github.io/phenoscapR/articles/phenoscapR.html) | End-to-end workflow with simulated data |
+| [The SpatialCellData Object](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.html) | S4 class internals, accessors, and subsetting |
+| [Advanced Spatial Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.html) | Ripley’s K, Moran’s I, neighbourhood enrichment, and more |
 
 ## Contributing
 
 Bug reports and feature requests are welcome at
-<https://github.com/r-heller/phenoscapR/issues>.
+<https://github.com/cttir/phenoscapR/issues>.
+
+## Use of LLM tools
+
+Portions of this package were prepared with assistance from large
+language model tooling for narrowly defined, non-authorial tasks:
+copyediting, prose smoothing, Markdown/LaTeX formatting, scaffolding of
+boilerplate files (CI configs, build scripts), code refactoring. The
+tools used were [Chat
+AI](https://kisski.gwdg.de/leistungen/2-02-llm-service/), the LLM
+service of KISSKI (GWDG), and a self-hosted **Mistral Small (24B,
+Apache-2.0)** run locally via [Ollama](https://ollama.com/) and the
+`ollamar` R package — local inference only, with no data sent to third
+parties for the self-hosted model.
+
+All scientific claims, methodological choices, analyses,
+interpretations, and conclusions are the author’s own. No LLM-generated
+text was incorporated without review and revision, and every reference
+was verified against its DOI, arXiv ID, or ISBN.
 
 ## License
 

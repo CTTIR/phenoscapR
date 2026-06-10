@@ -15,9 +15,9 @@ phenotype_cells(dt, thresholds, labels = NULL)
 - dt:
 
   A `data.table` as returned by
-  [`read_spatial()`](https://r-heller.github.io/phenoscapR/reference/read_spatial.md)
+  [`read_spatial()`](https://cttir.github.io/phenoscapR/reference/read_spatial.md)
   or
-  [`normalise_markers()`](https://r-heller.github.io/phenoscapR/reference/normalise_markers.md).
+  [`normalise_markers()`](https://cttir.github.io/phenoscapR/reference/normalise_markers.md).
 
 - thresholds:
 

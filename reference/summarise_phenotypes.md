@@ -13,7 +13,7 @@ summarise_phenotypes(dt)
 - dt:
 
   A `data.table` with a `phenotype` column, as returned by
-  [`phenotype_cells()`](https://r-heller.github.io/phenoscapR/reference/phenotype_cells.md).
+  [`phenotype_cells()`](https://cttir.github.io/phenoscapR/reference/phenotype_cells.md).
 
 ## Value
 

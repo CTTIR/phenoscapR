@@ -13,7 +13,7 @@ InteractionPlot(interactions, title = NULL)
 - interactions:
 
   Data frame as returned by
-  [`InteractionMatrix`](https://r-heller.github.io/phenoscapR/reference/InteractionMatrix.md).
+  [`InteractionMatrix`](https://cttir.github.io/phenoscapR/reference/InteractionMatrix.md).
 
 - title:
 

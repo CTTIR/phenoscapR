@@ -11,9 +11,11 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started with phenoscapR">
 </head>
@@ -21,7 +23,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">phenoscapR</a>
 
@@ -48,7 +50,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul>
 <ul class="navbar-nav">
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/r-heller/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -64,16 +66,16 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Getting Started with phenoscapR</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-heller/phenoscapR/blob/main/vignettes/phenoscapR.Rmd" class="external-link"><code>vignettes/phenoscapR.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/vignettes/phenoscapR.Rmd" class="external-link"><code>vignettes/phenoscapR.Rmd</code></a></small>
       <div class="d-none name"><code>phenoscapR.Rmd</code></div>
     </div>
 
     
     
 <p><img src="../reference/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"></p>
-<div class="section level2">
-<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h2>
+<div class="section level3">
+<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h3>
 <p><strong>phenoscapR</strong> provides tools for reading, processing,
 analysing, and visualising single-cell spatial biology data from
 multiplexed imaging platforms.</p>
@@ -107,13 +109,13 @@ multiplexed imaging platforms.</p>
 </li>
 </ol>
 </div>
-<div class="section level2">
-<h2 id="creating-example-data">Creating Example Data<a class="anchor" aria-label="anchor" href="#creating-example-data"></a>
-</h2>
+<div class="section level3">
+<h3 id="creating-example-data">Creating Example Data<a class="anchor" aria-label="anchor" href="#creating-example-data"></a>
+</h3>
 <p>Since real cell segmentation files can be large, we will create a
 small simulated data set for illustration.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-heller.github.io/phenoscapR/">phenoscapR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cttir.github.io/phenoscapR/">phenoscapR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">n_cells</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
@@ -133,9 +135,9 @@ small simulated data set for illustration.</p>
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".csv"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">tmp</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="reading-data">Reading Data<a class="anchor" aria-label="anchor" href="#reading-data"></a>
-</h2>
+<div class="section level3">
+<h3 id="reading-data">Reading Data<a class="anchor" aria-label="anchor" href="#reading-data"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_spatial.html">read_spatial</a></span><span class="op">(</span><span class="va">tmp</span>, sample_id <span class="op">=</span> <span class="st">"example"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span>
@@ -148,17 +150,17 @@ small simulated data set for illustration.</p>
 <span><span class="co">#&gt; 5:   example       5 220.2134 263.9923  74.17226 680.7411  70.8191670 1117.7803</span></span>
 <span><span class="co">#&gt; 6:   example       6 194.6938 290.0938  83.59012 851.0697 236.5838228  996.6244</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="quality-control">Quality Control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
-</h2>
+<div class="section level3">
+<h3 id="quality-control">Quality Control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/qc_filter.html">qc_filter</a></span><span class="op">(</span><span class="va">cells</span>, min_area <span class="op">=</span> <span class="fl">50</span>, max_area <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 493</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="normalisation">Normalisation<a class="anchor" aria-label="anchor" href="#normalisation"></a>
-</h2>
+<div class="section level3">
+<h3 id="normalisation">Normalisation<a class="anchor" aria-label="anchor" href="#normalisation"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalise_markers.html">normalise_markers</a></span><span class="op">(</span><span class="va">cells</span>, method <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cells</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD8"</span>, <span class="st">"DAPI"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
@@ -170,48 +172,48 @@ small simulated data set for illustration.</p>
 <span><span class="co">#&gt;  3rd Qu.: 0.9048   3rd Qu.: 0.90400   3rd Qu.: 0.60278  </span></span>
 <span><span class="co">#&gt;  Max.   : 2.5022   Max.   : 2.39231   Max.   : 2.70425</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="phenotyping">Phenotyping<a class="anchor" aria-label="anchor" href="#phenotyping"></a>
-</h2>
+<div class="section level3">
+<h3 id="phenotyping">Phenotyping<a class="anchor" aria-label="anchor" href="#phenotyping"></a>
+</h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/phenotype_cells.html">phenotype_cells</a></span><span class="op">(</span><span class="va">cells</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CD3 <span class="op">=</span> <span class="fl">0</span>, CD8 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/summarise_phenotypes.html">summarise_phenotypes</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="spatial-analysis">Spatial Analysis<a class="anchor" aria-label="anchor" href="#spatial-analysis"></a>
-</h2>
 <div class="section level3">
-<h3 id="nearest-neighbours">Nearest Neighbours<a class="anchor" aria-label="anchor" href="#nearest-neighbours"></a>
+<h3 id="spatial-analysis">Spatial Analysis<a class="anchor" aria-label="anchor" href="#spatial-analysis"></a>
 </h3>
+<div class="section level4">
+<h4 id="nearest-neighbours">Nearest Neighbours<a class="anchor" aria-label="anchor" href="#nearest-neighbours"></a>
+</h4>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nearest_neighbours.html">nearest_neighbours</a></span><span class="op">(</span><span class="va">cells</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cells</span><span class="op">$</span><span class="va">nn_distance</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
 <span><span class="co">#&gt;   4.794   7.516  10.435  13.540  15.533  89.053</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="cell-density">Cell Density<a class="anchor" aria-label="anchor" href="#cell-density"></a>
-</h3>
+<div class="section level4">
+<h4 id="cell-density">Cell Density<a class="anchor" aria-label="anchor" href="#cell-density"></a>
+</h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cell_density.html">cell_density</a></span><span class="op">(</span><span class="va">cells</span>, radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cells</span><span class="op">$</span><span class="va">density</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
 <span><span class="co">#&gt;    0.00   33.00   55.00   53.76   77.00  103.00</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="interaction-matrix">Interaction Matrix<a class="anchor" aria-label="anchor" href="#interaction-matrix"></a>
-</h3>
+<div class="section level4">
+<h4 id="interaction-matrix">Interaction Matrix<a class="anchor" aria-label="anchor" href="#interaction-matrix"></a>
+</h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interactions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interaction_matrix.html">interaction_matrix</a></span><span class="op">(</span><span class="va">cells</span>, radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">interactions</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level2">
-<h2 id="visualisation">Visualisation<a class="anchor" aria-label="anchor" href="#visualisation"></a>
-</h2>
 <div class="section level3">
-<h3 id="cell-map">Cell Map<a class="anchor" aria-label="anchor" href="#cell-map"></a>
+<h3 id="visualisation">Visualisation<a class="anchor" aria-label="anchor" href="#visualisation"></a>
 </h3>
+<div class="section level4">
+<h4 id="cell-map">Cell Map<a class="anchor" aria-label="anchor" href="#cell-map"></a>
+</h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_cell_map.html">plot_cell_map</a></span><span class="op">(</span><span class="va">cells</span>, point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -220,9 +222,9 @@ Cell phenotype map
 </p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="density-plot">Density Plot<a class="anchor" aria-label="anchor" href="#density-plot"></a>
-</h3>
+<div class="section level4">
+<h4 id="density-plot">Density Plot<a class="anchor" aria-label="anchor" href="#density-plot"></a>
+</h4>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_density.html">plot_density</a></span><span class="op">(</span><span class="va">cells</span>, point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -231,9 +233,9 @@ Cell density map
 </p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="marker-heatmap">Marker Heatmap<a class="anchor" aria-label="anchor" href="#marker-heatmap"></a>
-</h3>
+<div class="section level4">
+<h4 id="marker-heatmap">Marker Heatmap<a class="anchor" aria-label="anchor" href="#marker-heatmap"></a>
+</h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_heatmap.html">plot_heatmap</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -242,9 +244,9 @@ Mean marker expression per phenotype
 </p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="interaction-heatmap">Interaction Heatmap<a class="anchor" aria-label="anchor" href="#interaction-heatmap"></a>
-</h3>
+<div class="section level4">
+<h4 id="interaction-heatmap">Interaction Heatmap<a class="anchor" aria-label="anchor" href="#interaction-heatmap"></a>
+</h4>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_interactions.html">plot_interactions</a></span><span class="op">(</span><span class="va">interactions</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -254,6 +256,23 @@ Spatial interaction scores
 </div>
 </div>
 </div>
+<div class="section level2">
+<h2 id="use-of-llm-tools">Use of LLM tools<a class="anchor" aria-label="anchor" href="#use-of-llm-tools"></a>
+</h2>
+<p>Portions of this package were prepared with assistance from large
+language model tooling for narrowly defined, non-authorial tasks:
+copyediting, prose smoothing, Markdown/LaTeX formatting, scaffolding of
+boilerplate files (CI configs, build scripts), code refactoring. The
+tools used were <a href="https://kisski.gwdg.de/leistungen/2-02-llm-service/" class="external-link">Chat AI</a>,
+the LLM service of KISSKI (GWDG), and a self-hosted <strong>Mistral
+Small (24B, Apache-2.0)</strong> run locally via <a href="https://ollama.com/" class="external-link">Ollama</a> and the <code>ollamar</code> R
+package — local inference only, with no data sent to third parties for
+the self-hosted model.</p>
+<p>All scientific claims, methodological choices, analyses,
+interpretations, and conclusions are the author’s own. No LLM-generated
+text was incorporated without review and revision, and every reference
+was verified against its DOI, arXiv ID, or ISBN.</p>
+</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
@@ -261,7 +280,7 @@ Spatial interaction scores
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/r-heller" class="external-link">Raban Heller</a>.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">Raban Heller</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

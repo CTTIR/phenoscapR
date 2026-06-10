@@ -14,7 +14,7 @@ RipleysK(object, r_seq = NULL, target = NULL, correction = c("none", "border"))
 - object:
 
   An
-  [`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - r_seq:

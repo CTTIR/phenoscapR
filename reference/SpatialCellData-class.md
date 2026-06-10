@@ -15,7 +15,7 @@ results from spatial analyses in a single container.
 
   Numeric matrix of normalised marker intensities (cells x markers).
   Identical to `counts` until
-  [`NormaliseData`](https://r-heller.github.io/phenoscapR/reference/NormaliseData.md)
+  [`NormaliseData`](https://cttir.github.io/phenoscapR/reference/NormaliseData.md)
   is called.
 
 - `coords`:

@@ -1,7 +1,7 @@
 # Create a SpatialCellData Object from Existing Data
 
 Constructs a
-[`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+[`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
 object from a counts matrix, coordinate data frame, and optional
 metadata.
 
@@ -42,7 +42,7 @@ CreateSpatialObject(
 ## Value
 
 A
-[`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+[`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
 object.
 
 ## Examples

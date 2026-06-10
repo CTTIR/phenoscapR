@@ -13,7 +13,7 @@ SpatialClusters(object, k, method = c("kmeans", "hierarchical"))
 - object:
 
   An
-  [`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - k:
@@ -27,7 +27,7 @@ SpatialClusters(object, k, method = c("kmeans", "hierarchical"))
 ## Value
 
 An
-[`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+[`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
 with a `cluster` column in `meta_data`.
 
 ## Examples

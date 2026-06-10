@@ -7,35 +7,35 @@ raw and normalised expression matrices, spatial coordinates, cell
 metadata, and spatial analysis results. Accessor methods let you
 interrogate and subset the object without touching slots directly.
 
-- [`SpatialCellData-class`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+- [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   : The SpatialCellData Class
-- [`CreateSpatialObject()`](https://r-heller.github.io/phenoscapR/reference/CreateSpatialObject.md)
+- [`CreateSpatialObject()`](https://cttir.github.io/phenoscapR/reference/CreateSpatialObject.md)
   : Create a SpatialCellData Object from Existing Data
-- [`ReadSpatial()`](https://r-heller.github.io/phenoscapR/reference/ReadSpatial.md)
+- [`ReadSpatial()`](https://cttir.github.io/phenoscapR/reference/ReadSpatial.md)
   : Read Cell Segmentation Data into a SpatialCellData Object
-- [`NCells()`](https://r-heller.github.io/phenoscapR/reference/NCells.md)
-  : Get the Number of Cells
-- [`NMarkers()`](https://r-heller.github.io/phenoscapR/reference/NMarkers.md)
+- [`NCells()`](https://cttir.github.io/phenoscapR/reference/NCells.md) :
+  Get the Number of Cells
+- [`NMarkers()`](https://cttir.github.io/phenoscapR/reference/NMarkers.md)
   : Get the Number of Markers
-- [`Markers()`](https://r-heller.github.io/phenoscapR/reference/Markers.md)
+- [`Markers()`](https://cttir.github.io/phenoscapR/reference/Markers.md)
   : Get Marker Names
-- [`Coords()`](https://r-heller.github.io/phenoscapR/reference/Coords.md)
-  : Get Spatial Coordinates
-- [`Meta()`](https://r-heller.github.io/phenoscapR/reference/Meta.md) :
-  Get or Set Cell Metadata
-- [`GetData()`](https://r-heller.github.io/phenoscapR/reference/GetData.md)
+- [`Coords()`](https://cttir.github.io/phenoscapR/reference/Coords.md) :
+  Get Spatial Coordinates
+- [`Meta()`](https://cttir.github.io/phenoscapR/reference/Meta.md) : Get
+  or Set Cell Metadata
+- [`GetData()`](https://cttir.github.io/phenoscapR/reference/GetData.md)
   : Get Expression Data
-- [`Idents()`](https://r-heller.github.io/phenoscapR/reference/Idents.md)
-  : Get Active Cell Identities
-- [`` `$`( ``*`<SpatialCellData>`*`)`](https://r-heller.github.io/phenoscapR/reference/cash-SpatialCellData-method.md)
+- [`Idents()`](https://cttir.github.io/phenoscapR/reference/Idents.md) :
+  Get Active Cell Identities
+- [`` `$`( ``*`<SpatialCellData>`*`)`](https://cttir.github.io/phenoscapR/reference/cash-SpatialCellData-method.md)
   : Access Metadata Columns with \$
-- [`dim(`*`<SpatialCellData>`*`)`](https://r-heller.github.io/phenoscapR/reference/dim-SpatialCellData-method.md)
+- [`dim(`*`<SpatialCellData>`*`)`](https://cttir.github.io/phenoscapR/reference/dim-SpatialCellData-method.md)
   : Get Dimensions of a SpatialCellData Object
-- [`show(`*`<SpatialCellData>`*`)`](https://r-heller.github.io/phenoscapR/reference/show-SpatialCellData-method.md)
+- [`show(`*`<SpatialCellData>`*`)`](https://cttir.github.io/phenoscapR/reference/show-SpatialCellData-method.md)
   : Show a SpatialCellData Object
-- [`` `[`( ``*`<SpatialCellData>`*`)`](https://r-heller.github.io/phenoscapR/reference/sub-SpatialCellData-method.md)
+- [`` `[`( ``*`<SpatialCellData>`*`)`](https://cttir.github.io/phenoscapR/reference/sub-SpatialCellData-method.md)
   : Subset a SpatialCellData Object
-- [`` `[[`( ``*`<SpatialCellData>`*`)`](https://r-heller.github.io/phenoscapR/reference/sub-sub-SpatialCellData-method.md)
+- [`` `[[`( ``*`<SpatialCellData>`*`)`](https://cttir.github.io/phenoscapR/reference/sub-sub-SpatialCellData-method.md)
   : Access Metadata Columns with \[\[
 
 ## Data Import
@@ -44,7 +44,7 @@ Read cell segmentation CSV files from spatial imaging platforms and
 image analysis software. Three formats are auto-detected: QuPath Full
 Export, QuPath Minimal, and flat segmentation format.
 
-- [`read_spatial()`](https://r-heller.github.io/phenoscapR/reference/read_spatial.md)
+- [`read_spatial()`](https://cttir.github.io/phenoscapR/reference/read_spatial.md)
   : Read Single-Cell Spatial Biology Data
 
 ## Quality Control & Preprocessing
@@ -52,29 +52,29 @@ Export, QuPath Minimal, and flat segmentation format.
 Filter cells by area and intensity thresholds, normalise marker
 intensities, and inspect QC distributions before downstream analysis.
 
-- [`qc_filter()`](https://r-heller.github.io/phenoscapR/reference/qc_filter.md)
+- [`qc_filter()`](https://cttir.github.io/phenoscapR/reference/qc_filter.md)
   : Quality Control Filter
-- [`QCFilter()`](https://r-heller.github.io/phenoscapR/reference/QCFilter.md)
+- [`QCFilter()`](https://cttir.github.io/phenoscapR/reference/QCFilter.md)
   : Quality Control Filter (SpatialCellData)
-- [`normalise_markers()`](https://r-heller.github.io/phenoscapR/reference/normalise_markers.md)
+- [`normalise_markers()`](https://cttir.github.io/phenoscapR/reference/normalise_markers.md)
   : Normalise Marker Intensities
-- [`NormaliseData()`](https://r-heller.github.io/phenoscapR/reference/NormaliseData.md)
+- [`NormaliseData()`](https://cttir.github.io/phenoscapR/reference/NormaliseData.md)
   : Normalise Marker Intensities (SpatialCellData)
-- [`QCPlot()`](https://r-heller.github.io/phenoscapR/reference/QCPlot.md)
-  : QC Scatter Plot
+- [`QCPlot()`](https://cttir.github.io/phenoscapR/reference/QCPlot.md) :
+  QC Scatter Plot
 
 ## Phenotyping
 
 Assign discrete phenotype labels to cells based on marker intensity
 thresholds and summarise phenotype composition per sample.
 
-- [`phenotype_cells()`](https://r-heller.github.io/phenoscapR/reference/phenotype_cells.md)
+- [`phenotype_cells()`](https://cttir.github.io/phenoscapR/reference/phenotype_cells.md)
   : Phenotype Cells by Marker Thresholds
-- [`PhenotypeCells()`](https://r-heller.github.io/phenoscapR/reference/PhenotypeCells.md)
+- [`PhenotypeCells()`](https://cttir.github.io/phenoscapR/reference/PhenotypeCells.md)
   : Phenotype Cells (SpatialCellData)
-- [`summarise_phenotypes()`](https://r-heller.github.io/phenoscapR/reference/summarise_phenotypes.md)
+- [`summarise_phenotypes()`](https://cttir.github.io/phenoscapR/reference/summarise_phenotypes.md)
   : Summarise Phenotype Proportions
-- [`PhenotypeSummary()`](https://r-heller.github.io/phenoscapR/reference/PhenotypeSummary.md)
+- [`PhenotypeSummary()`](https://cttir.github.io/phenoscapR/reference/PhenotypeSummary.md)
   : Phenotype Summary (SpatialCellData)
 
 ## Spatial Analysis
@@ -85,37 +85,37 @@ Delaunay networks, neighbourhood enrichment, Ripley’s K, Moran’s I,
 quadrat analysis, pair correlation, cross-nearest-neighbour distances,
 and expression-based clustering.
 
-- [`nearest_neighbours()`](https://r-heller.github.io/phenoscapR/reference/nearest_neighbours.md)
+- [`nearest_neighbours()`](https://cttir.github.io/phenoscapR/reference/nearest_neighbours.md)
   : Compute Nearest Neighbour Distances
-- [`FindNeighbours()`](https://r-heller.github.io/phenoscapR/reference/FindNeighbours.md)
+- [`FindNeighbours()`](https://cttir.github.io/phenoscapR/reference/FindNeighbours.md)
   : Find Nearest Neighbours (SpatialCellData)
-- [`cell_density()`](https://r-heller.github.io/phenoscapR/reference/cell_density.md)
+- [`cell_density()`](https://cttir.github.io/phenoscapR/reference/cell_density.md)
   : Compute Cell Density
-- [`CellDensity()`](https://r-heller.github.io/phenoscapR/reference/CellDensity.md)
+- [`CellDensity()`](https://cttir.github.io/phenoscapR/reference/CellDensity.md)
   : Cell Density (SpatialCellData)
-- [`interaction_matrix()`](https://r-heller.github.io/phenoscapR/reference/interaction_matrix.md)
+- [`interaction_matrix()`](https://cttir.github.io/phenoscapR/reference/interaction_matrix.md)
   : Spatial Interaction Matrix
-- [`InteractionMatrix()`](https://r-heller.github.io/phenoscapR/reference/InteractionMatrix.md)
+- [`InteractionMatrix()`](https://cttir.github.io/phenoscapR/reference/InteractionMatrix.md)
   : Interaction Matrix (SpatialCellData)
-- [`spatial_clusters()`](https://r-heller.github.io/phenoscapR/reference/spatial_clusters.md)
+- [`spatial_clusters()`](https://cttir.github.io/phenoscapR/reference/spatial_clusters.md)
   : Spatial Cell Clustering
-- [`SpatialClusters()`](https://r-heller.github.io/phenoscapR/reference/SpatialClusters.md)
+- [`SpatialClusters()`](https://cttir.github.io/phenoscapR/reference/SpatialClusters.md)
   : Spatial Clusters (SpatialCellData)
-- [`DelaunayNetwork()`](https://r-heller.github.io/phenoscapR/reference/DelaunayNetwork.md)
+- [`DelaunayNetwork()`](https://cttir.github.io/phenoscapR/reference/DelaunayNetwork.md)
   : Delaunay Triangulation Network
-- [`NeighbourhoodEnrichment()`](https://r-heller.github.io/phenoscapR/reference/NeighbourhoodEnrichment.md)
+- [`NeighbourhoodEnrichment()`](https://cttir.github.io/phenoscapR/reference/NeighbourhoodEnrichment.md)
   : Neighbourhood Enrichment Analysis
-- [`RipleysK()`](https://r-heller.github.io/phenoscapR/reference/RipleysK.md)
+- [`RipleysK()`](https://cttir.github.io/phenoscapR/reference/RipleysK.md)
   : Ripley's K Function
-- [`MoransI()`](https://r-heller.github.io/phenoscapR/reference/MoransI.md)
+- [`MoransI()`](https://cttir.github.io/phenoscapR/reference/MoransI.md)
   : Moran's I Spatial Autocorrelation
-- [`QuadratAnalysis()`](https://r-heller.github.io/phenoscapR/reference/QuadratAnalysis.md)
+- [`QuadratAnalysis()`](https://cttir.github.io/phenoscapR/reference/QuadratAnalysis.md)
   : Quadrat Analysis
-- [`PairCorrelation()`](https://r-heller.github.io/phenoscapR/reference/PairCorrelation.md)
+- [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
   : Pair Correlation Function
-- [`CrossNNDistance()`](https://r-heller.github.io/phenoscapR/reference/CrossNNDistance.md)
+- [`CrossNNDistance()`](https://cttir.github.io/phenoscapR/reference/CrossNNDistance.md)
   : Cross Nearest Neighbour Distance
-- [`ExpressionClusters()`](https://r-heller.github.io/phenoscapR/reference/ExpressionClusters.md)
+- [`ExpressionClusters()`](https://cttir.github.io/phenoscapR/reference/ExpressionClusters.md)
   : Expression-Based Cell Clustering
 
 ## Visualisation
@@ -125,39 +125,39 @@ intensities, phenotype composition, spatial networks, and interaction
 heatmaps. High-level S4 methods work directly on a SpatialCellData
 object; lower-level helpers accept data.tables.
 
-- [`CellMap()`](https://r-heller.github.io/phenoscapR/reference/CellMap.md)
+- [`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md)
   : Plot Cell Map
-- [`FeaturePlot()`](https://r-heller.github.io/phenoscapR/reference/FeaturePlot.md)
+- [`FeaturePlot()`](https://cttir.github.io/phenoscapR/reference/FeaturePlot.md)
   : Feature Plot in Tissue Space
-- [`DensityPlot()`](https://r-heller.github.io/phenoscapR/reference/DensityPlot.md)
+- [`DensityPlot()`](https://cttir.github.io/phenoscapR/reference/DensityPlot.md)
   : Plot Cell Density
-- [`SpatialNetworkPlot()`](https://r-heller.github.io/phenoscapR/reference/SpatialNetworkPlot.md)
+- [`SpatialNetworkPlot()`](https://cttir.github.io/phenoscapR/reference/SpatialNetworkPlot.md)
   : Plot Spatial Network
-- [`InteractionPlot()`](https://r-heller.github.io/phenoscapR/reference/InteractionPlot.md)
+- [`InteractionPlot()`](https://cttir.github.io/phenoscapR/reference/InteractionPlot.md)
   : Plot Spatial Interaction Heatmap
-- [`MarkerHeatmap()`](https://r-heller.github.io/phenoscapR/reference/MarkerHeatmap.md)
+- [`MarkerHeatmap()`](https://cttir.github.io/phenoscapR/reference/MarkerHeatmap.md)
   : Plot Marker Heatmap
-- [`ViolinPlot()`](https://r-heller.github.io/phenoscapR/reference/ViolinPlot.md)
+- [`ViolinPlot()`](https://cttir.github.io/phenoscapR/reference/ViolinPlot.md)
   : Violin Plot of Marker Expression
-- [`BoxPlot()`](https://r-heller.github.io/phenoscapR/reference/BoxPlot.md)
+- [`BoxPlot()`](https://cttir.github.io/phenoscapR/reference/BoxPlot.md)
   : Box Plot of Marker Expression
-- [`DotPlot()`](https://r-heller.github.io/phenoscapR/reference/DotPlot.md)
+- [`DotPlot()`](https://cttir.github.io/phenoscapR/reference/DotPlot.md)
   : Dot Plot of Marker Expression
-- [`CompositionPlot()`](https://r-heller.github.io/phenoscapR/reference/CompositionPlot.md)
+- [`CompositionPlot()`](https://cttir.github.io/phenoscapR/reference/CompositionPlot.md)
   : Stacked Bar Plot of Phenotype Composition
-- [`RidgePlot()`](https://r-heller.github.io/phenoscapR/reference/RidgePlot.md)
+- [`RidgePlot()`](https://cttir.github.io/phenoscapR/reference/RidgePlot.md)
   : Ridge Plot of Marker Expression
-- [`HistogramPlot()`](https://r-heller.github.io/phenoscapR/reference/HistogramPlot.md)
+- [`HistogramPlot()`](https://cttir.github.io/phenoscapR/reference/HistogramPlot.md)
   : Histogram of Marker Expression
-- [`QCPlot()`](https://r-heller.github.io/phenoscapR/reference/QCPlot.md)
-  : QC Scatter Plot
-- [`plot_cell_map()`](https://r-heller.github.io/phenoscapR/reference/plot_cell_map.md)
+- [`QCPlot()`](https://cttir.github.io/phenoscapR/reference/QCPlot.md) :
+  QC Scatter Plot
+- [`plot_cell_map()`](https://cttir.github.io/phenoscapR/reference/plot_cell_map.md)
   : Plot Cell Map
-- [`plot_density()`](https://r-heller.github.io/phenoscapR/reference/plot_density.md)
+- [`plot_density()`](https://cttir.github.io/phenoscapR/reference/plot_density.md)
   : Plot Density Map
-- [`plot_heatmap()`](https://r-heller.github.io/phenoscapR/reference/plot_heatmap.md)
+- [`plot_heatmap()`](https://cttir.github.io/phenoscapR/reference/plot_heatmap.md)
   : Plot Marker Heatmap
-- [`plot_interactions()`](https://r-heller.github.io/phenoscapR/reference/plot_interactions.md)
+- [`plot_interactions()`](https://cttir.github.io/phenoscapR/reference/plot_interactions.md)
   : Plot Interaction Heatmap
 
 ## Colour Palettes
@@ -166,12 +166,12 @@ Manage the global colour palette used by all plotting functions.
 Supports viridis options and custom gradients defined by 2-3 anchor
 colours.
 
-- [`SetPalette()`](https://r-heller.github.io/phenoscapR/reference/SetPalette.md)
-  [`GetPalette()`](https://r-heller.github.io/phenoscapR/reference/SetPalette.md)
+- [`SetPalette()`](https://cttir.github.io/phenoscapR/reference/SetPalette.md)
+  [`GetPalette()`](https://cttir.github.io/phenoscapR/reference/SetPalette.md)
   : Set or Get the Default Colour Palette
-- [`PaletteContinuous()`](https://r-heller.github.io/phenoscapR/reference/PaletteContinuous.md)
+- [`PaletteContinuous()`](https://cttir.github.io/phenoscapR/reference/PaletteContinuous.md)
   : Generate a Continuous Colour Palette Function
-- [`PaletteDiscrete()`](https://r-heller.github.io/phenoscapR/reference/PaletteDiscrete.md)
+- [`PaletteDiscrete()`](https://cttir.github.io/phenoscapR/reference/PaletteDiscrete.md)
   : Generate Discrete Colours
-- [`CustomGradient()`](https://r-heller.github.io/phenoscapR/reference/CustomGradient.md)
+- [`CustomGradient()`](https://cttir.github.io/phenoscapR/reference/CustomGradient.md)
   : Create a Custom Gradient Palette from Anchor Colours

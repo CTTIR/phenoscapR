@@ -24,15 +24,15 @@ SpatialNetworkPlot(
 - object:
 
   An
-  [`SpatialCellData`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
 
 - edges:
 
   Data frame with columns `from` and `to` (row indices), as returned by
-  [`DelaunayNetwork`](https://r-heller.github.io/phenoscapR/reference/DelaunayNetwork.md)
+  [`DelaunayNetwork`](https://cttir.github.io/phenoscapR/reference/DelaunayNetwork.md)
   or
-  [`FindNeighbours`](https://r-heller.github.io/phenoscapR/reference/FindNeighbours.md).
+  [`FindNeighbours`](https://cttir.github.io/phenoscapR/reference/FindNeighbours.md).
   If `NULL` and the spatial slot contains `delaunay_edges`, those are
   used.
 

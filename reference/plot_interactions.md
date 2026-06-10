@@ -13,7 +13,7 @@ plot_interactions(interactions, title = NULL)
 - interactions:
 
   A `data.table` as returned by
-  [`interaction_matrix()`](https://r-heller.github.io/phenoscapR/reference/interaction_matrix.md).
+  [`interaction_matrix()`](https://cttir.github.io/phenoscapR/reference/interaction_matrix.md).
 
 - title:
 

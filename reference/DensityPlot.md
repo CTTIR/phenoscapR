@@ -1,7 +1,7 @@
 # Plot Cell Density
 
 Scatter plot with colour scaled by local cell density. Requires
-[`CellDensity`](https://r-heller.github.io/phenoscapR/reference/CellDensity.md)
+[`CellDensity`](https://cttir.github.io/phenoscapR/reference/CellDensity.md)
 to have been run.
 
 ## Usage
@@ -15,7 +15,7 @@ DensityPlot(object, pt_size = 1, title = NULL, palette = NULL)
 - object:
 
   An
-  [`SpatialCellData`](https://r-heller.github.io/phenoscapR/reference/SpatialCellData-class.md)
+  [`SpatialCellData`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object with a `density` column.
 
 - pt_size:

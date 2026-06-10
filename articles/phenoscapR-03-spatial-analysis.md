@@ -156,23 +156,23 @@ CellMap(obj, colour_by = "expr_cluster")
 
 | Function | What it tests | Key parameter |
 |----|----|----|
-| [`NeighbourhoodEnrichment()`](https://r-heller.github.io/phenoscapR/reference/NeighbourhoodEnrichment.md) | Co-localisation vs random | `radius`, `n_perm` |
-| [`RipleysK()`](https://r-heller.github.io/phenoscapR/reference/RipleysK.md) | Global clustering at multiple radii | `r_max`, `n_r` |
-| [`MoransI()`](https://r-heller.github.io/phenoscapR/reference/MoransI.md) | Spatial autocorrelation of a feature | `feature`, `radius` |
-| [`QuadratAnalysis()`](https://r-heller.github.io/phenoscapR/reference/QuadratAnalysis.md) | CSR via chi-squared | `nx`, `ny` |
-| [`PairCorrelation()`](https://r-heller.github.io/phenoscapR/reference/PairCorrelation.md) | Scale-dependent g(r) | `r_max`, `n_r` |
-| [`CrossNNDistance()`](https://r-heller.github.io/phenoscapR/reference/CrossNNDistance.md) | Inter-phenotype proximity | `from`, `to` |
-| [`DelaunayNetwork()`](https://r-heller.github.io/phenoscapR/reference/DelaunayNetwork.md) | Cell contact graph | — |
-| [`ExpressionClusters()`](https://r-heller.github.io/phenoscapR/reference/ExpressionClusters.md) | Marker expression communities | `k`, `method` |
+| [`NeighbourhoodEnrichment()`](https://cttir.github.io/phenoscapR/reference/NeighbourhoodEnrichment.md) | Co-localisation vs random | `radius`, `n_perm` |
+| [`RipleysK()`](https://cttir.github.io/phenoscapR/reference/RipleysK.md) | Global clustering at multiple radii | `r_max`, `n_r` |
+| [`MoransI()`](https://cttir.github.io/phenoscapR/reference/MoransI.md) | Spatial autocorrelation of a feature | `feature`, `radius` |
+| [`QuadratAnalysis()`](https://cttir.github.io/phenoscapR/reference/QuadratAnalysis.md) | CSR via chi-squared | `nx`, `ny` |
+| [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md) | Scale-dependent g(r) | `r_max`, `n_r` |
+| [`CrossNNDistance()`](https://cttir.github.io/phenoscapR/reference/CrossNNDistance.md) | Inter-phenotype proximity | `from`, `to` |
+| [`DelaunayNetwork()`](https://cttir.github.io/phenoscapR/reference/DelaunayNetwork.md) | Cell contact graph | — |
+| [`ExpressionClusters()`](https://cttir.github.io/phenoscapR/reference/ExpressionClusters.md) | Marker expression communities | `k`, `method` |
 
 ## Next Steps
 
 - See
-  [`?NeighbourhoodEnrichment`](https://r-heller.github.io/phenoscapR/reference/NeighbourhoodEnrichment.md),
-  [`?RipleysK`](https://r-heller.github.io/phenoscapR/reference/RipleysK.md),
+  [`?NeighbourhoodEnrichment`](https://cttir.github.io/phenoscapR/reference/NeighbourhoodEnrichment.md),
+  [`?RipleysK`](https://cttir.github.io/phenoscapR/reference/RipleysK.md),
   etc. for full parameter documentation.
 - Combine spatial statistics with
-  [`InteractionMatrix()`](https://r-heller.github.io/phenoscapR/reference/InteractionMatrix.md)
+  [`InteractionMatrix()`](https://cttir.github.io/phenoscapR/reference/InteractionMatrix.md)
   and
-  [`InteractionPlot()`](https://r-heller.github.io/phenoscapR/reference/InteractionPlot.md)
+  [`InteractionPlot()`](https://cttir.github.io/phenoscapR/reference/InteractionPlot.md)
   for a complete co-localisation picture.

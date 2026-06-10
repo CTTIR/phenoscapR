@@ -11,7 +11,7 @@ in a single object:
 | Slot | Type | Contents |
 |----|----|----|
 | `counts` | numeric matrix | Raw marker intensities (cells × markers) |
-| `data` | numeric matrix | Normalised intensities (filled by [`NormaliseData()`](https://r-heller.github.io/phenoscapR/reference/NormaliseData.md)) |
+| `data` | numeric matrix | Normalised intensities (filled by [`NormaliseData()`](https://cttir.github.io/phenoscapR/reference/NormaliseData.md)) |
 | `coords` | data.frame | Spatial coordinates (`x`, `y` columns) |
 | `meta_data` | data.frame | Per-cell metadata (phenotype, sample ID, QC flags, …) |
 | `project` | character | Project / experiment name |
@@ -25,7 +25,7 @@ This vignette walks through constructing, inspecting, and subsetting a
 ### From raw matrices
 
 Use
-[`CreateSpatialObject()`](https://r-heller.github.io/phenoscapR/reference/CreateSpatialObject.md)
+[`CreateSpatialObject()`](https://cttir.github.io/phenoscapR/reference/CreateSpatialObject.md)
 when you already have a counts matrix and a coordinates table:
 
 ``` r
@@ -58,7 +58,7 @@ obj
 ### From CSV files
 
 Use
-[`ReadSpatial()`](https://r-heller.github.io/phenoscapR/reference/ReadSpatial.md)
+[`ReadSpatial()`](https://cttir.github.io/phenoscapR/reference/ReadSpatial.md)
 to read one or more CSV files and return a `SpatialCellData` object
 directly:
 
@@ -145,7 +145,7 @@ head(obj[["sample_id"]])
 #> [1] "sample1" "sample1" "sample1" "sample1" "sample1" "sample1"
 ```
 
-[`Idents()`](https://r-heller.github.io/phenoscapR/reference/Idents.md)
+[`Idents()`](https://cttir.github.io/phenoscapR/reference/Idents.md)
 returns the active identity — phenotype labels if set, otherwise sample
 identities:
 
@@ -184,8 +184,8 @@ dim(t_cells)
 ## Next Steps
 
 - **[Getting
-  Started](https://r-heller.github.io/phenoscapR/articles/phenoscapR.md)**
+  Started](https://cttir.github.io/phenoscapR/articles/phenoscapR.md)**
   — end-to-end workflow with the low-level data.table API
 - **[Advanced Spatial
-  Analysis](https://r-heller.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.md)**
+  Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.md)**
   — Ripley’s K, neighbourhood enrichment, Moran’s I, and more

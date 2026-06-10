@@ -7,8 +7,8 @@ cell segmentation data through quality control, phenotyping, spatial
 analysis, and publication-ready visualisation.
 
 - [Getting Started with
-  phenoscapR](https://r-heller.github.io/phenoscapR/articles/phenoscapR.md):
+  phenoscapR](https://cttir.github.io/phenoscapR/articles/phenoscapR.md):
 - [The SpatialCellData
-  Object](https://r-heller.github.io/phenoscapR/articles/phenoscapR-02-object-model.md):
+  Object](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.md):
 - [Advanced Spatial
-  Analysis](https://r-heller.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.md):
+  Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.md):

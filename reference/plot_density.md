@@ -14,7 +14,7 @@ plot_density(dt, point_size = 1, title = NULL)
 - dt:
 
   A `data.table` with columns `x`, `y`, and `density` (as returned by
-  [`cell_density()`](https://r-heller.github.io/phenoscapR/reference/cell_density.md)).
+  [`cell_density()`](https://cttir.github.io/phenoscapR/reference/cell_density.md)).
 
 - point_size:
 

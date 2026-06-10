@@ -2,7 +2,7 @@
 
 ![phenoscapR hex logo](../reference/figures/logo.svg)
 
-## Overview
+### Overview
 
 **phenoscapR** provides tools for reading, processing, analysing, and
 visualising single-cell spatial biology data from multiplexed imaging
@@ -11,27 +11,27 @@ platforms.
 A typical workflow involves:
 
 1.  **Reading** cell segmentation data with
-    [`read_spatial()`](https://r-heller.github.io/phenoscapR/reference/read_spatial.md)
+    [`read_spatial()`](https://cttir.github.io/phenoscapR/reference/read_spatial.md)
 2.  **Quality control** with
-    [`qc_filter()`](https://r-heller.github.io/phenoscapR/reference/qc_filter.md)
+    [`qc_filter()`](https://cttir.github.io/phenoscapR/reference/qc_filter.md)
 3.  **Normalisation** with
-    [`normalise_markers()`](https://r-heller.github.io/phenoscapR/reference/normalise_markers.md)
+    [`normalise_markers()`](https://cttir.github.io/phenoscapR/reference/normalise_markers.md)
 4.  **Phenotyping** with
-    [`phenotype_cells()`](https://r-heller.github.io/phenoscapR/reference/phenotype_cells.md)
+    [`phenotype_cells()`](https://cttir.github.io/phenoscapR/reference/phenotype_cells.md)
 5.  **Spatial analysis** with
-    [`nearest_neighbours()`](https://r-heller.github.io/phenoscapR/reference/nearest_neighbours.md),
-    [`cell_density()`](https://r-heller.github.io/phenoscapR/reference/cell_density.md),
-    [`interaction_matrix()`](https://r-heller.github.io/phenoscapR/reference/interaction_matrix.md),
+    [`nearest_neighbours()`](https://cttir.github.io/phenoscapR/reference/nearest_neighbours.md),
+    [`cell_density()`](https://cttir.github.io/phenoscapR/reference/cell_density.md),
+    [`interaction_matrix()`](https://cttir.github.io/phenoscapR/reference/interaction_matrix.md),
     and
-    [`spatial_clusters()`](https://r-heller.github.io/phenoscapR/reference/spatial_clusters.md)
+    [`spatial_clusters()`](https://cttir.github.io/phenoscapR/reference/spatial_clusters.md)
 6.  **Visualisation** with
-    [`plot_cell_map()`](https://r-heller.github.io/phenoscapR/reference/plot_cell_map.md),
-    [`plot_density()`](https://r-heller.github.io/phenoscapR/reference/plot_density.md),
-    [`plot_heatmap()`](https://r-heller.github.io/phenoscapR/reference/plot_heatmap.md),
+    [`plot_cell_map()`](https://cttir.github.io/phenoscapR/reference/plot_cell_map.md),
+    [`plot_density()`](https://cttir.github.io/phenoscapR/reference/plot_density.md),
+    [`plot_heatmap()`](https://cttir.github.io/phenoscapR/reference/plot_heatmap.md),
     and
-    [`plot_interactions()`](https://r-heller.github.io/phenoscapR/reference/plot_interactions.md)
+    [`plot_interactions()`](https://cttir.github.io/phenoscapR/reference/plot_interactions.md)
 
-## Creating Example Data
+### Creating Example Data
 
 Since real cell segmentation files can be large, we will create a small
 simulated data set for illustration.
@@ -59,7 +59,7 @@ tmp <- tempfile(fileext = ".csv")
 write.csv(dt, tmp, row.names = FALSE)
 ```
 
-## Reading Data
+### Reading Data
 
 ``` r
 
@@ -75,7 +75,7 @@ head(cells)
 #> 6:   example       6 194.6938 290.0938  83.59012 851.0697 236.5838228  996.6244
 ```
 
-## Quality Control
+### Quality Control
 
 ``` r
 
@@ -84,7 +84,7 @@ nrow(cells)
 #> [1] 493
 ```
 
-## Normalisation
+### Normalisation
 
 ``` r
 
@@ -99,7 +99,7 @@ summary(cells[, c("CD3", "CD8", "DAPI")])
 #>  Max.   : 2.5022   Max.   : 2.39231   Max.   : 2.70425
 ```
 
-## Phenotyping
+### Phenotyping
 
 ``` r
 
@@ -107,9 +107,9 @@ cells <- phenotype_cells(cells, thresholds = list(CD3 = 0, CD8 = 0))
 summarise_phenotypes(cells)
 ```
 
-## Spatial Analysis
+### Spatial Analysis
 
-### Nearest Neighbours
+#### Nearest Neighbours
 
 ``` r
 
@@ -119,7 +119,7 @@ summary(cells$nn_distance)
 #>   4.794   7.516  10.435  13.540  15.533  89.053
 ```
 
-### Cell Density
+#### Cell Density
 
 ``` r
 
@@ -129,7 +129,7 @@ summary(cells$density)
 #>    0.00   33.00   55.00   53.76   77.00  103.00
 ```
 
-### Interaction Matrix
+#### Interaction Matrix
 
 ``` r
 
@@ -137,9 +137,9 @@ interactions <- interaction_matrix(cells, radius = 50)
 interactions
 ```
 
-## Visualisation
+### Visualisation
 
-### Cell Map
+#### Cell Map
 
 ``` r
 
@@ -150,7 +150,7 @@ plot_cell_map(cells, point_size = 1)
 
 Cell phenotype map
 
-### Density Plot
+#### Density Plot
 
 ``` r
 
@@ -161,7 +161,7 @@ plot_density(cells, point_size = 1)
 
 Cell density map
 
-### Marker Heatmap
+#### Marker Heatmap
 
 ``` r
 
@@ -173,7 +173,7 @@ phenotype](phenoscapR_files/figure-html/heatmap-1.png)
 
 Mean marker expression per phenotype
 
-### Interaction Heatmap
+#### Interaction Heatmap
 
 ``` r
 
@@ -184,3 +184,21 @@ plot_interactions(interactions)
 scores](phenoscapR_files/figure-html/interaction-plot-1.png)
 
 Spatial interaction scores
+
+## Use of LLM tools
+
+Portions of this package were prepared with assistance from large
+language model tooling for narrowly defined, non-authorial tasks:
+copyediting, prose smoothing, Markdown/LaTeX formatting, scaffolding of
+boilerplate files (CI configs, build scripts), code refactoring. The
+tools used were [Chat
+AI](https://kisski.gwdg.de/leistungen/2-02-llm-service/), the LLM
+service of KISSKI (GWDG), and a self-hosted **Mistral Small (24B,
+Apache-2.0)** run locally via [Ollama](https://ollama.com/) and the
+`ollamar` R package — local inference only, with no data sent to third
+parties for the self-hosted model.
+
+All scientific claims, methodological choices, analyses,
+interpretations, and conclusions are the author’s own. No LLM-generated
+text was incorporated without review and revision, and every reference
+was verified against its DOI, arXiv ID, or ISBN.
