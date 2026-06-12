@@ -64,10 +64,34 @@ remotes::install_github("cttir/phenoscapR")
 
 ## Quick Start
 
+The package ships a synthetic two-sample example dataset, so you can run the
+whole workflow without any files of your own:
+
 ```r
 library(phenoscapR)
+data(phenoscapR_example)
 
-# 1. Read cell segmentation CSV
+obj <- phenoscapR_example
+obj <- NormaliseData(obj, method = "zscore")
+obj <- PhenotypeCells(obj, thresholds = list(CD20 = 1, CD3 = 1, CD8 = 1,
+                                             CD68 = 1, PanCK = 1, FoxP3 = 1))
+
+# Per-sample spatial structure
+im <- InteractionMatrix(obj, radius = 40)
+InteractionPlot(im)
+
+# Single-tissue point-pattern statistics
+a <- obj[obj$sample_id == "tonsil_A", ]
+RipleysK(a, correction = "border")
+NeighbourhoodEnrichment(a, radius = 40, n_perm = 199)
+
+CellMap(a)
+```
+
+A typical real analysis starts from your own segmentation output:
+
+```r
+# 1. Read cell segmentation CSV (or a directory of them)
 obj <- ReadSpatial("path/to/segmentation.csv", sample_id = "sample1")
 
 # 2. Quality control
@@ -84,7 +108,8 @@ obj <- PhenotypeCells(obj, thresholds = list(CD3 = 0.5, CD8 = 0.3,
 obj <- FindNeighbours(obj, k = 5)
 obj <- CellDensity(obj, radius = 50)
 obj <- DelaunayNetwork(obj)
-ne  <- NeighbourhoodEnrichment(obj, radius = 50, n_perm = 100)
+ne  <- NeighbourhoodEnrichment(obj[obj$sample_id == "sample1", ],
+                               radius = 50, n_perm = 100)
 
 # 6. Visualise
 CellMap(obj)
@@ -93,6 +118,13 @@ MarkerHeatmap(obj)
 InteractionPlot(InteractionMatrix(obj, radius = 50))
 SpatialNetworkPlot(obj)
 ```
+
+### Performance
+
+All neighbour-based statistics route through a kd-tree search engine
+(`RANN` when installed, with an exact base-R fallback otherwise), so a
+20,000-cell section runs each statistic in seconds instead of building a
+multi-gigabyte distance matrix.
 
 ## Documentation
 
@@ -103,7 +135,8 @@ Full documentation and vignettes are available at
 |---|---|
 | [Getting Started](https://cttir.github.io/phenoscapR/articles/phenoscapR.html) | End-to-end workflow with simulated data |
 | [The SpatialCellData Object](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.html) | S4 class internals, accessors, and subsetting |
-| [Advanced Spatial Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.html) | Ripley's K, Moran's I, neighbourhood enrichment, and more |
+| [Advanced Spatial Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.html) | Ripley's K, Moran's I, neighbourhood enrichment, and choosing a statistic |
+| [Visualisation Gallery](https://cttir.github.io/phenoscapR/articles/phenoscapR-04-visualisation.html) | Every plotting function, demonstrated on the example data |
 
 ## Contributing
 

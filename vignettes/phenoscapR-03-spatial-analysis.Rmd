@@ -12,160 +12,171 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 7,
-  fig.height = 5
+  fig.height = 4.5,
+  dpi = 96
 )
+has_deldir <- requireNamespace("deldir", quietly = TRUE)
 ```
 
 <img src="../man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"/>
 
 ## Overview
 
-phenoscapR provides a rich set of spatial statistics beyond basic nearest
-neighbours and density estimation. This vignette demonstrates:
+Beyond nearest neighbours and density, phenoscapR provides a suite of point-
+pattern statistics for asking *how* cells are spatially organised:
 
-- **Neighbourhood Enrichment** — permutation test for phenotype co-localisation
-- **Ripley's K** — global clustering / dispersion measure
-- **Moran's I** — spatial autocorrelation of a continuous variable
-- **Quadrat Analysis** — complete spatial randomness test
-- **Pair Correlation Function** — scale-dependent g(r)
-- **Cross Nearest-Neighbour Distance** — inter-phenotype proximity
-- **Delaunay Network** — cell contact graph
-- **Expression Clustering** — marker-expression-based cell clusters
+- **Neighbourhood enrichment** — do phenotype pairs co-localise more than chance?
+- **Ripley's K / L** — clustering or dispersion across many scales at once
+- **Pair correlation function** — clustering at a *specific* distance
+- **Moran's I** — spatial autocorrelation of a continuous marker
+- **Quadrat analysis** — a quick chi-squared test of spatial randomness
+- **Cross nearest-neighbour distance** — directed proximity between two phenotypes
+- **Delaunay network** — the cell-contact graph
+- **Expression clustering** — marker-defined communities, ignoring position
 
-## Setup: Simulated Tissue Data
+### One sample at a time
 
-```{r simulate}
+These statistics describe a single point pattern in one observation window.
+Pooling several tissues would compute distances across samples and return
+nonsense, so phenoscapR **refuses multi-sample objects** for these functions —
+subset to one sample first. (Per-cell summaries like `FindNeighbours()`,
+`CellDensity()`, and `InteractionMatrix()` are sample-aware and need no
+subsetting.)
+
+```{r setup-data}
 library(phenoscapR)
+data(phenoscapR_example)
 
-set.seed(42)
-n <- 600
+spe <- phenoscapR_example
+spe@meta_data$phenotype <- spe@meta_data$phenotype_true
 
-# Two spatially segregated populations
-coords <- data.frame(
-  x = c(rnorm(300, 250, 80), rnorm(300, 750, 80)),
-  y = c(rnorm(300, 400, 80), rnorm(300, 400, 80))
-)
-
-counts <- matrix(
-  c(
-    c(rnorm(300, 900, 150), rnorm(300, 200, 100)),  # CD3 high in pop 1
-    c(rnorm(300, 200, 100), rnorm(300, 800, 130)),  # CD8 high in pop 2
-    abs(rnorm(600, 600, 150)),                       # PanCK background
-    abs(rnorm(600, 400, 100))                        # DAPI
-  ),
-  nrow = n,
-  dimnames = list(NULL, c("CD3", "CD8", "PanCK", "DAPI"))
-)
-
-obj <- CreateSpatialObject(counts, coords, project = "spatial-demo")
-obj <- NormaliseData(obj, method = "zscore")
-obj <- PhenotypeCells(obj, thresholds = list(CD3 = 0, CD8 = 0,
-                                              PanCK = 0, DAPI = -99))
-table(Idents(obj))
+# A single tissue section.
+a <- spe[spe$sample_id == "tonsil_A", ]
+a
 ```
 
-## Neighbourhood Enrichment
+## Neighbourhood enrichment
 
-Tests whether phenotype pairs co-localise more (or less) than expected by
-random chance using a permutation approach:
+A permutation test: it shuffles phenotype labels many times and asks whether
+each phenotype pair is observed as neighbours more (positive z) or less
+(negative z) often than the shuffles. The planted B-cell follicle shows up as
+strong B–B self-enrichment.
 
-```{r neighbourhood, eval = FALSE}
-# Run with n_perm = 100 or more for reliable p-values
-ne <- NeighbourhoodEnrichment(obj, radius = 80, n_perm = 20)
-ne
+```{r enrichment}
+ne <- NeighbourhoodEnrichment(a, radius = 40, n_perm = 199, seed = 1)
+ne[order(-ne$z_score), ][1:6, ]
 ```
 
-## Ripley's K
+## Ripley's K and L
 
-Assesses global spatial clustering across a range of radii. Values above
-the theoretical CSR line indicate clustering:
+`RipleysK()` accumulates, for each radius `r`, the average number of other
+cells within `r`, normalised by intensity. Under complete spatial randomness
+`K(r) = πr²`; the `L` transform makes departures easy to read (`L(r) > 0`
+means clustering). The border correction removes edge bias.
 
-```{r ripleysk, eval = FALSE}
-rk <- RipleysK(obj)
-rk
+```{r ripleysk}
+rk <- RipleysK(a, r_seq = seq(0, 120, length.out = 40), correction = "border")
+head(rk)
+
+with(rk, {
+  plot(r, L, type = "l", lwd = 2, col = "#3366cc",
+       xlab = "r", ylab = "L(r)  (>0 = clustered)",
+       main = "Ripley's L, border-corrected")
+  abline(h = 0, lty = 2)
+})
+```
+
+## Pair correlation function
+
+`PairCorrelation()` is the scale-resolved companion to Ripley's K: `g(r) > 1`
+means more pairs at distance `r` than expected, `g(r) < 1` means inhibition.
+
+```{r pcf}
+pcf <- PairCorrelation(a, r_seq = seq(5, 120, length.out = 40))
+with(pcf, {
+  plot(r, g, type = "l", lwd = 2, col = "#cc3366",
+       xlab = "r", ylab = "g(r)", main = "Pair correlation function")
+  abline(h = 1, lty = 2)
+})
 ```
 
 ## Moran's I
 
-Quantifies the spatial autocorrelation of a continuous variable (e.g. a
-marker intensity). Values near +1 indicate strong spatial clustering of
-high/low values; values near −1 indicate regular spatial dispersion:
+Spatial autocorrelation of a continuous variable. A lineage marker like CD20,
+concentrated in the follicle, autocorrelates strongly (`I` well above its
+expectation, tiny p-value).
 
-```{r moransi, eval = FALSE}
-mi <- MoransI(obj, feature = "CD3", radius = 100)
-mi
+```{r moransi}
+MoransI(a, feature = "CD20", radius = 50)
 ```
 
-## Quadrat Analysis
+## Quadrat analysis
 
-Divides the tissue into a regular grid and tests for Complete Spatial
-Randomness (CSR) using a chi-squared test. Significant results indicate
-non-random spatial distribution:
+A fast omnibus test: tile the window into an `nx × ny` grid, count cells per
+tile, and compare to a uniform expectation with a chi-squared test. The
+variance-to-mean ratio (`VMR`) exceeds 1 for clustered patterns.
 
-```{r quadrat, eval = FALSE}
-qa <- QuadratAnalysis(obj, nx = 4, ny = 4)
-qa
+```{r quadrat}
+qa <- QuadratAnalysis(a, nx = 5, ny = 5)
+qa[c("chi_sq", "p_value", "VMR")]
 ```
 
-## Pair Correlation Function
+## Cross nearest-neighbour distance
 
-The pair correlation function g(r) is the derivative of Ripley's K and
-measures clustering or inhibition at a specific distance r. g(r) > 1
-indicates clustering; g(r) < 1 indicates inhibition:
+For each cell of phenotype `from`, the distance to the nearest cell of
+phenotype `to` — a directed measure of how close one population sits to
+another. It returns one distance per source cell.
 
-```{r pcf, eval = FALSE}
-pcf <- PairCorrelation(obj)
-pcf
+```{r crossnn}
+d_help_to_b <- CrossNNDistance(a, from = "T helper", to = "B cell")
+summary(d_help_to_b)
 ```
 
-## Cross Nearest-Neighbour Distance
+## Delaunay contact network
 
-Measures the distance from each cell of phenotype A to the nearest cell of
-phenotype B, providing a directed measure of inter-phenotype proximity:
+The Delaunay triangulation approximates which cells physically touch. Capping
+edge length with `max_edge` drops the long edges that span empty space.
 
-```{r crossnn, eval = FALSE}
-cn <- CrossNNDistance(obj, from = "CD3+CD8-", to = "CD3-CD8+")
-summary(cn$cross_nn_distance)
+```{r delaunay, eval = has_deldir}
+a <- DelaunayNetwork(a, max_edge = 60)
+nrow(a@spatial$delaunay_edges)
+SpatialNetworkPlot(a)
 ```
 
-## Delaunay Triangulation Network
-
-Constructs a cell contact graph based on Delaunay triangulation.
-Useful for cell-cell interaction analyses:
-
-```{r delaunay, eval = FALSE}
-obj <- DelaunayNetwork(obj)
-SpatialNetworkPlot(obj)
+```{r delaunay-note, echo = FALSE, results = "asis", eval = !has_deldir}
+cat("> The `deldir` package is not installed, so the Delaunay example is",
+    "skipped. Install it with `install.packages(\"deldir\")`.\n")
 ```
 
-## Expression Clustering
+## Expression clustering
 
-Cluster cells by their normalised marker expression profiles (k-means or
-hierarchical). Useful for discovering marker co-expression communities
-independently of spatial position:
+Cluster cells by their normalised marker profiles, independent of position,
+then look at where those clusters fall in the tissue.
 
-```{r exprclusters, eval = FALSE}
-obj <- ExpressionClusters(obj, k = 4)
-table(obj$expr_cluster)
-CellMap(obj, colour_by = "expr_cluster")
+```{r exprclusters}
+a <- ExpressionClusters(a, k = 6)
+table(a$expr_cluster)
+CellMap(a, colour_by = "expr_cluster")
 ```
 
-## Summary
+## Choosing a statistic
 
-| Function | What it tests | Key parameter |
+| Question | Use | Output |
 |---|---|---|
-| `NeighbourhoodEnrichment()` | Co-localisation vs random | `radius`, `n_perm` |
-| `RipleysK()` | Global clustering at multiple radii | `r_max`, `n_r` |
-| `MoransI()` | Spatial autocorrelation of a feature | `feature`, `radius` |
-| `QuadratAnalysis()` | CSR via chi-squared | `nx`, `ny` |
-| `PairCorrelation()` | Scale-dependent g(r) | `r_max`, `n_r` |
-| `CrossNNDistance()` | Inter-phenotype proximity | `from`, `to` |
-| `DelaunayNetwork()` | Cell contact graph | — |
-| `ExpressionClusters()` | Marker expression communities | `k`, `method` |
+| Do phenotypes A and B sit together? | `NeighbourhoodEnrichment()` | z-score / p per pair |
+| Is one phenotype clustered overall? | `RipleysK()` (target =) | K, L vs radius |
+| At *what distance* is it clustered? | `PairCorrelation()` | g(r) |
+| Is a marker spatially autocorrelated? | `MoransI()` | I, z, p |
+| Quick "is it random?" check | `QuadratAnalysis()` | chi-sq, VMR |
+| How near is A to B? | `CrossNNDistance()` | distances |
+| Which cells touch? | `DelaunayNetwork()` | edge list |
+| Marker-defined communities | `ExpressionClusters()` | cluster labels |
 
-## Next Steps
+All of these run on a kd-tree search engine, so they scale to large sections;
+a 20,000-cell tissue completes each statistic in seconds.
 
-- See `?NeighbourhoodEnrichment`, `?RipleysK`, etc. for full parameter
-  documentation.
-- Combine spatial statistics with `InteractionMatrix()` and
-  `InteractionPlot()` for a complete co-localisation picture.
+## Next steps
+
+- `?NeighbourhoodEnrichment`, `?RipleysK`, … for full parameter documentation
+- Combine with `InteractionMatrix()` / `InteractionPlot()` for the co-localisation picture
+- **[Visualisation Gallery](phenoscapR-04-visualisation.html)** for every plot

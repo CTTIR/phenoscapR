@@ -30,6 +30,8 @@ navbar:
           href: articles/phenoscapR-02-object-model.html
         - text: "Advanced Spatial Analysis"
           href: articles/phenoscapR-03-spatial-analysis.html
+        - text: "Visualisation Gallery"
+          href: articles/phenoscapR-04-visualisation.html
     - text: "Functions"
       href: reference/index.html
     - text: "News"
@@ -49,6 +51,7 @@ articles:
       - phenoscapR
       - phenoscapR-02-object-model
       - phenoscapR-03-spatial-analysis
+      - phenoscapR-04-visualisation
 
 reference:
   - title: "The SpatialCellData Object"

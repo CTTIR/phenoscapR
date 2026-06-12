@@ -21,44 +21,39 @@ knitr::opts_chunk$set(
 ## Overview
 
 The **`SpatialCellData`** S4 class is the central data container in
-phenoscapR. It stores all information about a spatial biology experiment in
-a single object:
+phenoscapR. It keeps everything about an experiment in one object:
 
 | Slot | Type | Contents |
 |------|------|----------|
 | `counts` | numeric matrix | Raw marker intensities (cells × markers) |
 | `data` | numeric matrix | Normalised intensities (filled by `NormaliseData()`) |
-| `coords` | data.frame | Spatial coordinates (`x`, `y` columns) |
-| `meta_data` | data.frame | Per-cell metadata (phenotype, sample ID, QC flags, …) |
+| `coords` | data.frame | Spatial coordinates (`x`, `y`) |
+| `meta_data` | data.frame | Per-cell metadata (`cell_id`, `sample_id`, phenotype, …) |
 | `project` | character | Project / experiment name |
-| `spatial` | list | Results from spatial analysis functions |
+| `spatial` | list | Stored spatial results (neighbour distances, Delaunay edges, …) |
+| `reductions` | list | Embeddings from `RunPCA()`, `RunUMAP()`, … |
 
-This vignette walks through constructing, inspecting, and subsetting a
-`SpatialCellData` object.
+A validity method guarantees the matrices, coordinates, and metadata always
+describe the same set of cells in the same order.
 
 ## Construction
 
 ### From raw matrices
 
 Use `CreateSpatialObject()` when you already have a counts matrix and a
-coordinates table:
+coordinate table:
 
 ```{r create}
 library(phenoscapR)
 
 set.seed(1)
 n <- 200
-
 counts <- matrix(
   abs(rnorm(n * 4, mean = 500, sd = 200)),
   nrow = n,
   dimnames = list(NULL, c("CD3", "CD8", "CD20", "PanCK"))
 )
-
-coords <- data.frame(
-  x = runif(n, 0, 1000),
-  y = runif(n, 0, 1000)
-)
+coords <- data.frame(x = runif(n, 0, 1000), y = runif(n, 0, 1000))
 
 obj <- CreateSpatialObject(counts, coords, project = "demo")
 obj
@@ -66,80 +61,95 @@ obj
 
 ### From CSV files
 
-Use `ReadSpatial()` to read one or more CSV files and return a
-`SpatialCellData` object directly:
+`ReadSpatial()` reads one or more segmentation CSVs and returns a
+`SpatialCellData` directly. It auto-detects the delimiter, byte-order marks,
+and three common layouts (QuPath full export, QuPath minimal, and flat
+segmentation tables), and parses a `sample_id` per file.
 
 ```{r read, eval = FALSE}
+# A single file
 obj <- ReadSpatial("path/to/segmentation.csv", sample_id = "sample1")
 
-# Or read a whole directory
+# A whole directory (sample_id defaults to each file's name)
 obj <- ReadSpatial("path/to/csv_dir/")
 ```
 
-## Inspecting the Object
+## A worked object
 
-```{r inspect}
-# Dimensions: cells × markers
-dim(obj)
+The rest of this vignette uses the bundled two-sample example so every line
+runs:
 
-# Cell count and marker names
-NCells(obj)
-NMarkers(obj)
-Markers(obj)
-
-# First few rows of metadata
-head(Meta(obj))
-
-# First few rows of coordinates
-head(Coords(obj))
+```{r example}
+data(phenoscapR_example)
+spe <- phenoscapR_example
+spe
 ```
 
-## Accessing Expression Data
+## Inspecting the object
+
+```{r inspect}
+dim(spe)        # cells × markers
+NCells(spe)
+NMarkers(spe)
+Markers(spe)
+head(Meta(spe))
+head(Coords(spe))
+```
+
+## Accessing expression data
 
 ```{r data}
 # Raw counts
-raw <- GetData(obj, slot = "counts")
-raw[1:3, ]
+GetData(spe, slot = "counts")[1:3, ]
 
-# After normalisation, use slot = "data"
-obj <- NormaliseData(obj, method = "zscore")
-norm <- GetData(obj, slot = "data")
-norm[1:3, ]
+# Normalised values live in the "data" slot
+spe <- NormaliseData(spe, method = "zscore")
+round(GetData(spe, slot = "data")[1:3, ], 2)
 ```
 
-## Working with Metadata
+## Working with metadata
 
-Metadata columns are accessible with `$` and `[[`:
+Metadata columns are reachable with `$` and `[[`:
 
 ```{r meta}
-# After phenotyping
-obj <- PhenotypeCells(obj, thresholds = list(CD3 = 0, CD8 = 0,
-                                              CD20 = 0, PanCK = 0))
-head(obj$phenotype)
-head(obj[["sample_id"]])
+head(spe$sample_id)
+head(spe[["phenotype_true"]])
 ```
 
-`Idents()` returns the active identity — phenotype labels if set,
-otherwise sample identities:
+`Idents()` returns the active identity — phenotype labels when present,
+otherwise sample identities. Here we promote the ground-truth populations to
+the active phenotype:
 
 ```{r idents}
-table(Idents(obj))
+spe@meta_data$phenotype <- spe@meta_data$phenotype_true
+table(Idents(spe))
 ```
 
 ## Subsetting
 
-`SpatialCellData` supports standard R subsetting with `[`:
+`SpatialCellData` follows matrix-style `[cells, markers]` subsetting. Both
+indices are optional.
 
 ```{r subset}
-# Keep only CD3+ T cells
-t_cells <- obj[obj$phenotype == "CD3+CD8-", ]
-NCells(t_cells)
-dim(t_cells)
+# By cells: keep one sample
+a <- spe[spe$sample_id == "tonsil_A", ]
+dim(a)
+
+# By cells: keep just the B-cell follicle
+follicle <- spe[spe$phenotype == "B cell", ]
+NCells(follicle)
+
+# By markers: keep two channels
+spe[, c("CD3", "CD20")]
 ```
 
-## Next Steps
+Subsetting carries every slot — counts, normalised data, coordinates,
+metadata, and any reductions — along together, so downstream analysis on a
+subset is always self-consistent.
 
-- **[Getting Started](phenoscapR.html)** — end-to-end workflow with the
-  low-level data.table API
+## Next steps
+
+- **[Getting Started](phenoscapR.html)** — the end-to-end workflow
 - **[Advanced Spatial Analysis](phenoscapR-03-spatial-analysis.html)** —
-  Ripley's K, neighbourhood enrichment, Moran's I, and more
+  Ripley's K, Moran's I, neighbourhood enrichment, and choosing a statistic
+- **[Visualisation Gallery](phenoscapR-04-visualisation.html)** — every plot

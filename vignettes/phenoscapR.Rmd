@@ -11,8 +11,9 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 6,
-  fig.height = 5
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 96
 )
 ```
 
@@ -20,128 +21,162 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-**phenoscapR** provides tools for reading, processing, analysing, and
-visualising single-cell spatial biology data from multiplexed imaging
-platforms.
+**phenoscapR** takes you from a raw multiplexed-imaging cell-segmentation table
+all the way to publication-ready spatial statistics and figures. The workflow
+mirrors the way single-cell analysts already think:
 
-A typical workflow involves:
+1. **Read** segmentation output into a `SpatialCellData` object
+2. **Quality-control** cells by area and intensity
+3. **Normalise** marker intensities
+4. **Phenotype** cells from marker thresholds
+5. **Analyse** the spatial arrangement of those phenotypes
+6. **Visualise** every step
 
-1. **Reading** cell segmentation data with `read_spatial()`
-2. **Quality control** with `qc_filter()`
-3. **Normalisation** with `normalise_markers()`
-4. **Phenotyping** with `phenotype_cells()`
-5. **Spatial analysis** with `nearest_neighbours()`, `cell_density()`,
-   `interaction_matrix()`, and `spatial_clusters()`
-6. **Visualisation** with `plot_cell_map()`, `plot_density()`,
-   `plot_heatmap()`, and `plot_interactions()`
+Every function comes in two flavours: a high-level **S4 interface** that takes
+and returns a `SpatialCellData` object (used throughout this vignette), and a
+low-level **`data.table` interface** (`read_spatial()`, `qc_filter()`, …) for
+scripting. They share one compute engine, so results are identical.
 
-## Creating Example Data
+## The bundled example dataset
 
-Since real cell segmentation files can be large, we will create a small
-simulated data set for illustration.
+The package ships `phenoscapR_example`, a fully synthetic two-sample tonsil
+assay with planted spatial niches (a B-cell follicle, an overlapping T-cell
+zone, an epithelial region, and scattered macrophages). It lets every example
+here run without downloading anything.
 
-```{r simulate-data}
+```{r data}
 library(phenoscapR)
+data(phenoscapR_example)
 
-set.seed(42)
-n_cells <- 500
-
-# Simulate two cell populations in different spatial regions
-dt <- data.table::data.table(
-  `Cell ID` = seq_len(n_cells),
-  `Cell X Position` = c(rnorm(250, 200, 50), rnorm(250, 600, 50)),
-  `Cell Y Position` = c(rnorm(250, 300, 50), rnorm(250, 300, 50)),
-  `Cell Area (px)` = rlnorm(n_cells, log(100), 0.3),
-  CD3 = c(rnorm(250, 800, 150), rnorm(250, 200, 100)),
-  CD8 = c(rnorm(250, 200, 100), rnorm(250, 700, 120)),
-  DAPI = rnorm(n_cells, 1000, 200)
-)
-
-# Write to a temporary CSV
-tmp <- tempfile(fileext = ".csv")
-write.csv(dt, tmp, row.names = FALSE)
+phenoscapR_example
 ```
 
-## Reading Data
+It carries 640 cells across two samples and eight markers, plus a
+`phenotype_true` column recording the ground-truth population of each cell:
 
-```{r read-data}
-cells <- read_spatial(tmp, sample_id = "example")
-head(cells)
+```{r data-shape}
+table(phenoscapR_example$sample_id, phenoscapR_example$phenotype_true)
 ```
 
-## Quality Control
+> **Reading your own data.** In practice you would start from
+> `ReadSpatial("segmentation.csv")` (or a directory of CSVs). phenoscapR
+> auto-detects QuPath full/minimal exports and flat segmentation tables. See
+> `vignette("phenoscapR-02-object-model")` for the object model and import
+> details.
+
+## 1. Quality control
+
+`QCFilter()` removes implausibly small or large cells and, optionally, cells
+outside an intensity band. We work on a copy so the original stays intact.
 
 ```{r qc}
-cells <- qc_filter(cells, min_area = 50, max_area = 500)
-nrow(cells)
+obj <- QCFilter(phenoscapR_example, min_area = 20, max_area = 1000)
+obj
 ```
 
-## Normalisation
+Use `QCPlot()` to inspect what was kept against any two metadata columns:
+
+```{r qcplot, fig.height = 4}
+obj <- CellDensity(obj, radius = 40)
+QCPlot(obj, x = "cell_area", y = "density", colour_by = "phenotype_true")
+```
+
+## 2. Normalisation
+
+`NormaliseData()` rescales each marker. `"zscore"` centres and scales to unit
+variance; `"minmax"` maps to `[0, 1]`; `"quantile"` is rank-based.
 
 ```{r normalise}
-cells <- normalise_markers(cells, method = "zscore")
-summary(cells[, c("CD3", "CD8", "DAPI")])
+obj <- NormaliseData(obj, method = "zscore")
+round(GetData(obj)[1:4, ], 2)
 ```
 
-## Phenotyping
+## 3. Phenotyping
+
+Assign phenotypes by thresholding normalised markers. Because the data are
+z-scored, a threshold of `1` means "at least one standard deviation above the
+marker's mean". `PhenotypeCells()` builds composite labels such as `CD3+/CD4+`.
 
 ```{r phenotype}
-cells <- phenotype_cells(cells, thresholds = list(CD3 = 0, CD8 = 0))
-summarise_phenotypes(cells)
+obj <- PhenotypeCells(obj, thresholds = list(
+  CD20 = 1, CD3 = 1, CD8 = 1, CD4 = 1, CD68 = 1, PanCK = 1, FoxP3 = 1
+))
+head(PhenotypeSummary(obj))
 ```
 
-## Spatial Analysis
+For the rest of this vignette we use the curated ground-truth populations so
+the figures stay easy to read:
 
-### Nearest Neighbours
-
-```{r nn}
-cells <- nearest_neighbours(cells, k = 5)
-summary(cells$nn_distance)
+```{r use-truth}
+obj@meta_data$phenotype <- obj@meta_data$phenotype_true
 ```
 
-### Cell Density
+`CompositionPlot()` shows phenotype proportions per sample:
 
-```{r density}
-cells <- cell_density(cells, radius = 50)
-summary(cells$density)
+```{r composition, fig.height = 4}
+CompositionPlot(obj, group_by = "sample_id")
 ```
 
-### Interaction Matrix
+## 4. The phenotype map
+
+`CellMap()` is the workhorse plot — every cell drawn at its tissue position,
+coloured by phenotype. Spatial structure (the follicle, the T-cell zone) is
+immediately visible.
+
+```{r cellmap}
+tonsil_a <- obj[obj$sample_id == "tonsil_A", ]
+CellMap(tonsil_a)
+```
+
+Colour instead by a continuous marker with `FeaturePlot()`:
+
+```{r featureplot}
+FeaturePlot(tonsil_a, features = c("CD20", "CD3", "PanCK"))
+```
+
+## 5. Spatial analysis
+
+### Local density and nearest neighbours
+
+```{r nn-density}
+obj <- FindNeighbours(obj, k = 5)
+summary(Meta(obj)$nn_distance)
+
+DensityPlot(tonsil_a <- CellDensity(tonsil_a, radius = 40))
+```
+
+### Phenotype interactions
+
+`InteractionMatrix()` counts, per sample, how often each phenotype pair sits
+within `radius` of one another versus what random mixing would predict. The
+score is `log2(observed / expected)` — positive means attraction, negative
+means avoidance. Neighbours are **never** counted across samples.
 
 ```{r interactions}
-interactions <- interaction_matrix(cells, radius = 50)
-interactions
+im <- InteractionMatrix(obj, radius = 40)
+head(im[order(-im$interaction_score), ])
+
+InteractionPlot(im)
 ```
 
-## Visualisation
+### Marker signatures per phenotype
 
-### Cell Map
-
-```{r cell-map, fig.cap="Cell phenotype map"}
-plot_cell_map(cells, point_size = 1)
+```{r heatmap, fig.height = 5}
+MarkerHeatmap(obj)
 ```
 
-### Density Plot
+## Where to next
 
-```{r density-plot, fig.cap="Cell density map"}
-plot_density(cells, point_size = 1)
-```
+phenoscapR has much more spatial machinery — Ripley's K, Moran's I,
+neighbourhood-enrichment permutation tests, the pair correlation function,
+Delaunay contact graphs — and a full gallery of plots and dimensionality
+reductions.
 
-### Marker Heatmap
-
-```{r heatmap, fig.cap="Mean marker expression per phenotype"}
-plot_heatmap(cells)
-```
-
-### Interaction Heatmap
-
-```{r interaction-plot, fig.cap="Spatial interaction scores"}
-plot_interactions(interactions)
-```
-
-```{r cleanup, include = FALSE}
-unlink(tmp)
-```
+| Vignette | Focus |
+|---|---|
+| [The SpatialCellData Object](phenoscapR-02-object-model.html) | class internals, import, accessors, subsetting |
+| [Advanced Spatial Analysis](phenoscapR-03-spatial-analysis.html) | Ripley's K, Moran's I, enrichment, choosing a statistic |
+| [Visualisation Gallery](phenoscapR-04-visualisation.html) | every plotting function, side by side |
 
 # Use of LLM tools
 
