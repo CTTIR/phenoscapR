@@ -13,7 +13,9 @@ home:
   logo: man/figures/logo.svg
 
 authors:
-  Raban Heller:
+  R. Heller:
+    href: https://github.com/cttir
+  Hanno Witte:
     href: https://github.com/cttir
 
 navbar:
