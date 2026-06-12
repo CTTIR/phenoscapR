@@ -1,0 +1,10 @@
+linters: linters_with_defaults(
+    object_name_linter = NULL,
+    indentation_linter = NULL,
+    object_usage_linter = NULL,
+    line_length_linter = line_length_linter(100L)
+  )
+exclusions: list(
+    "tests/testthat",
+    "data-raw"
+  )

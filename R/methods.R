@@ -120,8 +120,9 @@ setMethod("Meta", "SpatialCellData", function(object) {
 #'   (default) for normalised data.
 #' @return A numeric matrix (cells x markers).
 #' @export
-setGeneric("GetData", function(object, slot = "data")
-  standardGeneric("GetData"))
+setGeneric("GetData", function(object, slot = "data") {
+  standardGeneric("GetData")
+})
 
 #' @rdname GetData
 #' @export

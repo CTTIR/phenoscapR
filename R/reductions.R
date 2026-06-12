@@ -273,8 +273,9 @@ setMethod("Reductions", "SpatialCellData", function(object) {
 #'   \code{"umap"}).
 #' @return A numeric matrix (cells x dimensions).
 #' @export
-setGeneric("Embeddings", function(object, reduction = "pca")
-  standardGeneric("Embeddings"))
+setGeneric("Embeddings", function(object, reduction = "pca") {
+  standardGeneric("Embeddings")
+})
 
 #' @rdname Embeddings
 #' @export

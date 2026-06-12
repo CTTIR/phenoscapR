@@ -506,6 +506,22 @@ spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
 #' Pooling cells from several tissues would compute distances across samples and
 #' produce meaningless results, so we refuse multi-sample objects.
 #' @noRd
+#' Apply a single-sample statistic across every sample
+#'
+#' Maps `fn` over each sample's subset and returns a named, classed list. Used
+#' by the single-window statistics when `by_sample = TRUE`.
+#' @noRd
+.by_sample_apply <- function(object, fn) {
+  samples <- unique(object@meta_data$sample_id)
+  res <- lapply(samples, function(s) {
+    fn(object[object@meta_data$sample_id == s, ])
+  })
+  names(res) <- samples
+  class(res) <- c("phenoscapR_by_sample", "list")
+  res
+}
+
+#' @noRd
 .assert_single_sample <- function(object, what = "This analysis") {
   samples <- unique(object@meta_data$sample_id)
   if (length(samples) > 1L) {
@@ -620,7 +636,8 @@ InteractionMatrix <- function(object, radius) {
     y         = object@coords$y,
     phenotype = object@meta_data$phenotype
   )
-  as.data.frame(interaction_matrix(dt, radius = radius))
+  .as_result(as.data.frame(interaction_matrix(dt, radius = radius)),
+             "phenoscapR_interaction")
 }
 
 #' Spatial Clusters (SpatialCellData)
@@ -740,6 +757,9 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
 #' @param radius Numeric. Neighbourhood radius.
 #' @param n_perm Integer. Number of permutations. Default \code{100}.
 #' @param seed Integer or \code{NULL}. Random seed.
+#' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
+#'   the statistic is computed per sample and returned as a named list. Default
+#'   \code{FALSE}; otherwise a single sample is required.
 #'
 #' @return A data frame with columns \code{from}, \code{to}, \code{observed},
 #'   \code{mean_expected}, \code{z_score}, and \code{p_value}.
@@ -756,7 +776,12 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
 #'
 #' @export
 NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
-                                    seed = NULL) {
+                                    seed = NULL, by_sample = FALSE) {
+  if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
+    return(.by_sample_apply(object, function(o) {
+      NeighbourhoodEnrichment(o, radius = radius, n_perm = n_perm, seed = seed)
+    }))
+  }
   .assert_single_sample(object, "Neighbourhood enrichment")
   if (!is.null(seed)) set.seed(seed)
 
@@ -801,7 +826,7 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
   results$z_score <- ifelse(perm_sd > 0,
     (results$observed - results$mean_expected) / perm_sd, 0)
   results$p_value <- 2 * stats::pnorm(-abs(results$z_score))
-  results
+  .as_result(results, "phenoscapR_enrichment")
 }
 
 #' Ripley's K Function
@@ -813,6 +838,10 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #' @param r_seq Numeric vector of radii, or \code{NULL} for automatic.
 #' @param target Character or \code{NULL}. Restrict to a phenotype.
 #' @param correction Character. \code{"none"} (default) or \code{"border"}.
+#' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
+#'   the statistic is computed per sample and returned as a named list (one
+#'   entry per sample). Default \code{FALSE}; otherwise a single sample is
+#'   required.
 #'
 #' @return A data frame with columns \code{r}, \code{K}, \code{L}, and
 #'   \code{expected}.
@@ -826,9 +855,14 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #'
 #' @export
 RipleysK <- function(object, r_seq = NULL, target = NULL,
-                     correction = c("none", "border")) {
-  .assert_single_sample(object, "Ripley's K")
+                     correction = c("none", "border"), by_sample = FALSE) {
   correction <- match.arg(correction)
+  if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
+    return(.by_sample_apply(object, function(o) {
+      RipleysK(o, r_seq = r_seq, target = target, correction = correction)
+    }))
+  }
+  .assert_single_sample(object, "Ripley's K")
   xy <- as.matrix(object@coords)
 
   if (!is.null(target)) {
@@ -867,12 +901,14 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
   }
   K <- K_sorted[order(ord)]   # restore the caller's radius order
 
-  data.frame(
+  out <- data.frame(
     r = r_seq,
     K = K,
     L = sqrt(K / pi) - r_seq,
     expected = pi * r_seq^2
   )
+  attr(out, "correction") <- correction
+  .as_result(out, "phenoscapR_ripley")
 }
 
 #' Moran's I Spatial Autocorrelation
@@ -883,6 +919,9 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 #' @param feature Character. Name of the marker or metadata column.
 #' @param radius Numeric. Neighbourhood radius for spatial weights.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
+#' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
+#'   the statistic is computed per sample and returned as a named list. Default
+#'   \code{FALSE}; otherwise a single sample is required.
 #'
 #' @return A list with \code{I}, \code{expected}, \code{variance},
 #'   \code{z_score}, and \code{p_value}.
@@ -895,7 +934,12 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 #' MoransI(obj, feature = "CD3", radius = 30)
 #'
 #' @export
-MoransI <- function(object, feature, radius, slot = "data") {
+MoransI <- function(object, feature, radius, slot = "data", by_sample = FALSE) {
+  if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
+    return(.by_sample_apply(object, function(o) {
+      MoransI(o, feature = feature, radius = radius, slot = slot)
+    }))
+  }
   .assert_single_sample(object, "Moran's I")
   mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
 
@@ -933,8 +977,10 @@ MoransI <- function(object, feature, radius, slot = "data") {
   VI <- (n2 * S1 - n * S2 + 3 * S0^2) / (S0^2 * (n2 - 1)) - EI^2
 
   z <- (I - EI) / sqrt(max(VI, .Machine$double.eps))
-  list(I = I, expected = EI, variance = VI,
-       z_score = z, p_value = 2 * stats::pnorm(-abs(z)))
+  .as_result(
+    list(I = I, expected = EI, variance = VI,
+         z_score = z, p_value = 2 * stats::pnorm(-abs(z))),
+    "phenoscapR_moran")
 }
 
 #' Quadrat Analysis
@@ -946,6 +992,9 @@ MoransI <- function(object, feature, radius, slot = "data") {
 #' @param nx Integer. Number of columns in the grid. Default \code{5}.
 #' @param ny Integer. Number of rows in the grid. Default \code{5}.
 #' @param target Character or \code{NULL}. Restrict to a phenotype.
+#' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
+#'   the statistic is computed per sample and returned as a named list. Default
+#'   \code{FALSE}; otherwise a single sample is required.
 #'
 #' @return A list with \code{counts}, \code{chi_sq}, \code{p_value}, and
 #'   \code{VMR} (variance-to-mean ratio).
@@ -958,7 +1007,13 @@ MoransI <- function(object, feature, radius, slot = "data") {
 #' QuadratAnalysis(obj, nx = 3, ny = 3)
 #'
 #' @export
-QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL) {
+QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
+                            by_sample = FALSE) {
+  if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
+    return(.by_sample_apply(object, function(o) {
+      QuadratAnalysis(o, nx = nx, ny = ny, target = target)
+    }))
+  }
   .assert_single_sample(object, "Quadrat analysis")
   xy <- as.matrix(object@coords)
 
@@ -985,7 +1040,9 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL) {
   p_val <- stats::pchisq(chi_sq, df = df, lower.tail = FALSE)
   vmr <- stats::var(counts_vec) / expected
 
-  list(counts = count_mat, chi_sq = chi_sq, p_value = p_val, VMR = vmr)
+  .as_result(
+    list(counts = count_mat, chi_sq = chi_sq, p_value = p_val, VMR = vmr),
+    "phenoscapR_quadrat")
 }
 
 #' Pair Correlation Function
@@ -998,6 +1055,9 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL) {
 #' @param dr Numeric or \code{NULL}. Ring width. Default is derived from
 #'   \code{r_seq}.
 #' @param target Character or \code{NULL}. Restrict to a phenotype.
+#' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
+#'   the statistic is computed per sample and returned as a named list. Default
+#'   \code{FALSE}; otherwise a single sample is required.
 #'
 #' @return A data frame with columns \code{r} and \code{g}.
 #'
@@ -1010,7 +1070,12 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL) {
 #'
 #' @export
 PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
-                            target = NULL) {
+                            target = NULL, by_sample = FALSE) {
+  if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
+    return(.by_sample_apply(object, function(o) {
+      PairCorrelation(o, r_seq = r_seq, dr = dr, target = target)
+    }))
+  }
   .assert_single_sample(object, "The pair correlation function")
   xy <- as.matrix(object@coords)
 
@@ -1047,7 +1112,7 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
     ring / (n * lambda * 2 * pi * r_seq[i] * dr)
   }, numeric(1L))
 
-  data.frame(r = r_seq, g = g)
+  .as_result(data.frame(r = r_seq, g = g), "phenoscapR_pcf")
 }
 
 #' Cross Nearest Neighbour Distance
@@ -1058,6 +1123,9 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param from Character. Source phenotype.
 #' @param to Character. Target phenotype.
+#' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
+#'   the statistic is computed per sample and returned as a named list. Default
+#'   \code{FALSE}; otherwise a single sample is required.
 #'
 #' @return A numeric vector of distances (one per cell of the \code{from}
 #'   phenotype).
@@ -1072,7 +1140,12 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
 #' CrossNNDistance(obj, from = "A", to = "B")
 #'
 #' @export
-CrossNNDistance <- function(object, from, to) {
+CrossNNDistance <- function(object, from, to, by_sample = FALSE) {
+  if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
+    return(.by_sample_apply(object, function(o) {
+      CrossNNDistance(o, from = from, to = to)
+    }))
+  }
   .assert_single_sample(object, "Cross nearest-neighbour distance")
   xy <- as.matrix(object@coords)
   pheno <- object@meta_data$phenotype
@@ -1090,7 +1163,10 @@ CrossNNDistance <- function(object, from, to) {
 
   # Nearest target cell for each source cell. `from` and `to` are different
   # phenotypes, hence disjoint, so no self-match to drop.
-  .knn_mean_dist(from_xy, to_xy, k = 1L, drop_self = FALSE)
+  d <- .knn_mean_dist(from_xy, to_xy, k = 1L, drop_self = FALSE)
+  attr(d, "from") <- from
+  attr(d, "to") <- to
+  .as_result(d, "phenoscapR_crossnn")
 }
 
 #' Expression-Based Cell Clustering

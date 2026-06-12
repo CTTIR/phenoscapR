@@ -4,7 +4,13 @@
 \alias{RipleysK}
 \title{Ripley's K Function}
 \usage{
-RipleysK(object, r_seq = NULL, target = NULL, correction = c("none", "border"))
+RipleysK(
+  object,
+  r_seq = NULL,
+  target = NULL,
+  correction = c("none", "border"),
+  by_sample = FALSE
+)
 }
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
@@ -14,6 +20,11 @@ RipleysK(object, r_seq = NULL, target = NULL, correction = c("none", "border"))
 \item{target}{Character or \code{NULL}. Restrict to a phenotype.}
 
 \item{correction}{Character. \code{"none"} (default) or \code{"border"}.}
+
+\item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
+the statistic is computed per sample and returned as a named list (one
+entry per sample). Default \code{FALSE}; otherwise a single sample is
+required.}
 }
 \value{
 A data frame with columns \code{r}, \code{K}, \code{L}, and

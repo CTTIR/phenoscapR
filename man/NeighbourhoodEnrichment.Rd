@@ -4,7 +4,13 @@
 \alias{NeighbourhoodEnrichment}
 \title{Neighbourhood Enrichment Analysis}
 \usage{
-NeighbourhoodEnrichment(object, radius, n_perm = 100L, seed = NULL)
+NeighbourhoodEnrichment(
+  object,
+  radius,
+  n_perm = 100L,
+  seed = NULL,
+  by_sample = FALSE
+)
 }
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
@@ -14,6 +20,10 @@ NeighbourhoodEnrichment(object, radius, n_perm = 100L, seed = NULL)
 \item{n_perm}{Integer. Number of permutations. Default \code{100}.}
 
 \item{seed}{Integer or \code{NULL}. Random seed.}
+
+\item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
+the statistic is computed per sample and returned as a named list. Default
+\code{FALSE}; otherwise a single sample is required.}
 }
 \value{
 A data frame with columns \code{from}, \code{to}, \code{observed},

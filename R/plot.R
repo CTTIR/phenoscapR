@@ -25,7 +25,9 @@
 #' CellMap(obj)
 #'
 #' @export
-#' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_minimal labs scale_colour_manual theme element_rect element_text element_blank .data
+#' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_minimal labs
+#' @importFrom ggplot2 scale_colour_manual theme element_rect element_text
+#' @importFrom ggplot2 element_blank .data
 CellMap <- function(object, colour_by = "phenotype", colours = NULL,
                      pt_size = 0.5, title = NULL, dark_theme = FALSE) {
   if (!colour_by %in% names(object@meta_data)) {
@@ -48,7 +50,8 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
 #' (data.table). \code{df} must contain columns \code{x}, \code{y}, and
 #' \code{colour}.
 #' @noRd
-#' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_minimal labs scale_colour_manual .data
+#' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_minimal labs
+#' @importFrom ggplot2 scale_colour_manual .data
 .cell_map_plot <- function(df, colour_label, colours = NULL, pt_size = 0.5,
                            title = NULL, dark_theme = FALSE) {
   p <- ggplot2::ggplot(df, ggplot2::aes(

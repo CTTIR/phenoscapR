@@ -4,7 +4,7 @@
 \alias{QuadratAnalysis}
 \title{Quadrat Analysis}
 \usage{
-QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL)
+QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL, by_sample = FALSE)
 }
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
@@ -14,6 +14,10 @@ QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL)
 \item{ny}{Integer. Number of rows in the grid. Default \code{5}.}
 
 \item{target}{Character or \code{NULL}. Restrict to a phenotype.}
+
+\item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
+the statistic is computed per sample and returned as a named list. Default
+\code{FALSE}; otherwise a single sample is required.}
 }
 \value{
 A list with \code{counts}, \code{chi_sq}, \code{p_value}, and

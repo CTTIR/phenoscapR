@@ -1,3 +1,20 @@
+# phenoscapR 1.1.0
+
+API coherence.
+
+* The spatial statistics now return lightweight classed objects
+  (`phenoscapR_ripley`, `_pcf`, `_moran`, `_quadrat`, `_enrichment`,
+  `_interaction`, `_crossnn`) that still behave like their underlying
+  data.frame / list / vector, with consistent `print` summaries and ggplot2
+  `autoplot()` methods for one-line visualisation.
+* All single-window statistics (`RipleysK`, `MoransI`, `QuadratAnalysis`,
+  `PairCorrelation`, `NeighbourhoodEnrichment`, `CrossNNDistance`) gain a
+  `by_sample` argument: with `by_sample = TRUE` a multi-sample object is
+  analysed per section and returned as a named list (`phenoscapR_by_sample`).
+* Added a project `.lintr` configuration (the package is lint-clean) and a
+  `lint` GitHub Actions workflow running lintr and goodpractice.
+* Hanno Witte added as a package author.
+
 # phenoscapR 1.0.1
 
 Robustness and scalability hardening.

@@ -4,7 +4,7 @@
 \alias{MoransI}
 \title{Moran's I Spatial Autocorrelation}
 \usage{
-MoransI(object, feature, radius, slot = "data")
+MoransI(object, feature, radius, slot = "data", by_sample = FALSE)
 }
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
@@ -14,6 +14,10 @@ MoransI(object, feature, radius, slot = "data")
 \item{radius}{Numeric. Neighbourhood radius for spatial weights.}
 
 \item{slot}{Character. \code{"data"} (default) or \code{"counts"}.}
+
+\item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
+the statistic is computed per sample and returned as a named list. Default
+\code{FALSE}; otherwise a single sample is required.}
 }
 \value{
 A list with \code{I}, \code{expected}, \code{variance},

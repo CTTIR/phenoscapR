@@ -19,3 +19,5 @@
 ^\.remember$
 ^song_probe\.txt$
 ^data-raw$
+^\.lintr$
+^phenoscapR-.*\.pdf$

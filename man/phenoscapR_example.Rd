@@ -19,8 +19,9 @@ Entirely synthetic; not derived from any real specimen.
 phenoscapR_example
 }
 \description{
-A small, fully synthetic two-sample \link[=SpatialCellData-class]{SpatialCellData} object used throughout
-the examples, tests, and vignettes. It is simulated to resemble a multiplexed
+A small, fully synthetic two-sample
+\link[=SpatialCellData-class]{SpatialCellData} object used throughout the examples,
+tests, and vignettes. It is simulated to resemble a multiplexed
 immunofluorescence assay of tonsil tissue, with realistic spatial niche
 structure so that the spatial statistics return meaningful, non-trivial
 results.

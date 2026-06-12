@@ -4,7 +4,7 @@
 \alias{CrossNNDistance}
 \title{Cross Nearest Neighbour Distance}
 \usage{
-CrossNNDistance(object, from, to)
+CrossNNDistance(object, from, to, by_sample = FALSE)
 }
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
@@ -12,6 +12,10 @@ CrossNNDistance(object, from, to)
 \item{from}{Character. Source phenotype.}
 
 \item{to}{Character. Target phenotype.}
+
+\item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
+the statistic is computed per sample and returned as a named list. Default
+\code{FALSE}; otherwise a single sample is required.}
 }
 \value{
 A numeric vector of distances (one per cell of the \code{from}

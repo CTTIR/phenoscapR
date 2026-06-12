@@ -4,7 +4,13 @@
 \alias{PairCorrelation}
 \title{Pair Correlation Function}
 \usage{
-PairCorrelation(object, r_seq = NULL, dr = NULL, target = NULL)
+PairCorrelation(
+  object,
+  r_seq = NULL,
+  dr = NULL,
+  target = NULL,
+  by_sample = FALSE
+)
 }
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
@@ -15,6 +21,10 @@ PairCorrelation(object, r_seq = NULL, dr = NULL, target = NULL)
 \code{r_seq}.}
 
 \item{target}{Character or \code{NULL}. Restrict to a phenotype.}
+
+\item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
+the statistic is computed per sample and returned as a named list. Default
+\code{FALSE}; otherwise a single sample is required.}
 }
 \value{
 A data frame with columns \code{r} and \code{g}.
