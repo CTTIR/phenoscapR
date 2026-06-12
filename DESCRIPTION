@@ -27,6 +27,7 @@ Suggests:
     covr,
     deldir,
     knitr,
+    RANN,
     rmarkdown,
     Rtsne,
     songR,

@@ -1,3 +1,143 @@
+# ===========================================================================
+# Internal spatial-search engine
+# ---------------------------------------------------------------------------
+# Every radius- and k-nearest-neighbour query in the package routes through
+# these helpers. They use a kd-tree (RANN) when it is installed and fall back
+# to an exact, memory-bounded base-R computation otherwise. The fallback is
+# chunked so it never materialises the full O(n^2) distance matrix, which would
+# exhaust memory on realistic (10^5-10^6 cell) tissues.
+# ===========================================================================
+
+#' Fixed-radius neighbour search (symmetric)
+#'
+#' For each point, the indices of and distances to all *other* points within
+#' `radius`. Returns `list(idx = <list of integer>, dist = <list of numeric>)`,
+#' self-matches removed.
+#' @noRd
+.radius_neighbours <- function(coords, radius) {
+  n <- nrow(coords)
+  if (n < 2L) return(list(idx = vector("list", n), dist = vector("list", n)))
+
+  if (requireNamespace("RANN", quietly = TRUE)) {
+    k <- min(n, 64L)
+    repeat {
+      res <- RANN::nn2(coords, coords, k = k,
+                       searchtype = "radius", radius = radius)
+      # A row is saturated (possibly truncated) if its last slot is filled.
+      if (!(k < n && any(res$nn.idx[, k] != 0L))) break
+      k <- min(n, k * 4L)
+    }
+    idx <- res$nn.idx
+    dst <- res$nn.dists
+    out_idx <- vector("list", n)
+    out_dst <- vector("list", n)
+    for (i in seq_len(n)) {
+      keep <- idx[i, ] != 0L & idx[i, ] != i
+      out_idx[[i]] <- idx[i, keep]
+      out_dst[[i]] <- dst[i, keep]
+    }
+    return(list(idx = out_idx, dist = out_dst))
+  }
+
+  .radius_neighbours_bruteforce(coords, radius)
+}
+
+#' Exact, memory-bounded fallback for [.radius_neighbours]
+#' @noRd
+.radius_neighbours_bruteforce <- function(coords, radius) {
+  n <- nrow(coords)
+  out_idx <- vector("list", n)
+  out_dst <- vector("list", n)
+  block <- 2048L
+  r2 <- radius * radius
+  cx <- coords[, 1L]
+  cy <- coords[, 2L]
+  for (start in seq.int(1L, n, by = block)) {
+    end <- min(start + block - 1L, n)
+    qi <- start:end
+    dx <- outer(cx[qi], cx, "-")
+    dy <- outer(cy[qi], cy, "-")
+    d2 <- dx * dx + dy * dy
+    for (a in seq_along(qi)) {
+      i <- qi[a]
+      within <- which(d2[a, ] <= r2)
+      within <- within[within != i]
+      out_idx[[i]] <- within
+      out_dst[[i]] <- sqrt(d2[a, within])
+    }
+  }
+  list(idx = out_idx, dist = out_dst)
+}
+
+#' Count points of `data` within `radius` of each `query` point
+#'
+#' Cross-set fixed-radius count, excluding exact (zero-distance) coincidences
+#' so a query point never counts its own copy in `data`.
+#' @noRd
+.cross_radius_count <- function(query, data, radius) {
+  nq <- nrow(query)
+  nd <- nrow(data)
+  if (nd == 0L || nq == 0L) return(integer(nq))
+
+  if (requireNamespace("RANN", quietly = TRUE)) {
+    k <- min(nd, 64L)
+    repeat {
+      res <- RANN::nn2(data, query, k = k,
+                       searchtype = "radius", radius = radius)
+      if (!(k < nd && any(res$nn.idx[, k] != 0L))) break
+      k <- min(nd, k * 4L)
+    }
+    return(as.integer(rowSums(res$nn.idx != 0L & res$nn.dists > 0)))
+  }
+
+  out <- integer(nq)
+  block <- 2048L
+  r2 <- radius * radius
+  for (start in seq.int(1L, nq, by = block)) {
+    end <- min(start + block - 1L, nq)
+    qi <- start:end
+    dx <- outer(query[qi, 1L], data[, 1L], "-")
+    dy <- outer(query[qi, 2L], data[, 2L], "-")
+    d2 <- dx * dx + dy * dy
+    out[qi] <- rowSums(d2 <= r2 & d2 > 0)
+  }
+  out
+}
+
+#' Mean distance to the `k` nearest points of `data` for each `query`
+#'
+#' When `drop_self` is `TRUE`, the closest match (the query point's own copy in
+#' `data`, at distance 0) is discarded before averaging.
+#' @noRd
+.knn_mean_dist <- function(query, data, k, drop_self) {
+  nq <- nrow(query)
+  nd <- nrow(data)
+  if (nq == 0L) return(numeric(0))
+  if (nd == 0L) return(rep(NA_real_, nq))
+
+  kk <- if (drop_self) k + 1L else k
+  kk <- min(kk, nd)
+
+  if (requireNamespace("RANN", quietly = TRUE)) {
+    d <- RANN::nn2(data, query, k = kk)$nn.dists
+  } else {
+    d <- matrix(NA_real_, nq, kk)
+    block <- 2048L
+    for (start in seq.int(1L, nq, by = block)) {
+      end <- min(start + block - 1L, nq)
+      qi <- start:end
+      dx <- outer(query[qi, 1L], data[, 1L], "-")
+      dy <- outer(query[qi, 2L], data[, 2L], "-")
+      dd <- sqrt(dx * dx + dy * dy)
+      d[qi, ] <- t(apply(dd, 1L, function(r) sort(r)[seq_len(kk)]))
+    }
+  }
+
+  cols <- if (drop_self) seq.int(2L, kk) else seq_len(kk)
+  if (length(cols) == 0L) return(rep(NA_real_, nq))
+  rowMeans(d[, cols, drop = FALSE])
+}
+
 #' Compute Nearest Neighbour Distances
 #'
 #' For each cell, computes the distance to the nearest neighbouring cell,
@@ -50,27 +190,10 @@ nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
       return(dt)
     }
     coords_to <- coords_from[target_idx, , drop = FALSE]
+    nn_dist <- .knn_mean_dist(coords_from, coords_to, k, drop_self = FALSE)
   } else {
-    coords_to <- coords_from
+    nn_dist <- .knn_mean_dist(coords_from, coords_from, k, drop_self = TRUE)
   }
-
-  d <- as.matrix(dist(rbind(coords_from, coords_to)))
-  n_from <- nrow(coords_from)
-  n_to <- nrow(coords_to)
-
-  # Extract the submatrix of distances from query to target
-  d_sub <- d[seq_len(n_from), n_from + seq_len(n_to), drop = FALSE]
-
-  nn_dist <- vapply(seq_len(n_from), function(i) {
-    dists <- d_sub[i, ]
-    # If target includes self, remove distance 0 (self-match)
-    if (is.null(target_phenotype)) {
-      dists <- dists[dists > 0]
-    }
-    if (length(dists) == 0L) return(NA_real_)
-    k_use <- min(k, length(dists))
-    mean(sort(dists)[seq_len(k_use)])
-  }, numeric(1L))
 
   dt[, nn_distance := nn_dist]
   dt
@@ -122,19 +245,10 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
     }
     target_idx <- which(dt$phenotype == target_phenotype)
     target_coords <- coords[target_idx, , drop = FALSE]
+    dens <- .cross_radius_count(coords, target_coords, radius)
   } else {
-    target_coords <- coords
+    dens <- lengths(.radius_neighbours(coords, radius)$idx)
   }
-
-  d <- as.matrix(dist(rbind(coords, target_coords)))
-  n_from <- nrow(coords)
-  n_to <- nrow(target_coords)
-  d_sub <- d[seq_len(n_from), n_from + seq_len(n_to), drop = FALSE]
-
-  dens <- vapply(seq_len(n_from), function(i) {
-    count <- sum(d_sub[i, ] <= radius & d_sub[i, ] > 0)
-    count
-  }, numeric(1L))
 
   dt[, density := dens]
   dt
@@ -193,19 +307,18 @@ interaction_matrix <- function(dt, radius) {
     if (length(rows) < 2L) next
     coords <- as.matrix(dt[rows, c("x", "y")])
     pheno_vec <- dt$phenotype[rows]
-    d <- as.matrix(dist(coords))
+    nbr <- .radius_neighbours(coords, radius)$idx
 
-    obs_s <- matrix(0, nrow = n_pheno, ncol = n_pheno,
-                    dimnames = list(phenotypes, phenotypes))
-    for (i in seq_along(rows)) {
-      neighbours <- which(d[i, ] <= radius & d[i, ] > 0)
-      if (length(neighbours) == 0L) next
-      from <- pheno_vec[i]
-      tab <- table(pheno_vec[neighbours])
-      for (ph in names(tab)) {
-        obs_s[from, ph] <- obs_s[from, ph] + tab[ph]
-      }
-    }
+    # Vectorised neighbour tabulation: expand every (centre, neighbour) pair
+    # into aligned from/to phenotype vectors and cross-tabulate once.
+    lens <- lengths(nbr)
+    from_ph <- rep(pheno_vec, lens)
+    to_ph   <- pheno_vec[unlist(nbr, use.names = FALSE)]
+    obs_s <- unclass(table(
+      factor(from_ph, levels = phenotypes),
+      factor(to_ph,   levels = phenotypes)
+    ))
+    storage.mode(obs_s) <- "double"
     obs <- obs + obs_s
 
     # Expected under random mixing within this sample.
@@ -548,22 +661,22 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
     stop("No phenotype column. Run PhenotypeCells() first.", call. = FALSE)
   }
 
-  d <- as.matrix(dist(xy))
   phenotypes <- sort(unique(pheno))
   n_pheno <- length(phenotypes)
 
-  # Observed neighbour counts
+  # The neighbourhood graph is fixed; only the labels are permuted. Compute the
+  # graph once, then each permutation is a cheap re-tabulation of labels over
+  # the precomputed (centre, neighbour) edge list.
+  nbr <- .radius_neighbours(xy, radius)$idx
+  lens <- lengths(nbr)
+  flat <- unlist(nbr, use.names = FALSE)
+  centre_rep <- rep(seq_along(nbr), lens)
+
   .count_neighbours <- function(ph) {
-    obs <- matrix(0, n_pheno, n_pheno,
-                  dimnames = list(phenotypes, phenotypes))
-    for (i in seq_along(ph)) {
-      nbrs <- which(d[i, ] <= radius & d[i, ] > 0)
-      if (length(nbrs) > 0L) {
-        tab <- table(ph[nbrs])
-        for (nm in names(tab)) obs[ph[i], nm] <- obs[ph[i], nm] + tab[nm]
-      }
-    }
-    obs
+    unclass(table(
+      factor(ph[centre_rep], levels = phenotypes),
+      factor(ph[flat],       levels = phenotypes)
+    ))
   }
 
   obs_mat <- .count_neighbours(pheno)
@@ -629,8 +742,8 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
     r_seq <- seq(0, max_r, length.out = 50)
   }
 
-  d <- as.matrix(dist(xy))
-  diag(d) <- Inf
+  # Per-point neighbour distances out to the largest radius of interest.
+  nb <- .radius_neighbours(xy, max(r_seq))$dist
 
   if (correction == "border") {
     # Reduced-sample (border) estimator: only points at least r from the
@@ -641,12 +754,13 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
     K <- vapply(r_seq, function(r) {
       eligible <- which(b >= r)
       if (length(eligible) == 0L) return(NA_real_)
-      counts <- rowSums(d[eligible, , drop = FALSE] <= r)
+      counts <- vapply(eligible, function(i) sum(nb[[i]] <= r), numeric(1L))
       sum(counts) / (length(eligible) * lambda)
     }, numeric(1L))
   } else {
+    all_d <- unlist(nb, use.names = FALSE)
     K <- vapply(r_seq, function(r) {
-      sum(d <= r) / (n * lambda)
+      sum(all_d <= r) / (n * lambda)
     }, numeric(1L))
   }
 
@@ -691,18 +805,27 @@ MoransI <- function(object, feature, radius, slot = "data") {
   }
 
   xy <- as.matrix(object@coords)
-  d <- as.matrix(dist(xy))
-  W <- (d <= radius & d > 0) * 1.0
   n <- length(x)
   xbar <- mean(x)
   dx <- x - xbar
 
-  S0 <- sum(W)
-  I <- (n / S0) * sum(W * outer(dx, dx)) / sum(dx^2)
+  # Binary, symmetric spatial weights W_ij = 1(0 < d_ij <= radius). Working from
+  # the neighbour lists avoids the n^2 weight matrix; for symmetric binary
+  # weights the weight sums reduce to closed forms in the degrees.
+  nb <- .radius_neighbours(xy, radius)$idx
+  deg <- lengths(nb)
+  S0 <- sum(deg)
+  neigh_sum <- vapply(seq_along(nb), function(i) {
+    if (deg[i] == 0L) 0 else sum(dx[nb[[i]]])
+  }, numeric(1L))
+
+  I <- (n / S0) * sum(dx * neigh_sum) / sum(dx^2)
   EI <- -1 / (n - 1)
-  # Variance under normality
-  S1 <- 0.5 * sum((W + t(W))^2)
-  S2 <- sum((rowSums(W) + colSums(W))^2)
+  # Variance under normality. With W symmetric and binary,
+  # S1 = 0.5 * sum((W + t(W))^2) = 2 * S0 and
+  # S2 = sum_i (rowsum_i + colsum_i)^2 = 4 * sum_i deg_i^2.
+  S1 <- 2 * S0
+  S2 <- 4 * sum(deg^2)
   n2 <- n * n
   VI <- (n2 * S1 - n * S2 + 3 * S0^2) / (S0^2 * (n2 - 1)) - EI^2
 
@@ -807,11 +930,12 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
     dr <- if (length(r_seq) > 1) r_seq[2] - r_seq[1] else 1
   }
 
-  d <- as.matrix(dist(xy))
-  diag(d) <- Inf
+  # All ordered pairwise distances out to the largest ring edge.
+  all_d <- unlist(.radius_neighbours(xy, max(r_seq) + dr / 2)$dist,
+                  use.names = FALSE)
 
   g <- vapply(r_seq, function(r) {
-    ring <- sum(d > (r - dr / 2) & d <= (r + dr / 2))
+    ring <- sum(all_d > (r - dr / 2) & all_d <= (r + dr / 2))
     ring / (n * lambda * 2 * pi * r * dr)
   }, numeric(1L))
 
@@ -856,11 +980,9 @@ CrossNNDistance <- function(object, from, to) {
   from_xy <- xy[from_idx, , drop = FALSE]
   to_xy   <- xy[to_idx, , drop = FALSE]
 
-  vapply(seq_len(nrow(from_xy)), function(i) {
-    dx <- to_xy[, 1] - from_xy[i, 1]
-    dy <- to_xy[, 2] - from_xy[i, 2]
-    min(sqrt(dx^2 + dy^2))
-  }, numeric(1L))
+  # Nearest target cell for each source cell. `from` and `to` are different
+  # phenotypes, hence disjoint, so no self-match to drop.
+  .knn_mean_dist(from_xy, to_xy, k = 1L, drop_self = FALSE)
 }
 
 #' Expression-Based Cell Clustering
