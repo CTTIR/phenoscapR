@@ -423,6 +423,22 @@ CreateSpatialObject <- function(counts, coords, meta_data = NULL,
   coords <- as.data.frame(coords)
   n <- nrow(counts)
 
+  # --- Marker-matrix robustness -------------------------------------------
+  # Unnamed columns get stable default names; columns that are entirely NA are
+  # dropped (they break normalisation and spatial statistics downstream).
+  # Genuinely duplicated marker names are left for the validity check to reject,
+  # since silently renaming them would mask a labelling error in the input.
+  if (is.null(colnames(counts)) && ncol(counts) > 0L) {
+    colnames(counts) <- paste0("M", seq_len(ncol(counts)))
+  }
+  all_na <- colSums(!is.na(counts)) == 0L
+  if (any(all_na)) {
+    warning("Dropping ", sum(all_na), " all-NA marker column(s): ",
+            paste(colnames(counts)[all_na], collapse = ", "), ".",
+            call. = FALSE)
+    counts <- counts[, !all_na, drop = FALSE]
+  }
+
   if (is.null(meta_data)) {
     meta_data <- data.frame(
       cell_id   = as.character(seq_len(n)),
@@ -513,19 +529,7 @@ ReadSpatial <- function(path, sample_id = NULL, markers = NULL,
   coords <- data.frame(x = dt$x, y = dt$y)
   meta_data <- as.data.frame(dt[, meta_cols, with = FALSE])
 
-  if (!"cell_id" %in% names(meta_data)) {
-    meta_data$cell_id <- as.character(seq_len(nrow(counts)))
-  }
-  if (!"sample_id" %in% names(meta_data)) {
-    meta_data$sample_id <- "sample1"
-  }
-
-  methods::new("SpatialCellData",
-    counts    = counts,
-    data      = counts,
-    coords    = coords,
-    meta_data = meta_data,
-    project   = project,
-    spatial   = list()
-  )
+  # Route through CreateSpatialObject so duplicate / all-NA marker handling and
+  # the cell_id / sample_id defaults are applied in one shared place.
+  CreateSpatialObject(counts, coords, meta_data = meta_data, project = project)
 }

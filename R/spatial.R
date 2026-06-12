@@ -138,6 +138,113 @@
   rowMeans(d[, cols, drop = FALSE])
 }
 
+#' Indices and distances of the `k` nearest neighbours of each point
+#'
+#' Returns `list(idx = <n x k integer>, dist = <n x k numeric>)`, the self-match
+#' dropped, so column 1 is each point's nearest *other* neighbour. kd-tree
+#' (RANN) when available, exact chunked fallback otherwise.
+#' @noRd
+.knn_index <- function(coords, k) {
+  n <- nrow(coords)
+  k <- min(as.integer(k), n - 1L)
+  if (n < 2L || k < 1L) {
+    return(list(idx = matrix(integer(0), n, 0L),
+                dist = matrix(numeric(0), n, 0L)))
+  }
+
+  if (requireNamespace("RANN", quietly = TRUE)) {
+    res <- RANN::nn2(coords, coords, k = k + 1L)
+    return(list(idx = res$nn.idx[, -1L, drop = FALSE],
+                dist = res$nn.dists[, -1L, drop = FALSE]))
+  }
+
+  idx <- matrix(0L, n, k)
+  dst <- matrix(0, n, k)
+  block <- 2048L
+  for (start in seq.int(1L, n, by = block)) {
+    qi <- start:min(start + block - 1L, n)
+    dx <- outer(coords[qi, 1L], coords[, 1L], "-")
+    dy <- outer(coords[qi, 2L], coords[, 2L], "-")
+    d2 <- dx * dx + dy * dy
+    for (a in seq_along(qi)) {
+      o <- order(d2[a, ])
+      o <- o[o != qi[a]][seq_len(k)]
+      idx[qi[a], ] <- o
+      dst[qi[a], ] <- sqrt(d2[a, o])
+    }
+  }
+  list(idx = idx, dist = dst)
+}
+
+#' Cumulative neighbour counts at a set of radii, memory-bounded
+#'
+#' For each radius in `r_eval`, the total number of (ordered) neighbour pairs at
+#' distance <= r, summed over centres. When `b` (each point's distance to the
+#' window edge) is supplied, a centre contributes to radius r only when
+#' `b >= r` (the reduced-sample border rule).
+#'
+#' A (centre, neighbour) pair at distance d with centre-border cb contributes to
+#' every radius r in `[d, cb]` (or `[d, Inf)` without border). Pairs are streamed
+#' through the kd-tree in blocks and folded into a difference array over the
+#' radius grid, so counting is both O(pairs) vectorised and memory-bounded.
+#' `r_eval` must be sorted ascending.
+#' @noRd
+.radius_count_sweep <- function(coords, r_eval, b = NULL) {
+  n <- nrow(coords)
+  R <- length(r_eval)
+  rmax <- r_eval[R]
+  delta <- numeric(R + 1L)
+  if (n < 2L) return(numeric(R))
+  use_rann <- requireNamespace("RANN", quietly = TRUE)
+  block <- if (use_rann) 4096L else 1024L
+
+  # Seed the radius-search cap from the expected local density so we rarely
+  # have to grow k and re-query (k grows only where the tissue is unusually
+  # dense). area from the bounding box.
+  area <- (max(coords[, 1L]) - min(coords[, 1L])) *
+          (max(coords[, 2L]) - min(coords[, 2L]))
+  lambda_hat <- if (area > 0) n / area else 1
+  k_start <- min(n, max(64L,
+    as.integer(ceiling(1.4 * lambda_hat * pi * rmax^2 + 16))))
+
+  add_pairs <- function(dvec, cidx) {
+    if (!length(dvec)) return(invisible())
+    lo <- findInterval(dvec, r_eval, left.open = TRUE) + 1L   # first r >= d
+    hi <- if (is.null(b)) rep.int(R, length(dvec)) else findInterval(b[cidx], r_eval)
+    ok <- lo <= hi
+    if (!any(ok)) return(invisible())
+    delta <<- delta + tabulate(lo[ok], R + 1L) - tabulate(hi[ok] + 1L, R + 1L)
+    invisible()
+  }
+
+  for (start in seq.int(1L, n, by = block)) {
+    qi <- start:min(start + block - 1L, n)
+    if (use_rann) {
+      k <- k_start
+      repeat {
+        res <- RANN::nn2(coords, coords[qi, , drop = FALSE], k = k,
+                         searchtype = "radius", radius = rmax)
+        if (!(k < n && any(res$nn.idx[, k] != 0L))) break
+        k <- min(n, k * 4L)
+      }
+      gi <- qi[rep(seq_along(qi), times = ncol(res$nn.idx))]
+      jj <- as.vector(res$nn.idx)
+      dd <- as.vector(res$nn.dists)
+      keep <- jj != 0L & jj != gi
+      add_pairs(dd[keep], gi[keep])
+    } else {
+      dx <- outer(coords[qi, 1L], coords[, 1L], "-")
+      dy <- outer(coords[qi, 2L], coords[, 2L], "-")
+      d2 <- dx * dx + dy * dy
+      gi <- qi[row(d2)]
+      self <- gi == col(d2)
+      keep <- d2 <= rmax * rmax & !self
+      add_pairs(sqrt(d2[keep]), gi[keep])
+    }
+  }
+  cumsum(delta)[seq_len(R)]
+}
+
 #' Compute Nearest Neighbour Distances
 #'
 #' For each cell, computes the distance to the nearest neighbouring cell,
@@ -616,13 +723,11 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
           "triangulation. Install 'deldir' for exact results.", call. = FALSE)
   n <- nrow(xy)
   k <- min(6L, n - 1L)
-  d <- as.matrix(dist(xy))
-  diag(d) <- Inf
-  pairs <- lapply(seq_len(n), function(i) {
-    nbrs <- order(d[i, ])[seq_len(k)]
-    cbind(pmin(i, nbrs), pmax(i, nbrs))
-  })
-  m <- unique(do.call(rbind, pairs))
+  kn <- .knn_index(xy, k)                       # kd-tree, no O(n^2) matrix
+  ii <- rep(seq_len(n), times = ncol(kn$idx))
+  jj <- as.vector(kn$idx)
+  ok <- jj != 0L
+  m <- unique(cbind(pmin(ii[ok], jj[ok]), pmax(ii[ok], jj[ok])))
   data.frame(from = as.integer(m[, 1L]), to = as.integer(m[, 2L]))
 }
 
@@ -742,30 +847,25 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
     r_seq <- seq(0, max_r, length.out = 50)
   }
 
-  # Per-point neighbour distances out to the largest radius of interest.
-  nb <- .radius_neighbours(xy, max(r_seq))$dist
-  all_d <- unlist(nb, use.names = FALSE)
+  # Cumulative neighbour counts per radius, computed in a memory-bounded sweep
+  # (never materialises the full pairwise-distance set).
+  r_sorted <- sort(r_seq)
+  ord <- order(r_seq)
 
   if (correction == "border") {
-    # Reduced-sample (border) estimator: only points at least r from the
-    # window edge act as centres, which removes the negative edge bias of the
-    # naive estimator. b_i is each point's distance to the bounding-box edge.
+    # Reduced-sample (border) estimator: only points at least r from the window
+    # edge act as centres, removing the negative edge bias. b_i is each point's
+    # distance to the bounding-box edge.
     b <- pmin(xy[, 1L] - x_range[1L], x_range[2L] - xy[, 1L],
               xy[, 2L] - y_range[1L], y_range[2L] - xy[, 2L])
-    # Pair each neighbour distance with its centre's border distance, then count
-    # in a fully vectorised sweep over r (a centre contributes only once it is
-    # at least r from the edge).
-    centre_b <- rep(b, lengths(nb))
-    K <- vapply(r_seq, function(r) {
-      den <- sum(b >= r)
-      if (den == 0L) return(NA_real_)
-      sum(all_d <= r & centre_b >= r) / (den * lambda)
-    }, numeric(1L))
+    num <- .radius_count_sweep(xy, r_sorted, b = b)
+    den <- vapply(r_sorted, function(r) sum(b >= r), numeric(1L))
+    K_sorted <- ifelse(den > 0, num / (den * lambda), NA_real_)
   } else {
-    K <- vapply(r_seq, function(r) {
-      sum(all_d <= r) / (n * lambda)
-    }, numeric(1L))
+    num <- .radius_count_sweep(xy, r_sorted)
+    K_sorted <- num / (n * lambda)
   }
+  K <- K_sorted[order(ord)]   # restore the caller's radius order
 
   data.frame(
     r = r_seq,
@@ -933,13 +1033,18 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
     dr <- if (length(r_seq) > 1) r_seq[2] - r_seq[1] else 1
   }
 
-  # All ordered pairwise distances out to the largest ring edge.
-  all_d <- unlist(.radius_neighbours(xy, max(r_seq) + dr / 2)$dist,
-                  use.names = FALSE)
+  # Ring counts come from differences of cumulative neighbour counts at the
+  # ring edges, computed in a memory-bounded sweep (no full distance set).
+  lower <- r_seq - dr / 2
+  upper <- r_seq + dr / 2
+  edges <- sort(unique(c(lower, upper)))
+  edges <- edges[edges > 0]
+  cum <- .radius_count_sweep(xy, edges)
+  cumc <- function(r) if (r <= 0) 0 else cum[match(r, edges)]
 
-  g <- vapply(r_seq, function(r) {
-    ring <- sum(all_d > (r - dr / 2) & all_d <= (r + dr / 2))
-    ring / (n * lambda * 2 * pi * r * dr)
+  g <- vapply(seq_along(r_seq), function(i) {
+    ring <- cumc(upper[i]) - cumc(lower[i])
+    ring / (n * lambda * 2 * pi * r_seq[i] * dr)
   }, numeric(1L))
 
   data.frame(r = r_seq, g = g)

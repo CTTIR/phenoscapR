@@ -58,6 +58,34 @@ test_that("cross-set radius counts match a direct computation", {
   expect_equal(got, as.integer(ref))
 })
 
+test_that("knn index matches an order()-based reference", {
+  skip_if_not_installed("RANN")
+  coords <- make_points(200L, seed = 9L)
+  k <- 6L
+  kn <- phenoscapR:::.knn_index(coords, k)
+  bf <- phenoscapR:::.knn_index(coords[1:1, , drop = FALSE], 0L)  # degenerate guard
+  expect_equal(dim(bf$idx), c(1L, 0L))
+
+  d <- as.matrix(dist(coords)); diag(d) <- Inf
+  for (i in c(1L, 50L, 137L)) {
+    ref <- order(d[i, ])[seq_len(k)]
+    expect_setequal(kn$idx[i, ], ref)
+  }
+  # distances are non-decreasing across the k columns
+  expect_true(all(kn$dist[, 1] <= kn$dist[, k]))
+})
+
+test_that("radius count sweep matches a brute-force cumulative count", {
+  skip_if_not_installed("RANN")
+  coords <- make_points(300L, seed = 10L)
+  r_eval <- seq(5, 60, length.out = 12)
+  got <- phenoscapR:::.radius_count_sweep(coords, r_eval)
+
+  d <- as.matrix(dist(coords)); diag(d) <- Inf
+  ref <- vapply(r_eval, function(r) sum(d <= r), numeric(1))
+  expect_equal(got, ref, tolerance = 1e-9)
+})
+
 test_that("knn mean distance matches a direct computation", {
   skip_if_not_installed("RANN")
   coords <- make_points(150L, seed = 4L)

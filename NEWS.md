@@ -1,3 +1,19 @@
+# phenoscapR 1.0.1
+
+Robustness and scalability hardening.
+
+* The Delaunay fallback (used when `deldir` is absent) no longer builds an
+  O(n^2) distance matrix; it now uses the kd-tree k-nearest-neighbour engine.
+* Ripley's K and the pair correlation function no longer materialise the full
+  pairwise-distance set. Counting is streamed through the kd-tree in blocks and
+  folded into a difference array over the radius grid — bounded memory, with the
+  search cap seeded from the local density to avoid re-queries.
+* Reader / `CreateSpatialObject()` robustness: unnamed marker matrices get
+  stable default names and all-NA marker columns are dropped with a warning;
+  `ReadSpatial()` now shares this handling. Duplicate marker names remain a hard
+  error (renaming them would mask a labelling mistake).
+* Added large-n and backend-equivalence regression tests.
+
 # phenoscapR 1.0.0
 
 First stable release. This version consolidates the package onto a single

@@ -42,3 +42,32 @@ test_that("RipleysK border correction is vectorised yet matches the definition",
 
   expect_equal(got$K, ref, tolerance = 1e-8)
 })
+
+test_that("RipleysK 'none' and PairCorrelation match direct references", {
+  set.seed(5)
+  n <- 350L
+  counts <- matrix(rnorm(2 * n), ncol = 2, dimnames = list(NULL, c("A", "B")))
+  coords <- data.frame(x = runif(n, 0, 200), y = runif(n, 0, 200))
+  obj <- CreateSpatialObject(counts, coords)
+
+  xy <- as.matrix(coords)
+  d <- as.matrix(dist(xy)); diag(d) <- Inf
+  xr <- range(xy[, 1]); yr <- range(xy[, 2])
+  lambda <- n / (diff(xr) * diff(yr))
+
+  # Ripley's K, no correction.
+  r_seq <- seq(0, 40, length.out = 15)
+  k_got <- RipleysK(obj, r_seq = r_seq, correction = "none")$K
+  k_ref <- vapply(r_seq, function(r) sum(d <= r) / (n * lambda), numeric(1))
+  expect_equal(k_got, k_ref, tolerance = 1e-8)
+
+  # Pair correlation g(r).
+  r_pcf <- seq(5, 40, length.out = 12)
+  dr <- r_pcf[2] - r_pcf[1]
+  g_got <- PairCorrelation(obj, r_seq = r_pcf, dr = dr)$g
+  g_ref <- vapply(r_pcf, function(r) {
+    ring <- sum(d > (r - dr / 2) & d <= (r + dr / 2))
+    ring / (n * lambda * 2 * pi * r * dr)
+  }, numeric(1))
+  expect_equal(g_got, g_ref, tolerance = 1e-8)
+})
