@@ -31,5 +31,11 @@ analysis functions.}
 
 \item{\code{spatial}}{List for storing spatial analysis results (nearest-neighbour
 distances, density values, interaction matrices).}
+
+\item{\code{reductions}}{Named list of dimensionality-reduction embeddings. Each
+element is a numeric matrix with one row per cell (e.g. \code{"pca"},
+\code{"umap"}, \code{"tsne"}, \code{"song"}), as produced by
+\code{\link{RunPCA}}, \code{\link{RunUMAP}}, \code{\link{RunTSNE}}, or
+\code{\link{RunSONG}}.}
 }}
 

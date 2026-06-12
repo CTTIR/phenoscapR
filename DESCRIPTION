@@ -28,8 +28,12 @@ Suggests:
     deldir,
     knitr,
     rmarkdown,
+    Rtsne,
+    songR,
     testthat (>= 3.0.0),
+    uwot,
     withr
+Additional_repositories: https://cttir.r-universe.dev
 Config/testthat/edition: 3
 Config/Needs/website: CTTIR/themakR, pkgdown
 Encoding: UTF-8

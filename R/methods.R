@@ -36,6 +36,10 @@ setMethod("show", "SpatialCellData", function(object) {
     cat("  Spatial results:", paste(names(object@spatial), collapse = ", "),
         "\n")
   }
+  if (length(object@reductions) > 0L) {
+    cat("  Reductions:", paste(names(object@reductions), collapse = ", "),
+        "\n")
+  }
   cat("  Project:", object@project, "\n")
 })
 
@@ -159,6 +163,9 @@ setMethod("[", signature(x = "SpatialCellData"), function(x, i, j, drop = FALSE)
     x@coords    <- x@coords[i, , drop = FALSE]
     x@meta_data <- x@meta_data[i, , drop = FALSE]
     rownames(x@meta_data) <- NULL
+    if (length(x@reductions) > 0L) {
+      x@reductions <- lapply(x@reductions, function(e) e[i, , drop = FALSE])
+    }
   }
   if (!missing(j)) {
     x@counts <- x@counts[, j, drop = FALSE]

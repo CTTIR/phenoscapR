@@ -18,25 +18,32 @@
 #' @slot project Character string. Project or experiment name.
 #' @slot spatial List for storing spatial analysis results (nearest-neighbour
 #'   distances, density values, interaction matrices).
+#' @slot reductions Named list of dimensionality-reduction embeddings. Each
+#'   element is a numeric matrix with one row per cell (e.g. \code{"pca"},
+#'   \code{"umap"}, \code{"tsne"}, \code{"song"}), as produced by
+#'   \code{\link{RunPCA}}, \code{\link{RunUMAP}}, \code{\link{RunTSNE}}, or
+#'   \code{\link{RunSONG}}.
 #'
 #' @export
 #' @importFrom methods setClass new validObject is
 setClass("SpatialCellData",
   slots = list(
-    counts    = "matrix",
-    data      = "matrix",
-    coords    = "data.frame",
-    meta_data = "data.frame",
-    project   = "character",
-    spatial   = "list"
+    counts     = "matrix",
+    data       = "matrix",
+    coords     = "data.frame",
+    meta_data  = "data.frame",
+    project    = "character",
+    spatial    = "list",
+    reductions = "list"
   ),
   prototype = list(
-    counts    = matrix(numeric(0), nrow = 0, ncol = 0),
-    data      = matrix(numeric(0), nrow = 0, ncol = 0),
-    coords    = data.frame(x = numeric(0), y = numeric(0)),
-    meta_data = data.frame(cell_id = character(0), sample_id = character(0)),
-    project   = "SpatialProject",
-    spatial   = list()
+    counts     = matrix(numeric(0), nrow = 0, ncol = 0),
+    data       = matrix(numeric(0), nrow = 0, ncol = 0),
+    coords     = data.frame(x = numeric(0), y = numeric(0)),
+    meta_data  = data.frame(cell_id = character(0), sample_id = character(0)),
+    project    = "SpatialProject",
+    spatial    = list(),
+    reductions = list()
   )
 )
 

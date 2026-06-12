@@ -124,6 +124,21 @@ reference:
       - CrossNNDistance
       - ExpressionClusters
 
+  - title: "Dimensionality Reduction"
+    desc: >
+      Embed cells from their marker-expression profiles for visualisation.
+      PCA uses base R and is always available; UMAP, t-SNE, and SONG are
+      optional backends (uwot, Rtsne, and the CTTIR songR package). UMAP,
+      t-SNE, and SONG run on the top principal components by default.
+    contents:
+      - RunPCA
+      - RunUMAP
+      - RunTSNE
+      - RunSONG
+      - Embeddings
+      - Reductions
+      - EmbeddingPlot
+
   - title: "Visualisation"
     desc: >
       Publication-ready ggplot2 visualisations for cell maps, marker
