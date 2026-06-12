@@ -13,11 +13,10 @@
 * NOTE: "New submission" — this is the first submission of this package to CRAN.
 
 * NOTE: "Found the following (possibly) invalid URLs" — the GitHub repository
-  (https://github.com/r-heller/phenoscapR) and pkgdown site
-  (https://r-heller.github.io/phenoscapR/) return 404 during local checking
-  because the repository has not yet been pushed to GitHub. These URLs will
-  resolve correctly once the package is published. CRAN mirrors check URLs
-  after submission so these will be live by then.
+  (https://github.com/cttir/phenoscapR) and pkgdown site
+  (https://cttir.github.io/phenoscapR/) may return 404 during local checking
+  if the pkgdown site has not yet been published. These URLs resolve correctly
+  once the site is built and deployed via GitHub Actions.
 
 ## Downstream dependencies
 
