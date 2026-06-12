@@ -12,13 +12,18 @@ spatial interaction networks.
 
 Useful links:
 
-- <https://r-heller.github.io/phenoscapR/>
+- <https://cttir.github.io/phenoscapR/>
 
-- <https://github.com/r-heller/phenoscapR>
+- <https://github.com/cttir/phenoscapR>
 
-- Report bugs at <https://github.com/r-heller/phenoscapR/issues>
+- Report bugs at <https://github.com/cttir/phenoscapR/issues>
 
 ## Author
 
-**Maintainer**: Raban Heller <raban.heller@uni-ulm.de>
+**Maintainer**: R. Heller <raban.heller@uni-ulm.de>
 ([ORCID](https://orcid.org/0000-0001-8006-9742))
+
+Authors:
+
+- R. Heller <raban.heller@uni-ulm.de>
+  ([ORCID](https://orcid.org/0000-0001-8006-9742))
