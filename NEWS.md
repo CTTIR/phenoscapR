@@ -1,3 +1,21 @@
+# phenoscapR 1.2.0
+
+Deeper, more rigorous statistics.
+
+* `RipleysK()` gains a `"translation"` edge correction (each pair weighted by the
+  inverse window/translate overlap) -- the rigorous estimator for rectangular
+  windows, alongside the existing `"none"` and reduced-sample `"border"`.
+* `MoransI()` gains weight schemes (`weights = "binary"`, `"row"`-standardised,
+  or `"idw"` inverse-distance) and a permutation p-value (`n_perm`), reported via
+  a `method` field. Non-binary weights use the permutation test automatically.
+* `InteractionMatrix()` gains a permutation null (`method = "permutation"`,
+  `n_perm`) that shuffles phenotype labels within each sample and adds
+  `z_score` and `p_value` columns.
+* PCA now retains variance and loadings: `VarianceExplained()` returns the
+  percent variance per component and `ScreePlot()` visualises it.
+* The translation sweep and Moran weighting are exercised against direct
+  references in the test suite.
+
 # phenoscapR 1.1.0
 
 API coherence.

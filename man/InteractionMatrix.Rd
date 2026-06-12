@@ -4,16 +4,33 @@
 \alias{InteractionMatrix}
 \title{Interaction Matrix (SpatialCellData)}
 \usage{
-InteractionMatrix(object, radius)
+InteractionMatrix(
+  object,
+  radius,
+  method = c("analytic", "permutation"),
+  n_perm = 100L,
+  seed = NULL
+)
 }
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
 \item{radius}{Numeric. Radius for defining spatial neighbourhoods.}
+
+\item{method}{Character. \code{"analytic"} (default) compares observed
+neighbour counts to an expectation under random mixing;
+\code{"permutation"} builds the null by shuffling phenotype labels within
+each sample, adding \code{z_score} and \code{p_value} columns.}
+
+\item{n_perm}{Integer. Number of label permutations when
+\code{method = "permutation"}. Default \code{100}.}
+
+\item{seed}{Integer or \code{NULL}. Random seed for the permutation null.}
 }
 \value{
 A data frame with columns \code{from}, \code{to}, \code{observed},
-\code{expected}, and \code{interaction_score}.
+\code{expected}, and \code{interaction_score}; the permutation method adds
+\code{z_score} and \code{p_value}.
 }
 \description{
 Computes pairwise spatial interaction scores between phenotypes.

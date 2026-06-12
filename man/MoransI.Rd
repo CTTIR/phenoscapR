@@ -4,7 +4,16 @@
 \alias{MoransI}
 \title{Moran's I Spatial Autocorrelation}
 \usage{
-MoransI(object, feature, radius, slot = "data", by_sample = FALSE)
+MoransI(
+  object,
+  feature,
+  radius,
+  slot = "data",
+  weights = c("binary", "row", "idw"),
+  n_perm = 0L,
+  seed = NULL,
+  by_sample = FALSE
+)
 }
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
@@ -15,13 +24,26 @@ MoransI(object, feature, radius, slot = "data", by_sample = FALSE)
 
 \item{slot}{Character. \code{"data"} (default) or \code{"counts"}.}
 
+\item{weights}{Character. Spatial weighting within the radius:
+\code{"binary"} (default; 1 for every neighbour), \code{"row"}
+(row-standardised, each cell's weights sum to 1), or \code{"idw"}
+(inverse-distance, \code{1 / d}).}
+
+\item{n_perm}{Integer. Number of label permutations for the p-value. \code{0}
+(default) uses the analytic normal approximation, which is exact only for
+\code{"binary"} weights; any other weighting auto-enables a permutation
+test.}
+
+\item{seed}{Integer or \code{NULL}. Random seed for the permutation test.}
+
 \item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
 the statistic is computed per sample and returned as a named list. Default
 \code{FALSE}; otherwise a single sample is required.}
 }
 \value{
 A list with \code{I}, \code{expected}, \code{variance},
-\code{z_score}, and \code{p_value}.
+\code{z_score}, \code{p_value}, and \code{method} (\code{"analytic"} or
+\code{"permutation"}).
 }
 \description{
 Computes Moran's I statistic for a numeric variable.
@@ -32,5 +54,6 @@ counts <- matrix(rnorm(100), nrow = 50,
 coords <- data.frame(x = runif(50, 0, 100), y = runif(50, 0, 100))
 obj <- CreateSpatialObject(counts, coords)
 MoransI(obj, feature = "CD3", radius = 30)
+MoransI(obj, feature = "CD3", radius = 30, weights = "idw", n_perm = 199)
 
 }

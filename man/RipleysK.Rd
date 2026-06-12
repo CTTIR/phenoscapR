@@ -8,7 +8,7 @@ RipleysK(
   object,
   r_seq = NULL,
   target = NULL,
-  correction = c("none", "border"),
+  correction = c("none", "border", "translation"),
   by_sample = FALSE
 )
 }
@@ -19,7 +19,10 @@ RipleysK(
 
 \item{target}{Character or \code{NULL}. Restrict to a phenotype.}
 
-\item{correction}{Character. \code{"none"} (default) or \code{"border"}.}
+\item{correction}{Character. Edge correction: \code{"none"} (default),
+\code{"border"} (reduced-sample), or \code{"translation"} (each pair
+weighted by the inverse window/translate overlap; rigorous for rectangular
+windows).}
 
 \item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
 the statistic is computed per sample and returned as a named list (one

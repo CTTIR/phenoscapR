@@ -83,8 +83,76 @@ RunPCA <- function(object, n_pcs = 30L, slot = "data", markers = NULL) {
   emb <- pr$x[, seq_len(n_pcs), drop = FALSE]
   colnames(emb) <- paste0("PC_", seq_len(n_pcs))
 
+  # Retain the model so variance explained and loadings stay queryable.
+  total_var <- sum(pr$sdev^2)
+  attr(emb, "sdev") <- pr$sdev[seq_len(n_pcs)]
+  attr(emb, "percent_var") <- 100 * pr$sdev[seq_len(n_pcs)]^2 / total_var
+  attr(emb, "rotation") <- pr$rotation[, seq_len(n_pcs), drop = FALSE]
+
   object@reductions[["pca"]] <- emb
   object
+}
+
+#' Variance Explained by Principal Components
+#'
+#' Returns the percentage of total variance captured by each principal
+#' component from a previously computed PCA reduction.
+#'
+#' @param object A \code{\link{SpatialCellData-class}} object.
+#' @return A named numeric vector of percent-variance-explained per PC.
+#'
+#' @examples
+#' counts <- matrix(rnorm(500), nrow = 50,
+#'                  dimnames = list(NULL, paste0("M", 1:10)))
+#' coords <- data.frame(x = runif(50), y = runif(50))
+#' obj <- RunPCA(CreateSpatialObject(counts, coords), n_pcs = 5)
+#' VarianceExplained(obj)
+#'
+#' @export
+VarianceExplained <- function(object) {
+  emb <- object@reductions[["pca"]]
+  if (is.null(emb)) stop("No PCA reduction. Run RunPCA() first.", call. = FALSE)
+  pv <- attr(emb, "percent_var")
+  if (is.null(pv)) {
+    stop("This PCA was computed by an older version without variance info; ",
+         "re-run RunPCA().", call. = FALSE)
+  }
+  stats::setNames(pv, colnames(emb))
+}
+
+#' Scree Plot of PCA Variance
+#'
+#' Bar-and-line plot of the percent variance explained by each principal
+#' component -- the standard tool for choosing how many PCs to retain.
+#'
+#' @param object A \code{\link{SpatialCellData-class}} object.
+#' @param n_pcs Integer or \code{NULL}. Number of PCs to show. Default all.
+#'
+#' @return A \code{ggplot} object.
+#'
+#' @examples
+#' counts <- matrix(rnorm(500), nrow = 50,
+#'                  dimnames = list(NULL, paste0("M", 1:10)))
+#' coords <- data.frame(x = runif(50), y = runif(50))
+#' obj <- RunPCA(CreateSpatialObject(counts, coords), n_pcs = 8)
+#' ScreePlot(obj)
+#'
+#' @export
+#' @importFrom ggplot2 ggplot aes geom_col geom_line geom_point labs .data
+ScreePlot <- function(object, n_pcs = NULL) {
+  pv <- VarianceExplained(object)
+  if (!is.null(n_pcs)) pv <- pv[seq_len(min(n_pcs, length(pv)))]
+  df <- data.frame(pc = factor(names(pv), levels = names(pv)),
+                   percent = as.numeric(pv),
+                   idx = seq_along(pv))
+  ggplot2::ggplot(df, ggplot2::aes(.data$idx, .data$percent)) +
+    ggplot2::geom_col(fill = "#3366cc", alpha = 0.7) +
+    ggplot2::geom_line(colour = "grey30") +
+    ggplot2::geom_point(colour = "grey30", size = 1.5) +
+    ggplot2::scale_x_continuous(breaks = df$idx, labels = df$pc) +
+    ggplot2::labs(x = NULL, y = "variance explained (%)",
+                  title = "PCA scree plot") +
+    ggplot2::theme_minimal(base_size = 11)
 }
 
 #' UMAP Embedding

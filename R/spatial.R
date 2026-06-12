@@ -189,7 +189,7 @@
 #' radius grid, so counting is both O(pairs) vectorised and memory-bounded.
 #' `r_eval` must be sorted ascending.
 #' @noRd
-.radius_count_sweep <- function(coords, r_eval, b = NULL) {
+.radius_count_sweep <- function(coords, r_eval, b = NULL, weight_fun = NULL) {
   n <- nrow(coords)
   R <- length(r_eval)
   rmax <- r_eval[R]
@@ -207,13 +207,19 @@
   k_start <- min(n, max(64L,
     as.integer(ceiling(1.4 * lambda_hat * pi * rmax^2 + 16))))
 
-  add_pairs <- function(dvec, cidx) {
+  add_pairs <- function(dvec, cidx, jidx) {
     if (!length(dvec)) return(invisible())
     lo <- findInterval(dvec, r_eval, left.open = TRUE) + 1L   # first r >= d
     hi <- if (is.null(b)) rep.int(R, length(dvec)) else findInterval(b[cidx], r_eval)
     ok <- lo <= hi
     if (!any(ok)) return(invisible())
-    delta <<- delta + tabulate(lo[ok], R + 1L) - tabulate(hi[ok] + 1L, R + 1L)
+    if (is.null(weight_fun)) {
+      delta <<- delta + tabulate(lo[ok], R + 1L) - tabulate(hi[ok] + 1L, R + 1L)
+    } else {
+      w <- weight_fun(cidx[ok], jidx[ok])
+      delta <<- delta +
+        .weighted_tab(lo[ok], w, R + 1L) - .weighted_tab(hi[ok] + 1L, w, R + 1L)
+    }
     invisible()
   }
 
@@ -231,18 +237,27 @@
       jj <- as.vector(res$nn.idx)
       dd <- as.vector(res$nn.dists)
       keep <- jj != 0L & jj != gi
-      add_pairs(dd[keep], gi[keep])
+      add_pairs(dd[keep], gi[keep], jj[keep])
     } else {
       dx <- outer(coords[qi, 1L], coords[, 1L], "-")
       dy <- outer(coords[qi, 2L], coords[, 2L], "-")
       d2 <- dx * dx + dy * dy
       gi <- qi[row(d2)]
-      self <- gi == col(d2)
-      keep <- d2 <= rmax * rmax & !self
-      add_pairs(sqrt(d2[keep]), gi[keep])
+      cj <- col(d2)
+      keep <- d2 <= rmax * rmax & gi != cj
+      add_pairs(sqrt(d2[keep]), gi[keep], cj[keep])
     }
   }
   cumsum(delta)[seq_len(R)]
+}
+
+#' Sum of weights grouped by integer bin (a weighted tabulate)
+#' @noRd
+.weighted_tab <- function(bin, w, nbins) {
+  out <- numeric(nbins)
+  s <- tapply(w, bin, sum)
+  out[as.integer(names(s))] <- s
+  out
 }
 
 #' Compute Nearest Neighbour Distances
@@ -613,9 +628,17 @@ CellDensity <- function(object, radius, target = NULL) {
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param radius Numeric. Radius for defining spatial neighbourhoods.
+#' @param method Character. \code{"analytic"} (default) compares observed
+#'   neighbour counts to an expectation under random mixing;
+#'   \code{"permutation"} builds the null by shuffling phenotype labels within
+#'   each sample, adding \code{z_score} and \code{p_value} columns.
+#' @param n_perm Integer. Number of label permutations when
+#'   \code{method = "permutation"}. Default \code{100}.
+#' @param seed Integer or \code{NULL}. Random seed for the permutation null.
 #'
 #' @return A data frame with columns \code{from}, \code{to}, \code{observed},
-#'   \code{expected}, and \code{interaction_score}.
+#'   \code{expected}, and \code{interaction_score}; the permutation method adds
+#'   \code{z_score} and \code{p_value}.
 #'
 #' @examples
 #' set.seed(42)
@@ -628,7 +651,9 @@ CellDensity <- function(object, radius, target = NULL) {
 #' InteractionMatrix(obj, radius = 50)
 #'
 #' @export
-InteractionMatrix <- function(object, radius) {
+InteractionMatrix <- function(object, radius, method = c("analytic",
+                              "permutation"), n_perm = 100L, seed = NULL) {
+  method <- match.arg(method)
   dt <- data.table::data.table(
     sample_id = object@meta_data$sample_id,
     cell_id   = object@meta_data$cell_id,
@@ -636,8 +661,67 @@ InteractionMatrix <- function(object, radius) {
     y         = object@coords$y,
     phenotype = object@meta_data$phenotype
   )
-  .as_result(as.data.frame(interaction_matrix(dt, radius = radius)),
-             "phenoscapR_interaction")
+  out <- if (method == "permutation") {
+    .interaction_permutation(dt, radius, as.integer(n_perm), seed)
+  } else {
+    as.data.frame(interaction_matrix(dt, radius = radius))
+  }
+  .as_result(out, "phenoscapR_interaction")
+}
+
+#' Permutation-based interaction matrix
+#'
+#' Builds the null distribution of phenotype neighbour counts by shuffling
+#' labels within each sample (geometry held fixed). Returns observed counts, the
+#' permutation mean as the expectation, the interaction score, and z / p.
+#' @noRd
+.interaction_permutation <- function(dt, radius, n_perm, seed) {
+  if (!is.null(seed)) set.seed(seed)
+  phenotypes <- sort(unique(dt$phenotype))
+  np <- length(phenotypes)
+  sample_vec <- if ("sample_id" %in% names(dt)) dt$sample_id else
+    rep("__all__", nrow(dt))
+
+  # Precompute each sample's fixed neighbour edge list once.
+  per <- lapply(unique(sample_vec), function(sid) {
+    rows <- which(sample_vec == sid)
+    if (length(rows) < 2L) return(NULL)
+    nb <- .radius_neighbours(as.matrix(dt[rows, c("x", "y")]), radius)$idx
+    list(ph = dt$phenotype[rows],
+         centre = rep(seq_along(nb), lengths(nb)),
+         flat = unlist(nb, use.names = FALSE))
+  })
+  per <- Filter(Negate(is.null), per)
+
+  one_tab <- function(s) {
+    unclass(table(
+      factor(s$ph[s$centre], levels = phenotypes),
+      factor(s$ph[s$flat], levels = phenotypes)))
+  }
+  tabulate_counts <- function(parts) Reduce(`+`, lapply(parts, one_tab))
+
+  obs <- tabulate_counts(per)
+  perms <- vapply(seq_len(n_perm), function(p) {
+    as.vector(tabulate_counts(lapply(per, function(s) {
+      s$ph <- sample(s$ph)
+      s
+    })))
+  }, numeric(np * np))
+  mean_exp <- rowMeans(perms)
+  sd_exp <- apply(perms, 1L, stats::sd)
+  obs_v <- as.vector(obs)
+  z <- ifelse(sd_exp > 0, (obs_v - mean_exp) / sd_exp, 0)
+
+  data.frame(
+    from = rep(phenotypes, each = np),
+    to = rep(phenotypes, np),
+    observed = obs_v,
+    expected = mean_exp,
+    interaction_score = ifelse(mean_exp > 0 & obs_v > 0,
+                               log2(obs_v / mean_exp), 0),
+    z_score = z,
+    p_value = 2 * stats::pnorm(-abs(z))
+  )
 }
 
 #' Spatial Clusters (SpatialCellData)
@@ -837,7 +921,10 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param r_seq Numeric vector of radii, or \code{NULL} for automatic.
 #' @param target Character or \code{NULL}. Restrict to a phenotype.
-#' @param correction Character. \code{"none"} (default) or \code{"border"}.
+#' @param correction Character. Edge correction: \code{"none"} (default),
+#'   \code{"border"} (reduced-sample), or \code{"translation"} (each pair
+#'   weighted by the inverse window/translate overlap; rigorous for rectangular
+#'   windows).
 #' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
 #'   the statistic is computed per sample and returned as a named list (one
 #'   entry per sample). Default \code{FALSE}; otherwise a single sample is
@@ -855,7 +942,8 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #'
 #' @export
 RipleysK <- function(object, r_seq = NULL, target = NULL,
-                     correction = c("none", "border"), by_sample = FALSE) {
+                     correction = c("none", "border", "translation"),
+                     by_sample = FALSE) {
   correction <- match.arg(correction)
   if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
     return(.by_sample_apply(object, function(o) {
@@ -895,6 +983,21 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
     num <- .radius_count_sweep(xy, r_sorted, b = b)
     den <- vapply(r_sorted, function(r) sum(b >= r), numeric(1L))
     K_sorted <- ifelse(den > 0, num / (den * lambda), NA_real_)
+  } else if (correction == "translation") {
+    # Translation-corrected estimator: each pair is weighted by the inverse
+    # overlap of the rectangular window with its translate by (dx, dy), which
+    # exactly compensates for unobserved pairs near the edges.
+    Wd <- diff(x_range)
+    Hd <- diff(y_range)
+    wfun <- function(i, j) {
+      dxp <- abs(xy[i, 1L] - xy[j, 1L])
+      dyp <- abs(xy[i, 2L] - xy[j, 2L])
+      ov <- (Wd - dxp) * (Hd - dyp)
+      w <- ifelse(ov > 0, 1 / ov, 0)
+      w
+    }
+    cumw <- .radius_count_sweep(xy, r_sorted, weight_fun = wfun)
+    K_sorted <- (area^2 / n^2) * cumw
   } else {
     num <- .radius_count_sweep(xy, r_sorted)
     K_sorted <- num / (n * lambda)
@@ -919,12 +1022,22 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 #' @param feature Character. Name of the marker or metadata column.
 #' @param radius Numeric. Neighbourhood radius for spatial weights.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
+#' @param weights Character. Spatial weighting within the radius:
+#'   \code{"binary"} (default; 1 for every neighbour), \code{"row"}
+#'   (row-standardised, each cell's weights sum to 1), or \code{"idw"}
+#'   (inverse-distance, \code{1 / d}).
+#' @param n_perm Integer. Number of label permutations for the p-value. \code{0}
+#'   (default) uses the analytic normal approximation, which is exact only for
+#'   \code{"binary"} weights; any other weighting auto-enables a permutation
+#'   test.
+#' @param seed Integer or \code{NULL}. Random seed for the permutation test.
 #' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
 #'   the statistic is computed per sample and returned as a named list. Default
 #'   \code{FALSE}; otherwise a single sample is required.
 #'
 #' @return A list with \code{I}, \code{expected}, \code{variance},
-#'   \code{z_score}, and \code{p_value}.
+#'   \code{z_score}, \code{p_value}, and \code{method} (\code{"analytic"} or
+#'   \code{"permutation"}).
 #'
 #' @examples
 #' counts <- matrix(rnorm(100), nrow = 50,
@@ -932,12 +1045,17 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 #' coords <- data.frame(x = runif(50, 0, 100), y = runif(50, 0, 100))
 #' obj <- CreateSpatialObject(counts, coords)
 #' MoransI(obj, feature = "CD3", radius = 30)
+#' MoransI(obj, feature = "CD3", radius = 30, weights = "idw", n_perm = 199)
 #'
 #' @export
-MoransI <- function(object, feature, radius, slot = "data", by_sample = FALSE) {
+MoransI <- function(object, feature, radius, slot = "data",
+                    weights = c("binary", "row", "idw"), n_perm = 0L,
+                    seed = NULL, by_sample = FALSE) {
+  weights <- match.arg(weights)
   if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
     return(.by_sample_apply(object, function(o) {
-      MoransI(o, feature = feature, radius = radius, slot = slot)
+      MoransI(o, feature = feature, radius = radius, slot = slot,
+              weights = weights, n_perm = n_perm, seed = seed)
     }))
   }
   .assert_single_sample(object, "Moran's I")
@@ -956,31 +1074,57 @@ MoransI <- function(object, feature, radius, slot = "data", by_sample = FALSE) {
   xbar <- mean(x)
   dx <- x - xbar
 
-  # Binary, symmetric spatial weights W_ij = 1(0 < d_ij <= radius). Working from
-  # the neighbour lists avoids the n^2 weight matrix; for symmetric binary
-  # weights the weight sums reduce to closed forms in the degrees.
-  nb <- .radius_neighbours(xy, radius)$idx
+  # Neighbour lists avoid the n^2 weight matrix. Per-neighbour weights depend on
+  # the chosen scheme; distances are needed only for inverse-distance weights.
+  nbr <- .radius_neighbours(xy, radius)
+  nb <- nbr$idx
   deg <- as.numeric(lengths(nb))
-  S0 <- sum(deg)
-  neigh_sum <- vapply(seq_along(nb), function(i) {
-    if (deg[i] == 0) 0 else sum(dx[nb[[i]]])
-  }, numeric(1L))
+  row_weight <- function(i) {
+    if (deg[i] > 0) rep(1 / deg[i], length(nb[[i]])) else numeric(0)
+  }
+  wlist <- switch(weights,
+    binary = lapply(nb, function(j) rep(1, length(j))),
+    row    = lapply(seq_along(nb), row_weight),
+    idw    = lapply(nbr$dist, function(d) 1 / d)
+  )
+  S0 <- sum(unlist(wlist, use.names = FALSE))
 
-  I <- (n / S0) * sum(dx * neigh_sum) / sum(dx^2)
+  moran_stat <- function(dxv) {
+    nw <- vapply(seq_along(nb), function(i) {
+      if (deg[i] == 0) 0 else sum(wlist[[i]] * dxv[nb[[i]]])
+    }, numeric(1L))
+    (n / S0) * sum(dxv * nw) / sum(dxv^2)
+  }
+
+  I <- moran_stat(dx)
   EI <- -1 / (n - 1)
-  # Variance under normality. With W symmetric and binary,
-  # S1 = 0.5 * sum((W + t(W))^2) = 2 * S0 and
-  # S2 = sum_i (rowsum_i + colsum_i)^2 = 4 * sum_i deg_i^2.
-  S1 <- 2 * S0
-  S2 <- 4 * sum(deg^2)
-  n2 <- n * n
-  VI <- (n2 * S1 - n * S2 + 3 * S0^2) / (S0^2 * (n2 - 1)) - EI^2
 
-  z <- (I - EI) / sqrt(max(VI, .Machine$double.eps))
-  .as_result(
-    list(I = I, expected = EI, variance = VI,
-         z_score = z, p_value = 2 * stats::pnorm(-abs(z))),
-    "phenoscapR_moran")
+  use_perm <- n_perm > 0L || weights != "binary"
+  if (use_perm) {
+    nperm <- if (n_perm > 0L) as.integer(n_perm) else 999L
+    if (!is.null(seed)) set.seed(seed)
+    perm <- vapply(seq_len(nperm), function(p) {
+      xp <- sample(x)
+      moran_stat(xp - mean(xp))
+    }, numeric(1L))
+    psd <- stats::sd(perm)
+    z <- (I - mean(perm)) / max(psd, .Machine$double.eps)
+    p <- (sum(abs(perm - EI) >= abs(I - EI)) + 1) / (nperm + 1)
+    res <- list(I = I, expected = EI, variance = psd^2,
+                z_score = z, p_value = p, method = "permutation")
+  } else {
+    # Analytic variance under normality for symmetric binary weights:
+    # S1 = 2 * S0, S2 = 4 * sum(deg^2).
+    S1 <- 2 * S0
+    S2 <- 4 * sum(deg^2)
+    n2 <- n * n
+    VI <- (n2 * S1 - n * S2 + 3 * S0^2) / (S0^2 * (n2 - 1)) - EI^2
+    z <- (I - EI) / sqrt(max(VI, .Machine$double.eps))
+    res <- list(I = I, expected = EI, variance = VI,
+                z_score = z, p_value = 2 * stats::pnorm(-abs(z)),
+                method = "analytic")
+  }
+  .as_result(res, "phenoscapR_moran")
 }
 
 #' Quadrat Analysis
