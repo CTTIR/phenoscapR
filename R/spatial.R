@@ -1336,7 +1336,7 @@ CrossNNDistance <- function(object, from, to, by_sample = FALSE) {
 #'
 #' @export
 ExpressionClusters <- function(object, k,
-                               method = c("kmeans", "hierarchical"),
+                               method = c("kmeans", "hierarchical", "gmm"),
                                slot = "data", markers = NULL) {
   method <- match.arg(method)
   mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
@@ -1353,9 +1353,75 @@ ExpressionClusters <- function(object, k,
     hierarchical = {
       hc <- hclust(dist(mat), method = "ward.D2")
       cutree(hc, k = k)
+    },
+    gmm = {
+      if (!requireNamespace("mclust", quietly = TRUE)) {
+        stop("method = \"gmm\" requires the 'mclust' package. Install it with ",
+             "install.packages(\"mclust\").", call. = FALSE)
+      }
+      # mclust resolves its model functions by name on the search path, so it
+      # must be attached (not merely loaded). Attach for the duration only.
+      if (!"package:mclust" %in% search()) {
+        attachNamespace("mclust")
+        on.exit(try(detach("package:mclust"), silent = TRUE), add = TRUE)
+      }
+      mclust::Mclust(mat, G = k, verbose = FALSE)$classification
     }
   )
 
   object@meta_data$expr_cluster <- as.character(cluster_ids)
   object
+}
+
+#' Annotate Clusters by Their Top Markers
+#'
+#' Labels each cluster (or any categorical grouping) by the markers most
+#' enriched in it relative to the global mean, producing human-readable names
+#' such as \code{"CD3+CD8"}.
+#'
+#' @param object A \code{\link{SpatialCellData-class}} object.
+#' @param group Character. Metadata column holding cluster labels. Default
+#'   \code{"expr_cluster"}.
+#' @param slot Character. \code{"data"} (default) or \code{"counts"}.
+#' @param n_markers Integer. Number of top markers per cluster name. Default
+#'   \code{2}.
+#' @param add_column Logical. If \code{TRUE} (default) also store the names in a
+#'   new \code{<group>_label} metadata column.
+#'
+#' @return A named character vector mapping each group level to its marker label.
+#'   If \code{add_column} the object is returned instead, with the label column
+#'   added (access the mapping via \code{attr(., "labels")}).
+#'
+#' @examples
+#' data(phenoscapR_example)
+#' obj <- NormaliseData(phenoscapR_example, "zscore")
+#' obj <- ExpressionClusters(obj, k = 6)
+#' AnnotateClusters(obj, add_column = FALSE)
+#'
+#' @export
+AnnotateClusters <- function(object, group = "expr_cluster", slot = "data",
+                             n_markers = 2L, add_column = TRUE) {
+  if (!group %in% names(object@meta_data)) {
+    stop("Group column '", group, "' not found.", call. = FALSE)
+  }
+  mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
+  g <- as.character(object@meta_data[[group]])
+  global <- colMeans(mat)
+  levels_g <- sort(unique(g))
+
+  labels <- vapply(levels_g, function(lv) {
+    enr <- colMeans(mat[g == lv, , drop = FALSE]) - global
+    top <- names(sort(enr, decreasing = TRUE))[seq_len(min(n_markers,
+                                                           length(enr)))]
+    top <- top[enr[top] > 0]
+    if (length(top) == 0L) "mixed" else paste0(paste(top, collapse = ""), "+")
+  }, character(1L))
+  names(labels) <- levels_g
+
+  if (add_column) {
+    object@meta_data[[paste0(group, "_label")]] <- labels[g]
+    attr(object, "labels") <- labels
+    return(object)
+  }
+  labels
 }

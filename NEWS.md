@@ -1,3 +1,24 @@
+# phenoscapR 2.0.0
+
+Major feature release: higher-order spatial structure, unsupervised
+phenotyping, differential testing, platform readers, and ecosystem interop.
+
+* **Cellular neighbourhoods / niches** (`CellularNeighbourhoods()`): cluster
+  cells by the phenotype composition of their local neighbourhood.
+* **Spatial domains** (`SpatialDomains()`): partition tissue into regions of
+  coherent, spatially smoothed expression.
+* **Unsupervised phenotyping**: `ExpressionClusters()` gains a Gaussian
+  mixture-model option (`method = "gmm"`, via mclust), and `AnnotateClusters()`
+  names clusters by their most enriched markers.
+* **Differential abundance** (`DifferentialAbundance()`): per-sample phenotype
+  proportions compared across conditions (Wilcoxon / t / Kruskal-Wallis), with
+  BH-adjusted p-values.
+* **Platform readers**: `ReadMatrixCoords()` for the general expression-plus-
+  coordinates layout, with `ReadXenium()`, `ReadCosMx()`, and `ReadMERSCOPE()`
+  presetting each vendor's cell-level column names.
+* **Ecosystem interop**: `as_Seurat()`, `as_SpatialExperiment()`, and
+  `as_SpatialCellData()` convert to and from Seurat / SpatialExperiment.
+
 # phenoscapR 1.2.0
 
 Deeper, more rigorous statistics.

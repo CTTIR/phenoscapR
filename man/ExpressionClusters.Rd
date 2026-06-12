@@ -7,7 +7,7 @@
 ExpressionClusters(
   object,
   k,
-  method = c("kmeans", "hierarchical"),
+  method = c("kmeans", "hierarchical", "gmm"),
   slot = "data",
   markers = NULL
 )
