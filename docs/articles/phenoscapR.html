@@ -11,21 +11,25 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started with phenoscapR">
+<meta name="theme-color" content="#1565c0">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">phenoscapR</a>
+    <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,13 +46,15 @@
 <li><a class="dropdown-item" href="../articles/phenoscapR.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-02-object-model.html">The SpatialCellData Object</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-03-spatial-analysis.html">Advanced Spatial Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-04-visualisation.html">Visualisation Gallery</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-05-advanced.html">Advanced Capabilities</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul>
 <ul class="navbar-nav">
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/r-heller/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -64,195 +70,261 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Getting Started with phenoscapR</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-heller/phenoscapR/blob/HEAD/vignettes/phenoscapR.Rmd" class="external-link"><code>vignettes/phenoscapR.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/HEAD/vignettes/phenoscapR.Rmd" class="external-link"><code>vignettes/phenoscapR.Rmd</code></a></small>
       <div class="d-none name"><code>phenoscapR.Rmd</code></div>
     </div>
 
     
     
 <p><img src="../reference/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"></p>
-<div class="section level2">
-<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h2>
-<p><strong>phenoscapR</strong> provides tools for reading, processing,
-analysing, and visualising single-cell spatial biology data from
-multiplexed imaging platforms.</p>
-<p>A typical workflow involves:</p>
+<div class="section level3">
+<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h3>
+<p><strong>phenoscapR</strong> takes you from a raw multiplexed-imaging
+cell-segmentation table all the way to publication-ready spatial
+statistics and figures. The workflow mirrors the way single-cell
+analysts already think:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Reading</strong> cell segmentation data with
-<code><a href="../reference/read_spatial.html">read_spatial()</a></code>
-</li>
+<strong>Read</strong> segmentation output into a
+<code>SpatialCellData</code> object</li>
 <li>
-<strong>Quality control</strong> with <code><a href="../reference/qc_filter.html">qc_filter()</a></code>
-</li>
+<strong>Quality-control</strong> cells by area and intensity</li>
 <li>
-<strong>Normalisation</strong> with
-<code><a href="../reference/normalise_markers.html">normalise_markers()</a></code>
-</li>
+<strong>Normalise</strong> marker intensities</li>
 <li>
-<strong>Phenotyping</strong> with
-<code><a href="../reference/phenotype_cells.html">phenotype_cells()</a></code>
-</li>
+<strong>Phenotype</strong> cells from marker thresholds</li>
 <li>
-<strong>Spatial analysis</strong> with
-<code><a href="../reference/nearest_neighbours.html">nearest_neighbours()</a></code>, <code><a href="../reference/cell_density.html">cell_density()</a></code>,
-<code><a href="../reference/interaction_matrix.html">interaction_matrix()</a></code>, and
-<code><a href="../reference/spatial_clusters.html">spatial_clusters()</a></code>
-</li>
+<strong>Analyse</strong> the spatial arrangement of those
+phenotypes</li>
 <li>
-<strong>Visualisation</strong> with <code><a href="../reference/plot_cell_map.html">plot_cell_map()</a></code>,
-<code><a href="../reference/plot_density.html">plot_density()</a></code>, <code><a href="../reference/plot_heatmap.html">plot_heatmap()</a></code>, and
-<code><a href="../reference/plot_interactions.html">plot_interactions()</a></code>
-</li>
+<strong>Visualise</strong> every step</li>
 </ol>
+<p>Every function comes in two flavours: a high-level <strong>S4
+interface</strong> that takes and returns a <code>SpatialCellData</code>
+object (used throughout this vignette), and a low-level
+<strong><code>data.table</code> interface</strong>
+(<code><a href="../reference/read_spatial.html">read_spatial()</a></code>, <code><a href="../reference/qc_filter.html">qc_filter()</a></code>, …) for
+scripting. They share one compute engine, so results are identical.</p>
 </div>
-<div class="section level2">
-<h2 id="creating-example-data">Creating Example Data<a class="anchor" aria-label="anchor" href="#creating-example-data"></a>
-</h2>
-<p>Since real cell segmentation files can be large, we will create a
-small simulated data set for illustration.</p>
+<div class="section level3">
+<h3 id="the-bundled-example-dataset">The bundled example dataset<a class="anchor" aria-label="anchor" href="#the-bundled-example-dataset"></a>
+</h3>
+<p>The package ships <code>phenoscapR_example</code>, a fully synthetic
+two-sample tonsil assay with planted spatial niches (a B-cell follicle,
+an overlapping T-cell zone, an epithelial region, and scattered
+macrophages). It lets every example here run without downloading
+anything.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-heller.github.io/phenoscapR/">phenoscapR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cttir.github.io/phenoscapR/">phenoscapR</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">phenoscapR_example</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">n_cells</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
-<span></span>
-<span><span class="co"># Simulate two cell populations in different spatial regions</span></span>
-<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
-<span>  `Cell ID` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_cells</span><span class="op">)</span>,</span>
-<span>  `Cell X Position` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">200</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">600</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  `Cell Y Position` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">300</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">300</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  `Cell Area (px)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_cells</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, <span class="fl">0.3</span><span class="op">)</span>,</span>
-<span>  CD3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">800</span>, <span class="fl">150</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">200</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  CD8 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">200</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">700</span>, <span class="fl">120</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  DAPI <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_cells</span>, <span class="fl">1000</span>, <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Write to a temporary CSV</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">tmp</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="reading-data">Reading Data<a class="anchor" aria-label="anchor" href="#reading-data"></a>
-</h2>
+<span><span class="va">phenoscapR_example</span></span>
+<span><span class="co">#&gt; A SpatialCellData object</span></span>
+<span><span class="co">#&gt;   640 cells across 2 samples</span></span>
+<span><span class="co">#&gt;   Markers: CD3, CD4, CD8, CD20, CD68, ... (8 total) </span></span>
+<span><span class="co">#&gt;   Normalised: FALSE </span></span>
+<span><span class="co">#&gt;   Project: phenoscapR example (tonsil, simulated)</span></span></code></pre></div>
+<p>It carries 640 cells across two samples and eight markers, plus a
+<code>phenotype_true</code> column recording the ground-truth population
+of each cell:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_spatial.html">read_spatial</a></span><span class="op">(</span><span class="va">tmp</span>, sample_id <span class="op">=</span> <span class="st">"example"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    sample_id cell_id        x        y cell_area      CD3         CD8      DAPI</span></span>
-<span><span class="co">#&gt;       &lt;char&gt;   &lt;int&gt;    &lt;num&gt;    &lt;num&gt;     &lt;num&gt;    &lt;num&gt;       &lt;num&gt;     &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:   example       1 268.5479 351.4570 200.87599 709.7926 225.0578067 1123.4673</span></span>
-<span><span class="co">#&gt; 2:   example       2 171.7651 345.7387 117.02725 779.6276 172.2075951  999.0918</span></span>
-<span><span class="co">#&gt; 3:   example       3 218.1564 299.8772 133.80590 651.9091  27.5264266  981.7487</span></span>
-<span><span class="co">#&gt; 4:   example       4 231.6431 306.8005 111.97350 924.7888  -0.6704944 1079.9919</span></span>
-<span><span class="co">#&gt; 5:   example       5 220.2134 263.9923  74.17226 680.7411  70.8191670 1117.7803</span></span>
-<span><span class="co">#&gt; 6:   example       6 194.6938 290.0938  83.59012 851.0697 236.5838228  996.6244</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">phenoscapR_example</span><span class="op">$</span><span class="va">sample_id</span>, <span class="va">phenoscapR_example</span><span class="op">$</span><span class="va">phenotype_true</span><span class="op">)</span></span>
+<span><span class="co">#&gt;           </span></span>
+<span><span class="co">#&gt;            B cell Epithelial Macrophage T cytotoxic T helper T reg</span></span>
+<span><span class="co">#&gt;   tonsil_A     80         90         38          45       55    12</span></span>
+<span><span class="co">#&gt;   tonsil_B     80         90         38          45       55    12</span></span></code></pre></div>
+<blockquote>
+<p><strong>Reading your own data.</strong> In practice you would start
+from <code>ReadSpatial("segmentation.csv")</code> (or a directory of
+CSVs). phenoscapR auto-detects QuPath full/minimal exports and flat
+segmentation tables. See
+<code><a href="../articles/phenoscapR-02-object-model.html">vignette("phenoscapR-02-object-model")</a></code> for the object model
+and import details.</p>
+</blockquote>
 </div>
-<div class="section level2">
-<h2 id="quality-control">Quality Control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
-</h2>
+<div class="section level3">
+<h3 id="quality-control">1. Quality control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
+</h3>
+<p><code><a href="../reference/QCFilter.html">QCFilter()</a></code> removes implausibly small or large cells and,
+optionally, cells outside an intensity band. We work on a copy so the
+original stays intact.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/qc_filter.html">qc_filter</a></span><span class="op">(</span><span class="va">cells</span>, min_area <span class="op">=</span> <span class="fl">50</span>, max_area <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 493</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="normalisation">Normalisation<a class="anchor" aria-label="anchor" href="#normalisation"></a>
-</h2>
+<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QCFilter.html">QCFilter</a></span><span class="op">(</span><span class="va">phenoscapR_example</span>, min_area <span class="op">=</span> <span class="fl">20</span>, max_area <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">obj</span></span>
+<span><span class="co">#&gt; A SpatialCellData object</span></span>
+<span><span class="co">#&gt;   640 cells across 2 samples</span></span>
+<span><span class="co">#&gt;   Markers: CD3, CD4, CD8, CD20, CD68, ... (8 total) </span></span>
+<span><span class="co">#&gt;   Normalised: FALSE </span></span>
+<span><span class="co">#&gt;   Project: phenoscapR example (tonsil, simulated)</span></span></code></pre></div>
+<p>Use <code><a href="../reference/QCPlot.html">QCPlot()</a></code> to inspect what was kept against any two
+metadata columns:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalise_markers.html">normalise_markers</a></span><span class="op">(</span><span class="va">cells</span>, method <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cells</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD8"</span>, <span class="st">"DAPI"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       CD3               CD8                DAPI         </span></span>
-<span><span class="co">#&gt;  Min.   :-1.6156   Min.   :-1.93580   Min.   :-2.97169  </span></span>
-<span><span class="co">#&gt;  1st Qu.:-0.9104   1st Qu.:-0.92825   1st Qu.:-0.63287  </span></span>
-<span><span class="co">#&gt;  Median :-0.2684   Median :-0.05788   Median : 0.05662  </span></span>
-<span><span class="co">#&gt;  Mean   : 0.0000   Mean   : 0.00000   Mean   : 0.00000  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 0.9048   3rd Qu.: 0.90400   3rd Qu.: 0.60278  </span></span>
-<span><span class="co">#&gt;  Max.   : 2.5022   Max.   : 2.39231   Max.   : 2.70425</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CellDensity.html">CellDensity</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/QCPlot.html">QCPlot</a></span><span class="op">(</span><span class="va">obj</span>, x <span class="op">=</span> <span class="st">"cell_area"</span>, y <span class="op">=</span> <span class="st">"density"</span>, colour_by <span class="op">=</span> <span class="st">"phenotype_true"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR_files/figure-html/qcplot-1.png" class="r-plt" alt="" width="672"></p>
 </div>
-<div class="section level2">
-<h2 id="phenotyping">Phenotyping<a class="anchor" aria-label="anchor" href="#phenotyping"></a>
-</h2>
+<div class="section level3">
+<h3 id="normalisation">2. Normalisation<a class="anchor" aria-label="anchor" href="#normalisation"></a>
+</h3>
+<p><code><a href="../reference/NormaliseData.html">NormaliseData()</a></code> rescales each marker.
+<code>"zscore"</code> centres and scales to unit variance;
+<code>"minmax"</code> maps to <code>[0, 1]</code>;
+<code>"quantile"</code> is rank-based.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/phenotype_cells.html">phenotype_cells</a></span><span class="op">(</span><span class="va">cells</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CD3 <span class="op">=</span> <span class="fl">0</span>, CD8 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/summarise_phenotypes.html">summarise_phenotypes</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NormaliseData.html">NormaliseData</a></span><span class="op">(</span><span class="va">obj</span>, method <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/GetData.html">GetData</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        CD3   CD4   CD8  CD20  CD68 PanCK FoxP3  Ki67</span></span>
+<span><span class="co">#&gt; [1,] -0.66 -0.36 -0.27  0.56 -0.36 -0.58 -0.28  0.31</span></span>
+<span><span class="co">#&gt; [2,]  2.02 -0.30  2.96 -0.51 -0.36 -0.58 -0.10 -0.63</span></span>
+<span><span class="co">#&gt; [3,] -0.67 -0.49 -0.37 -0.58 -0.38  0.72 -0.30  3.14</span></span>
+<span><span class="co">#&gt; [4,] -0.59 -0.47 -0.39  2.10 -0.30 -0.61 -0.28  0.62</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="spatial-analysis">Spatial Analysis<a class="anchor" aria-label="anchor" href="#spatial-analysis"></a>
-</h2>
 <div class="section level3">
-<h3 id="nearest-neighbours">Nearest Neighbours<a class="anchor" aria-label="anchor" href="#nearest-neighbours"></a>
+<h3 id="phenotyping">3. Phenotyping<a class="anchor" aria-label="anchor" href="#phenotyping"></a>
 </h3>
+<p>Assign phenotypes by thresholding normalised markers. Because the
+data are z-scored, a threshold of <code>1</code> means “at least one
+standard deviation above the marker’s mean”.
+<code><a href="../reference/PhenotypeCells.html">PhenotypeCells()</a></code> builds composite labels such as
+<code>CD3+/CD4+</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nearest_neighbours.html">nearest_neighbours</a></span><span class="op">(</span><span class="va">cells</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cells</span><span class="op">$</span><span class="va">nn_distance</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
-<span><span class="co">#&gt;   4.794   7.516  10.435  13.540  15.533  89.053</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="cell-density">Cell Density<a class="anchor" aria-label="anchor" href="#cell-density"></a>
-</h3>
+<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PhenotypeCells.html">PhenotypeCells</a></span><span class="op">(</span><span class="va">obj</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  CD20 <span class="op">=</span> <span class="fl">1</span>, CD3 <span class="op">=</span> <span class="fl">1</span>, CD8 <span class="op">=</span> <span class="fl">1</span>, CD4 <span class="op">=</span> <span class="fl">1</span>, CD68 <span class="op">=</span> <span class="fl">1</span>, PanCK <span class="op">=</span> <span class="fl">1</span>, FoxP3 <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/PhenotypeSummary.html">PhenotypeSummary</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   sample_id   phenotype count proportion</span></span>
+<span><span class="co">#&gt; 1  tonsil_A    Negative    53   0.165625</span></span>
+<span><span class="co">#&gt; 2  tonsil_A   CD3+/CD8+    20   0.062500</span></span>
+<span><span class="co">#&gt; 3  tonsil_A       CD20+    63   0.196875</span></span>
+<span><span class="co">#&gt; 4  tonsil_A       CD68+    36   0.112500</span></span>
+<span><span class="co">#&gt; 5  tonsil_A        CD3+    11   0.034375</span></span>
+<span><span class="co">#&gt; 6  tonsil_A CD4+/FoxP3+     6   0.018750</span></span></code></pre></div>
+<p>For the rest of this vignette we use the curated ground-truth
+populations so the figures stay easy to read:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cell_density.html">cell_density</a></span><span class="op">(</span><span class="va">cells</span>, radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cells</span><span class="op">$</span><span class="va">density</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
-<span><span class="co">#&gt;    0.00   33.00   55.00   53.76   77.00  103.00</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">obj</span><span class="op">@</span><span class="va">meta_data</span><span class="op">$</span><span class="va">phenotype</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">@</span><span class="va">meta_data</span><span class="op">$</span><span class="va">phenotype_true</span></span></code></pre></div>
+<p><code><a href="../reference/CompositionPlot.html">CompositionPlot()</a></code> shows phenotype proportions per
+sample:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/CompositionPlot.html">CompositionPlot</a></span><span class="op">(</span><span class="va">obj</span>, group_by <span class="op">=</span> <span class="st">"sample_id"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR_files/figure-html/composition-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
-<h3 id="interaction-matrix">Interaction Matrix<a class="anchor" aria-label="anchor" href="#interaction-matrix"></a>
+<h3 id="the-phenotype-map">4. The phenotype map<a class="anchor" aria-label="anchor" href="#the-phenotype-map"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">interactions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interaction_matrix.html">interaction_matrix</a></span><span class="op">(</span><span class="va">cells</span>, radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="va">interactions</span></span></code></pre></div>
+<p><code><a href="../reference/CellMap.html">CellMap()</a></code> is the workhorse plot — every cell drawn at
+its tissue position, coloured by phenotype. Spatial structure (the
+follicle, the T-cell zone) is immediately visible.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tonsil_a</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">[</span><span class="va">obj</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">==</span> <span class="st">"tonsil_A"</span>, <span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/CellMap.html">CellMap</a></span><span class="op">(</span><span class="va">tonsil_a</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR_files/figure-html/cellmap-1.png" class="r-plt" alt="" width="672"></p>
+<p>Colour instead by a continuous marker with
+<code><a href="../reference/FeaturePlot.html">FeaturePlot()</a></code>:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/FeaturePlot.html">FeaturePlot</a></span><span class="op">(</span><span class="va">tonsil_a</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD20"</span>, <span class="st">"CD3"</span>, <span class="st">"PanCK"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR_files/figure-html/featureplot-1.png" class="r-plt" alt="" width="672"></p>
 </div>
+<div class="section level3">
+<h3 id="spatial-analysis">5. Spatial analysis<a class="anchor" aria-label="anchor" href="#spatial-analysis"></a>
+</h3>
+<div class="section level4">
+<h4 id="local-density-and-nearest-neighbours">Local density and nearest neighbours<a class="anchor" aria-label="anchor" href="#local-density-and-nearest-neighbours"></a>
+</h4>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FindNeighbours.html">FindNeighbours</a></span><span class="op">(</span><span class="va">obj</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/Meta.html">Meta</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">$</span><span class="va">nn_distance</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt;   9.245  25.714  35.035  41.044  48.368 209.678</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/DensityPlot.html">DensityPlot</a></span><span class="op">(</span><span class="va">tonsil_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CellDensity.html">CellDensity</a></span><span class="op">(</span><span class="va">tonsil_a</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR_files/figure-html/nn-density-1.png" class="r-plt" alt="" width="672"></p>
+</div>
+<div class="section level4">
+<h4 id="phenotype-interactions">Phenotype interactions<a class="anchor" aria-label="anchor" href="#phenotype-interactions"></a>
+</h4>
+<p><code><a href="../reference/InteractionMatrix.html">InteractionMatrix()</a></code> counts, per sample, how often each
+phenotype pair sits within <code>radius</code> of one another versus
+what random mixing would predict. The score is
+<code>log2(observed / expected)</code> — positive means attraction,
+negative means avoidance. Neighbours are <strong>never</strong> counted
+across samples.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/InteractionMatrix.html">InteractionMatrix</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">im</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">im</span><span class="op">$</span><span class="va">interaction_score</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;phenoscapR&gt; Phenotype interaction matrix</span></span>
+<span><span class="co">#&gt;   4 phenotypes; score = log2(observed / expected)</span></span>
+<span><span class="co">#&gt;   strongest attractions:</span></span>
+<span><span class="co">#&gt;         from       to interaction_score</span></span>
+<span><span class="co">#&gt;       B cell   B cell          2.446922</span></span>
+<span><span class="co">#&gt;        T reg    T reg          1.990115</span></span>
+<span><span class="co">#&gt;     T helper    T reg          1.893254</span></span>
+<span><span class="co">#&gt;        T reg T helper          1.893254</span></span>
+<span><span class="co">#&gt;  T cytotoxic T helper          1.579319</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/InteractionPlot.html">InteractionPlot</a></span><span class="op">(</span><span class="va">im</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR_files/figure-html/interactions-1.png" class="r-plt" alt="" width="672"></p>
+</div>
+<div class="section level4">
+<h4 id="marker-signatures-per-phenotype">Marker signatures per phenotype<a class="anchor" aria-label="anchor" href="#marker-signatures-per-phenotype"></a>
+</h4>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MarkerHeatmap.html">MarkerHeatmap</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR_files/figure-html/heatmap-1.png" class="r-plt" alt="" width="672"></p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="where-to-next">Where to next<a class="anchor" aria-label="anchor" href="#where-to-next"></a>
+</h3>
+<p>phenoscapR has much more spatial machinery — Ripley’s K, Moran’s I,
+neighbourhood-enrichment permutation tests, the pair correlation
+function, Delaunay contact graphs — and a full gallery of plots and
+dimensionality reductions.</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th>Vignette</th>
+<th>Focus</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><a href="phenoscapR-02-object-model.html">The SpatialCellData
+Object</a></td>
+<td>class internals, import, accessors, subsetting</td>
+</tr>
+<tr class="even">
+<td><a href="phenoscapR-03-spatial-analysis.html">Advanced Spatial
+Analysis</a></td>
+<td>Ripley’s K, Moran’s I, enrichment, choosing a statistic</td>
+</tr>
+<tr class="odd">
+<td><a href="phenoscapR-04-visualisation.html">Visualisation
+Gallery</a></td>
+<td>every plotting function, side by side</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
-<h2 id="visualisation">Visualisation<a class="anchor" aria-label="anchor" href="#visualisation"></a>
+<h2 id="use-of-llm-tools">Use of LLM tools<a class="anchor" aria-label="anchor" href="#use-of-llm-tools"></a>
 </h2>
-<div class="section level3">
-<h3 id="cell-map">Cell Map<a class="anchor" aria-label="anchor" href="#cell-map"></a>
-</h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_cell_map.html">plot_cell_map</a></span><span class="op">(</span><span class="va">cells</span>, point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="phenoscapR_files/figure-html/cell-map-1.png" class="r-plt" alt="Cell phenotype map" width="576"><p class="caption">
-Cell phenotype map
-</p>
-</div>
-</div>
-<div class="section level3">
-<h3 id="density-plot">Density Plot<a class="anchor" aria-label="anchor" href="#density-plot"></a>
-</h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_density.html">plot_density</a></span><span class="op">(</span><span class="va">cells</span>, point_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="phenoscapR_files/figure-html/density-plot-1.png" class="r-plt" alt="Cell density map" width="576"><p class="caption">
-Cell density map
-</p>
-</div>
-</div>
-<div class="section level3">
-<h3 id="marker-heatmap">Marker Heatmap<a class="anchor" aria-label="anchor" href="#marker-heatmap"></a>
-</h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_heatmap.html">plot_heatmap</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="phenoscapR_files/figure-html/heatmap-1.png" class="r-plt" alt="Mean marker expression per phenotype" width="576"><p class="caption">
-Mean marker expression per phenotype
-</p>
-</div>
-</div>
-<div class="section level3">
-<h3 id="interaction-heatmap">Interaction Heatmap<a class="anchor" aria-label="anchor" href="#interaction-heatmap"></a>
-</h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_interactions.html">plot_interactions</a></span><span class="op">(</span><span class="va">interactions</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="phenoscapR_files/figure-html/interaction-plot-1.png" class="r-plt" alt="Spatial interaction scores" width="576"><p class="caption">
-Spatial interaction scores
-</p>
-</div>
-</div>
+<p>Portions of this package were prepared with assistance from large
+language model tooling for narrowly defined, non-authorial tasks:
+copyediting, prose smoothing, Markdown/LaTeX formatting, scaffolding of
+boilerplate files (CI configs, build scripts), code refactoring. The
+tools used were <a href="https://kisski.gwdg.de/leistungen/2-02-llm-service/" class="external-link">Chat AI</a>,
+the LLM service of KISSKI (GWDG), and a self-hosted <strong>Mistral
+Small (24B, Apache-2.0)</strong> run locally via <a href="https://ollama.com/" class="external-link">Ollama</a> and the <code>ollamar</code> R
+package — local inference only, with no data sent to third parties for
+the self-hosted model.</p>
+<p>All scientific claims, methodological choices, analyses,
+interpretations, and conclusions are the author’s own. No LLM-generated
+text was incorporated without review and revision, and every reference
+was verified against its DOI, arXiv ID, or ISBN.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -261,7 +333,11 @@ Spatial interaction scores
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/r-heller" class="external-link">Raban Heller</a>.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://github.com/cttir" class="external-link">Hanno Witte</a>.</p>
+</div>
+
+<div class="pkgdown-footer-center themakr-footer-suite">
+  <p><span class="themakr-footer-pkg">phenoscapR</span> is part of the <a href="https://cttir.github.io/website/" class="external-link">CTTIR</a> suite · <a href="https://github.com/CTTIR" class="external-link">GitHub</a></p>
 </div>
 
 <div class="pkgdown-footer-right">

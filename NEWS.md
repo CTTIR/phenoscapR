@@ -1,3 +1,15 @@
+# phenoscapR 2.1.0
+
+* Added an interactive **Shiny app**, styled 1:1 to the Hugo Coder theme via
+  `bslib` / Bootstrap 5 and a `_brand.yml`, launched with `run_app()`. It covers
+  the core workflow, spatial statistics, cellular neighbourhoods, spatial
+  domains, dimensionality reductions, and differential abundance, with a
+  light/dark colour-mode toggle. The Shiny stack is optional (Suggests), so the
+  core package stays lightweight; `run_app()` reports any missing app packages.
+* The app ships in `inst/app` as composable Shiny modules over the package's
+  exported functions, with a `shinytest2` smoke test (light and dark).
+* Hanno Witte is credited as co-author throughout (README, citation, site).
+
 # phenoscapR 2.0.0
 
 Major feature release: higher-order spatial structure, unsupervised

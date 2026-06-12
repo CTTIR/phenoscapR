@@ -126,6 +126,23 @@ All neighbour-based statistics route through a kd-tree search engine
 20,000-cell section runs each statistic in seconds instead of building a
 multi-gigabyte distance matrix.
 
+## Interactive app
+
+phenoscapR ships a **Hugo Coder–themed Shiny app** that drives the package's
+analysis functions interactively — load the bundled data, run QC and
+phenotyping, explore spatial statistics, cellular neighbourhoods, spatial
+domains, dimensionality reductions, and differential abundance, with a
+light/dark colour-mode toggle. The app is a thin UI over the exported
+functions; the heavy lifting is the package.
+
+```r
+# one-time: install the optional app dependencies
+install.packages(c("shiny", "bslib", "sass", "thematic", "reactable",
+                   "bsicons", "brand.yml"))
+
+phenoscapR::run_app()
+```
+
 ## Documentation
 
 Full documentation and vignettes are available at

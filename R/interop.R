@@ -37,7 +37,8 @@ as_Seurat <- function(object) {
   meta$x <- object@coords$x
   meta$y <- object@coords$y
 
-  se <- Seurat::CreateSeuratObject(counts = counts, meta.data = meta)
+  se <- suppressWarnings(
+    Seurat::CreateSeuratObject(counts = counts, meta.data = meta))
   data_mat <- t(object@data)
   colnames(data_mat) <- cells
   rownames(data_mat) <- Markers(object)

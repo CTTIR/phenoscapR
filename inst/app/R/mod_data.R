@@ -48,9 +48,9 @@ mod_data_server <- function(id) {
 
     shiny::observe({
       meta <- phenoscapR::Meta(base)
-      cat_cols <- names(meta)[vapply(meta, function(x)
-        is.character(x) || is.factor(x), logical(1L))]
-      cat_cols <- setdiff(cat_cols, "cell_id")
+      is_cat <- function(x) is.character(x) || is.factor(x)
+      cat_cols <- setdiff(names(meta)[vapply(meta, is_cat, logical(1L))],
+                          "cell_id")
       shiny::updateSelectInput(session, "sample",
                                choices = unique(base$sample_id))
       shiny::updateSelectInput(session, "colour", choices = cat_cols,
