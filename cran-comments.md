@@ -1,6 +1,6 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 2 notes
 
 ## Test environments
 
@@ -24,6 +24,15 @@
   Additional_repositories. All functionality that depends on it is guarded with
   requireNamespace() and skipped gracefully when it is absent, so the package
   installs, checks, and runs fully without it.
+
+## Optional dependencies
+
+Every Suggested package is optional and accessed only through
+requireNamespace() guards, so the package installs and checks without any of
+them. This includes the Bioconductor packages (SpatialExperiment,
+SummarizedExperiment, S4Vectors), used only by the interop converters, and the
+Shiny stack (shiny, bslib, sass, thematic, reactable, bsicons, brand.yml), used
+only by the optional run_app() interface.
 
 ## Downstream dependencies
 
