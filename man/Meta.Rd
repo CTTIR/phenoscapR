@@ -18,3 +18,7 @@ Data frame of cell metadata.
 \description{
 Get or Set Cell Metadata
 }
+\examples{
+data(phenoscapR_example)
+head(Meta(phenoscapR_example))
+}

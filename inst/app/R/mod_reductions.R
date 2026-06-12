@@ -68,7 +68,7 @@ mod_reductions_server <- function(id, obj) {
         phenoscapR::DifferentialAbundance(o, condition = "section"))
       df <- as.data.frame(da)
       num <- vapply(df, is.numeric, logical(1L))
-      df[num] <- lapply(df[num], function(x) round(x, 4))
+      df[num] <- lapply(df[num], round, digits = 4)
       reactable::reactable(df, compact = TRUE, defaultPageSize = 8)
     })
   })

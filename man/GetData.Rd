@@ -21,3 +21,7 @@ A numeric matrix (cells x markers).
 \description{
 Retrieve raw counts or normalised data from a SpatialCellData object.
 }
+\examples{
+data(phenoscapR_example)
+GetData(phenoscapR_example, slot = "counts")[1:3, ]
+}

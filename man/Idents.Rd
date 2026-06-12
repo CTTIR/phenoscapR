@@ -18,3 +18,7 @@ A character vector.
 \description{
 Returns the phenotype labels if set, otherwise sample identities.
 }
+\examples{
+data(phenoscapR_example)
+table(Idents(phenoscapR_example))
+}

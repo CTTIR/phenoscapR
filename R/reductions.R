@@ -324,6 +324,9 @@ RunSONG <- function(object, dims = 30L, use_pca = TRUE, slot = "data",
 #'
 #' @param object A \code{\link{SpatialCellData-class}} object.
 #' @return Character vector of reduction names.
+#' @examples
+#' data(phenoscapR_example)
+#' Reductions(RunPCA(phenoscapR_example, n_pcs = 5))
 #' @export
 #' @importFrom methods setGeneric setMethod
 setGeneric("Reductions", function(object) standardGeneric("Reductions"))
@@ -340,6 +343,9 @@ setMethod("Reductions", "SpatialCellData", function(object) {
 #' @param reduction Character. Name of the reduction (e.g. \code{"pca"},
 #'   \code{"umap"}).
 #' @return A numeric matrix (cells x dimensions).
+#' @examples
+#' data(phenoscapR_example)
+#' Embeddings(RunPCA(phenoscapR_example, n_pcs = 5), "pca")[1:3, ]
 #' @export
 setGeneric("Embeddings", function(object, reduction = "pca") {
   standardGeneric("Embeddings")

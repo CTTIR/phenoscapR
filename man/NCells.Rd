@@ -18,3 +18,7 @@ Integer.
 \description{
 Get the Number of Cells
 }
+\examples{
+data(phenoscapR_example)
+NCells(phenoscapR_example)
+}

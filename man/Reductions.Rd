@@ -18,3 +18,7 @@ Character vector of reduction names.
 \description{
 List Available Reductions
 }
+\examples{
+data(phenoscapR_example)
+Reductions(RunPCA(phenoscapR_example, n_pcs = 5))
+}

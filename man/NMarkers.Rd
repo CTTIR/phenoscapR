@@ -18,3 +18,7 @@ Integer.
 \description{
 Get the Number of Markers
 }
+\examples{
+data(phenoscapR_example)
+NMarkers(phenoscapR_example)
+}

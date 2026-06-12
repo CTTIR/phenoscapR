@@ -22,3 +22,8 @@ Convenience wrapper for Xenium: a \code{cells} table with
 \code{expression} matrix (load the feature matrix yourself, e.g. via
 \pkg{Matrix}, and pass it here).
 }
+\examples{
+\dontrun{
+obj <- ReadXenium(expression = counts_matrix, cells = "cells.csv.gz")
+}
+}

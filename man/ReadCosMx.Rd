@@ -21,3 +21,8 @@ Convenience wrapper for CosMx: the \code{*_exprMat_file.csv} (cell-by-gene,
 with \code{fov}/\code{cell_ID} columns) and \code{*_metadata_file.csv} (with
 \code{CenterX_global_px}/\code{CenterY_global_px}).
 }
+\examples{
+\dontrun{
+obj <- ReadCosMx("sample_exprMat_file.csv", "sample_metadata_file.csv")
+}
+}

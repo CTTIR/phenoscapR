@@ -91,6 +91,10 @@ as_SpatialExperiment <- function(object) {
 #' @param x A \code{Seurat} or \code{SpatialExperiment} object.
 #' @param ... Unused.
 #' @return A \code{\link{SpatialCellData-class}} object.
+#' @examples
+#' \dontrun{
+#' obj <- as_SpatialCellData(seurat_object)
+#' }
 #' @export
 as_SpatialCellData <- function(x, ...) {
   if (methods::is(x, "SpatialExperiment")) {

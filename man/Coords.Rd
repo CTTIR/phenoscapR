@@ -18,3 +18,7 @@ Data frame with columns \code{x} and \code{y}.
 \description{
 Get Spatial Coordinates
 }
+\examples{
+data(phenoscapR_example)
+head(Coords(phenoscapR_example))
+}

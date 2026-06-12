@@ -116,6 +116,10 @@ ReadMatrixCoords <- function(expression, metadata, x_col = "x", y_col = "y",
 #' @param cells The Xenium \code{cells.csv(.gz)} metadata (path or data frame).
 #' @param sample_id,project Passed to [ReadMatrixCoords()].
 #' @return A \code{\link{SpatialCellData-class}} object.
+#' @examples
+#' \dontrun{
+#' obj <- ReadXenium(expression = counts_matrix, cells = "cells.csv.gz")
+#' }
 #' @export
 ReadXenium <- function(expression, cells, sample_id = "sample1",
                        project = "Xenium") {
@@ -134,6 +138,10 @@ ReadXenium <- function(expression, cells, sample_id = "sample1",
 #' @param meta_file Path/data frame of the cell metadata.
 #' @param sample_id,project Passed to [ReadMatrixCoords()].
 #' @return A \code{\link{SpatialCellData-class}} object.
+#' @examples
+#' \dontrun{
+#' obj <- ReadCosMx("sample_exprMat_file.csv", "sample_metadata_file.csv")
+#' }
 #' @export
 ReadCosMx <- function(expr_file, meta_file, sample_id = "sample1",
                       project = "CosMx") {
@@ -153,6 +161,10 @@ ReadCosMx <- function(expr_file, meta_file, sample_id = "sample1",
 #' @param metadata_file Path/data frame of the cell metadata.
 #' @param sample_id,project Passed to [ReadMatrixCoords()].
 #' @return A \code{\link{SpatialCellData-class}} object.
+#' @examples
+#' \dontrun{
+#' obj <- ReadMERSCOPE("cell_by_gene.csv", "cell_metadata.csv")
+#' }
 #' @export
 ReadMERSCOPE <- function(matrix_file, metadata_file, sample_id = "sample1",
                          project = "MERSCOPE") {

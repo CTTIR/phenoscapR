@@ -18,3 +18,7 @@ Character vector.
 \description{
 Get Marker Names
 }
+\examples{
+data(phenoscapR_example)
+Markers(phenoscapR_example)
+}

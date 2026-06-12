@@ -19,3 +19,8 @@ Imports an object from the wider ecosystem. Coordinates are taken from
 \code{spatialCoords} (SpatialExperiment) or from \code{x}/\code{y} metadata
 columns or a \code{"spatial"} reduction (Seurat).
 }
+\examples{
+\dontrun{
+obj <- as_SpatialCellData(seurat_object)
+}
+}

@@ -26,3 +26,8 @@ Convenience wrapper for MERSCOPE: \code{cell_by_gene.csv} (cell-by-gene, first
 column the cell id) and \code{cell_metadata.csv} (with
 \code{center_x}/\code{center_y}).
 }
+\examples{
+\dontrun{
+obj <- ReadMERSCOPE("cell_by_gene.csv", "cell_metadata.csv")
+}
+}

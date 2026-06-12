@@ -49,6 +49,9 @@ setMethod("show", "SpatialCellData", function(object) {
 #'
 #' @param object A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @return Integer.
+#' @examples
+#' data(phenoscapR_example)
+#' NCells(phenoscapR_example)
 #' @export
 #' @importFrom methods setGeneric setMethod
 setGeneric("NCells", function(object) standardGeneric("NCells"))
@@ -63,6 +66,9 @@ setMethod("NCells", "SpatialCellData", function(object) {
 #'
 #' @param object A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @return Integer.
+#' @examples
+#' data(phenoscapR_example)
+#' NMarkers(phenoscapR_example)
 #' @export
 setGeneric("NMarkers", function(object) standardGeneric("NMarkers"))
 
@@ -76,6 +82,9 @@ setMethod("NMarkers", "SpatialCellData", function(object) {
 #'
 #' @param object A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @return Character vector.
+#' @examples
+#' data(phenoscapR_example)
+#' Markers(phenoscapR_example)
 #' @export
 setGeneric("Markers", function(object) standardGeneric("Markers"))
 
@@ -89,6 +98,9 @@ setMethod("Markers", "SpatialCellData", function(object) {
 #'
 #' @param object A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @return Data frame with columns \code{x} and \code{y}.
+#' @examples
+#' data(phenoscapR_example)
+#' head(Coords(phenoscapR_example))
 #' @export
 setGeneric("Coords", function(object) standardGeneric("Coords"))
 
@@ -102,6 +114,9 @@ setMethod("Coords", "SpatialCellData", function(object) {
 #'
 #' @param object A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @return Data frame of cell metadata.
+#' @examples
+#' data(phenoscapR_example)
+#' head(Meta(phenoscapR_example))
 #' @export
 setGeneric("Meta", function(object) standardGeneric("Meta"))
 
@@ -119,6 +134,9 @@ setMethod("Meta", "SpatialCellData", function(object) {
 #' @param slot Character. \code{"counts"} for raw data or \code{"data"}
 #'   (default) for normalised data.
 #' @return A numeric matrix (cells x markers).
+#' @examples
+#' data(phenoscapR_example)
+#' GetData(phenoscapR_example, slot = "counts")[1:3, ]
 #' @export
 setGeneric("GetData", function(object, slot = "data") {
   standardGeneric("GetData")
@@ -137,6 +155,9 @@ setMethod("GetData", "SpatialCellData", function(object, slot = "data") {
 #'
 #' @param object A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @return A character vector.
+#' @examples
+#' data(phenoscapR_example)
+#' table(Idents(phenoscapR_example))
 #' @export
 setGeneric("Idents", function(object) standardGeneric("Idents"))
 

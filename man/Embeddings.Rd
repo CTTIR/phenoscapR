@@ -21,3 +21,7 @@ A numeric matrix (cells x dimensions).
 \description{
 Get a Dimensionality-Reduction Embedding
 }
+\examples{
+data(phenoscapR_example)
+Embeddings(RunPCA(phenoscapR_example, n_pcs = 5), "pca")[1:3, ]
+}
