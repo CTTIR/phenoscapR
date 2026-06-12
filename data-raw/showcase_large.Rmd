@@ -95,11 +95,11 @@ data.frame(Step = names(timings),
 A single 50k-cell section. The CD31+ vessels and the immune cuffs around them
 are visible directly in the phenotype map.
 
-```{r cellmap, fig.height = 5.2, fig.cap = "One section (50,000 cells). Endothelial cells trace the vessels; immune cells cuff around them; epithelium fills the stroma."}
+```{r cellmap, dev = "ragg_png", fig.height = 5.2, fig.cap = "One section (50,000 cells). Endothelial cells trace the vessels; immune cells cuff around them; epithelium fills the stroma."}
 CellMap(one, pt_size = 0.35)
 ```
 
-```{r cd31, fig.height = 4.8, fig.cap = "CD31 intensity isolates the vessel network — the spatial anchors of the tissue."}
+```{r cd31, dev = "ragg_png", fig.height = 4.8, fig.cap = "CD31 intensity isolates the vessel network — the spatial anchors of the tissue."}
 FeaturePlot(one, features = "CD31", pt_size = 0.35)
 ```
 
@@ -133,6 +133,30 @@ ggplot(dtv, aes(phenotype, d, fill = phenotype)) +
 data.frame(phenotype = names(sort(med)),
            `median distance to vessel` = round(sort(med), 1),
            check.names = FALSE, row.names = NULL)
+```
+
+## The perivascular gradient
+
+Binning every non-endothelial cell by its distance to the nearest vessel shows
+the cuffing directly: close to CD31+ vessels the tissue is overwhelmingly
+immune, and the immune fraction decays into the parenchyma with distance.
+
+```{r gradient, fig.height = 3.8, fig.cap = "Fraction of cells that are immune as a function of distance to the nearest vessel. The perivascular zone is immune-dominated; the bulk parenchyma is not."}
+imm <- c("T helper", "T cytotoxic", "T reg", "B cell", "Macrophage")
+dd <- dtv[dtv$d <= 180, ]
+dd$immune <- dd$phenotype %in% imm
+br <- seq(0, 180, by = 15)
+dd$bin <- cut(dd$d, br, include.lowest = TRUE)
+grad <- data.frame(distance = head(br, -1) + 7.5,
+                   immune_fraction = as.numeric(tapply(dd$immune, dd$bin, mean)))
+ggplot(grad, aes(distance, immune_fraction)) +
+  geom_area(fill = "#3366cc", alpha = 0.25) +
+  geom_line(colour = "#3366cc", linewidth = 1) +
+  geom_point(colour = "#3366cc", size = 1.6) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, NA)) +
+  labs(x = "distance to nearest vessel (CD31+)",
+       y = "cells that are immune") +
+  theme_minimal(base_size = 11)
 ```
 
 ## Co-localisation with the endothelium
@@ -181,14 +205,14 @@ CompositionPlot(spe, group_by = "sample_id") +
 
 PCA runs on all 500k cells; UMAP on a 30k-cell subsample for legibility.
 
-```{r pca, fig.height = 4.4, fig.cap = "PCA of marker space (500k cells) coloured by phenotype."}
+```{r pca, dev = "ragg_png", fig.height = 4.4, fig.cap = "PCA of marker space (500k cells) coloured by phenotype."}
 timings_pca <- tt(spe <- RunPCA(spe, n_pcs = 12))
 set.seed(1)
 sub <- spe[sample(NCells(spe), 30000L), ]
 DimPlot(sub, reduction = "pca", colour_by = "phenotype", pt_size = 0.3)
 ```
 
-```{r umap, eval = has_uwot, fig.height = 4.4, fig.cap = "UMAP of a 30k-cell subsample; immune, endothelial, and parenchymal compartments separate cleanly."}
+```{r umap, dev = "ragg_png", eval = has_uwot, fig.height = 4.4, fig.cap = "UMAP of a 30k-cell subsample; immune, endothelial, and parenchymal compartments separate cleanly."}
 sub <- RunUMAP(sub, dims = 12, n_neighbors = 20)
 EmbeddingPlot(sub, reduction = "umap", colour_by = "phenotype", pt_size = 0.3)
 ```
