@@ -57,3 +57,45 @@ test_that("summarise_phenotypes computes proportions", {
   expect_true(all(c("count", "proportion") %in% names(result)))
   expect_equal(sum(result$proportion), 1)
 })
+
+# --- Equivalence of the data.table and SpatialCellData APIs ------------------
+# Both public faces are intended to share one compute engine, so they must
+# produce identical results for the same inputs.
+
+test_that("phenotype_cells and PhenotypeCells agree", {
+  set.seed(3)
+  mat <- matrix(c(0.8, 0.1, 0.9, 0.1, 0.1, 0.8, 0.7, 0.1), ncol = 2,
+                dimnames = list(NULL, c("CD3", "CD8")))
+  coords <- data.frame(x = runif(4), y = runif(4))
+  dt <- data.table::data.table(
+    sample_id = "s1", cell_id = 1:4, x = coords$x, y = coords$y,
+    CD3 = mat[, "CD3"], CD8 = mat[, "CD8"]
+  )
+  thr <- list(CD3 = 0.5, CD8 = 0.5)
+
+  dt_res  <- phenotype_cells(dt, thresholds = thr)
+  obj <- CreateSpatialObject(mat, coords)
+  obj_res <- PhenotypeCells(obj, thresholds = thr)
+
+  expect_equal(dt_res$phenotype, Meta(obj_res)$phenotype)
+})
+
+test_that("qc_filter and QCFilter keep the same cells", {
+  set.seed(4)
+  n <- 20L
+  mat <- matrix(abs(rnorm(2 * n, 5)), ncol = 2,
+                dimnames = list(NULL, c("CD3", "CD8")))
+  coords <- data.frame(x = runif(n), y = runif(n))
+  area <- c(5, seq(50, 200, length.out = n - 2L), 5000)
+  meta <- data.frame(cell_id = seq_len(n), sample_id = "s1", cell_area = area)
+  dt <- data.table::data.table(
+    sample_id = "s1", cell_id = seq_len(n), x = coords$x, y = coords$y,
+    cell_area = area, CD3 = mat[, "CD3"], CD8 = mat[, "CD8"]
+  )
+
+  dt_res  <- qc_filter(dt, min_area = 10, max_area = 1000)
+  obj <- CreateSpatialObject(mat, coords, meta)
+  obj_res <- QCFilter(obj, min_area = 10, max_area = 1000)
+
+  expect_equal(nrow(dt_res), NCells(obj_res))
+})

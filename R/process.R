@@ -29,24 +29,39 @@ qc_filter <- function(dt, min_area = NULL, max_area = NULL,
                        min_intensity = 0, max_intensity = NULL) {
   dt <- data.table::copy(dt)
 
-  if (!is.null(min_area) && "cell_area" %in% names(dt)) {
-    dt <- dt[dt$cell_area >= min_area, ]
-  }
-  if (!is.null(max_area) && "cell_area" %in% names(dt)) {
-    dt <- dt[dt$cell_area <= max_area, ]
-  }
-
+  area <- if ("cell_area" %in% names(dt)) dt$cell_area else NULL
   marker_cols <- .marker_columns(dt)
-  if (length(marker_cols) > 0L) {
-    total <- rowSums(dt[, marker_cols, with = FALSE], na.rm = TRUE)
-    keep <- total >= min_intensity
-    if (!is.null(max_intensity)) {
-      keep <- keep & total <= max_intensity
-    }
-    dt <- dt[keep, ]
+  total <- if (length(marker_cols) > 0L) {
+    rowSums(dt[, marker_cols, with = FALSE], na.rm = TRUE)
+  } else {
+    NULL
   }
 
-  dt
+  keep <- .qc_keep_mask(nrow(dt), area, total, min_area, max_area,
+                        min_intensity, max_intensity)
+  dt[keep, ]
+}
+
+#' Quality-control keep mask
+#'
+#' Shared engine for [qc_filter()] and [QCFilter()]. Returns a logical vector
+#' marking the cells that pass the area and total-intensity thresholds. Area or
+#' total intensity is skipped when \code{NULL} (e.g. no \code{cell_area} column
+#' or no marker columns), matching the lenient behaviour of both callers.
+#' @noRd
+.qc_keep_mask <- function(n, area = NULL, total = NULL, min_area = NULL,
+                          max_area = NULL, min_intensity = 0,
+                          max_intensity = NULL) {
+  keep <- rep(TRUE, n)
+  if (!is.null(area)) {
+    if (!is.null(min_area)) keep <- keep & area >= min_area
+    if (!is.null(max_area)) keep <- keep & area <= max_area
+  }
+  if (!is.null(total)) {
+    keep <- keep & total >= min_intensity
+    if (!is.null(max_intensity)) keep <- keep & total <= max_intensity
+  }
+  keep
 }
 
 #' Normalise Marker Intensities
@@ -151,23 +166,38 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
 phenotype_cells <- function(dt, thresholds, labels = NULL) {
   dt <- data.table::copy(dt)
 
+  present <- intersect(names(thresholds), names(dt))
+  mat <- if (length(present) > 0L) {
+    as.matrix(dt[, present, with = FALSE])
+  } else {
+    matrix(numeric(0), nrow = nrow(dt), ncol = 0L)
+  }
+
+  dt[, phenotype := .assign_phenotypes(mat, thresholds, labels)]
+  dt
+}
+
+#' Assign phenotype labels from a marker matrix
+#'
+#' Shared engine for [phenotype_cells()] (data.table) and [PhenotypeCells()]
+#' (SpatialCellData). A cell is positive for a marker when its intensity meets
+#' or exceeds the threshold; the label concatenates positive markers with
+#' \code{"+"}, or \code{"Negative"} when none are positive.
+#' @noRd
+.assign_phenotypes <- function(mat, thresholds, labels = NULL) {
   markers <- names(thresholds)
-  missing <- setdiff(markers, names(dt))
+  missing <- setdiff(markers, colnames(mat))
   if (length(missing) > 0L) {
     stop("Markers not found in data: ",
          paste(missing, collapse = ", "), call. = FALSE)
   }
 
-  # Build a positivity matrix
-  pos <- vapply(markers, function(m) {
-    dt[[m]] >= thresholds[[m]]
-  }, logical(nrow(dt)))
-
+  pos <- vapply(markers, function(m) mat[, m] >= thresholds[[m]],
+                logical(nrow(mat)))
   if (is.null(dim(pos))) {
     pos <- matrix(pos, ncol = 1L, dimnames = list(NULL, markers))
   }
 
-  # Create phenotype labels
   pheno <- apply(pos, 1L, function(row) {
     positive <- markers[row]
     if (length(positive) == 0L) return("Negative")
@@ -179,8 +209,7 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
     pheno <- ifelse(is.na(matched), pheno, matched)
   }
 
-  dt[, phenotype := pheno]
-  dt
+  pheno
 }
 
 #' Summarise Phenotype Proportions
@@ -202,11 +231,19 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
 #'
 #' @export
 summarise_phenotypes <- function(dt) {
+  .summarise_phenotypes(dt)
+}
+
+#' Phenotype counts and proportions per sample
+#'
+#' Shared engine for [summarise_phenotypes()] and [PhenotypeSummary()].
+#' @noRd
+.summarise_phenotypes <- function(dt) {
   if (!"phenotype" %in% names(dt)) {
     stop("Column 'phenotype' not found. Run phenotype_cells() first.",
          call. = FALSE)
   }
-
+  dt <- data.table::as.data.table(dt)
   result <- dt[, .N, by = c("sample_id", "phenotype")]
   data.table::setnames(result, "N", "count")
   result[, proportion := count / sum(count), by = "sample_id"]
@@ -243,24 +280,12 @@ summarise_phenotypes <- function(dt) {
 #' @export
 QCFilter <- function(object, min_area = NULL, max_area = NULL,
                      min_intensity = 0, max_intensity = NULL) {
-  keep <- rep(TRUE, NCells(object))
   md <- object@meta_data
+  area <- if ("cell_area" %in% names(md)) md$cell_area else NULL
+  total <- rowSums(object@counts, na.rm = TRUE)
 
-  if (!is.null(min_area) && "cell_area" %in% names(md)) {
-    keep <- keep & md$cell_area >= min_area
-  }
-  if (!is.null(max_area) && "cell_area" %in% names(md)) {
-    keep <- keep & md$cell_area <= max_area
-  }
-
-  if (min_intensity > 0 || !is.null(max_intensity)) {
-    total <- rowSums(object@counts, na.rm = TRUE)
-    keep <- keep & total >= min_intensity
-    if (!is.null(max_intensity)) {
-      keep <- keep & total <= max_intensity
-    }
-  }
-
+  keep <- .qc_keep_mask(NCells(object), area, total, min_area, max_area,
+                        min_intensity, max_intensity)
   object[keep, ]
 }
 
@@ -327,32 +352,8 @@ NormaliseData <- function(object, method = c("zscore", "minmax", "quantile"),
 #'
 #' @export
 PhenotypeCells <- function(object, thresholds, labels = NULL) {
-  mat <- object@data
-  markers <- names(thresholds)
-
-  missing <- setdiff(markers, colnames(mat))
-  if (length(missing) > 0L) {
-    stop("Markers not found: ", paste(missing, collapse = ", "), call. = FALSE)
-  }
-
-  pos <- vapply(markers, function(m) mat[, m] >= thresholds[[m]],
-                logical(nrow(mat)))
-  if (is.null(dim(pos))) {
-    pos <- matrix(pos, ncol = 1L, dimnames = list(NULL, markers))
-  }
-
-  pheno <- apply(pos, 1L, function(row) {
-    positive <- markers[row]
-    if (length(positive) == 0L) return("Negative")
-    paste0(positive, "+", collapse = "/")
-  })
-
-  if (!is.null(labels)) {
-    matched <- labels[pheno]
-    pheno <- ifelse(is.na(matched), pheno, matched)
-  }
-
-  object@meta_data$phenotype <- pheno
+  object@meta_data$phenotype <-
+    .assign_phenotypes(object@data, thresholds, labels)
   object
 }
 
@@ -375,15 +376,7 @@ PhenotypeCells <- function(object, thresholds, labels = NULL) {
 #'
 #' @export
 PhenotypeSummary <- function(object) {
-  md <- object@meta_data
-  if (!"phenotype" %in% names(md)) {
-    stop("No phenotype column. Run PhenotypeCells() first.", call. = FALSE)
-  }
-  dt <- data.table::as.data.table(md)
-  result <- dt[, .N, by = c("sample_id", "phenotype")]
-  data.table::setnames(result, "N", "count")
-  result[, proportion := count / sum(count), by = "sample_id"]
-  as.data.frame(result)
+  as.data.frame(.summarise_phenotypes(object@meta_data))
 }
 
 #' Identify marker columns (non-metadata)

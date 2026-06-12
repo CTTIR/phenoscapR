@@ -25,8 +25,7 @@
 #' CellMap(obj)
 #'
 #' @export
-#' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_minimal labs
-#'   scale_colour_manual theme element_rect element_text element_blank .data
+#' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_minimal labs scale_colour_manual theme element_rect element_text element_blank .data
 CellMap <- function(object, colour_by = "phenotype", colours = NULL,
                      pt_size = 0.5, title = NULL, dark_theme = FALSE) {
   if (!colour_by %in% names(object@meta_data)) {
@@ -40,27 +39,32 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
     stringsAsFactors = FALSE
   )
 
+  .cell_map_plot(df, colour_by, colours, pt_size, title, dark_theme)
+}
+
+#' Build a cell-map scatter plot from a prepared data frame
+#'
+#' Shared engine for [CellMap()] (SpatialCellData) and [plot_cell_map()]
+#' (data.table). \code{df} must contain columns \code{x}, \code{y}, and
+#' \code{colour}.
+#' @noRd
+#' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_minimal labs scale_colour_manual .data
+.cell_map_plot <- function(df, colour_label, colours = NULL, pt_size = 0.5,
+                           title = NULL, dark_theme = FALSE) {
   p <- ggplot2::ggplot(df, ggplot2::aes(
     x = .data[["x"]], y = .data[["y"]], colour = .data[["colour"]]
   )) +
     ggplot2::geom_point(size = pt_size) +
     ggplot2::coord_fixed() +
-    ggplot2::labs(x = "X", y = "Y", colour = colour_by, title = title)
+    ggplot2::labs(x = "X", y = "Y", colour = colour_label, title = title)
 
   if (!is.null(colours)) {
     p <- p + ggplot2::scale_colour_manual(values = colours)
   } else {
-    n_vals <- length(unique(df$colour))
-    p <- p + .gg_discrete_scale("colour", n_vals)
+    p <- p + .gg_discrete_scale("colour", length(unique(df$colour)))
   }
 
-  if (dark_theme) {
-    p <- p + .theme_dark_tissue()
-  } else {
-    p <- p + ggplot2::theme_minimal()
-  }
-
-  p
+  if (dark_theme) p + .theme_dark_tissue() else p + ggplot2::theme_minimal()
 }
 
 #' Feature Plot in Tissue Space
@@ -519,6 +523,15 @@ DensityPlot <- function(object, pt_size = 1, title = NULL, palette = NULL) {
     density = object@meta_data$density
   )
 
+  .density_plot(df, pt_size, title, palette)
+}
+
+#' Build a density scatter plot from a prepared data frame
+#'
+#' Shared engine for [DensityPlot()] and [plot_density()]. \code{df} must
+#' contain columns \code{x}, \code{y}, and \code{density}.
+#' @noRd
+.density_plot <- function(df, pt_size = 1, title = NULL, palette = NULL) {
   ggplot2::ggplot(df, ggplot2::aes(
     x = .data[["x"]], y = .data[["y"]], colour = .data[["density"]]
   )) +
@@ -619,6 +632,16 @@ MarkerHeatmap <- function(object, markers = NULL, slot = "data",
     stringsAsFactors = FALSE
   )
 
+  .marker_heatmap_plot(long, palette, title)
+}
+
+#' Build a per-phenotype marker-intensity heatmap from a long data frame
+#'
+#' Shared engine for [MarkerHeatmap()] and [plot_heatmap()]. \code{long} must
+#' contain columns \code{marker}, \code{phenotype}, and \code{value} (the mean
+#' intensity).
+#' @noRd
+.marker_heatmap_plot <- function(long, palette = NULL, title = NULL) {
   ggplot2::ggplot(long, ggplot2::aes(
     x = .data[["marker"]], y = .data[["phenotype"]],
     fill = .data[["value"]]

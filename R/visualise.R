@@ -27,20 +27,10 @@ plot_cell_map <- function(dt, colour_by = "phenotype", colours = NULL,
     stop("Column '", colour_by, "' not found in data.", call. = FALSE)
   }
 
-  p <- ggplot2::ggplot(dt, ggplot2::aes(
-    x = .data[["x"]], y = .data[["y"]],
-    colour = .data[[colour_by]]
-  )) +
-    ggplot2::geom_point(size = point_size) +
-    ggplot2::coord_fixed() +
-    ggplot2::theme_minimal() +
-    ggplot2::labs(x = "X", y = "Y", colour = colour_by, title = title)
-
-  if (!is.null(colours)) {
-    p <- p + ggplot2::scale_colour_manual(values = colours)
-  }
-
-  p
+  df <- data.frame(x = dt$x, y = dt$y, colour = dt[[colour_by]],
+                   stringsAsFactors = FALSE)
+  .cell_map_plot(df, colour_by, colours, point_size, title,
+                 dark_theme = FALSE)
 }
 
 #' Plot Density Map
@@ -70,15 +60,8 @@ plot_density <- function(dt, point_size = 1, title = NULL) {
          call. = FALSE)
   }
 
-  ggplot2::ggplot(dt, ggplot2::aes(
-    x = .data[["x"]], y = .data[["y"]],
-    colour = .data[["density"]]
-  )) +
-    ggplot2::geom_point(size = point_size) +
-    ggplot2::scale_colour_viridis_c() +
-    ggplot2::coord_fixed() +
-    ggplot2::theme_minimal() +
-    ggplot2::labs(x = "X", y = "Y", colour = "Density", title = title)
+  df <- data.frame(x = dt$x, y = dt$y, density = dt$density)
+  .density_plot(df, point_size, title)
 }
 
 #' Plot Interaction Heatmap
@@ -102,17 +85,9 @@ plot_density <- function(dt, point_size = 1, title = NULL) {
 #'
 #' @export
 plot_interactions <- function(interactions, title = NULL) {
-  ggplot2::ggplot(interactions, ggplot2::aes(
-    x = .data[["to"]], y = .data[["from"]],
-    fill = .data[["interaction_score"]]
-  )) +
-    ggplot2::geom_tile() +
-    ggplot2::scale_fill_gradient2(
-      low = "blue", mid = "white", high = "red", midpoint = 0,
-      name = "log2(obs/exp)"
-    ) +
-    ggplot2::theme_minimal() +
-    ggplot2::labs(x = "To", y = "From", title = title)
+  # Identical to the SpatialCellData-level InteractionPlot(); delegate so the
+  # interaction heatmap is defined in exactly one place.
+  InteractionPlot(interactions, title = title)
 }
 
 #' Plot Marker Heatmap
@@ -156,18 +131,11 @@ plot_heatmap <- function(dt, markers = NULL, title = NULL) {
   agg <- dt[, lapply(.SD, mean, na.rm = TRUE),
             by = "phenotype", .SDcols = cols]
 
-  # Melt to long format
+  # Melt to long format with the column names expected by the shared builder
   long <- data.table::melt(agg, id.vars = "phenotype",
                            variable.name = "marker",
-                           value.name = "mean_intensity")
+                           value.name = "value")
+  long$marker <- as.character(long$marker)
 
-  ggplot2::ggplot(long, ggplot2::aes(
-    x = .data[["marker"]], y = .data[["phenotype"]],
-    fill = .data[["mean_intensity"]]
-  )) +
-    ggplot2::geom_tile() +
-    ggplot2::scale_fill_viridis_c() +
-    ggplot2::theme_minimal() +
-    ggplot2::labs(x = "Marker", y = "Phenotype", fill = "Mean\nIntensity",
-                  title = title)
+  .marker_heatmap_plot(as.data.frame(long), palette = NULL, title = title)
 }
