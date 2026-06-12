@@ -25,6 +25,7 @@ Imports:
     utils,
     grDevices
 Suggests:
+    brand.yml,
     bsicons,
     bslib (>= 0.6.0),
     covr,

@@ -1,0 +1,31 @@
+{
+  "input": {
+    "color_mode": "dark",
+    "data-area": [
+      20,
+      1000
+    ],
+    "data-colour": "phenotype",
+    "data-feature": "CD3",
+    "data-norm": "zscore",
+    "data-sample": "tonsil_A",
+    "data-summary__reactable__page": 1,
+    "data-summary__reactable__pageSize": 8,
+    "data-summary__reactable__pages": 2,
+    "data-summary__reactable__selected": null,
+    "data-summary__reactable__sorted": null,
+    "nav": "Data & maps",
+    "niches-k": 20,
+    "niches-n_cn": 6,
+    "niches-n_dom": 4,
+    "niches-section": "tonsil_A",
+    "reductions-colour": "phenotype",
+    "reductions-npcs": 10,
+    "reductions-reduction": "pca",
+    "spatial-correction": "border",
+    "spatial-feature": "CD20",
+    "spatial-nperm": 199,
+    "spatial-radius": 40,
+    "spatial-section": "tonsil_A"
+  }
+}

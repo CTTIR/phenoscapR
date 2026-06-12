@@ -23,7 +23,8 @@
 #'
 #' @export
 run_app <- function(...) {
-  needed <- c("shiny", "bslib", "sass", "thematic", "reactable", "bsicons")
+  needed <- c("shiny", "bslib", "sass", "thematic", "reactable", "bsicons",
+              "brand.yml")
   missing <- needed[!vapply(needed, requireNamespace, logical(1L),
                             quietly = TRUE)]
   if (length(missing) > 0L) {
