@@ -1,0 +1,180 @@
+---
+title: "phenoscapR --- Full Capabilities Report"
+subtitle: "From cell tables to niches, domains, and differential abundance"
+author: "R. Heller and H. Witte"
+date: "`r format(Sys.Date())`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    fig_caption: true
+    df_print: kable
+fontsize: 10pt
+geometry: margin=2.2cm
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", echo = TRUE,
+  message = FALSE, warning = FALSE,
+  fig.width = 6.6, fig.height = 4.2, fig.align = "center", dpi = 150
+)
+options(width = 92)
+library(phenoscapR); library(ggplot2)
+has_mclust <- requireNamespace("mclust", quietly = TRUE)
+has_seurat <- requireNamespace("Seurat", quietly = TRUE) &&
+  requireNamespace("SeuratObject", quietly = TRUE)
+has_deldir <- requireNamespace("deldir", quietly = TRUE)
+```
+
+\newpage
+
+# Overview
+
+**phenoscapR** is a complete toolkit for single-cell spatial biology: it reads
+multiplexed-imaging cell tables, runs quality control, normalisation, and
+phenotyping, computes a rigorous suite of spatial statistics on a scalable
+kd-tree engine, finds higher-order structure (cellular neighbourhoods and
+spatial domains), tests differential abundance across conditions, and bridges
+to the Seurat / SpatialExperiment ecosystem.
+
+This report exercises the whole feature set on the bundled synthetic dataset
+`phenoscapR_example` (a two-section tonsil assay), so every result is real and
+reproducible.
+
+```{r data}
+data(phenoscapR_example)
+obj <- phenoscapR_example
+obj@meta_data$phenotype <- obj@meta_data$phenotype_true
+obj <- NormaliseData(obj, "zscore")
+obj
+```
+
+# Core workflow
+
+```{r pipeline}
+obj <- QCFilter(obj, min_area = 20, max_area = 1000)
+obj <- FindNeighbours(obj, k = 5)
+obj <- CellDensity(obj, radius = 40)
+a <- obj[obj$sample_id == "tonsil_A", ]
+head(PhenotypeSummary(obj), 4)
+```
+
+```{r cellmap, dev = "ragg_png", fig.height = 4.8, fig.cap = "Phenotype map of one tonsil section."}
+CellMap(a)
+```
+
+# A coherent result API
+
+Every statistic returns a classed object with a tidy print and a one-line
+`autoplot()`, while still behaving like its underlying data frame.
+
+```{r results}
+rk <- RipleysK(a, r_seq = seq(0, 120, length.out = 40), correction = "border")
+rk
+```
+
+```{r autoplot, fig.height = 3.4, fig.cap = "autoplot() of Ripley's L and the neighbourhood-enrichment z-scores."}
+autoplot(rk)
+autoplot(NeighbourhoodEnrichment(a, radius = 40, n_perm = 199, seed = 1))
+```
+
+# Rigorous statistics
+
+```{r rigorous}
+# Translation edge correction
+head(RipleysK(a, r_seq = seq(0, 100, length.out = 20),
+              correction = "translation")$K, 4)
+
+# Moran's I with inverse-distance weights + permutation p-value
+MoransI(a, feature = "CD20", radius = 40, weights = "idw", n_perm = 199,
+        seed = 1)
+
+# Interaction matrix with a permutation null
+head(InteractionMatrix(a, radius = 40, method = "permutation", n_perm = 99,
+                       seed = 1), 4)
+```
+
+```{r scree, fig.height = 3.4, fig.cap = "PCA variance explained (scree plot)."}
+obj <- RunPCA(obj, n_pcs = 8)
+ScreePlot(obj)
+```
+
+\newpage
+
+# Higher-order spatial structure
+
+## Cellular neighbourhoods (niches)
+
+```{r niches, dev = "ragg_png", fig.height = 4.8, fig.cap = "Cellular neighbourhoods: cells coloured by the niche their local composition belongs to."}
+obj <- CellularNeighbourhoods(obj, n_neighbourhoods = 6, k = 20, seed = 1)
+print(round(obj@spatial$neighbourhood_composition, 2))
+CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "neighbourhood")
+```
+
+## Spatial domains
+
+```{r domains, dev = "ragg_png", fig.height = 4.8, fig.cap = "Spatial domains from smoothed expression."}
+obj <- SpatialDomains(obj, n_domains = 4, k = 20, seed = 1)
+CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "domain")
+```
+
+# Unsupervised phenotyping
+
+```{r gmm, eval = has_mclust}
+obj <- ExpressionClusters(obj, k = 6, method = "gmm")
+AnnotateClusters(obj, add_column = FALSE)
+```
+
+```{r gmm-skip, echo = FALSE, results = "asis", eval = !has_mclust}
+cat("_mclust not installed; GMM phenotyping skipped._\n")
+```
+
+# Differential abundance
+
+```{r diffabund}
+obj@meta_data$arm <- ifelse(obj$sample_id == "tonsil_A", "ctrl", "treat")
+DifferentialAbundance(obj, condition = "arm")
+```
+
+\newpage
+
+# Platform readers
+
+A general expression-plus-coordinates reader underlies per-vendor wrappers for
+Xenium, CosMx, and MERSCOPE.
+
+```{r readers}
+expr <- matrix(rpois(40, 5), nrow = 10,
+               dimnames = list(NULL, c("CD3", "CD8", "CD20", "PanCK")))
+meta <- data.frame(x = runif(10, 0, 100), y = runif(10, 0, 100))
+ReadMatrixCoords(expr, meta)
+```
+
+# Ecosystem interoperability
+
+```{r interop, eval = has_seurat}
+se <- as_Seurat(phenoscapR_example)
+class(se)
+as_SpatialCellData(se)
+```
+
+```{r interop-skip, echo = FALSE, results = "asis", eval = !has_seurat}
+cat("_Seurat not installed; interop demonstration skipped._\n")
+```
+
+# Performance
+
+All neighbour-based statistics route through a kd-tree search engine (RANN,
+with an exact base-R fallback) and memory-bounded streaming for the
+radius-accumulating statistics. A 500,000-cell, ten-section cohort builds in
+~2 s, and each whole-cohort statistic (density, neighbours, interactions)
+completes in seconds rather than requiring a multi-gigabyte distance matrix.
+See the companion "phenoscapR at Scale" report for the full benchmark.
+
+# Session information
+
+```{r session}
+sessionInfo()
+```

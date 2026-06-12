@@ -32,6 +32,8 @@ navbar:
           href: articles/phenoscapR-03-spatial-analysis.html
         - text: "Visualisation Gallery"
           href: articles/phenoscapR-04-visualisation.html
+        - text: "Advanced Capabilities"
+          href: articles/phenoscapR-05-advanced.html
     - text: "Functions"
       href: reference/index.html
     - text: "News"
@@ -52,6 +54,7 @@ articles:
       - phenoscapR-02-object-model
       - phenoscapR-03-spatial-analysis
       - phenoscapR-04-visualisation
+      - phenoscapR-05-advanced
 
 reference:
   - title: "The SpatialCellData Object"
@@ -127,6 +130,44 @@ reference:
       - CrossNNDistance
       - ExpressionClusters
 
+  - title: "Cellular Neighbourhoods & Domains"
+    desc: >
+      Higher-order spatial structure: group cells into cellular neighbourhoods
+      (niches) by the phenotype composition of their local neighbourhood, or
+      into spatial domains by their spatially smoothed expression. Annotate
+      unsupervised clusters by their most enriched markers.
+    contents:
+      - CellularNeighbourhoods
+      - SpatialDomains
+      - AnnotateClusters
+
+  - title: "Differential Testing"
+    desc: >
+      Compare phenotype composition across experimental conditions, using the
+      sample as the unit of replication.
+    contents:
+      - DifferentialAbundance
+
+  - title: "Platform Readers"
+    desc: >
+      Import cell-level exports from imaging platforms. A general
+      expression-plus-coordinates reader underlies per-vendor convenience
+      wrappers for Xenium, CosMx, and MERSCOPE.
+    contents:
+      - ReadMatrixCoords
+      - ReadXenium
+      - ReadCosMx
+      - ReadMERSCOPE
+
+  - title: "Interoperability"
+    desc: >
+      Convert to and from the wider single-cell ecosystem (Seurat and
+      SpatialExperiment).
+    contents:
+      - as_Seurat
+      - as_SpatialExperiment
+      - as_SpatialCellData
+
   - title: "Dimensionality Reduction"
     desc: >
       Embed cells from their marker-expression profiles for visualisation.
@@ -140,7 +181,10 @@ reference:
       - RunSONG
       - Embeddings
       - Reductions
+      - VarianceExplained
       - EmbeddingPlot
+      - DimPlot
+      - ScreePlot
 
   - title: "Visualisation"
     desc: >

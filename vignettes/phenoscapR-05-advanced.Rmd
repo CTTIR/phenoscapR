@@ -1,0 +1,168 @@
+---
+title: "Advanced Capabilities"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Advanced Capabilities}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.4, dpi = 96
+)
+has_mclust <- requireNamespace("mclust", quietly = TRUE)
+has_seurat <- requireNamespace("Seurat", quietly = TRUE) &&
+  requireNamespace("SeuratObject", quietly = TRUE)
+```
+
+<img src="../man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"/>
+
+This vignette tours the capabilities added beyond the core workflow: a coherent
+result API, higher-order spatial structure, rigorous statistics, unsupervised
+phenotyping, differential testing, platform readers, and ecosystem interop.
+
+```{r data}
+library(phenoscapR)
+library(ggplot2)
+data(phenoscapR_example)
+
+obj <- phenoscapR_example
+obj@meta_data$phenotype <- obj@meta_data$phenotype_true
+obj <- NormaliseData(obj, "zscore")
+a <- obj[obj$sample_id == "tonsil_A", ]
+```
+
+## A coherent result API
+
+Every spatial statistic returns a classed object with a tidy `print` and a
+one-line `autoplot()`, while still behaving like its underlying data frame.
+
+```{r results}
+rk <- RipleysK(a, r_seq = seq(0, 120, length.out = 40), correction = "border")
+rk                       # tidy print
+head(rk$L)               # ...but still a data frame
+```
+
+```{r autoplot, fig.height = 3.6}
+autoplot(rk)
+autoplot(NeighbourhoodEnrichment(a, radius = 40, n_perm = 199, seed = 1))
+```
+
+### Per-sample analysis
+
+The single-window statistics refuse multi-sample objects by default, but
+`by_sample = TRUE` maps them across every section and returns a named list.
+
+```{r bysample}
+per <- RipleysK(obj, r_seq = seq(0, 100, length.out = 20), by_sample = TRUE)
+per
+per[["tonsil_B"]]
+```
+
+## Rigorous statistics
+
+Ripley's K offers a translation edge correction; Moran's I offers weight
+schemes and a permutation p-value; the interaction matrix offers a permutation
+null.
+
+```{r rigorous}
+RipleysK(a, r_seq = seq(0, 100, length.out = 20),
+         correction = "translation")$K |> head()
+
+MoransI(a, feature = "CD20", radius = 40, weights = "idw", n_perm = 199,
+        seed = 1)
+
+InteractionMatrix(a, radius = 40, method = "permutation", n_perm = 99,
+                  seed = 1) |> head(4)
+```
+
+### PCA variance
+
+```{r pca, fig.height = 3.6}
+obj <- RunPCA(obj, n_pcs = 8)
+round(VarianceExplained(obj), 1)
+ScreePlot(obj)
+```
+
+## Higher-order spatial structure
+
+### Cellular neighbourhoods (niches)
+
+Cluster cells by the phenotype composition of their local neighbourhood.
+
+```{r niches, fig.height = 4.6}
+obj <- CellularNeighbourhoods(obj, n_neighbourhoods = 6, k = 20, seed = 1)
+table(obj$neighbourhood)
+CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "neighbourhood")
+```
+
+### Spatial domains
+
+Cluster cells by spatially smoothed expression into coherent tissue regions.
+
+```{r domains, fig.height = 4.6}
+obj <- SpatialDomains(obj, n_domains = 4, k = 20, seed = 1)
+CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "domain")
+```
+
+## Unsupervised phenotyping
+
+`ExpressionClusters()` clusters cells by expression (k-means, hierarchical, or
+a Gaussian mixture model); `AnnotateClusters()` names clusters by their top
+markers.
+
+```{r gmm, eval = has_mclust}
+obj <- ExpressionClusters(obj, k = 6, method = "gmm")
+AnnotateClusters(obj, add_column = FALSE)
+```
+
+```{r gmm-note, echo = FALSE, results = "asis", eval = !has_mclust}
+cat("> The `mclust` package is not installed, so the GMM example is skipped.\n")
+```
+
+## Differential abundance
+
+Compare phenotype proportions across conditions, with the sample as the unit
+of replication.
+
+```{r diffabund}
+obj@meta_data$arm <- ifelse(obj$sample_id == "tonsil_A", "ctrl", "treat")
+DifferentialAbundance(obj, condition = "arm")
+```
+
+## Platform readers
+
+A general expression-plus-coordinates reader underlies per-vendor wrappers
+(`ReadXenium()`, `ReadCosMx()`, `ReadMERSCOPE()`).
+
+```{r readers}
+expr <- matrix(rpois(40, 5), nrow = 10,
+               dimnames = list(NULL, c("CD3", "CD8", "CD20", "PanCK")))
+meta <- data.frame(x = runif(10, 0, 100), y = runif(10, 0, 100),
+                   region = rep(c("a", "b"), 5))
+ReadMatrixCoords(expr, meta)
+```
+
+## Ecosystem interop
+
+Convert to and from Seurat and SpatialExperiment.
+
+```{r interop, eval = has_seurat}
+se <- as_Seurat(phenoscapR_example)
+class(se)
+back <- as_SpatialCellData(se)
+back
+```
+
+```{r interop-note, echo = FALSE, results = "asis", eval = !has_seurat}
+cat("> The `Seurat` package is not installed, so the interop example is",
+    "skipped.\n")
+```
+
+## See also
+
+- [Getting Started](phenoscapR.html) -- the core workflow
+- [Advanced Spatial Analysis](phenoscapR-03-spatial-analysis.html) -- the statistics
+- [Visualisation Gallery](phenoscapR-04-visualisation.html) -- every plot
