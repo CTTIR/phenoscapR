@@ -132,8 +132,11 @@ RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
     if (!exists("densmap", where = asNamespace("uwot"))) {
       stop("densmap = TRUE requires a newer version of 'uwot'.", call. = FALSE)
     }
-    uwot::densmap(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
-                  ...)
+    # Looked up dynamically: older 'uwot' releases do not export densmap(),
+    # and a static uwot::densmap reference would fail R CMD check against them.
+    densmap_fn <- get("densmap", envir = asNamespace("uwot"))
+    densmap_fn(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
+               ...)
   } else {
     uwot::umap(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
                ...)
