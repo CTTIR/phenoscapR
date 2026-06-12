@@ -149,10 +149,11 @@ CellMap(a) +
 ```
 
 The package palette is global. Set it once and every plot follows. Any
-viridis option works (`"viridis"`, `"magma"`, `"plasma"`, `"turbo"`, …):
+viridis-family option works (`"viridis"`, `"inferno"`, `"plasma"`,
+`"cividis"`, `"rocket"`, `"mako"`):
 
 ```{r palette}
-SetPalette("turbo")
+SetPalette("rocket")
 CompositionPlot(obj, group_by = "sample_id")
 ```
 

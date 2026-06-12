@@ -1,6 +1,6 @@
 #' Synthetic multiplexed-imaging example dataset
 #'
-#' A small, fully synthetic two-sample [SpatialCellData] object used throughout
+#' A small, fully synthetic two-sample [SpatialCellData][SpatialCellData-class] object used throughout
 #' the examples, tests, and vignettes. It is simulated to resemble a multiplexed
 #' immunofluorescence assay of tonsil tissue, with realistic spatial niche
 #' structure so that the spatial statistics return meaningful, non-trivial
@@ -19,7 +19,7 @@
 #' anchored on canonical lineage markers, so unsupervised phenotyping and
 #' neighbourhood-enrichment analyses recover the planted structure.
 #'
-#' @format A [SpatialCellData] object with 640 cells across 2 samples and 8
+#' @format A [SpatialCellData][SpatialCellData-class] object with 640 cells across 2 samples and 8
 #'   markers (`CD3`, `CD4`, `CD8`, `CD20`, `CD68`, `PanCK`, `FoxP3`, `Ki67`).
 #'   The `meta_data` slot carries `cell_id`, `sample_id`, `cell_area`, and a
 #'   `phenotype_true` column recording the ground-truth population for each cell.

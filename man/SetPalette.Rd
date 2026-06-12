@@ -12,13 +12,14 @@ GetPalette()
 \arguments{
 \item{palette}{Character or named character vector. Either:
 \itemize{
-\item A viridis palette name: \code{"viridis"}, \code{"magma"},
+\item A viridis-family palette name: \code{"viridis"} (default),
 \code{"inferno"}, \code{"plasma"}, \code{"cividis"},
-\code{"rocket"}, \code{"mako"}, \code{"turbo"}.
+\code{"rocket"}, or \code{"mako"}.
 \item A character vector of 2-3 hex colours for a custom gradient
 (e.g. \code{c("#440154", "#21918c", "#fde725")}).
 \item \code{NULL} to return the current palette without changing it.
-}}
+}
+An unrecognised name falls back to \code{"viridis"} rather than erroring.}
 }
 \value{
 Invisibly returns the previous palette setting.
@@ -29,7 +30,7 @@ The palette can be a viridis option, a custom gradient defined by 2-3
 anchor colours, or a named vector of discrete colours.
 }
 \examples{
-SetPalette("magma")
+SetPalette("inferno")
 GetPalette()
 
 # Custom 3-colour gradient

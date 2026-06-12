@@ -1,3 +1,51 @@
+# phenoscapR 1.0.0
+
+First stable release. This version consolidates the package onto a single
+compute engine, hardens the spatial statistics, and ships a reproducible
+example dataset and comprehensive vignettes.
+
+## New features
+
+* Bundled synthetic example dataset `phenoscapR_example` (two samples, eight
+  markers, planted spatial niches) used across all examples, tests, and
+  vignettes — `data(phenoscapR_example)`.
+* Dimensionality reduction: `RunPCA()`, `RunUMAP()`, `RunTSNE()`, `RunSONG()`
+  with `DimPlot()` / `EmbeddingPlot()` and an `Embeddings()` / `Reductions()`
+  accessor pair.
+* New Visualisation Gallery vignette demonstrating every plotting function, and
+  a "choosing a spatial statistic" guide in the spatial-analysis vignette.
+
+## Correctness and robustness
+
+* Spatial statistics are now **sample-aware**: `interaction_matrix()` and
+  friends never count neighbours across samples, and the single-window
+  statistics (`RipleysK()`, `MoransI()`, `QuadratAnalysis()`,
+  `PairCorrelation()`, `NeighbourhoodEnrichment()`, `CrossNNDistance()`) refuse
+  multi-sample objects with an informative error.
+* `DelaunayNetwork()` builds a real Delaunay triangulation via `deldir`
+  (Suggests) instead of an all-pairs placeholder, with a `max_edge` cap.
+* Ripley's K gains a reduced-sample border correction.
+* Added input validation and friendly errors throughout (NA coordinates,
+  degenerate samples, missing phenotype/marker columns).
+* Fixed the colour palette system: unsupported palette names now fall back to
+  the default instead of erroring; advertised palettes are limited to those the
+  backend actually provides.
+
+## Performance
+
+* All neighbour queries route through a shared kd-tree search engine (`RANN`,
+  Suggests) with an exact, memory-bounded base-R fallback, replacing the
+  per-function O(n^2) distance matrices. Interaction and enrichment counting are
+  vectorised and the enrichment permutation graph is computed once. Large
+  sections (10^4–10^5 cells) that previously needed multi-gigabyte distance
+  matrices now run in seconds.
+
+## Infrastructure
+
+* Consolidated the snake_case and `SpatialCellData` APIs onto one internal
+  compute core so both faces stay in sync.
+* Added `inst/CITATION`, expanded the test suite, and raised coverage to ~83%.
+
 # phenoscapR 0.1.0
 
 * Initial release.

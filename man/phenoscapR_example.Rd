@@ -5,7 +5,7 @@
 \alias{phenoscapR_example}
 \title{Synthetic multiplexed-imaging example dataset}
 \format{
-A \link{SpatialCellData} object with 640 cells across 2 samples and 8
+A \link[=SpatialCellData-class]{SpatialCellData} object with 640 cells across 2 samples and 8
 markers (\code{CD3}, \code{CD4}, \code{CD8}, \code{CD20}, \code{CD68}, \code{PanCK}, \code{FoxP3}, \code{Ki67}).
 The \code{meta_data} slot carries \code{cell_id}, \code{sample_id}, \code{cell_area}, and a
 \code{phenotype_true} column recording the ground-truth population for each cell.
@@ -19,7 +19,7 @@ Entirely synthetic; not derived from any real specimen.
 phenoscapR_example
 }
 \description{
-A small, fully synthetic two-sample \link{SpatialCellData} object used throughout
+A small, fully synthetic two-sample \link[=SpatialCellData-class]{SpatialCellData} object used throughout
 the examples, tests, and vignettes. It is simulated to resemble a multiplexed
 immunofluorescence assay of tonsil tissue, with realistic spatial niche
 structure so that the spatial statistics return meaningful, non-trivial

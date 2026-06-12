@@ -6,18 +6,19 @@
 #'
 #' @param palette Character or named character vector. Either:
 #'   \itemize{
-#'     \item A viridis palette name: \code{"viridis"}, \code{"magma"},
+#'     \item A viridis-family palette name: \code{"viridis"} (default),
 #'       \code{"inferno"}, \code{"plasma"}, \code{"cividis"},
-#'       \code{"rocket"}, \code{"mako"}, \code{"turbo"}.
+#'       \code{"rocket"}, or \code{"mako"}.
 #'     \item A character vector of 2-3 hex colours for a custom gradient
 #'       (e.g. \code{c("#440154", "#21918c", "#fde725")}).
 #'     \item \code{NULL} to return the current palette without changing it.
 #'   }
+#'   An unrecognised name falls back to \code{"viridis"} rather than erroring.
 #'
 #' @return Invisibly returns the previous palette setting.
 #'
 #' @examples
-#' SetPalette("magma")
+#' SetPalette("inferno")
 #' GetPalette()
 #'
 #' # Custom 3-colour gradient
@@ -119,13 +120,16 @@ CustomGradient <- function(colours) {
 #' @noRd
 .make_continuous_colours <- function(palette, n) {
   if (length(palette) == 1L && is.character(palette)) {
-    viridis_names <- c("viridis", "magma", "inferno", "plasma",
-                       "cividis", "rocket", "mako", "turbo")
-    if (tolower(palette) %in% viridis_names) {
+    if (tolower(palette) %in% .viridis_palettes()) {
       return(.viridis_colours(n, tolower(palette)))
     }
-    # Single colour name — create white -> colour gradient
-    return(grDevices::colorRampPalette(c("white", palette))(n))
+    # Single colour name or hex code — create a white -> colour gradient.
+    if (palette %in% grDevices::colours() || grepl("^#", palette)) {
+      return(grDevices::colorRampPalette(c("white", palette))(n))
+    }
+    # Unrecognised palette: fall back to the default rather than erroring, so a
+    # stray SetPalette() can never crash a plot.
+    return(.viridis_colours(n, "viridis"))
   }
   # Vector of 2-3 colours: custom gradient
   if (is.character(palette) && length(palette) >= 2L && length(palette) <= 3L) {
@@ -138,26 +142,33 @@ CustomGradient <- function(colours) {
   rep_len(palette, n)
 }
 
-#' Generate viridis-like colours using base R
+#' Names of the supported viridis-family palettes
 #'
-#' Self-contained viridis colour generation without external dependency.
-#' Pre-computed 256-colour LUTs for each option.
+#' Only the palettes that `grDevices::hcl.colors()` actually provides are
+#' advertised, so every name here is guaranteed to resolve.
+#' @noRd
+.viridis_palettes <- function() {
+  c("viridis", "inferno", "plasma", "cividis", "rocket", "mako")
+}
+
+#' Generate viridis-family colours using base R
+#'
+#' Self-contained colour generation via `grDevices::hcl.colors()` (available
+#' since R 3.6.0), with no external dependency. Any unrecognised option falls
+#' back to Viridis rather than erroring.
 #'
 #' @noRd
 .viridis_colours <- function(n, option = "viridis") {
-  # Use grDevices::hcl.colors which is available since R 3.6.0
-  # and provides viridis palettes
-  palette_name <- switch(option,
+  palette_name <- switch(tolower(option),
     viridis = "Viridis",
-    magma   = "Magma",
     inferno = "Inferno",
     plasma  = "Plasma",
     cividis = "Cividis",
     rocket  = "Rocket",
     mako    = "Mako",
-    turbo   = "Turbo",
     "Viridis"
   )
+  if (!palette_name %in% grDevices::hcl.pals()) palette_name <- "Viridis"
   grDevices::hcl.colors(n, palette = palette_name)
 }
 
