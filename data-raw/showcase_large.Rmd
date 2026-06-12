@@ -1,0 +1,200 @@
+---
+title: "phenoscapR at Scale"
+subtitle: "A 500,000-cell solid-organ cohort: vessels, immune cuffs, and parenchyma"
+author: "R. Heller"
+date: "`r format(Sys.Date())`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    fig_caption: true
+    df_print: kable
+fontsize: 10pt
+geometry: margin=2.2cm
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", echo = TRUE,
+  message = FALSE, warning = FALSE,
+  fig.width = 6.6, fig.height = 4.2, fig.align = "center", dpi = 150
+)
+options(width = 92)
+library(phenoscapR); library(ggplot2)
+source("data-raw/make_large_data.R")
+has_deldir <- requireNamespace("deldir", quietly = TRUE)
+has_uwot   <- requireNamespace("uwot", quietly = TRUE)
+tt <- function(expr) round(system.time(expr)[["elapsed"]], 2)
+timings <- list()
+```
+
+\newpage
+
+# A half-million-cell synthetic cohort
+
+This document scales the phenoscapR workflow to **500,000 cells across ten
+tissue sections** to show that the kd-tree search engine keeps the spatial
+statistics tractable on realistic cohorts.
+
+The tissue is modelled as a **solid organ**:
+
+* **CD31+ endothelial cells trace vessel paths** — these are the spatial
+  *anchors*.
+* **Immune cells** (T helper / cytotoxic / regulatory, B cells, macrophages)
+  are **enriched perivascularly**, cuffed around the vessels, with a scattered
+  minority.
+* **Parenchyma** (PanCK+ epithelium) forms the bulk, punctuated by a few
+  proliferative **Ki67-high tumour nests**.
+
+```{r build}
+timings$`Build object (500k cells)` <- tt(
+  spe <- make_large_spatial(n_per_sample = 50000L, n_samples = 10L))
+spe
+```
+
+```{r composition-tab}
+spe@meta_data$phenotype <- spe@meta_data$phenotype_true
+round(prop.table(table(spe$phenotype_true)), 3)
+```
+
+# Performance at scale
+
+Every neighbour query below runs on the **full 500k cells** (sample-aware: the
+engine never mixes sections). The single-window point-pattern statistics run on
+one 50k-cell section.
+
+```{r whole-cohort}
+timings$`CellDensity (500k, r=30)` <- tt(spe <- CellDensity(spe, radius = 30))
+timings$`FindNeighbours k=5 (500k)` <- tt(spe <- FindNeighbours(spe, k = 5L))
+timings$`InteractionMatrix (500k, r=30)` <- tt(
+  im <- InteractionMatrix(spe, radius = 30))
+```
+
+```{r one-section}
+one <- spe[spe$sample_id == "section_01", ]
+NCells(one)
+timings$`RipleysK border (50k section)` <- tt(
+  rk <- RipleysK(one, r_seq = seq(0, 200, length.out = 40), correction = "border"))
+timings$`MoransI CD31 (50k section)` <- tt(
+  mi <- MoransI(one, feature = "CD31", radius = 30))
+timings$`NeighbourhoodEnrichment (50k, 99 perm)` <- tt(
+  ne <- NeighbourhoodEnrichment(one, radius = 30, n_perm = 99L, seed = 1))
+```
+
+```{r timings-table, echo = FALSE}
+data.frame(Step = names(timings),
+           `Elapsed (s)` = unlist(timings),
+           check.names = FALSE, row.names = NULL)
+```
+
+\newpage
+
+# Tissue architecture
+
+A single 50k-cell section. The CD31+ vessels and the immune cuffs around them
+are visible directly in the phenotype map.
+
+```{r cellmap, fig.height = 5.2, fig.cap = "One section (50,000 cells). Endothelial cells trace the vessels; immune cells cuff around them; epithelium fills the stroma."}
+CellMap(one, pt_size = 0.35)
+```
+
+```{r cd31, fig.height = 4.8, fig.cap = "CD31 intensity isolates the vessel network — the spatial anchors of the tissue."}
+FeaturePlot(one, features = "CD31", pt_size = 0.35)
+```
+
+# Vessels as spatial anchors
+
+## Immune cells sit closer to vessels than parenchyma does
+
+`CrossNNDistance()` measures, for each cell of a phenotype, the distance to the
+nearest CD31+ endothelial cell. Perivascular immune populations have much
+smaller distances than the uniformly distributed epithelium.
+
+```{r crossnn, fig.height = 4.2, fig.cap = "Distance to the nearest vessel (CD31+ endothelium) by phenotype. Immune cells are perivascular; epithelium is not."}
+phenos <- setdiff(unique(one$phenotype), "Endothelial")
+dist_to_vessel <- lapply(phenos, function(p)
+  data.frame(phenotype = p,
+             d = CrossNNDistance(one, from = p, to = "Endothelial")))
+dtv <- do.call(rbind, dist_to_vessel)
+
+med <- tapply(dtv$d, dtv$phenotype, median)
+dtv$phenotype <- factor(dtv$phenotype, levels = names(sort(med)))
+ggplot(dtv, aes(phenotype, d, fill = phenotype)) +
+  geom_boxplot(outlier.size = 0.2, linewidth = 0.3) +
+  scale_fill_manual(values = PaletteDiscrete(nlevels(dtv$phenotype))) +
+  labs(x = NULL, y = "distance to nearest vessel") +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+```{r crossnn-med, echo = FALSE}
+data.frame(phenotype = names(sort(med)),
+           `median distance to vessel` = round(sort(med), 1),
+           check.names = FALSE, row.names = NULL)
+```
+
+## Co-localisation with the endothelium
+
+`NeighbourhoodEnrichment()` confirms it formally: immune phenotypes are
+enriched as neighbours of endothelium (positive z), epithelium is not.
+
+```{r enrich-endo, echo = FALSE}
+endo <- ne[ne$to == "Endothelial" & ne$from != "Endothelial",
+           c("from", "z_score")]
+endo <- endo[order(-endo$z_score), ]
+endo$z_score <- round(endo$z_score, 1)
+endo
+```
+
+\newpage
+
+# Phenotype interactions across the cohort
+
+```{r interactions, fig.height = 5, fig.cap = "Interaction scores (log2 observed/expected) pooled per-sample across all 500k cells."}
+InteractionPlot(im)
+```
+
+# Multi-scale clustering
+
+```{r ripley, fig.height = 3.8, fig.cap = "Border-corrected Ripley's L on a 50k section; positive values indicate clustering driven by the vascular and tumour structure."}
+with(rk, { plot(r, L, type = "l", lwd = 2, col = "#3366cc",
+  xlab = "r", ylab = "L(r)", main = "Ripley's L (border-corrected, 50k cells)")
+  abline(h = 0, lty = 2) })
+```
+
+```{r moran, echo = FALSE}
+cat("Moran's I for CD31 (vessel autocorrelation):\n"); unlist(mi)
+```
+
+# Composition across sections
+
+```{r composition, fig.height = 4, fig.cap = "Phenotype composition is consistent across the ten sections."}
+CompositionPlot(spe, group_by = "sample_id") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+\newpage
+
+# Marker space (dimensionality reduction)
+
+PCA runs on all 500k cells; UMAP on a 30k-cell subsample for legibility.
+
+```{r pca, fig.height = 4.4, fig.cap = "PCA of marker space (500k cells) coloured by phenotype."}
+timings_pca <- tt(spe <- RunPCA(spe, n_pcs = 12))
+set.seed(1)
+sub <- spe[sample(NCells(spe), 30000L), ]
+DimPlot(sub, reduction = "pca", colour_by = "phenotype", pt_size = 0.3)
+```
+
+```{r umap, eval = has_uwot, fig.height = 4.4, fig.cap = "UMAP of a 30k-cell subsample; immune, endothelial, and parenchymal compartments separate cleanly."}
+sub <- RunUMAP(sub, dims = 12, n_neighbors = 20)
+EmbeddingPlot(sub, reduction = "umap", colour_by = "phenotype", pt_size = 0.3)
+```
+
+# Session information
+
+```{r session}
+sessionInfo()
+```

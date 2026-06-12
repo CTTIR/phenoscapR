@@ -1,0 +1,250 @@
+---
+title: "phenoscapR — Function Showcase"
+subtitle: "Single-cell spatial biology, end to end, on the bundled example data"
+author: "R. Heller"
+date: "`r format(Sys.Date())`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    fig_caption: true
+    df_print: kable
+fontsize: 10pt
+geometry: margin=2.2cm
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", echo = TRUE,
+  message = FALSE, warning = FALSE,
+  fig.width = 6.5, fig.height = 4, fig.align = "center", dpi = 150
+)
+options(width = 90)
+has_deldir <- requireNamespace("deldir", quietly = TRUE)
+has_uwot   <- requireNamespace("uwot", quietly = TRUE)
+```
+
+\newpage
+
+# Overview
+
+**phenoscapR** takes multiplexed-imaging cell-segmentation data from raw table
+to publication-ready spatial statistics and figures. This document runs the
+*entire* public API on the bundled synthetic dataset `phenoscapR_example`
+(two tonsil sections, eight markers, planted spatial niches), so every figure
+below is real output, reproducible with the code shown.
+
+```{r load}
+library(phenoscapR)
+library(ggplot2)
+data(phenoscapR_example)
+phenoscapR_example
+```
+
+The data ship with a ground-truth population per cell:
+
+```{r truth}
+table(phenoscapR_example$sample_id, phenoscapR_example$phenotype_true)
+```
+
+# The processing pipeline
+
+## Quality control — `QCFilter()`
+
+```{r qc}
+obj <- QCFilter(phenoscapR_example, min_area = 20, max_area = 1000)
+obj
+```
+
+## Normalisation — `NormaliseData()`
+
+```{r norm}
+obj <- NormaliseData(obj, method = "zscore")
+round(GetData(obj)[1:4, ], 2)
+```
+
+## Phenotyping — `PhenotypeCells()` / `PhenotypeSummary()`
+
+```{r pheno}
+obj <- PhenotypeCells(obj, thresholds = list(
+  CD20 = 1, CD3 = 1, CD8 = 1, CD4 = 1, CD68 = 1, PanCK = 1, FoxP3 = 1))
+head(PhenotypeSummary(obj), 8)
+```
+
+For readable figures we use the curated ground-truth populations from here on:
+
+```{r usetruth}
+obj@meta_data$phenotype <- obj@meta_data$phenotype_true
+obj <- CellDensity(obj, radius = 40)
+obj <- FindNeighbours(obj, k = 5)
+a <- obj[obj$sample_id == "tonsil_A", ]   # a single tissue section
+markers <- c("CD20", "CD3", "CD8", "PanCK")
+```
+
+\newpage
+
+# Tissue maps
+
+## `CellMap()` — phenotype map
+
+```{r cellmap, fig.height = 4.6, fig.cap = "Every cell at its tissue position, coloured by phenotype. The B-cell follicle and T-cell zone are clearly resolved."}
+CellMap(a)
+```
+
+## `FeaturePlot()` — marker intensity in space
+
+```{r featureplot, fig.height = 5, fig.cap = "Normalised marker intensity per cell."}
+FeaturePlot(a, features = markers)
+```
+
+## `DensityPlot()` — local cell density
+
+```{r density, fig.height = 4.6, fig.cap = "Local neighbour count within a 40-unit radius."}
+DensityPlot(a)
+```
+
+\newpage
+
+# Marker distributions
+
+## `ViolinPlot()` and `BoxPlot()`
+
+```{r violin, fig.height = 4, fig.cap = "Per-phenotype marker distributions."}
+ViolinPlot(a, features = markers, group_by = "phenotype")
+```
+
+```{r box, fig.height = 4, fig.cap = "Box-plot view of the same distributions."}
+BoxPlot(a, features = markers, group_by = "phenotype")
+```
+
+## `RidgePlot()`, `HistogramPlot()` and `DotPlot()`
+
+```{r ridge, fig.height = 4.2, fig.cap = "Ridge plot of marker intensities by phenotype."}
+RidgePlot(a, features = markers, group_by = "phenotype")
+```
+
+```{r hist, fig.height = 3.6, fig.cap = "CD20 intensity histogram, split by phenotype."}
+HistogramPlot(a, feature = "CD20", group_by = "phenotype")
+```
+
+```{r dot, fig.height = 3.8, fig.cap = "Mean expression (colour) and fraction expressing (size) per phenotype."}
+DotPlot(a, features = c("CD3", "CD4", "CD8", "CD20", "CD68", "PanCK", "FoxP3"))
+```
+
+\newpage
+
+# Summaries
+
+## `MarkerHeatmap()` — phenotype signatures
+
+```{r heatmap, fig.height = 4.6, fig.cap = "Mean marker expression per phenotype."}
+MarkerHeatmap(obj)
+```
+
+## `CompositionPlot()` — phenotype proportions
+
+```{r composition, fig.height = 3.6, fig.cap = "Phenotype composition per sample."}
+CompositionPlot(obj, group_by = "sample_id")
+```
+
+## Phenotype interactions — `InteractionMatrix()` / `InteractionPlot()`
+
+`InteractionMatrix()` counts neighbour pairs per sample (never across tissues)
+and scores them as `log2(observed / expected)`.
+
+```{r interactions, fig.height = 4.4, fig.cap = "Spatial interaction scores between phenotypes."}
+im <- InteractionMatrix(obj, radius = 40)
+head(im[order(-im$interaction_score), ], 6)
+InteractionPlot(im)
+```
+
+\newpage
+
+# Point-pattern statistics
+
+These describe a single observation window, so they run on one section `a`.
+
+## `RipleysK()` — multi-scale clustering
+
+```{r ripley, fig.height = 3.8, fig.cap = "Border-corrected Ripley's L. Values above zero indicate clustering."}
+rk <- RipleysK(a, r_seq = seq(0, 120, length.out = 40), correction = "border")
+with(rk, { plot(r, L, type = "l", lwd = 2, col = "#3366cc",
+  xlab = "r", ylab = "L(r)", main = "Ripley's L (border-corrected)")
+  abline(h = 0, lty = 2) })
+```
+
+## `PairCorrelation()` — clustering at a given distance
+
+```{r pcf, fig.height = 3.8, fig.cap = "Pair correlation g(r); >1 means clustering at distance r."}
+pcf <- PairCorrelation(a, r_seq = seq(5, 120, length.out = 40))
+with(pcf, { plot(r, g, type = "l", lwd = 2, col = "#cc3366",
+  xlab = "r", ylab = "g(r)", main = "Pair correlation function")
+  abline(h = 1, lty = 2) })
+```
+
+## `MoransI()`, `QuadratAnalysis()`, `NeighbourhoodEnrichment()`
+
+```{r stats}
+# Spatial autocorrelation of a lineage marker
+unlist(MoransI(a, feature = "CD20", radius = 50))
+
+# Chi-squared test of spatial randomness
+qa <- QuadratAnalysis(a, nx = 5, ny = 5)
+qa[c("chi_sq", "p_value", "VMR")]
+
+# Permutation test of phenotype co-localisation (top pairs)
+ne <- NeighbourhoodEnrichment(a, radius = 40, n_perm = 199, seed = 1)
+head(ne[order(-ne$z_score), ], 6)
+```
+
+## `CrossNNDistance()` — directed proximity
+
+```{r crossnn}
+summary(CrossNNDistance(a, from = "T helper", to = "B cell"))
+```
+
+## `DelaunayNetwork()` / `SpatialNetworkPlot()` — contact graph
+
+```{r delaunay, eval = has_deldir, fig.height = 4.6, fig.cap = "Delaunay cell-contact graph (edges capped at 60 units)."}
+a_net <- DelaunayNetwork(a, max_edge = 60)
+SpatialNetworkPlot(a_net)
+```
+
+\newpage
+
+# Dimensionality reduction
+
+## `RunPCA()` + `DimPlot()`
+
+```{r pca, fig.height = 4.4, fig.cap = "PCA of marker space, coloured by phenotype."}
+obj <- RunPCA(obj, n_pcs = 10)
+DimPlot(obj, reduction = "pca", colour_by = "phenotype")
+```
+
+## `RunUMAP()` + `EmbeddingPlot()`
+
+```{r umap, eval = has_uwot, fig.height = 4.4, fig.cap = "UMAP embedding of marker space."}
+obj <- RunUMAP(obj, dims = 10, n_neighbors = 15)
+EmbeddingPlot(obj, reduction = "umap", colour_by = "phenotype")
+```
+
+# Palettes
+
+The global palette drives every plot; `SetPalette()` accepts any viridis-family
+name or a custom gradient.
+
+```{r palette, fig.height = 3.4, fig.cap = "The same composition plot under the 'rocket' palette."}
+SetPalette("rocket")
+CompositionPlot(obj, group_by = "sample_id")
+```
+
+```{r reset, include = FALSE}
+SetPalette("viridis")
+```
+
+# Session information
+
+```{r session}
+sessionInfo()
+```

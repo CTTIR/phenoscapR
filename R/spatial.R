@@ -744,6 +744,7 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 
   # Per-point neighbour distances out to the largest radius of interest.
   nb <- .radius_neighbours(xy, max(r_seq))$dist
+  all_d <- unlist(nb, use.names = FALSE)
 
   if (correction == "border") {
     # Reduced-sample (border) estimator: only points at least r from the
@@ -751,14 +752,16 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
     # naive estimator. b_i is each point's distance to the bounding-box edge.
     b <- pmin(xy[, 1L] - x_range[1L], x_range[2L] - xy[, 1L],
               xy[, 2L] - y_range[1L], y_range[2L] - xy[, 2L])
+    # Pair each neighbour distance with its centre's border distance, then count
+    # in a fully vectorised sweep over r (a centre contributes only once it is
+    # at least r from the edge).
+    centre_b <- rep(b, lengths(nb))
     K <- vapply(r_seq, function(r) {
-      eligible <- which(b >= r)
-      if (length(eligible) == 0L) return(NA_real_)
-      counts <- vapply(eligible, function(i) sum(nb[[i]] <= r), numeric(1L))
-      sum(counts) / (length(eligible) * lambda)
+      den <- sum(b >= r)
+      if (den == 0L) return(NA_real_)
+      sum(all_d <= r & centre_b >= r) / (den * lambda)
     }, numeric(1L))
   } else {
-    all_d <- unlist(nb, use.names = FALSE)
     K <- vapply(r_seq, function(r) {
       sum(all_d <= r) / (n * lambda)
     }, numeric(1L))
@@ -805,7 +808,7 @@ MoransI <- function(object, feature, radius, slot = "data") {
   }
 
   xy <- as.matrix(object@coords)
-  n <- length(x)
+  n <- as.numeric(length(x))   # double throughout: n^2 overflows integer at ~46k
   xbar <- mean(x)
   dx <- x - xbar
 
@@ -813,10 +816,10 @@ MoransI <- function(object, feature, radius, slot = "data") {
   # the neighbour lists avoids the n^2 weight matrix; for symmetric binary
   # weights the weight sums reduce to closed forms in the degrees.
   nb <- .radius_neighbours(xy, radius)$idx
-  deg <- lengths(nb)
+  deg <- as.numeric(lengths(nb))
   S0 <- sum(deg)
   neigh_sum <- vapply(seq_along(nb), function(i) {
-    if (deg[i] == 0L) 0 else sum(dx[nb[[i]]])
+    if (deg[i] == 0) 0 else sum(dx[nb[[i]]])
   }, numeric(1L))
 
   I <- (n / S0) * sum(dx * neigh_sum) / sum(dx^2)
