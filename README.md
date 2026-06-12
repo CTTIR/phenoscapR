@@ -146,6 +146,10 @@ install.packages(c("shiny", "bslib", "sass", "thematic", "reactable",
 phenoscapR::run_app()
 ```
 
+The app's visual design is adapted from the
+[Hugo Coder](https://github.com/luizdepra/hugo-coder) theme (MIT) — colour
+tokens and flat aesthetic only, no source copied.
+
 ## Documentation
 
 Full documentation and vignettes are available at
