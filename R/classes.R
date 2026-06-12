@@ -57,8 +57,18 @@ setValidity("SpatialCellData", function(object) {
     if (nrow(object@meta_data) != n) {
       errors <- c(errors, "nrow(meta_data) must equal nrow(counts)")
     }
+    mk <- colnames(object@counts)
+    if (!is.null(mk) && anyDuplicated(mk) > 0L) {
+      dups <- unique(mk[duplicated(mk)])
+      errors <- c(errors, paste0("marker names must be unique; duplicated: ",
+                                 paste(dups, collapse = ", ")))
+    }
     if (!all(c("x", "y") %in% names(object@coords))) {
       errors <- c(errors, "coords must contain columns 'x' and 'y'")
+    } else if (!all(is.finite(object@coords$x)) ||
+               !all(is.finite(object@coords$y))) {
+      errors <- c(errors,
+                  "coords 'x' and 'y' must be finite (no NA, NaN, or Inf)")
     }
   }
 

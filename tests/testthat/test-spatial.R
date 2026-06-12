@@ -103,6 +103,25 @@ test_that("DelaunayNetwork respects max_edge", {
   expect_true(all(edges$distance <= 20))
 })
 
+test_that("RipleysK border correction changes the estimate", {
+  set.seed(20)
+  n <- 80L
+  counts <- matrix(rnorm(2 * n), nrow = n,
+                   dimnames = list(NULL, c("CD3", "CD8")))
+  coords <- data.frame(x = runif(n, 0, 200), y = runif(n, 0, 200))
+  obj <- CreateSpatialObject(counts, coords)
+
+  r_seq <- seq(0, 40, length.out = 20)
+  none   <- RipleysK(obj, r_seq = r_seq, correction = "none")
+  border <- RipleysK(obj, r_seq = r_seq, correction = "border")
+
+  expect_equal(nrow(border), length(r_seq))
+  # Border correction must actually be applied: the estimate differs from the
+  # uncorrected one at positive radii (edge effects matter near the boundary).
+  expect_false(isTRUE(all.equal(none$K, border$K)))
+  expect_true(all(is.finite(border$K)))
+})
+
 test_that("single-sample spatial statistics reject multi-sample objects", {
   set.seed(7)
   counts <- matrix(rnorm(40), nrow = 20,

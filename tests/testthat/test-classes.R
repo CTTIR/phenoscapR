@@ -49,6 +49,23 @@ test_that("[[ and $ access metadata", {
   expect_equal(obj$sample_id, rep("s1", 5))
 })
 
+test_that("non-finite coordinates are rejected", {
+  counts <- matrix(rnorm(10), nrow = 5,
+                   dimnames = list(NULL, c("CD3", "CD8")))
+  coords_na  <- data.frame(x = c(1, 2, NA, 4, 5), y = 1:5)
+  coords_inf <- data.frame(x = c(1, 2, Inf, 4, 5), y = 1:5)
+
+  expect_error(CreateSpatialObject(counts, coords_na), "finite")
+  expect_error(CreateSpatialObject(counts, coords_inf), "finite")
+})
+
+test_that("duplicate marker names are rejected", {
+  counts <- matrix(rnorm(15), nrow = 5,
+                   dimnames = list(NULL, c("CD3", "CD8", "CD3")))
+  coords <- data.frame(x = 1:5, y = 1:5)
+  expect_error(CreateSpatialObject(counts, coords), "duplicat")
+})
+
 test_that("show method runs without error", {
   counts <- matrix(rnorm(10), nrow = 5,
                    dimnames = list(NULL, c("CD3", "CD8")))

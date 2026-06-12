@@ -632,9 +632,23 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
   d <- as.matrix(dist(xy))
   diag(d) <- Inf
 
-  K <- vapply(r_seq, function(r) {
-    sum(d <= r) / (n * lambda)
-  }, numeric(1L))
+  if (correction == "border") {
+    # Reduced-sample (border) estimator: only points at least r from the
+    # window edge act as centres, which removes the negative edge bias of the
+    # naive estimator. b_i is each point's distance to the bounding-box edge.
+    b <- pmin(xy[, 1L] - x_range[1L], x_range[2L] - xy[, 1L],
+              xy[, 2L] - y_range[1L], y_range[2L] - xy[, 2L])
+    K <- vapply(r_seq, function(r) {
+      eligible <- which(b >= r)
+      if (length(eligible) == 0L) return(NA_real_)
+      counts <- rowSums(d[eligible, , drop = FALSE] <= r)
+      sum(counts) / (length(eligible) * lambda)
+    }, numeric(1L))
+  } else {
+    K <- vapply(r_seq, function(r) {
+      sum(d <= r) / (n * lambda)
+    }, numeric(1L))
+  }
 
   data.frame(
     r = r_seq,
