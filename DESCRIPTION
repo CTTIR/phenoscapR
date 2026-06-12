@@ -37,6 +37,7 @@ Additional_repositories: https://cttir.r-universe.dev
 Config/testthat/edition: 3
 Config/Needs/website: CTTIR/themakR, pkgdown
 Encoding: UTF-8
+LazyData: true
 Language: en-GB
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr

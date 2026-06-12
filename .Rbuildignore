@@ -18,3 +18,4 @@
 ^_pkgdown\.yml$
 ^\.remember$
 ^song_probe\.txt$
+^data-raw$
