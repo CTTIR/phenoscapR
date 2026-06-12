@@ -156,6 +156,21 @@ All scientific claims, methodological choices, analyses, interpretations, and co
 author's own. No LLM-generated text was incorporated without review and revision, and every reference
 was verified against its DOI, arXiv ID, or ISBN.
 
+## Authors
+
+- **R. Heller** (maintainer, author) — [ORCID 0000-0001-8006-9742](https://orcid.org/0000-0001-8006-9742)
+- **Hanno Witte** (author)
+
+## Citation
+
+```r
+citation("phenoscapR")
+```
+
+> Heller, R. & Witte, H. (2026). phenoscapR: Read, Analyse, and Visualise
+> Single-Cell Spatial Biology Data.
+> <https://cttir.github.io/phenoscapR/>
+
 ## License
 
-MIT © Raban Heller
+MIT © R. Heller and Hanno Witte
