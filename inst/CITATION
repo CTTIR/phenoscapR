@@ -3,12 +3,12 @@ citHeader("To cite phenoscapR in publications, use:")
 bibentry(
   bibtype  = "Manual",
   title    = "phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data",
-  author   = person("R.", "Heller"),
+  author   = c(person("R.", "Heller"), person("Hanno", "Witte")),
   year     = "2026",
   note     = sprintf("R package version %s", meta$Version),
   url      = "https://cttir.github.io/phenoscapR/",
   textVersion = paste0(
-    "Heller, R. (2026). phenoscapR: Read, Analyse, and Visualise ",
+    "Heller, R. & Witte, H. (2026). phenoscapR: Read, Analyse, and Visualise ",
     "Single-Cell Spatial Biology Data. ",
     "R package version ", meta$Version, ". ",
     "https://cttir.github.io/phenoscapR/"
