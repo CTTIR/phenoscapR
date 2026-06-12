@@ -25,20 +25,27 @@ Imports:
     utils,
     grDevices
 Suggests:
+    bsicons,
+    bslib (>= 0.6.0),
     covr,
     deldir,
     knitr,
     mclust,
     RANN,
+    reactable,
     rmarkdown,
     Rtsne,
     S4Vectors,
+    sass,
     Seurat,
     SeuratObject,
+    shiny,
+    shinytest2,
     songR,
     SpatialExperiment,
     SummarizedExperiment,
     testthat (>= 3.0.0),
+    thematic,
     uwot,
     withr
 Additional_repositories: https://cttir.r-universe.dev
