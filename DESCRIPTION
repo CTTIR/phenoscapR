@@ -25,6 +25,7 @@ Imports:
     grDevices
 Suggests:
     covr,
+    deldir,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
@@ -34,5 +35,5 @@ Config/Needs/website: CTTIR/themakR, pkgdown
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

@@ -6,21 +6,26 @@
 \alias{phenoscapR-package}
 \title{phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data}
 \description{
-\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+\if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
 
 Tools for reading, processing, analysing, and visualising single-cell spatial biology data from multiplexed imaging platforms. Provides functions to import cell segmentation outputs from common image analysis software, perform quality control, normalise marker intensities, compute spatial statistics such as nearest-neighbour distances and cell density, and generate publication-ready visualisations of cell phenotype maps and spatial interaction networks.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://r-heller.github.io/phenoscapR/}
-  \item \url{https://github.com/r-heller/phenoscapR}
-  \item Report bugs at \url{https://github.com/r-heller/phenoscapR/issues}
+  \item \url{https://cttir.github.io/phenoscapR/}
+  \item \url{https://github.com/cttir/phenoscapR}
+  \item Report bugs at \url{https://github.com/cttir/phenoscapR/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Raban Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID})
+\strong{Maintainer}: R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID})
+
+Authors:
+\itemize{
+  \item R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID})
+}
 
 }
 \keyword{internal}

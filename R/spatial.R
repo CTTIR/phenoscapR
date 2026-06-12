@@ -172,35 +172,48 @@ interaction_matrix <- function(dt, radius) {
 
   phenotypes <- sort(unique(dt$phenotype))
   n_pheno <- length(phenotypes)
-  coords <- as.matrix(dt[, c("x", "y")])
-  d <- as.matrix(dist(coords))
 
-  n_cells <- nrow(dt)
-  pheno_vec <- dt$phenotype
+  # Sample identity governs which cells can be neighbours: distances are never
+  # computed across samples (different tissues), so observed and expected
+  # counts are accumulated within each sample and then summed.
+  samples <- if ("sample_id" %in% names(dt)) {
+    unique(dt$sample_id)
+  } else {
+    rep("__all__", 1L)
+  }
+  sample_vec <- if ("sample_id" %in% names(dt)) dt$sample_id else "__all__"
 
-  # Observed counts
   obs <- matrix(0, nrow = n_pheno, ncol = n_pheno,
                 dimnames = list(phenotypes, phenotypes))
+  exp_mat <- matrix(0, nrow = n_pheno, ncol = n_pheno,
+                    dimnames = list(phenotypes, phenotypes))
 
-  for (i in seq_len(n_cells)) {
-    neighbours <- which(d[i, ] <= radius & d[i, ] > 0)
-    if (length(neighbours) == 0L) next
-    from <- pheno_vec[i]
-    neighbour_phenos <- pheno_vec[neighbours]
-    tab <- table(neighbour_phenos)
-    for (ph in names(tab)) {
-      obs[from, ph] <- obs[from, ph] + tab[ph]
+  for (sid in samples) {
+    rows <- which(sample_vec == sid)
+    if (length(rows) < 2L) next
+    coords <- as.matrix(dt[rows, c("x", "y")])
+    pheno_vec <- dt$phenotype[rows]
+    d <- as.matrix(dist(coords))
+
+    obs_s <- matrix(0, nrow = n_pheno, ncol = n_pheno,
+                    dimnames = list(phenotypes, phenotypes))
+    for (i in seq_along(rows)) {
+      neighbours <- which(d[i, ] <= radius & d[i, ] > 0)
+      if (length(neighbours) == 0L) next
+      from <- pheno_vec[i]
+      tab <- table(pheno_vec[neighbours])
+      for (ph in names(tab)) {
+        obs_s[from, ph] <- obs_s[from, ph] + tab[ph]
+      }
     }
-  }
+    obs <- obs + obs_s
 
-  # Expected under random mixing
-  freq <- table(pheno_vec) / n_cells
-  total_pairs <- sum(obs)
-  exp_mat <- outer(
-    as.numeric(freq[phenotypes]),
-    as.numeric(freq[phenotypes])
-  ) * total_pairs
-  dimnames(exp_mat) <- list(phenotypes, phenotypes)
+    # Expected under random mixing within this sample.
+    freq <- table(factor(pheno_vec, levels = phenotypes)) / length(rows)
+    total_pairs_s <- sum(obs_s)
+    exp_mat <- exp_mat +
+      outer(as.numeric(freq), as.numeric(freq)) * total_pairs_s
+  }
 
   # Build long-format result
   result <- data.table::data.table(
@@ -264,6 +277,28 @@ spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
 # ---------------------------------------------------------------------------
 # S4-style wrappers operating on SpatialCellData objects
 # ---------------------------------------------------------------------------
+
+#' Assert an object holds a single sample
+#'
+#' Several spatial statistics (Ripley's K, Moran's I, quadrat analysis, the
+#' pair correlation function, neighbourhood enrichment, cross nearest-neighbour
+#' distance) are defined for a single point pattern in one observation window.
+#' Pooling cells from several tissues would compute distances across samples and
+#' produce meaningless results, so we refuse multi-sample objects.
+#' @noRd
+.assert_single_sample <- function(object, what = "This analysis") {
+  samples <- unique(object@meta_data$sample_id)
+  if (length(samples) > 1L) {
+    stop(what, " operates on a single sample, but ", length(samples),
+         " samples were found (", paste(utils::head(samples, 3L),
+                                        collapse = ", "),
+         if (length(samples) > 3L) ", ..." else "",
+         "). Subset to one sample first, e.g. ",
+         "object[object$sample_id == \"", samples[1L], "\", ].",
+         call. = FALSE)
+  }
+  invisible(TRUE)
+}
 
 #' Find Nearest Neighbours (SpatialCellData)
 #'
@@ -433,25 +468,49 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
   n <- nrow(xy)
   if (n < 3L) stop("Need at least 3 cells for triangulation.", call. = FALSE)
 
-  # Simple Delaunay via distance-based edge list (all pairs within threshold)
-  # For a true Delaunay we would need the deldir package; here we approximate
-  # using a distance matrix and connecting nearest neighbours
-  d <- as.matrix(dist(xy))
-  edges <- data.frame(from = integer(0), to = integer(0),
-                       distance = numeric(0))
-  for (i in seq_len(n - 1L)) {
-    for (j in (i + 1L):n) {
-      edges <- rbind(edges, data.frame(from = i, to = j,
-                                        distance = d[i, j]))
-    }
-  }
+  edges <- .delaunay_edges(xy)
+  edges$distance <- sqrt((xy[edges$from, 1L] - xy[edges$to, 1L])^2 +
+                         (xy[edges$from, 2L] - xy[edges$to, 2L])^2)
 
   if (!is.null(max_edge)) {
-    edges <- edges[edges$distance <= max_edge, ]
+    edges <- edges[edges$distance <= max_edge, , drop = FALSE]
+    rownames(edges) <- NULL
   }
 
   object@spatial[["delaunay_edges"]] <- edges
   object
+}
+
+#' Delaunay edge list for a set of 2-D points
+#'
+#' Uses the \pkg{deldir} package for a true Delaunay triangulation when it is
+#' available. Otherwise falls back to a k-nearest-neighbour graph, which
+#' approximates the local connectivity of a triangulation, and warns once.
+#' @return A data frame with integer columns \code{from} and \code{to} (one row
+#'   per undirected edge, \code{from < to}).
+#' @noRd
+.delaunay_edges <- function(xy) {
+  if (requireNamespace("deldir", quietly = TRUE)) {
+    dd <- deldir::deldir(xy[, 1L], xy[, 2L], suppressMsge = TRUE)
+    segs <- dd$delsgs
+    from <- pmin(segs$ind1, segs$ind2)
+    to   <- pmax(segs$ind1, segs$ind2)
+    return(data.frame(from = as.integer(from), to = as.integer(to)))
+  }
+
+  warning("Package 'deldir' is not installed; falling back to a ",
+          "k-nearest-neighbour graph, which only approximates a Delaunay ",
+          "triangulation. Install 'deldir' for exact results.", call. = FALSE)
+  n <- nrow(xy)
+  k <- min(6L, n - 1L)
+  d <- as.matrix(dist(xy))
+  diag(d) <- Inf
+  pairs <- lapply(seq_len(n), function(i) {
+    nbrs <- order(d[i, ])[seq_len(k)]
+    cbind(pmin(i, nbrs), pmax(i, nbrs))
+  })
+  m <- unique(do.call(rbind, pairs))
+  data.frame(from = as.integer(m[, 1L]), to = as.integer(m[, 2L]))
 }
 
 #' Neighbourhood Enrichment Analysis
@@ -480,6 +539,7 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
 #' @export
 NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
                                     seed = NULL) {
+  .assert_single_sample(object, "Neighbourhood enrichment")
   if (!is.null(seed)) set.seed(seed)
 
   xy <- as.matrix(object@coords)
@@ -549,6 +609,7 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #' @export
 RipleysK <- function(object, r_seq = NULL, target = NULL,
                      correction = c("none", "border")) {
+  .assert_single_sample(object, "Ripley's K")
   correction <- match.arg(correction)
   xy <- as.matrix(object@coords)
 
@@ -604,6 +665,7 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 #'
 #' @export
 MoransI <- function(object, feature, radius, slot = "data") {
+  .assert_single_sample(object, "Moran's I")
   mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
 
   if (feature %in% colnames(mat)) {
@@ -657,6 +719,7 @@ MoransI <- function(object, feature, radius, slot = "data") {
 #'
 #' @export
 QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL) {
+  .assert_single_sample(object, "Quadrat analysis")
   xy <- as.matrix(object@coords)
 
   if (!is.null(target)) {
@@ -708,6 +771,7 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL) {
 #' @export
 PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
                             target = NULL) {
+  .assert_single_sample(object, "The pair correlation function")
   xy <- as.matrix(object@coords)
 
   if (!is.null(target)) {
@@ -763,6 +827,7 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
 #'
 #' @export
 CrossNNDistance <- function(object, from, to) {
+  .assert_single_sample(object, "Cross nearest-neighbour distance")
   xy <- as.matrix(object@coords)
   pheno <- object@meta_data$phenotype
 

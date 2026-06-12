@@ -45,3 +45,79 @@ test_that("interaction_matrix returns correct structure", {
                      "interaction_score") %in% names(result)))
   expect_equal(nrow(result), 4L)  # 2x2 phenotypes
 })
+
+test_that("interaction_matrix does not count neighbours across samples", {
+  # Two samples occupying the same coordinate space but each containing only a
+  # single phenotype. Neighbours must never be counted across samples, so the
+  # A<->B cross terms must be exactly zero.
+  dt <- data.table::data.table(
+    sample_id = rep(c("sA", "sB"), each = 3L),
+    cell_id   = 1:6,
+    x = c(0, 1, 2, 0.5, 1.5, 2.5),
+    y = rep(0, 6),
+    phenotype = rep(c("A", "B"), each = 3L)
+  )
+  result <- interaction_matrix(dt, radius = 5)
+  ab <- result[result$from == "A" & result$to == "B", ]$observed
+  ba <- result[result$from == "B" & result$to == "A", ]$observed
+  expect_equal(ab, 0)
+  expect_equal(ba, 0)
+  # Within-sample same-phenotype neighbours are still counted (3 cells, each
+  # sees the other 2 within radius 5) => 6 per sample, on the diagonal.
+  aa <- result[result$from == "A" & result$to == "A", ]$observed
+  expect_equal(aa, 6)
+})
+
+test_that("DelaunayNetwork builds a planar triangulation, not all pairs", {
+  skip_if_not_installed("deldir")
+  set.seed(11)
+  n <- 12L
+  counts <- matrix(rnorm(2 * n), nrow = n,
+                   dimnames = list(NULL, c("CD3", "CD8")))
+  coords <- data.frame(x = runif(n, 0, 100), y = runif(n, 0, 100))
+  obj <- CreateSpatialObject(counts, coords)
+
+  obj <- DelaunayNetwork(obj)
+  edges <- obj@spatial$delaunay_edges
+
+  expect_true(all(c("from", "to", "distance") %in% names(edges)))
+  # A planar triangulation of n points has at most 3n - 6 edges, far fewer
+  # than the n(n-1)/2 of an all-pairs graph.
+  expect_lte(nrow(edges), 3L * n - 6L)
+  expect_lt(nrow(edges), n * (n - 1L) / 2L)
+  # Connected: every vertex appears in at least one edge.
+  expect_setequal(union(edges$from, edges$to), seq_len(n))
+})
+
+test_that("DelaunayNetwork respects max_edge", {
+  skip_if_not_installed("deldir")
+  set.seed(12)
+  n <- 15L
+  counts <- matrix(rnorm(2 * n), nrow = n,
+                   dimnames = list(NULL, c("CD3", "CD8")))
+  coords <- data.frame(x = runif(n, 0, 100), y = runif(n, 0, 100))
+  obj <- CreateSpatialObject(counts, coords)
+
+  obj <- DelaunayNetwork(obj, max_edge = 20)
+  edges <- obj@spatial$delaunay_edges
+  expect_true(all(edges$distance <= 20))
+})
+
+test_that("single-sample spatial statistics reject multi-sample objects", {
+  set.seed(7)
+  counts <- matrix(rnorm(40), nrow = 20,
+                   dimnames = list(NULL, c("CD3", "CD8")))
+  coords <- data.frame(x = runif(20, 0, 100), y = runif(20, 0, 100))
+  meta <- data.frame(cell_id = 1:20,
+                     sample_id = rep(c("s1", "s2"), each = 10),
+                     phenotype = rep(c("A", "B"), 10))
+  obj <- CreateSpatialObject(counts, coords, meta)
+
+  expect_error(RipleysK(obj), "single sample")
+  expect_error(MoransI(obj, feature = "CD3", radius = 30), "single sample")
+  expect_error(QuadratAnalysis(obj, nx = 2, ny = 2), "single sample")
+  expect_error(PairCorrelation(obj), "single sample")
+  expect_error(NeighbourhoodEnrichment(obj, radius = 30, n_perm = 5),
+               "single sample")
+  expect_error(CrossNNDistance(obj, from = "A", to = "B"), "single sample")
+})
