@@ -1,0 +1,36 @@
+meta:
+  name: phenoscapR
+  description: Hugo Coder-themed interface for phenoscapR
+
+color:
+  palette:
+    black:   "#212121"
+    white:   "#fafafa"
+    grey:    "#e0e0e0"
+    blue:    "#1565c0"
+    blue-lt: "#42a5f5"
+    info:    "#1e88e5"
+    teal:    "#00897b"
+    amber:   "#ffb300"
+    red:     "#e53935"
+  # Light mode. The dark palette (bg #212121 / fg #dadada / primary #42a5f5)
+  # is swapped in www/custom.scss under [data-bs-theme="dark"].
+  foreground: black
+  background: white
+  primary:    blue
+  secondary:  grey
+  info:       info
+  success:    teal
+  warning:    amber
+  danger:     red
+
+typography:
+  base:
+    family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
+  headings:
+    family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
+    weight: 600
+  monospace:
+    family: '"SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
+  link:
+    decoration: none
