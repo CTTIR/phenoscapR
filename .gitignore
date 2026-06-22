@@ -13,3 +13,9 @@ src/*.dll
 _build.R
 docs/
 inst/doc/
+*.tmp
+*.log
+*~
+*.bak
+*.orig
+*.Rcheck/
