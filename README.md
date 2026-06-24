@@ -1,13 +1,14 @@
 # phenoscapR <img src="man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo"/>
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml)
-[![test-coverage](https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml)
-[![lint](https://github.com/cttir/phenoscapR/actions/workflows/lint.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/lint.yaml)
-[![pkgdown](https://github.com/cttir/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg)](https://cttir.github.io/phenoscapR/)
-[![Codecov test coverage](https://codecov.io/gh/cttir/phenoscapR/graph/badge.svg)](https://app.codecov.io/gh/cttir/phenoscapR)
-[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![R-CMD-check](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/CTTIR/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg)](https://cttir.github.io/phenoscapR/)
+[![CRAN status](https://www.r-pkg.org/badges/version/phenoscapR)](https://CRAN.R-project.org/package=phenoscapR)
+[![Codecov test coverage](https://codecov.io/gh/CTTIR/phenoscapR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/CTTIR/phenoscapR?branch=main)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/phenoscapR)](https://cran.r-project.org/package=phenoscapR)
+[![CRAN downloads total](https://cranlogs.r-pkg.org/badges/grand-total/phenoscapR)](https://cran.r-project.org/package=phenoscapR)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 **phenoscapR** provides a complete toolkit for reading, processing, analysing,

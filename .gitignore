@@ -19,3 +19,6 @@ inst/doc/
 *.bak
 *.orig
 *.Rcheck/
+
+_coverage/
+fingerprint_baseline.rds
