@@ -9,7 +9,7 @@ neighbourhood of a given radius."><meta property="og:image" content="https://ctt
 
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,8 @@ neighbourhood of a given radius."><meta property="og:image" content="https://ctt
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/phenoscapR.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-02-object-model.html">The SpatialCellData Object</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-03-spatial-analysis.html">Advanced Spatial Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-04-visualisation.html">Visualisation Gallery</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-05-advanced.html">Advanced Capabilities</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -82,12 +84,12 @@ the number of neighbours within the specified radius.</p>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">cell_density</span><span class="op">(</span><span class="va">dt</span>, radius <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">cell_id</span>, <span class="va">density</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    cell_id density</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;int&gt;   &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:       1       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:       2       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:       3       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:       4       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:       5       8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;int&gt;   &lt;int&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:       1       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:       2       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:       3       8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:       4       6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:       5       4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6:       6       4</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -97,7 +99,7 @@ the number of neighbours within the specified radius.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by R. Heller.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://github.com/cttir" class="external-link">Hanno Witte</a>.</p>
 </div>
 
 <div class="pkgdown-footer-center themakr-footer-suite">
@@ -105,7 +107,7 @@ the number of neighbours within the specified radius.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

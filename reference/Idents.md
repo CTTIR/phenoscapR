@@ -22,3 +22,13 @@ Idents(object)
 ## Value
 
 A character vector.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+table(Idents(phenoscapR_example))
+#> 
+#> tonsil_A tonsil_B 
+#>      320      320 
+```

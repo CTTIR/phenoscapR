@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,8 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/phenoscapR.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-02-object-model.html">The SpatialCellData Object</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-03-spatial-analysis.html">Advanced Spatial Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-04-visualisation.html">Visualisation Gallery</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-05-advanced.html">Advanced Capabilities</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -38,6 +40,84 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.1.0" id="phenoscapr-210">phenoscapR 2.1.0<a class="anchor" aria-label="anchor" href="#phenoscapr-210"></a></h2>
+<ul><li>Added an interactive <strong>Shiny app</strong>, styled 1:1 to the Hugo Coder theme via <code>bslib</code> / Bootstrap 5 and a <code>_brand.yml</code>, launched with <code><a href="../reference/run_app.html">run_app()</a></code>. It covers the core workflow, spatial statistics, cellular neighbourhoods, spatial domains, dimensionality reductions, and differential abundance, with a light/dark colour-mode toggle. The Shiny stack is optional (Suggests), so the core package stays lightweight; <code><a href="../reference/run_app.html">run_app()</a></code> reports any missing app packages.</li>
+<li>The app ships in <code>inst/app</code> as composable Shiny modules over the package’s exported functions, with a <code>shinytest2</code> smoke test (light and dark).</li>
+<li>Hanno Witte is credited as co-author throughout (README, citation, site).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.0" id="phenoscapr-200">phenoscapR 2.0.0<a class="anchor" aria-label="anchor" href="#phenoscapr-200"></a></h2>
+<p>Major feature release: higher-order spatial structure, unsupervised phenotyping, differential testing, platform readers, and ecosystem interop.</p>
+<ul><li>
+<strong>Cellular neighbourhoods / niches</strong> (<code><a href="../reference/CellularNeighbourhoods.html">CellularNeighbourhoods()</a></code>): cluster cells by the phenotype composition of their local neighbourhood.</li>
+<li>
+<strong>Spatial domains</strong> (<code><a href="../reference/SpatialDomains.html">SpatialDomains()</a></code>): partition tissue into regions of coherent, spatially smoothed expression.</li>
+<li>
+<strong>Unsupervised phenotyping</strong>: <code><a href="../reference/ExpressionClusters.html">ExpressionClusters()</a></code> gains a Gaussian mixture-model option (<code>method = "gmm"</code>, via mclust), and <code><a href="../reference/AnnotateClusters.html">AnnotateClusters()</a></code> names clusters by their most enriched markers.</li>
+<li>
+<strong>Differential abundance</strong> (<code><a href="../reference/DifferentialAbundance.html">DifferentialAbundance()</a></code>): per-sample phenotype proportions compared across conditions (Wilcoxon / t / Kruskal-Wallis), with BH-adjusted p-values.</li>
+<li>
+<strong>Platform readers</strong>: <code><a href="../reference/ReadMatrixCoords.html">ReadMatrixCoords()</a></code> for the general expression-plus- coordinates layout, with <code><a href="../reference/ReadXenium.html">ReadXenium()</a></code>, <code><a href="../reference/ReadCosMx.html">ReadCosMx()</a></code>, and <code><a href="../reference/ReadMERSCOPE.html">ReadMERSCOPE()</a></code> presetting each vendor’s cell-level column names.</li>
+<li>
+<strong>Ecosystem interop</strong>: <code><a href="../reference/as_Seurat.html">as_Seurat()</a></code>, <code><a href="../reference/as_SpatialExperiment.html">as_SpatialExperiment()</a></code>, and <code><a href="../reference/as_SpatialCellData.html">as_SpatialCellData()</a></code> convert to and from Seurat / SpatialExperiment.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.0" id="phenoscapr-120">phenoscapR 1.2.0<a class="anchor" aria-label="anchor" href="#phenoscapr-120"></a></h2>
+<p>Deeper, more rigorous statistics.</p>
+<ul><li>
+<code><a href="../reference/RipleysK.html">RipleysK()</a></code> gains a <code>"translation"</code> edge correction (each pair weighted by the inverse window/translate overlap) – the rigorous estimator for rectangular windows, alongside the existing <code>"none"</code> and reduced-sample <code>"border"</code>.</li>
+<li>
+<code><a href="../reference/MoransI.html">MoransI()</a></code> gains weight schemes (<code>weights = "binary"</code>, <code>"row"</code>-standardised, or <code>"idw"</code> inverse-distance) and a permutation p-value (<code>n_perm</code>), reported via a <code>method</code> field. Non-binary weights use the permutation test automatically.</li>
+<li>
+<code><a href="../reference/InteractionMatrix.html">InteractionMatrix()</a></code> gains a permutation null (<code>method = "permutation"</code>, <code>n_perm</code>) that shuffles phenotype labels within each sample and adds <code>z_score</code> and <code>p_value</code> columns.</li>
+<li>PCA now retains variance and loadings: <code><a href="../reference/VarianceExplained.html">VarianceExplained()</a></code> returns the percent variance per component and <code><a href="../reference/ScreePlot.html">ScreePlot()</a></code> visualises it.</li>
+<li>The translation sweep and Moran weighting are exercised against direct references in the test suite.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="phenoscapr-110">phenoscapR 1.1.0<a class="anchor" aria-label="anchor" href="#phenoscapr-110"></a></h2>
+<p>API coherence.</p>
+<ul><li>The spatial statistics now return lightweight classed objects (<code>phenoscapR_ripley</code>, <code>_pcf</code>, <code>_moran</code>, <code>_quadrat</code>, <code>_enrichment</code>, <code>_interaction</code>, <code>_crossnn</code>) that still behave like their underlying data.frame / list / vector, with consistent <code>print</code> summaries and ggplot2 <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> methods for one-line visualisation.</li>
+<li>All single-window statistics (<code>RipleysK</code>, <code>MoransI</code>, <code>QuadratAnalysis</code>, <code>PairCorrelation</code>, <code>NeighbourhoodEnrichment</code>, <code>CrossNNDistance</code>) gain a <code>by_sample</code> argument: with <code>by_sample = TRUE</code> a multi-sample object is analysed per section and returned as a named list (<code>phenoscapR_by_sample</code>).</li>
+<li>Added a project <code>.lintr</code> configuration (the package is lint-clean) and a <code>lint</code> GitHub Actions workflow running lintr and goodpractice.</li>
+<li>Hanno Witte added as a package author.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.1" id="phenoscapr-101">phenoscapR 1.0.1<a class="anchor" aria-label="anchor" href="#phenoscapr-101"></a></h2>
+<p>Robustness and scalability hardening.</p>
+<ul><li>The Delaunay fallback (used when <code>deldir</code> is absent) no longer builds an O(n^2) distance matrix; it now uses the kd-tree k-nearest-neighbour engine.</li>
+<li>Ripley’s K and the pair correlation function no longer materialise the full pairwise-distance set. Counting is streamed through the kd-tree in blocks and folded into a difference array over the radius grid — bounded memory, with the search cap seeded from the local density to avoid re-queries.</li>
+<li>Reader / <code><a href="../reference/CreateSpatialObject.html">CreateSpatialObject()</a></code> robustness: unnamed marker matrices get stable default names and all-NA marker columns are dropped with a warning; <code><a href="../reference/ReadSpatial.html">ReadSpatial()</a></code> now shares this handling. Duplicate marker names remain a hard error (renaming them would mask a labelling mistake).</li>
+<li>Added large-n and backend-equivalence regression tests.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0" id="phenoscapr-100">phenoscapR 1.0.0<a class="anchor" aria-label="anchor" href="#phenoscapr-100"></a></h2>
+<p>First stable release. This version consolidates the package onto a single compute engine, hardens the spatial statistics, and ships a reproducible example dataset and comprehensive vignettes.</p>
+<div class="section level3">
+<h3 id="new-features-1-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0"></a></h3>
+<ul><li>Bundled synthetic example dataset <code>phenoscapR_example</code> (two samples, eight markers, planted spatial niches) used across all examples, tests, and vignettes — <code>data(phenoscapR_example)</code>.</li>
+<li>Dimensionality reduction: <code><a href="../reference/RunPCA.html">RunPCA()</a></code>, <code><a href="../reference/RunUMAP.html">RunUMAP()</a></code>, <code><a href="../reference/RunTSNE.html">RunTSNE()</a></code>, <code><a href="../reference/RunSONG.html">RunSONG()</a></code> with <code><a href="../reference/EmbeddingPlot.html">DimPlot()</a></code> / <code><a href="../reference/EmbeddingPlot.html">EmbeddingPlot()</a></code> and an <code><a href="../reference/Embeddings.html">Embeddings()</a></code> / <code><a href="../reference/Reductions.html">Reductions()</a></code> accessor pair.</li>
+<li>New Visualisation Gallery vignette demonstrating every plotting function, and a “choosing a spatial statistic” guide in the spatial-analysis vignette.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="correctness-and-robustness-1-0-0">Correctness and robustness<a class="anchor" aria-label="anchor" href="#correctness-and-robustness-1-0-0"></a></h3>
+<ul><li>Spatial statistics are now <strong>sample-aware</strong>: <code><a href="../reference/interaction_matrix.html">interaction_matrix()</a></code> and friends never count neighbours across samples, and the single-window statistics (<code><a href="../reference/RipleysK.html">RipleysK()</a></code>, <code><a href="../reference/MoransI.html">MoransI()</a></code>, <code><a href="../reference/QuadratAnalysis.html">QuadratAnalysis()</a></code>, <code><a href="../reference/PairCorrelation.html">PairCorrelation()</a></code>, <code><a href="../reference/NeighbourhoodEnrichment.html">NeighbourhoodEnrichment()</a></code>, <code><a href="../reference/CrossNNDistance.html">CrossNNDistance()</a></code>) refuse multi-sample objects with an informative error.</li>
+<li>
+<code><a href="../reference/DelaunayNetwork.html">DelaunayNetwork()</a></code> builds a real Delaunay triangulation via <code>deldir</code> (Suggests) instead of an all-pairs placeholder, with a <code>max_edge</code> cap.</li>
+<li>Ripley’s K gains a reduced-sample border correction.</li>
+<li>Added input validation and friendly errors throughout (NA coordinates, degenerate samples, missing phenotype/marker columns).</li>
+<li>Fixed the colour palette system: unsupported palette names now fall back to the default instead of erroring; advertised palettes are limited to those the backend actually provides.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="performance-1-0-0">Performance<a class="anchor" aria-label="anchor" href="#performance-1-0-0"></a></h3>
+<ul><li>All neighbour queries route through a shared kd-tree search engine (<code>RANN</code>, Suggests) with an exact, memory-bounded base-R fallback, replacing the per-function O(n^2) distance matrices. Interaction and enrichment counting are vectorised and the enrichment permutation graph is computed once. Large sections (10<sup>4–10</sup>5 cells) that previously needed multi-gigabyte distance matrices now run in seconds.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="infrastructure-1-0-0">Infrastructure<a class="anchor" aria-label="anchor" href="#infrastructure-1-0-0"></a></h3>
+<ul><li>Consolidated the snake_case and <code>SpatialCellData</code> APIs onto one internal compute core so both faces stay in sync.</li>
+<li>Added <code>inst/CITATION</code>, expanded the test suite, and raised coverage to ~83%.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="phenoscapr-010">phenoscapR 0.1.0<a class="anchor" aria-label="anchor" href="#phenoscapr-010"></a></h2>
 <ul><li>Initial release.</li>
 <li>Read single-cell spatial biology data with <code><a href="../reference/read_spatial.html">read_spatial()</a></code>.</li>
@@ -47,11 +127,12 @@
 <li>Spatial analysis: <code><a href="../reference/nearest_neighbours.html">nearest_neighbours()</a></code>, <code><a href="../reference/cell_density.html">cell_density()</a></code>, <code><a href="../reference/interaction_matrix.html">interaction_matrix()</a></code>, <code><a href="../reference/spatial_clusters.html">spatial_clusters()</a></code>.</li>
 <li>Visualisation: <code><a href="../reference/plot_cell_map.html">plot_cell_map()</a></code>, <code><a href="../reference/plot_density.html">plot_density()</a></code>, <code><a href="../reference/plot_heatmap.html">plot_heatmap()</a></code>, <code><a href="../reference/plot_interactions.html">plot_interactions()</a></code>.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by R. Heller.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://github.com/cttir" class="external-link">Hanno Witte</a>.</p>
 </div>
 
 <div class="pkgdown-footer-center themakr-footer-suite">
@@ -59,7 +140,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

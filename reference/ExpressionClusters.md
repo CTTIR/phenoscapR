@@ -8,7 +8,7 @@ Clusters cells based on marker expression profiles.
 ExpressionClusters(
   object,
   k,
-  method = c("kmeans", "hierarchical"),
+  method = c("kmeans", "hierarchical", "gmm"),
   slot = "data",
   markers = NULL
 )
@@ -55,5 +55,5 @@ obj <- ExpressionClusters(obj, k = 2)
 table(Meta(obj)$expr_cluster)
 #> 
 #>  1  2 
-#> 25 25 
+#> 34 16 
 ```

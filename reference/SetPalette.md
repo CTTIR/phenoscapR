@@ -18,13 +18,15 @@ GetPalette()
 
   Character or named character vector. Either:
 
-  - A viridis palette name: `"viridis"`, `"magma"`, `"inferno"`,
-    `"plasma"`, `"cividis"`, `"rocket"`, `"mako"`, `"turbo"`.
+  - A viridis-family palette name: `"viridis"` (default), `"inferno"`,
+    `"plasma"`, `"cividis"`, `"rocket"`, or `"mako"`.
 
   - A character vector of 2-3 hex colours for a custom gradient (e.g.
     `c("#440154", "#21918c", "#fde725")`).
 
   - `NULL` to return the current palette without changing it.
+
+  An unrecognised name falls back to `"viridis"` rather than erroring.
 
 ## Value
 
@@ -33,9 +35,9 @@ Invisibly returns the previous palette setting.
 ## Examples
 
 ``` r
-SetPalette("magma")
+SetPalette("inferno")
 GetPalette()
-#> [1] "magma"
+#> [1] "inferno"
 
 # Custom 3-colour gradient
 SetPalette(c("navy", "white", "firebrick"))

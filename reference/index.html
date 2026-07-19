@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,8 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/phenoscapR.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-02-object-model.html">The SpatialCellData Object</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-03-spatial-analysis.html">Advanced Spatial Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-04-visualisation.html">Visualisation Gallery</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-05-advanced.html">Advanced Capabilities</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -115,6 +117,20 @@
 
         </dt>
         <dd>Get Active Cell Identities</dd>
+
+        <dt>
+
+          <code><a href="Embeddings.html">Embeddings()</a></code>
+
+        </dt>
+        <dd>Get a Dimensionality-Reduction Embedding</dd>
+
+        <dt>
+
+          <code><a href="Reductions.html">Reductions()</a></code>
+
+        </dt>
+        <dd>List Available Reductions</dd>
 
         <dt>
 
@@ -369,6 +385,191 @@
         </dt>
         <dd>Expression-Based Cell Clustering</dd>
       </dl></div><div class="section level2">
+      <h2 id="cellular-neighbourhoods-domains">Cellular Neighbourhoods &amp; Domains<a class="anchor" aria-label="anchor" href="#cellular-neighbourhoods-domains"></a></h2>
+
+      <div class="section-desc"><p>Higher-order spatial structure: group cells into cellular neighbourhoods (niches) by the phenotype composition of their local neighbourhood, or into spatial domains by their spatially smoothed expression. Annotate unsupervised clusters by their most enriched markers.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="CellularNeighbourhoods.html">CellularNeighbourhoods()</a></code>
+
+        </dt>
+        <dd>Cellular Neighbourhoods (Niches)</dd>
+
+        <dt>
+
+          <code><a href="SpatialDomains.html">SpatialDomains()</a></code>
+
+        </dt>
+        <dd>Spatial Domains</dd>
+
+        <dt>
+
+          <code><a href="AnnotateClusters.html">AnnotateClusters()</a></code>
+
+        </dt>
+        <dd>Annotate Clusters by Their Top Markers</dd>
+      </dl></div><div class="section level2">
+      <h2 id="differential-testing">Differential Testing<a class="anchor" aria-label="anchor" href="#differential-testing"></a></h2>
+
+      <div class="section-desc"><p>Compare phenotype composition across experimental conditions, using the sample as the unit of replication.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="DifferentialAbundance.html">DifferentialAbundance()</a></code>
+
+        </dt>
+        <dd>Differential Abundance of Phenotypes Across Conditions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="platform-readers">Platform Readers<a class="anchor" aria-label="anchor" href="#platform-readers"></a></h2>
+
+      <div class="section-desc"><p>Import cell-level exports from imaging platforms. A general expression-plus-coordinates reader underlies per-vendor convenience wrappers for Xenium, CosMx, and MERSCOPE.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="ReadMatrixCoords.html">ReadMatrixCoords()</a></code>
+
+        </dt>
+        <dd>Read an Expression Matrix and a Coordinate/Metadata Table</dd>
+
+        <dt>
+
+          <code><a href="ReadXenium.html">ReadXenium()</a></code>
+
+        </dt>
+        <dd>Read 10x Xenium Cell Output</dd>
+
+        <dt>
+
+          <code><a href="ReadCosMx.html">ReadCosMx()</a></code>
+
+        </dt>
+        <dd>Read NanoString CosMx Cell Output</dd>
+
+        <dt>
+
+          <code><a href="ReadMERSCOPE.html">ReadMERSCOPE()</a></code>
+
+        </dt>
+        <dd>Read Vizgen MERSCOPE Cell Output</dd>
+      </dl></div><div class="section level2">
+      <h2 id="interoperability">Interoperability<a class="anchor" aria-label="anchor" href="#interoperability"></a></h2>
+
+      <div class="section-desc"><p>Convert to and from the wider single-cell ecosystem (Seurat and SpatialExperiment).</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="as_Seurat.html">as_Seurat()</a></code>
+
+        </dt>
+        <dd>Convert a SpatialCellData to a Seurat Object</dd>
+
+        <dt>
+
+          <code><a href="as_SpatialExperiment.html">as_SpatialExperiment()</a></code>
+
+        </dt>
+        <dd>Convert a SpatialCellData to a SpatialExperiment Object</dd>
+
+        <dt>
+
+          <code><a href="as_SpatialCellData.html">as_SpatialCellData()</a></code>
+
+        </dt>
+        <dd>Convert a Seurat or SpatialExperiment Object to SpatialCellData</dd>
+      </dl></div><div class="section level2">
+      <h2 id="dimensionality-reduction">Dimensionality Reduction<a class="anchor" aria-label="anchor" href="#dimensionality-reduction"></a></h2>
+
+      <div class="section-desc"><p>Embed cells from their marker-expression profiles for visualisation. PCA uses base R and is always available; UMAP, t-SNE, and SONG are optional backends (uwot, Rtsne, and the CTTIR songR package). UMAP, t-SNE, and SONG run on the top principal components by default.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="RunPCA.html">RunPCA()</a></code>
+
+        </dt>
+        <dd>Principal Component Analysis</dd>
+
+        <dt>
+
+          <code><a href="RunUMAP.html">RunUMAP()</a></code>
+
+        </dt>
+        <dd>UMAP Embedding</dd>
+
+        <dt>
+
+          <code><a href="RunTSNE.html">RunTSNE()</a></code>
+
+        </dt>
+        <dd>t-SNE Embedding</dd>
+
+        <dt>
+
+          <code><a href="RunSONG.html">RunSONG()</a></code>
+
+        </dt>
+        <dd>SONG Embedding</dd>
+
+        <dt>
+
+          <code><a href="Embeddings.html">Embeddings()</a></code>
+
+        </dt>
+        <dd>Get a Dimensionality-Reduction Embedding</dd>
+
+        <dt>
+
+          <code><a href="Reductions.html">Reductions()</a></code>
+
+        </dt>
+        <dd>List Available Reductions</dd>
+
+        <dt>
+
+          <code><a href="VarianceExplained.html">VarianceExplained()</a></code>
+
+        </dt>
+        <dd>Variance Explained by Principal Components</dd>
+
+        <dt>
+
+          <code><a href="EmbeddingPlot.html">EmbeddingPlot()</a></code> <code><a href="EmbeddingPlot.html">DimPlot()</a></code>
+
+        </dt>
+        <dd>Plot a Dimensionality-Reduction Embedding</dd>
+
+        <dt>
+
+          <code><a href="ScreePlot.html">ScreePlot()</a></code>
+
+        </dt>
+        <dd>Scree Plot of PCA Variance</dd>
+      </dl></div><div class="section level2">
       <h2 id="visualisation">Visualisation<a class="anchor" aria-label="anchor" href="#visualisation"></a></h2>
 
       <div class="section-desc"><p>Publication-ready ggplot2 visualisations for cell maps, marker intensities, phenotype composition, spatial networks, and interaction heatmaps. High-level S4 methods work directly on a SpatialCellData object; lower-level helpers accept data.tables.</p></div>
@@ -533,13 +734,45 @@
 
         </dt>
         <dd>Create a Custom Gradient Palette from Anchor Colours</dd>
+      </dl></div><div class="section level2">
+      <h2 id="shiny-application">Shiny Application<a class="anchor" aria-label="anchor" href="#shiny-application"></a></h2>
+
+      <div class="section-desc"><p>Launch the interactive phenoscapR Shiny interface to run the full analysis workflow and explore results with live plots and tables.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="run_app.html">run_app()</a></code>
+
+        </dt>
+        <dd>Launch the phenoscapR Shiny Application</dd>
+      </dl></div><div class="section level2">
+      <h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a></h2>
+
+      <div class="section-desc"><p>Bundled example data used throughout the documentation and vignettes.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="phenoscapR_example.html">phenoscapR_example</a></code>
+
+        </dt>
+        <dd>Synthetic multiplexed-imaging example dataset</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by R. Heller.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://github.com/cttir" class="external-link">Hanno Witte</a>.</p>
 </div>
 
 <div class="pkgdown-footer-center themakr-footer-suite">
@@ -547,7 +780,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

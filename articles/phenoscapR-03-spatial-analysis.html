@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,8 @@
 <li><a class="dropdown-item" href="../articles/phenoscapR.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-02-object-model.html">The SpatialCellData Object</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-03-spatial-analysis.html">Advanced Spatial Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-04-visualisation.html">Visualisation Gallery</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-05-advanced.html">Advanced Capabilities</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
@@ -74,160 +76,206 @@
 
     
     
+<!-- badges: start -->
+<p><a href="https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://cttir.github.io/phenoscapR/"><img src="https://github.com/CTTIR/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="https://CRAN.R-project.org/package=phenoscapR" class="external-link"><img src="https://www.r-pkg.org/badges/version/phenoscapR" alt="CRAN status"></a> <a href="https://app.codecov.io/gh/CTTIR/phenoscapR?branch=main" class="external-link"><img src="https://codecov.io/gh/CTTIR/phenoscapR/branch/main/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://cran.r-project.org/package=phenoscapR" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/phenoscapR" alt="CRAN downloads"></a> <a href="https://cran.r-project.org/package=phenoscapR" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/phenoscapR" alt="CRAN downloads total"></a> <a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <!-- badges: end --></p>
 <p><img src="../reference/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>phenoscapR provides a rich set of spatial statistics beyond basic
-nearest neighbours and density estimation. This vignette
-demonstrates:</p>
+<p>Beyond nearest neighbours and density, phenoscapR provides a suite of
+point- pattern statistics for asking <em>how</em> cells are spatially
+organised:</p>
 <ul>
 <li>
-<strong>Neighbourhood Enrichment</strong> — permutation test for
-phenotype co-localisation</li>
+<strong>Neighbourhood enrichment</strong> — do phenotype pairs
+co-localise more than chance?</li>
 <li>
-<strong>Ripley’s K</strong> — global clustering / dispersion
-measure</li>
+<strong>Ripley’s K / L</strong> — clustering or dispersion across
+many scales at once</li>
+<li>
+<strong>Pair correlation function</strong> — clustering at a
+<em>specific</em> distance</li>
 <li>
 <strong>Moran’s I</strong> — spatial autocorrelation of a continuous
-variable</li>
+marker</li>
 <li>
-<strong>Quadrat Analysis</strong> — complete spatial randomness
-test</li>
+<strong>Quadrat analysis</strong> — a quick chi-squared test of
+spatial randomness</li>
 <li>
-<strong>Pair Correlation Function</strong> — scale-dependent
-g(r)</li>
+<strong>Cross nearest-neighbour distance</strong> — directed
+proximity between two phenotypes</li>
 <li>
-<strong>Cross Nearest-Neighbour Distance</strong> — inter-phenotype
-proximity</li>
+<strong>Delaunay network</strong> — the cell-contact graph</li>
 <li>
-<strong>Delaunay Network</strong> — cell contact graph</li>
-<li>
-<strong>Expression Clustering</strong> — marker-expression-based
-cell clusters</li>
+<strong>Expression clustering</strong> — marker-defined communities,
+ignoring position</li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="setup-simulated-tissue-data">Setup: Simulated Tissue Data<a class="anchor" aria-label="anchor" href="#setup-simulated-tissue-data"></a>
-</h2>
+<div class="section level3">
+<h3 id="one-sample-at-a-time">One sample at a time<a class="anchor" aria-label="anchor" href="#one-sample-at-a-time"></a>
+</h3>
+<p>These statistics describe a single point pattern in one observation
+window. Pooling several tissues would compute distances across samples
+and return nonsense, so phenoscapR <strong>refuses multi-sample
+objects</strong> for these functions — subset to one sample first.
+(Per-cell summaries like <code><a href="../reference/FindNeighbours.html">FindNeighbours()</a></code>,
+<code><a href="../reference/CellDensity.html">CellDensity()</a></code>, and <code><a href="../reference/InteractionMatrix.html">InteractionMatrix()</a></code> are
+sample-aware and need no subsetting.)</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cttir.github.io/phenoscapR/">phenoscapR</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">phenoscapR_example</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">600</span></span>
+<span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="va">phenoscapR_example</span></span>
+<span><span class="va">spe</span><span class="op">@</span><span class="va">meta_data</span><span class="op">$</span><span class="va">phenotype</span> <span class="op">&lt;-</span> <span class="va">spe</span><span class="op">@</span><span class="va">meta_data</span><span class="op">$</span><span class="va">phenotype_true</span></span>
 <span></span>
-<span><span class="co"># Two spatially segregated populations</span></span>
-<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">250</span>, <span class="fl">80</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">750</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">400</span>, <span class="fl">80</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">400</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">900</span>, <span class="fl">150</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">200</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>,  <span class="co"># CD3 high in pop 1</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">200</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">800</span>, <span class="fl">130</span><span class="op">)</span><span class="op">)</span>,  <span class="co"># CD8 high in pop 2</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">600</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span>,                       <span class="co"># PanCK background</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">400</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>                        <span class="co"># DAPI</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  nrow <span class="op">=</span> <span class="va">n</span>,</span>
-<span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD8"</span>, <span class="st">"PanCK"</span>, <span class="st">"DAPI"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CreateSpatialObject.html">CreateSpatialObject</a></span><span class="op">(</span><span class="va">counts</span>, <span class="va">coords</span>, project <span class="op">=</span> <span class="st">"spatial-demo"</span><span class="op">)</span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NormaliseData.html">NormaliseData</a></span><span class="op">(</span><span class="va">obj</span>, method <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PhenotypeCells.html">PhenotypeCells</a></span><span class="op">(</span><span class="va">obj</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CD3 <span class="op">=</span> <span class="fl">0</span>, CD8 <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>                                              PanCK <span class="op">=</span> <span class="fl">0</span>, DAPI <span class="op">=</span> <span class="op">-</span><span class="fl">99</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="../reference/Idents.html">Idents</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; CD3+/CD8+/PanCK+/DAPI+             CD3+/DAPI+      CD3+/PanCK+/DAPI+ </span></span>
-<span><span class="co">#&gt;                      1                    126                    170 </span></span>
-<span><span class="co">#&gt;             CD8+/DAPI+      CD8+/PanCK+/DAPI+                  DAPI+ </span></span>
-<span><span class="co">#&gt;                    159                    137                      4 </span></span>
-<span><span class="co">#&gt;           PanCK+/DAPI+ </span></span>
-<span><span class="co">#&gt;                      3</span></span></code></pre></div>
+<span><span class="co"># A single tissue section.</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">spe</span><span class="op">[</span><span class="va">spe</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">==</span> <span class="st">"tonsil_A"</span>, <span class="op">]</span></span>
+<span><span class="va">a</span></span>
+<span><span class="co">#&gt; A SpatialCellData object</span></span>
+<span><span class="co">#&gt;   320 cells across 1 sample</span></span>
+<span><span class="co">#&gt;   Markers: CD3, CD4, CD8, CD20, CD68, ... (8 total) </span></span>
+<span><span class="co">#&gt;   Normalised: FALSE </span></span>
+<span><span class="co">#&gt;   Phenotypes: 6 </span></span>
+<span><span class="co">#&gt;   Project: phenoscapR example (tonsil, simulated)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="neighbourhood-enrichment">Neighbourhood Enrichment<a class="anchor" aria-label="anchor" href="#neighbourhood-enrichment"></a>
+<h2 id="neighbourhood-enrichment">Neighbourhood enrichment<a class="anchor" aria-label="anchor" href="#neighbourhood-enrichment"></a>
 </h2>
-<p>Tests whether phenotype pairs co-localise more (or less) than
-expected by random chance using a permutation approach:</p>
+<p>A permutation test: it shuffles phenotype labels many times and asks
+whether each phenotype pair is observed as neighbours more (positive z)
+or less (negative z) often than the shuffles. The planted B-cell
+follicle shows up as strong B–B self-enrichment.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Run with n_perm = 100 or more for reliable p-values</span></span>
-<span><span class="va">ne</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NeighbourhoodEnrichment.html">NeighbourhoodEnrichment</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">80</span>, n_perm <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="va">ne</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ne</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NeighbourhoodEnrichment.html">NeighbourhoodEnrichment</a></span><span class="op">(</span><span class="va">a</span>, radius <span class="op">=</span> <span class="fl">40</span>, n_perm <span class="op">=</span> <span class="fl">199</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">ne</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">ne</span><span class="op">$</span><span class="va">z_score</span><span class="op">)</span>, <span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="op">]</span></span>
+<span><span class="co">#&gt; &lt;phenoscapR&gt; Neighbourhood enrichment (permutation test)</span></span>
+<span><span class="co">#&gt;   top co-localised pairs (by z-score):</span></span>
+<span><span class="co">#&gt;         from          to   z_score       p_value</span></span>
+<span><span class="co">#&gt;       B cell      B cell 24.996390 6.691699e-138</span></span>
+<span><span class="co">#&gt;        T reg    T helper  9.851029  6.784551e-23</span></span>
+<span><span class="co">#&gt;     T helper       T reg  9.851029  6.784551e-23</span></span>
+<span><span class="co">#&gt;     T helper T cytotoxic  8.315542  9.133401e-17</span></span>
+<span><span class="co">#&gt;  T cytotoxic    T helper  8.315542  9.133401e-17</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="ripleys-k">Ripley’s K<a class="anchor" aria-label="anchor" href="#ripleys-k"></a>
+<h2 id="ripleys-k-and-l">Ripley’s K and L<a class="anchor" aria-label="anchor" href="#ripleys-k-and-l"></a>
 </h2>
-<p>Assesses global spatial clustering across a range of radii. Values
-above the theoretical CSR line indicate clustering:</p>
+<p><code><a href="../reference/RipleysK.html">RipleysK()</a></code> accumulates, for each radius <code>r</code>,
+the average number of other cells within <code>r</code>, normalised by
+intensity. Under complete spatial randomness <code>K(r) = πr²</code>;
+the <code>L</code> transform makes departures easy to read
+(<code>L(r) &gt; 0</code> means clustering). The border correction
+removes edge bias.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RipleysK.html">RipleysK</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
-<span><span class="va">rk</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">rk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RipleysK.html">RipleysK</a></span><span class="op">(</span><span class="va">a</span>, r_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">120</span>, length.out <span class="op">=</span> <span class="fl">40</span><span class="op">)</span>, correction <span class="op">=</span> <span class="st">"border"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">rk</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;phenoscapR&gt; Ripley's K / border correction</span></span>
+<span><span class="co">#&gt;   6 radii from 0 to 15.4</span></span>
+<span><span class="co">#&gt;   L(r) range: [0, 9.75]  (&gt;0 clustered, &lt;0 dispersed)</span></span>
+<span><span class="co">#&gt;          r        K        L  expected</span></span>
+<span><span class="co">#&gt; 1 0.000000   0.0000 0.000000   0.00000</span></span>
+<span><span class="co">#&gt; 2 3.076923 158.7302 4.031198  29.74289</span></span>
+<span><span class="co">#&gt; 3 6.153846 317.4603 3.898554 118.97156</span></span>
+<span><span class="co">#&gt; 4 9.230769 674.6032 5.422997 267.68600</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">rk</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">L</span>, type <span class="op">=</span> <span class="st">"l"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"#3366cc"</span>,</span>
+<span>       xlab <span class="op">=</span> <span class="st">"r"</span>, ylab <span class="op">=</span> <span class="st">"L(r)  (&gt;0 = clustered)"</span>,</span>
+<span>       main <span class="op">=</span> <span class="st">"Ripley's L, border-corrected"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/ripleysk-1.png" class="r-plt" alt="" width="672"></p>
+</div>
+<div class="section level2">
+<h2 id="pair-correlation-function">Pair correlation function<a class="anchor" aria-label="anchor" href="#pair-correlation-function"></a>
+</h2>
+<p><code><a href="../reference/PairCorrelation.html">PairCorrelation()</a></code> is the scale-resolved companion to
+Ripley’s K: <code>g(r) &gt; 1</code> means more pairs at distance
+<code>r</code> than expected, <code>g(r) &lt; 1</code> means
+inhibition.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PairCorrelation.html">PairCorrelation</a></span><span class="op">(</span><span class="va">a</span>, r_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">120</span>, length.out <span class="op">=</span> <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">pcf</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">g</span>, type <span class="op">=</span> <span class="st">"l"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"#cc3366"</span>,</span>
+<span>       xlab <span class="op">=</span> <span class="st">"r"</span>, ylab <span class="op">=</span> <span class="st">"g(r)"</span>, main <span class="op">=</span> <span class="st">"Pair correlation function"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/pcf-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="morans-i">Moran’s I<a class="anchor" aria-label="anchor" href="#morans-i"></a>
 </h2>
-<p>Quantifies the spatial autocorrelation of a continuous variable
-(e.g. a marker intensity). Values near +1 indicate strong spatial
-clustering of high/low values; values near −1 indicate regular spatial
-dispersion:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MoransI.html">MoransI</a></span><span class="op">(</span><span class="va">obj</span>, feature <span class="op">=</span> <span class="st">"CD3"</span>, radius <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="va">mi</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="quadrat-analysis">Quadrat Analysis<a class="anchor" aria-label="anchor" href="#quadrat-analysis"></a>
-</h2>
-<p>Divides the tissue into a regular grid and tests for Complete Spatial
-Randomness (CSR) using a chi-squared test. Significant results indicate
-non-random spatial distribution:</p>
+<p>Spatial autocorrelation of a continuous variable. A lineage marker
+like CD20, concentrated in the follicle, autocorrelates strongly
+(<code>I</code> well above its expectation, tiny p-value).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">qa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QuadratAnalysis.html">QuadratAnalysis</a></span><span class="op">(</span><span class="va">obj</span>, nx <span class="op">=</span> <span class="fl">4</span>, ny <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="va">qa</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/MoransI.html">MoransI</a></span><span class="op">(</span><span class="va">a</span>, feature <span class="op">=</span> <span class="st">"CD20"</span>, radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;phenoscapR&gt; Moran's I spatial autocorrelation</span></span>
+<span><span class="co">#&gt;   I = 1.0886   (expected -0.0031 under no autocorrelation)</span></span>
+<span><span class="co">#&gt;   z = 34.557, p = 1.13e-261</span></span>
+<span><span class="co">#&gt;   significant positive autocorrelation (clustered)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="pair-correlation-function">Pair Correlation Function<a class="anchor" aria-label="anchor" href="#pair-correlation-function"></a>
+<h2 id="quadrat-analysis">Quadrat analysis<a class="anchor" aria-label="anchor" href="#quadrat-analysis"></a>
 </h2>
-<p>The pair correlation function g(r) is the derivative of Ripley’s K
-and measures clustering or inhibition at a specific distance r. g(r)
-&gt; 1 indicates clustering; g(r) &lt; 1 indicates inhibition:</p>
+<p>A fast omnibus test: tile the window into an <code>nx × ny</code>
+grid, count cells per tile, and compare to a uniform expectation with a
+chi-squared test. The variance-to-mean ratio (<code>VMR</code>) exceeds
+1 for clustered patterns.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PairCorrelation.html">PairCorrelation</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
-<span><span class="va">pcf</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">qa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QuadratAnalysis.html">QuadratAnalysis</a></span><span class="op">(</span><span class="va">a</span>, nx <span class="op">=</span> <span class="fl">5</span>, ny <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">qa</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"chi_sq"</span>, <span class="st">"p_value"</span>, <span class="st">"VMR"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; $chi_sq</span></span>
+<span><span class="co">#&gt; [1] 367.8125</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $p_value</span></span>
+<span><span class="co">#&gt; [1] 2.927953e-63</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $VMR</span></span>
+<span><span class="co">#&gt; [1] 15.32552</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="cross-nearest-neighbour-distance">Cross Nearest-Neighbour Distance<a class="anchor" aria-label="anchor" href="#cross-nearest-neighbour-distance"></a>
+<h2 id="cross-nearest-neighbour-distance">Cross nearest-neighbour distance<a class="anchor" aria-label="anchor" href="#cross-nearest-neighbour-distance"></a>
 </h2>
-<p>Measures the distance from each cell of phenotype A to the nearest
-cell of phenotype B, providing a directed measure of inter-phenotype
-proximity:</p>
+<p>For each cell of phenotype <code>from</code>, the distance to the
+nearest cell of phenotype <code>to</code> — a directed measure of how
+close one population sits to another. It returns one distance per source
+cell.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CrossNNDistance.html">CrossNNDistance</a></span><span class="op">(</span><span class="va">obj</span>, from <span class="op">=</span> <span class="st">"CD3+CD8-"</span>, to <span class="op">=</span> <span class="st">"CD3-CD8+"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cn</span><span class="op">$</span><span class="va">cross_nn_distance</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">d_help_to_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CrossNNDistance.html">CrossNNDistance</a></span><span class="op">(</span><span class="va">a</span>, from <span class="op">=</span> <span class="st">"T helper"</span>, to <span class="op">=</span> <span class="st">"B cell"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">d_help_to_b</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt;   46.52  168.36  203.95  233.43  313.92  484.20</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="delaunay-triangulation-network">Delaunay Triangulation Network<a class="anchor" aria-label="anchor" href="#delaunay-triangulation-network"></a>
+<h2 id="delaunay-contact-network">Delaunay contact network<a class="anchor" aria-label="anchor" href="#delaunay-contact-network"></a>
 </h2>
-<p>Constructs a cell contact graph based on Delaunay triangulation.
-Useful for cell-cell interaction analyses:</p>
+<p>The Delaunay triangulation approximates which cells physically touch.
+Capping edge length with <code>max_edge</code> drops the long edges that
+span empty space.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DelaunayNetwork.html">DelaunayNetwork</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/SpatialNetworkPlot.html">SpatialNetworkPlot</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DelaunayNetwork.html">DelaunayNetwork</a></span><span class="op">(</span><span class="va">a</span>, max_edge <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">a</span><span class="op">@</span><span class="va">spatial</span><span class="op">$</span><span class="va">delaunay_edges</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 661</span></span>
+<span><span class="fu"><a href="../reference/SpatialNetworkPlot.html">SpatialNetworkPlot</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/delaunay-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
-<h2 id="expression-clustering">Expression Clustering<a class="anchor" aria-label="anchor" href="#expression-clustering"></a>
+<h2 id="expression-clustering">Expression clustering<a class="anchor" aria-label="anchor" href="#expression-clustering"></a>
 </h2>
-<p>Cluster cells by their normalised marker expression profiles (k-means
-or hierarchical). Useful for discovering marker co-expression
-communities independently of spatial position:</p>
+<p>Cluster cells by their normalised marker profiles, independent of
+position, then look at where those clusters fall in the tissue.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExpressionClusters.html">ExpressionClusters</a></span><span class="op">(</span><span class="va">obj</span>, k <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">obj</span><span class="op">$</span><span class="va">expr_cluster</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/CellMap.html">CellMap</a></span><span class="op">(</span><span class="va">obj</span>, colour_by <span class="op">=</span> <span class="st">"expr_cluster"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExpressionClusters.html">ExpressionClusters</a></span><span class="op">(</span><span class="va">a</span>, k <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">expr_cluster</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  1  2  3  4  5  6 </span></span>
+<span><span class="co">#&gt; 45 67 31 59 38 80</span></span>
+<span><span class="fu"><a href="../reference/CellMap.html">CellMap</a></span><span class="op">(</span><span class="va">a</span>, colour_by <span class="op">=</span> <span class="st">"expr_cluster"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/exprclusters-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
-<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+<h2 id="choosing-a-statistic">Choosing a statistic<a class="anchor" aria-label="anchor" href="#choosing-a-statistic"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -236,77 +284,69 @@ communities independently of spatial position:</p>
 <col width="33%">
 </colgroup>
 <thead><tr class="header">
-<th>Function</th>
-<th>What it tests</th>
-<th>Key parameter</th>
+<th>Question</th>
+<th>Use</th>
+<th>Output</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td>Do phenotypes A and B sit together?</td>
 <td><code><a href="../reference/NeighbourhoodEnrichment.html">NeighbourhoodEnrichment()</a></code></td>
-<td>Co-localisation vs random</td>
-<td>
-<code>radius</code>, <code>n_perm</code>
-</td>
+<td>z-score / p per pair</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/RipleysK.html">RipleysK()</a></code></td>
-<td>Global clustering at multiple radii</td>
+<td>Is one phenotype clustered overall?</td>
 <td>
-<code>r_max</code>, <code>n_r</code>
-</td>
+<code><a href="../reference/RipleysK.html">RipleysK()</a></code> (target =)</td>
+<td>K, L vs radius</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/MoransI.html">MoransI()</a></code></td>
-<td>Spatial autocorrelation of a feature</td>
-<td>
-<code>feature</code>, <code>radius</code>
-</td>
-</tr>
-<tr class="even">
-<td><code><a href="../reference/QuadratAnalysis.html">QuadratAnalysis()</a></code></td>
-<td>CSR via chi-squared</td>
-<td>
-<code>nx</code>, <code>ny</code>
-</td>
-</tr>
-<tr class="odd">
+<td>At <em>what distance</em> is it clustered?</td>
 <td><code><a href="../reference/PairCorrelation.html">PairCorrelation()</a></code></td>
-<td>Scale-dependent g(r)</td>
-<td>
-<code>r_max</code>, <code>n_r</code>
-</td>
+<td>g(r)</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/CrossNNDistance.html">CrossNNDistance()</a></code></td>
-<td>Inter-phenotype proximity</td>
-<td>
-<code>from</code>, <code>to</code>
-</td>
+<td>Is a marker spatially autocorrelated?</td>
+<td><code><a href="../reference/MoransI.html">MoransI()</a></code></td>
+<td>I, z, p</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/DelaunayNetwork.html">DelaunayNetwork()</a></code></td>
-<td>Cell contact graph</td>
-<td>—</td>
+<td>Quick “is it random?” check</td>
+<td><code><a href="../reference/QuadratAnalysis.html">QuadratAnalysis()</a></code></td>
+<td>chi-sq, VMR</td>
 </tr>
 <tr class="even">
+<td>How near is A to B?</td>
+<td><code><a href="../reference/CrossNNDistance.html">CrossNNDistance()</a></code></td>
+<td>distances</td>
+</tr>
+<tr class="odd">
+<td>Which cells touch?</td>
+<td><code><a href="../reference/DelaunayNetwork.html">DelaunayNetwork()</a></code></td>
+<td>edge list</td>
+</tr>
+<tr class="even">
+<td>Marker-defined communities</td>
 <td><code><a href="../reference/ExpressionClusters.html">ExpressionClusters()</a></code></td>
-<td>Marker expression communities</td>
-<td>
-<code>k</code>, <code>method</code>
-</td>
+<td>cluster labels</td>
 </tr>
 </tbody>
 </table>
+<p>All of these run on a kd-tree search engine, so they scale to large
+sections; a 20,000-cell tissue completes each statistic in seconds.</p>
 </div>
 <div class="section level2">
-<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+<h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
 <ul>
-<li>See <code><a href="../reference/NeighbourhoodEnrichment.html">?NeighbourhoodEnrichment</a></code>, <code><a href="../reference/RipleysK.html">?RipleysK</a></code>,
-etc. for full parameter documentation.</li>
-<li>Combine spatial statistics with <code><a href="../reference/InteractionMatrix.html">InteractionMatrix()</a></code> and
-<code><a href="../reference/InteractionPlot.html">InteractionPlot()</a></code> for a complete co-localisation
-picture.</li>
+<li>
+<code><a href="../reference/NeighbourhoodEnrichment.html">?NeighbourhoodEnrichment</a></code>, <code><a href="../reference/RipleysK.html">?RipleysK</a></code>, … for
+full parameter documentation</li>
+<li>Combine with <code><a href="../reference/InteractionMatrix.html">InteractionMatrix()</a></code> /
+<code><a href="../reference/InteractionPlot.html">InteractionPlot()</a></code> for the co-localisation picture</li>
+<li>
+<strong><a href="phenoscapR-04-visualisation.html">Visualisation
+Gallery</a></strong> for every plot</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -316,7 +356,7 @@ picture.</li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by R. Heller.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://github.com/cttir" class="external-link">Hanno Witte</a>.</p>
 </div>
 
 <div class="pkgdown-footer-center themakr-footer-suite">
@@ -324,7 +364,7 @@ picture.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

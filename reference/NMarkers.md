@@ -22,3 +22,11 @@ NMarkers(object)
 ## Value
 
 Integer.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+NMarkers(phenoscapR_example)
+#> [1] 8
+```

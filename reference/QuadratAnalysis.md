@@ -6,7 +6,7 @@ for Complete Spatial Randomness using a chi-squared test.
 ## Usage
 
 ``` r
-QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL)
+QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL, by_sample = FALSE)
 ```
 
 ## Arguments
@@ -29,6 +29,12 @@ QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL)
 
   Character or `NULL`. Restrict to a phenotype.
 
+- by_sample:
+
+  Logical. If `TRUE` and the object holds several samples, the statistic
+  is computed per sample and returned as a named list. Default `FALSE`;
+  otherwise a single sample is required.
+
 ## Value
 
 A list with `counts`, `chi_sq`, `p_value`, and `VMR` (variance-to-mean
@@ -42,19 +48,7 @@ counts <- matrix(rnorm(100), nrow = 50,
 coords <- data.frame(x = runif(50, 0, 100), y = runif(50, 0, 100))
 obj <- CreateSpatialObject(counts, coords)
 QuadratAnalysis(obj, nx = 3, ny = 3)
-#> $counts
-#>      [,1] [,2] [,3]
-#> [1,]    5    3    5
-#> [2,]    5    5    6
-#> [3,]    8    2   11
-#> 
-#> $chi_sq
-#> [1] 10.12
-#> 
-#> $p_value
-#> [1] 0.2567043
-#> 
-#> $VMR
-#> [1] 1.265
-#> 
+#> <phenoscapR> Quadrat analysis (chi-squared test of CSR)
+#>   grid 3 x 3; chi-sq = 10.1, p = 0.257; VMR = 1.27
+#>   clustered (VMR > 1)
 ```

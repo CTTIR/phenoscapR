@@ -39,11 +39,11 @@ dt <- data.table::data.table(
 result <- cell_density(dt, radius = 20)
 head(result[, .(cell_id, density)])
 #>    cell_id density
-#>      <int>   <num>
-#> 1:       1       7
-#> 2:       2       7
-#> 3:       3       6
-#> 4:       4       4
-#> 5:       5       8
+#>      <int>   <int>
+#> 1:       1       4
+#> 2:       2       1
+#> 3:       3       8
+#> 4:       4       6
+#> 5:       5       4
 #> 6:       6       4
 ```

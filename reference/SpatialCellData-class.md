@@ -37,3 +37,14 @@ results from spatial analyses in a single container.
 
   List for storing spatial analysis results (nearest-neighbour
   distances, density values, interaction matrices).
+
+- `reductions`:
+
+  Named list of dimensionality-reduction embeddings. Each element is a
+  numeric matrix with one row per cell (e.g. `"pca"`, `"umap"`,
+  `"tsne"`, `"song"`), as produced by
+  [`RunPCA`](https://cttir.github.io/phenoscapR/reference/RunPCA.md),
+  [`RunUMAP`](https://cttir.github.io/phenoscapR/reference/RunUMAP.md),
+  [`RunTSNE`](https://cttir.github.io/phenoscapR/reference/RunTSNE.md),
+  or
+  [`RunSONG`](https://cttir.github.io/phenoscapR/reference/RunSONG.md).

@@ -27,6 +27,10 @@ interrogate and subset the object without touching slots directly.
   : Get Expression Data
 - [`Idents()`](https://cttir.github.io/phenoscapR/reference/Idents.md) :
   Get Active Cell Identities
+- [`Embeddings()`](https://cttir.github.io/phenoscapR/reference/Embeddings.md)
+  : Get a Dimensionality-Reduction Embedding
+- [`Reductions()`](https://cttir.github.io/phenoscapR/reference/Reductions.md)
+  : List Available Reductions
 - [`` `$`( ``*`<SpatialCellData>`*`)`](https://cttir.github.io/phenoscapR/reference/cash-SpatialCellData-method.md)
   : Access Metadata Columns with \$
 - [`dim(`*`<SpatialCellData>`*`)`](https://cttir.github.io/phenoscapR/reference/dim-SpatialCellData-method.md)
@@ -118,6 +122,82 @@ and expression-based clustering.
 - [`ExpressionClusters()`](https://cttir.github.io/phenoscapR/reference/ExpressionClusters.md)
   : Expression-Based Cell Clustering
 
+## Cellular Neighbourhoods & Domains
+
+Higher-order spatial structure: group cells into cellular neighbourhoods
+(niches) by the phenotype composition of their local neighbourhood, or
+into spatial domains by their spatially smoothed expression. Annotate
+unsupervised clusters by their most enriched markers.
+
+- [`CellularNeighbourhoods()`](https://cttir.github.io/phenoscapR/reference/CellularNeighbourhoods.md)
+  : Cellular Neighbourhoods (Niches)
+- [`SpatialDomains()`](https://cttir.github.io/phenoscapR/reference/SpatialDomains.md)
+  : Spatial Domains
+- [`AnnotateClusters()`](https://cttir.github.io/phenoscapR/reference/AnnotateClusters.md)
+  : Annotate Clusters by Their Top Markers
+
+## Differential Testing
+
+Compare phenotype composition across experimental conditions, using the
+sample as the unit of replication.
+
+- [`DifferentialAbundance()`](https://cttir.github.io/phenoscapR/reference/DifferentialAbundance.md)
+  : Differential Abundance of Phenotypes Across Conditions
+
+## Platform Readers
+
+Import cell-level exports from imaging platforms. A general
+expression-plus-coordinates reader underlies per-vendor convenience
+wrappers for Xenium, CosMx, and MERSCOPE.
+
+- [`ReadMatrixCoords()`](https://cttir.github.io/phenoscapR/reference/ReadMatrixCoords.md)
+  : Read an Expression Matrix and a Coordinate/Metadata Table
+- [`ReadXenium()`](https://cttir.github.io/phenoscapR/reference/ReadXenium.md)
+  : Read 10x Xenium Cell Output
+- [`ReadCosMx()`](https://cttir.github.io/phenoscapR/reference/ReadCosMx.md)
+  : Read NanoString CosMx Cell Output
+- [`ReadMERSCOPE()`](https://cttir.github.io/phenoscapR/reference/ReadMERSCOPE.md)
+  : Read Vizgen MERSCOPE Cell Output
+
+## Interoperability
+
+Convert to and from the wider single-cell ecosystem (Seurat and
+SpatialExperiment).
+
+- [`as_Seurat()`](https://cttir.github.io/phenoscapR/reference/as_Seurat.md)
+  : Convert a SpatialCellData to a Seurat Object
+- [`as_SpatialExperiment()`](https://cttir.github.io/phenoscapR/reference/as_SpatialExperiment.md)
+  : Convert a SpatialCellData to a SpatialExperiment Object
+- [`as_SpatialCellData()`](https://cttir.github.io/phenoscapR/reference/as_SpatialCellData.md)
+  : Convert a Seurat or SpatialExperiment Object to SpatialCellData
+
+## Dimensionality Reduction
+
+Embed cells from their marker-expression profiles for visualisation. PCA
+uses base R and is always available; UMAP, t-SNE, and SONG are optional
+backends (uwot, Rtsne, and the CTTIR songR package). UMAP, t-SNE, and
+SONG run on the top principal components by default.
+
+- [`RunPCA()`](https://cttir.github.io/phenoscapR/reference/RunPCA.md) :
+  Principal Component Analysis
+- [`RunUMAP()`](https://cttir.github.io/phenoscapR/reference/RunUMAP.md)
+  : UMAP Embedding
+- [`RunTSNE()`](https://cttir.github.io/phenoscapR/reference/RunTSNE.md)
+  : t-SNE Embedding
+- [`RunSONG()`](https://cttir.github.io/phenoscapR/reference/RunSONG.md)
+  : SONG Embedding
+- [`Embeddings()`](https://cttir.github.io/phenoscapR/reference/Embeddings.md)
+  : Get a Dimensionality-Reduction Embedding
+- [`Reductions()`](https://cttir.github.io/phenoscapR/reference/Reductions.md)
+  : List Available Reductions
+- [`VarianceExplained()`](https://cttir.github.io/phenoscapR/reference/VarianceExplained.md)
+  : Variance Explained by Principal Components
+- [`EmbeddingPlot()`](https://cttir.github.io/phenoscapR/reference/EmbeddingPlot.md)
+  [`DimPlot()`](https://cttir.github.io/phenoscapR/reference/EmbeddingPlot.md)
+  : Plot a Dimensionality-Reduction Embedding
+- [`ScreePlot()`](https://cttir.github.io/phenoscapR/reference/ScreePlot.md)
+  : Scree Plot of PCA Variance
+
 ## Visualisation
 
 Publication-ready ggplot2 visualisations for cell maps, marker
@@ -175,3 +255,18 @@ colours.
   : Generate Discrete Colours
 - [`CustomGradient()`](https://cttir.github.io/phenoscapR/reference/CustomGradient.md)
   : Create a Custom Gradient Palette from Anchor Colours
+
+## Shiny Application
+
+Launch the interactive phenoscapR Shiny interface to run the full
+analysis workflow and explore results with live plots and tables.
+
+- [`run_app()`](https://cttir.github.io/phenoscapR/reference/run_app.md)
+  : Launch the phenoscapR Shiny Application
+
+## Datasets
+
+Bundled example data used throughout the documentation and vignettes.
+
+- [`phenoscapR_example`](https://cttir.github.io/phenoscapR/reference/phenoscapR_example.md)
+  : Synthetic multiplexed-imaging example dataset

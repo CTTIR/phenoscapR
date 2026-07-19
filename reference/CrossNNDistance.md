@@ -6,7 +6,7 @@ to cells of another phenotype.
 ## Usage
 
 ``` r
-CrossNNDistance(object, from, to)
+CrossNNDistance(object, from, to, by_sample = FALSE)
 ```
 
 ## Arguments
@@ -25,6 +25,12 @@ CrossNNDistance(object, from, to)
 
   Character. Target phenotype.
 
+- by_sample:
+
+  Logical. If `TRUE` and the object holds several samples, the statistic
+  is computed per sample and returned as a named list. Default `FALSE`;
+  otherwise a single sample is required.
+
 ## Value
 
 A numeric vector of distances (one per cell of the `from` phenotype).
@@ -39,6 +45,7 @@ meta <- data.frame(cell_id = 1:30, sample_id = "s1",
   phenotype = rep(c("A", "B", "C"), each = 10))
 obj <- CreateSpatialObject(counts, coords, meta)
 CrossNNDistance(obj, from = "A", to = "B")
-#>  [1] 44.260797 15.592192 33.997372 40.314488 28.982696 14.430704  4.522267
-#>  [8] 21.991067 14.004335 11.933756
+#> <phenoscapR> Cross nearest-neighbour distances
+#>   A -> B : 10 cells
+#>   median 11.3, mean 13, range [6.36, 28]
 ```

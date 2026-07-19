@@ -22,3 +22,11 @@ NCells(object)
 ## Value
 
 Integer.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+NCells(phenoscapR_example)
+#> [1] 640
+```

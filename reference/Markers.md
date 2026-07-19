@@ -22,3 +22,11 @@ Markers(object)
 ## Value
 
 Character vector.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+Markers(phenoscapR_example)
+#> [1] "CD3"   "CD4"   "CD8"   "CD20"  "CD68"  "PanCK" "FoxP3" "Ki67" 
+```

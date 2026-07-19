@@ -9,7 +9,7 @@ relative to a random permutation baseline."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,8 @@ relative to a random permutation baseline."><meta property="og:image" content="h
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/phenoscapR.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-02-object-model.html">The SpatialCellData Object</a></li>
     <li><a class="dropdown-item" href="../articles/phenoscapR-03-spatial-analysis.html">Advanced Spatial Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-04-visualisation.html">Visualisation Gallery</a></li>
+    <li><a class="dropdown-item" href="../articles/phenoscapR-05-advanced.html">Advanced Capabilities</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -47,7 +49,13 @@ relative to a random permutation baseline.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">NeighbourhoodEnrichment</span><span class="op">(</span><span class="va">object</span>, <span class="va">radius</span>, n_perm <span class="op">=</span> <span class="fl">100L</span>, seed <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">NeighbourhoodEnrichment</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">radius</span>,</span>
+<span>  n_perm <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  by_sample <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,6 +77,12 @@ relative to a random permutation baseline.</p>
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Integer or <code>NULL</code>. Random seed.</p></dd>
 
+
+<dt id="arg-by-sample">by_sample<a class="anchor" aria-label="anchor" href="#arg-by-sample"></a></dt>
+<dd><p>Logical. If <code>TRUE</code> and the object holds several samples,
+the statistic is computed per sample and returned as a named list. Default
+<code>FALSE</code>; otherwise a single sample is required.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -86,11 +100,13 @@ relative to a random permutation baseline.</p>
 <span class="r-in"><span>  phenotype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="CreateSpatialObject.html">CreateSpatialObject</a></span><span class="op">(</span><span class="va">counts</span>, <span class="va">coords</span>, <span class="va">meta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">NeighbourhoodEnrichment</span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">50</span>, n_perm <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   from to observed mean_expected    z_score   p_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    A  A       58          68.0 -0.9977852 0.3183835</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    B  A       79          77.9  0.1268387 0.8990681</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    A  B       79          77.9  0.1268387 0.8990681</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    B  B       92          84.2  0.5196665 0.6032960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;phenoscapR&gt; Neighbourhood enrichment (permutation test)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   top co-localised pairs (by z-score):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  from to    z_score   p_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     B  B  0.5196665 0.6032960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     B  A  0.1268387 0.8990681</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     A  B  0.1268387 0.8990681</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     A  A -0.9977852 0.3183835</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -99,7 +115,7 @@ relative to a random permutation baseline.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by R. Heller.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://github.com/cttir" class="external-link">Hanno Witte</a>.</p>
 </div>
 
 <div class="pkgdown-footer-center themakr-footer-suite">
@@ -107,7 +123,7 @@ relative to a random permutation baseline.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

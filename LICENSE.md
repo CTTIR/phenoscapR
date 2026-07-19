@@ -2,7 +2,7 @@
 
 The MIT License (MIT)
 
-Copyright (c) 2026-2026 Raban Heller
+Copyright (c) 2026 R. Heller and Hanno Witte
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the

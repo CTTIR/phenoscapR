@@ -12,3 +12,7 @@ analysis, and publication-ready visualisation.
   Object](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.md):
 - [Advanced Spatial
   Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.md):
+- [Visualisation
+  Gallery](https://cttir.github.io/phenoscapR/articles/phenoscapR-04-visualisation.md):
+- [Advanced
+  Capabilities](https://cttir.github.io/phenoscapR/articles/phenoscapR-05-advanced.md):

@@ -34,7 +34,7 @@
 
     <a class="navbar-brand me-2" href="index.html"><img src="logo.svg" alt="" class="themakr-navbar-logo">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,8 @@
 <li><a class="dropdown-item" href="articles/phenoscapR.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="articles/phenoscapR-02-object-model.html">The SpatialCellData Object</a></li>
     <li><a class="dropdown-item" href="articles/phenoscapR-03-spatial-analysis.html">Advanced Spatial Analysis</a></li>
+    <li><a class="dropdown-item" href="articles/phenoscapR-04-visualisation.html">Visualisation Gallery</a></li>
+    <li><a class="dropdown-item" href="articles/phenoscapR-05-advanced.html">Advanced Capabilities</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Functions</a></li>
@@ -135,15 +137,34 @@
 <span></span>
 <span><span class="co"># Or with remotes</span></span>
 <span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"cttir/phenoscapR"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"cttir/phenoscapR"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
+<p>The package ships a synthetic two-sample example dataset, so you can run the whole workflow without any files of your own:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cttir.github.io/phenoscapR/">phenoscapR</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">phenoscapR_example</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 1. Read cell segmentation CSV</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="va">phenoscapR_example</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/NormaliseData.html">NormaliseData</a></span><span class="op">(</span><span class="va">obj</span>, method <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/PhenotypeCells.html">PhenotypeCells</a></span><span class="op">(</span><span class="va">obj</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CD20 <span class="op">=</span> <span class="fl">1</span>, CD3 <span class="op">=</span> <span class="fl">1</span>, CD8 <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                                             CD68 <span class="op">=</span> <span class="fl">1</span>, PanCK <span class="op">=</span> <span class="fl">1</span>, FoxP3 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Per-sample spatial structure</span></span>
+<span><span class="va">im</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/InteractionMatrix.html">InteractionMatrix</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/InteractionPlot.html">InteractionPlot</a></span><span class="op">(</span><span class="va">im</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Single-tissue point-pattern statistics</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">[</span><span class="va">obj</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">==</span> <span class="st">"tonsil_A"</span>, <span class="op">]</span></span>
+<span><span class="fu"><a href="reference/RipleysK.html">RipleysK</a></span><span class="op">(</span><span class="va">a</span>, correction <span class="op">=</span> <span class="st">"border"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/NeighbourhoodEnrichment.html">NeighbourhoodEnrichment</a></span><span class="op">(</span><span class="va">a</span>, radius <span class="op">=</span> <span class="fl">40</span>, n_perm <span class="op">=</span> <span class="fl">199</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/CellMap.html">CellMap</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
+<p>A typical real analysis starts from your own segmentation output:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 1. Read cell segmentation CSV (or a directory of them)</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ReadSpatial.html">ReadSpatial</a></span><span class="op">(</span><span class="st">"path/to/segmentation.csv"</span>, sample_id <span class="op">=</span> <span class="st">"sample1"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 2. Quality control</span></span>
@@ -160,7 +181,8 @@
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/FindNeighbours.html">FindNeighbours</a></span><span class="op">(</span><span class="va">obj</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/CellDensity.html">CellDensity</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/DelaunayNetwork.html">DelaunayNetwork</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
-<span><span class="va">ne</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/NeighbourhoodEnrichment.html">NeighbourhoodEnrichment</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">50</span>, n_perm <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">ne</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/NeighbourhoodEnrichment.html">NeighbourhoodEnrichment</a></span><span class="op">(</span><span class="va">obj</span><span class="op">[</span><span class="va">obj</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">==</span> <span class="st">"sample1"</span>, <span class="op">]</span>,</span>
+<span>                               radius <span class="op">=</span> <span class="fl">50</span>, n_perm <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 6. Visualise</span></span>
 <span><span class="fu"><a href="reference/CellMap.html">CellMap</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
@@ -168,6 +190,23 @@
 <span><span class="fu"><a href="reference/MarkerHeatmap.html">MarkerHeatmap</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/InteractionPlot.html">InteractionPlot</a></span><span class="op">(</span><span class="fu"><a href="reference/InteractionMatrix.html">InteractionMatrix</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/SpatialNetworkPlot.html">SpatialNetworkPlot</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a>
+</h3>
+<p>All neighbour-based statistics route through a kd-tree search engine (<code>RANN</code> when installed, with an exact base-R fallback otherwise), so a 20,000-cell section runs each statistic in seconds instead of building a multi-gigabyte distance matrix.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="interactive-app">Interactive app<a class="anchor" aria-label="anchor" href="#interactive-app"></a>
+</h2>
+<p>phenoscapR ships a <strong>Hugo Coder–themed Shiny app</strong> that drives the package’s analysis functions interactively — load the bundled data, run QC and phenotyping, explore spatial statistics, cellular neighbourhoods, spatial domains, dimensionality reductions, and differential abundance, with a light/dark colour-mode toggle. The app is a thin UI over the exported functions; the heavy lifting is the package.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># one-time: install the optional app dependencies</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"shiny"</span>, <span class="st">"bslib"</span>, <span class="st">"sass"</span>, <span class="st">"thematic"</span>, <span class="st">"reactable"</span>,</span>
+<span>                   <span class="st">"bsicons"</span>, <span class="st">"brand.yml"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">phenoscapR</span><span class="fu">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>The app’s visual design is adapted from the <a href="https://github.com/luizdepra/hugo-coder" class="external-link">Hugo Coder</a> theme (MIT) — colour tokens and flat aesthetic only, no source copied.</p>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
@@ -193,7 +232,11 @@
 </tr>
 <tr>
 <td><a href="https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.html">Advanced Spatial Analysis</a></td>
-<td>Ripley’s K, Moran’s I, neighbourhood enrichment, and more</td>
+<td>Ripley’s K, Moran’s I, neighbourhood enrichment, and choosing a statistic</td>
+</tr>
+<tr>
+<td><a href="https://cttir.github.io/phenoscapR/articles/phenoscapR-04-visualisation.html">Visualisation Gallery</a></td>
+<td>Every plotting function, demonstrated on the example data</td>
 </tr>
 </tbody>
 </table>
@@ -210,9 +253,29 @@
 <p>All scientific claims, methodological choices, analyses, interpretations, and conclusions are the author’s own. No LLM-generated text was incorporated without review and revision, and every reference was verified against its DOI, arXiv ID, or ISBN.</p>
 </div>
 <div class="section level2">
+<h2 id="authors">Authors<a class="anchor" aria-label="anchor" href="#authors"></a>
+</h2>
+<ul>
+<li>
+<strong>R. Heller</strong> (maintainer, author) — <a href="https://orcid.org/0000-0001-8006-9742" class="external-link">ORCID 0000-0001-8006-9742</a>
+</li>
+<li>
+<strong>Hanno Witte</strong> (author)</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"phenoscapR"</span><span class="op">)</span></span></code></pre></div>
+<blockquote>
+<p>Heller, R. &amp; Witte, H. (2026). phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data. <a href="https://cttir.github.io/phenoscapR/" class="uri">https://cttir.github.io/phenoscapR/</a></p>
+</blockquote>
+</div>
+<div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
-<p>MIT © Raban Heller</p>
+<p>MIT © R. Heller and Hanno Witte</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -242,7 +305,10 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>R. Heller <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-8006-9742" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://github.com/cttir" class="external-link">R. Heller</a> <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0001-8006-9742" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://github.com/cttir" class="external-link">Hanno Witte</a> <br><small class="roles"> Author, copyright holder </small>   </li>
 </ul>
 </div>
 
@@ -258,7 +324,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by R. Heller.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://github.com/cttir" class="external-link">Hanno Witte</a>.</p>
 </div>
 
 <div class="pkgdown-footer-center themakr-footer-suite">
@@ -266,7 +332,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

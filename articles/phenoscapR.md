@@ -1,189 +1,266 @@
 # Getting Started with phenoscapR
 
+[![R-CMD-check](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/CTTIR/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg)](https://cttir.github.io/phenoscapR/)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/phenoscapR)](https://CRAN.R-project.org/package=phenoscapR)
+[![Codecov test
+coverage](https://codecov.io/gh/CTTIR/phenoscapR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/CTTIR/phenoscapR?branch=main)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/phenoscapR)](https://cran.r-project.org/package=phenoscapR)
+[![CRAN downloads
+total](https://cranlogs.r-pkg.org/badges/grand-total/phenoscapR)](https://cran.r-project.org/package=phenoscapR)
+[![License:
+MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
 ![phenoscapR hex logo](../reference/figures/logo.svg)
+
+[![R-CMD-check](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml)
+[![test-coverage](https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml)
+[![lint](https://github.com/cttir/phenoscapR/actions/workflows/lint.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/lint.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/cttir/phenoscapR/graph/badge.svg)](https://app.codecov.io/gh/cttir/phenoscapR)
 
 ### Overview
 
-**phenoscapR** provides tools for reading, processing, analysing, and
-visualising single-cell spatial biology data from multiplexed imaging
-platforms.
+**phenoscapR** takes you from a raw multiplexed-imaging
+cell-segmentation table all the way to publication-ready spatial
+statistics and figures. The workflow mirrors the way single-cell
+analysts already think:
 
-A typical workflow involves:
+1.  **Read** segmentation output into a `SpatialCellData` object
+2.  **Quality-control** cells by area and intensity
+3.  **Normalise** marker intensities
+4.  **Phenotype** cells from marker thresholds
+5.  **Analyse** the spatial arrangement of those phenotypes
+6.  **Visualise** every step
 
-1.  **Reading** cell segmentation data with
-    [`read_spatial()`](https://cttir.github.io/phenoscapR/reference/read_spatial.md)
-2.  **Quality control** with
-    [`qc_filter()`](https://cttir.github.io/phenoscapR/reference/qc_filter.md)
-3.  **Normalisation** with
-    [`normalise_markers()`](https://cttir.github.io/phenoscapR/reference/normalise_markers.md)
-4.  **Phenotyping** with
-    [`phenotype_cells()`](https://cttir.github.io/phenoscapR/reference/phenotype_cells.md)
-5.  **Spatial analysis** with
-    [`nearest_neighbours()`](https://cttir.github.io/phenoscapR/reference/nearest_neighbours.md),
-    [`cell_density()`](https://cttir.github.io/phenoscapR/reference/cell_density.md),
-    [`interaction_matrix()`](https://cttir.github.io/phenoscapR/reference/interaction_matrix.md),
-    and
-    [`spatial_clusters()`](https://cttir.github.io/phenoscapR/reference/spatial_clusters.md)
-6.  **Visualisation** with
-    [`plot_cell_map()`](https://cttir.github.io/phenoscapR/reference/plot_cell_map.md),
-    [`plot_density()`](https://cttir.github.io/phenoscapR/reference/plot_density.md),
-    [`plot_heatmap()`](https://cttir.github.io/phenoscapR/reference/plot_heatmap.md),
-    and
-    [`plot_interactions()`](https://cttir.github.io/phenoscapR/reference/plot_interactions.md)
+Every function comes in two flavours: a high-level **S4 interface** that
+takes and returns a `SpatialCellData` object (used throughout this
+vignette), and a low-level **`data.table` interface**
+([`read_spatial()`](https://cttir.github.io/phenoscapR/reference/read_spatial.md),
+[`qc_filter()`](https://cttir.github.io/phenoscapR/reference/qc_filter.md),
+…) for scripting. They share one compute engine, so results are
+identical.
 
-### Creating Example Data
+### The bundled example dataset
 
-Since real cell segmentation files can be large, we will create a small
-simulated data set for illustration.
+The package ships `phenoscapR_example`, a fully synthetic two-sample
+tonsil assay with planted spatial niches (a B-cell follicle, an
+overlapping T-cell zone, an epithelial region, and scattered
+macrophages). It lets every example here run without downloading
+anything.
 
 ``` r
 
 library(phenoscapR)
+data(phenoscapR_example)
 
-set.seed(42)
-n_cells <- 500
-
-# Simulate two cell populations in different spatial regions
-dt <- data.table::data.table(
-  `Cell ID` = seq_len(n_cells),
-  `Cell X Position` = c(rnorm(250, 200, 50), rnorm(250, 600, 50)),
-  `Cell Y Position` = c(rnorm(250, 300, 50), rnorm(250, 300, 50)),
-  `Cell Area (px)` = rlnorm(n_cells, log(100), 0.3),
-  CD3 = c(rnorm(250, 800, 150), rnorm(250, 200, 100)),
-  CD8 = c(rnorm(250, 200, 100), rnorm(250, 700, 120)),
-  DAPI = rnorm(n_cells, 1000, 200)
-)
-
-# Write to a temporary CSV
-tmp <- tempfile(fileext = ".csv")
-write.csv(dt, tmp, row.names = FALSE)
+phenoscapR_example
+#> A SpatialCellData object
+#>   640 cells across 2 samples
+#>   Markers: CD3, CD4, CD8, CD20, CD68, ... (8 total) 
+#>   Normalised: FALSE 
+#>   Project: phenoscapR example (tonsil, simulated)
 ```
 
-### Reading Data
+It carries 640 cells across two samples and eight markers, plus a
+`phenotype_true` column recording the ground-truth population of each
+cell:
 
 ``` r
 
-cells <- read_spatial(tmp, sample_id = "example")
-head(cells)
-#>    sample_id cell_id        x        y cell_area      CD3         CD8      DAPI
-#>       <char>   <int>    <num>    <num>     <num>    <num>       <num>     <num>
-#> 1:   example       1 268.5479 351.4570 200.87599 709.7926 225.0578067 1123.4673
-#> 2:   example       2 171.7651 345.7387 117.02725 779.6276 172.2075951  999.0918
-#> 3:   example       3 218.1564 299.8772 133.80590 651.9091  27.5264266  981.7487
-#> 4:   example       4 231.6431 306.8005 111.97350 924.7888  -0.6704944 1079.9919
-#> 5:   example       5 220.2134 263.9923  74.17226 680.7411  70.8191670 1117.7803
-#> 6:   example       6 194.6938 290.0938  83.59012 851.0697 236.5838228  996.6244
+table(phenoscapR_example$sample_id, phenoscapR_example$phenotype_true)
+#>           
+#>            B cell Epithelial Macrophage T cytotoxic T helper T reg
+#>   tonsil_A     80         90         38          45       55    12
+#>   tonsil_B     80         90         38          45       55    12
 ```
 
-### Quality Control
+> **Reading your own data.** In practice you would start from
+> `ReadSpatial("segmentation.csv")` (or a directory of CSVs). phenoscapR
+> auto-detects QuPath full/minimal exports and flat segmentation tables.
+> See
+> [`vignette("phenoscapR-02-object-model")`](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.md)
+> for the object model and import details.
+
+### 1. Quality control
+
+[`QCFilter()`](https://cttir.github.io/phenoscapR/reference/QCFilter.md)
+removes implausibly small or large cells and, optionally, cells outside
+an intensity band. We work on a copy so the original stays intact.
 
 ``` r
 
-cells <- qc_filter(cells, min_area = 50, max_area = 500)
-nrow(cells)
-#> [1] 493
+obj <- QCFilter(phenoscapR_example, min_area = 20, max_area = 1000)
+obj
+#> A SpatialCellData object
+#>   640 cells across 2 samples
+#>   Markers: CD3, CD4, CD8, CD20, CD68, ... (8 total) 
+#>   Normalised: FALSE 
+#>   Project: phenoscapR example (tonsil, simulated)
 ```
 
-### Normalisation
+Use [`QCPlot()`](https://cttir.github.io/phenoscapR/reference/QCPlot.md)
+to inspect what was kept against any two metadata columns:
 
 ``` r
 
-cells <- normalise_markers(cells, method = "zscore")
-summary(cells[, c("CD3", "CD8", "DAPI")])
-#>       CD3               CD8                DAPI         
-#>  Min.   :-1.6156   Min.   :-1.93580   Min.   :-2.97169  
-#>  1st Qu.:-0.9104   1st Qu.:-0.92825   1st Qu.:-0.63287  
-#>  Median :-0.2684   Median :-0.05788   Median : 0.05662  
-#>  Mean   : 0.0000   Mean   : 0.00000   Mean   : 0.00000  
-#>  3rd Qu.: 0.9048   3rd Qu.: 0.90400   3rd Qu.: 0.60278  
-#>  Max.   : 2.5022   Max.   : 2.39231   Max.   : 2.70425
+obj <- CellDensity(obj, radius = 40)
+QCPlot(obj, x = "cell_area", y = "density", colour_by = "phenotype_true")
 ```
 
-### Phenotyping
+![](phenoscapR_files/figure-html/qcplot-1.png)
+
+### 2. Normalisation
+
+[`NormaliseData()`](https://cttir.github.io/phenoscapR/reference/NormaliseData.md)
+rescales each marker. `"zscore"` centres and scales to unit variance;
+`"minmax"` maps to `[0, 1]`; `"quantile"` is rank-based.
 
 ``` r
 
-cells <- phenotype_cells(cells, thresholds = list(CD3 = 0, CD8 = 0))
-summarise_phenotypes(cells)
+obj <- NormaliseData(obj, method = "zscore")
+round(GetData(obj)[1:4, ], 2)
+#>        CD3   CD4   CD8  CD20  CD68 PanCK FoxP3  Ki67
+#> [1,] -0.66 -0.36 -0.27  0.56 -0.36 -0.58 -0.28  0.31
+#> [2,]  2.02 -0.30  2.96 -0.51 -0.36 -0.58 -0.10 -0.63
+#> [3,] -0.67 -0.49 -0.37 -0.58 -0.38  0.72 -0.30  3.14
+#> [4,] -0.59 -0.47 -0.39  2.10 -0.30 -0.61 -0.28  0.62
 ```
 
-### Spatial Analysis
+### 3. Phenotyping
 
-#### Nearest Neighbours
+Assign phenotypes by thresholding normalised markers. Because the data
+are z-scored, a threshold of `1` means “at least one standard deviation
+above the marker’s mean”.
+[`PhenotypeCells()`](https://cttir.github.io/phenoscapR/reference/PhenotypeCells.md)
+builds composite labels such as `CD3+/CD4+`.
 
 ``` r
 
-cells <- nearest_neighbours(cells, k = 5)
-summary(cells$nn_distance)
+obj <- PhenotypeCells(obj, thresholds = list(
+  CD20 = 1, CD3 = 1, CD8 = 1, CD4 = 1, CD68 = 1, PanCK = 1, FoxP3 = 1
+))
+head(PhenotypeSummary(obj))
+#>   sample_id   phenotype count proportion
+#> 1  tonsil_A    Negative    53   0.165625
+#> 2  tonsil_A   CD3+/CD8+    20   0.062500
+#> 3  tonsil_A       CD20+    63   0.196875
+#> 4  tonsil_A       CD68+    36   0.112500
+#> 5  tonsil_A        CD3+    11   0.034375
+#> 6  tonsil_A CD4+/FoxP3+     6   0.018750
+```
+
+For the rest of this vignette we use the curated ground-truth
+populations so the figures stay easy to read:
+
+``` r
+
+obj@meta_data$phenotype <- obj@meta_data$phenotype_true
+```
+
+[`CompositionPlot()`](https://cttir.github.io/phenoscapR/reference/CompositionPlot.md)
+shows phenotype proportions per sample:
+
+``` r
+
+CompositionPlot(obj, group_by = "sample_id")
+```
+
+![](phenoscapR_files/figure-html/composition-1.png)
+
+### 4. The phenotype map
+
+[`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md)
+is the workhorse plot — every cell drawn at its tissue position,
+coloured by phenotype. Spatial structure (the follicle, the T-cell zone)
+is immediately visible.
+
+``` r
+
+tonsil_a <- obj[obj$sample_id == "tonsil_A", ]
+CellMap(tonsil_a)
+```
+
+![](phenoscapR_files/figure-html/cellmap-1.png)
+
+Colour instead by a continuous marker with
+[`FeaturePlot()`](https://cttir.github.io/phenoscapR/reference/FeaturePlot.md):
+
+``` r
+
+FeaturePlot(tonsil_a, features = c("CD20", "CD3", "PanCK"))
+```
+
+![](phenoscapR_files/figure-html/featureplot-1.png)
+
+### 5. Spatial analysis
+
+#### Local density and nearest neighbours
+
+``` r
+
+obj <- FindNeighbours(obj, k = 5)
+summary(Meta(obj)$nn_distance)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   4.794   7.516  10.435  13.540  15.533  89.053
+#>   9.245  25.714  35.035  41.044  48.368 209.678
+
+DensityPlot(tonsil_a <- CellDensity(tonsil_a, radius = 40))
 ```
 
-#### Cell Density
+![](phenoscapR_files/figure-html/nn-density-1.png)
+
+#### Phenotype interactions
+
+[`InteractionMatrix()`](https://cttir.github.io/phenoscapR/reference/InteractionMatrix.md)
+counts, per sample, how often each phenotype pair sits within `radius`
+of one another versus what random mixing would predict. The score is
+`log2(observed / expected)` — positive means attraction, negative means
+avoidance. Neighbours are **never** counted across samples.
 
 ``` r
 
-cells <- cell_density(cells, radius = 50)
-summary(cells$density)
-#>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>    0.00   33.00   55.00   53.76   77.00  103.00
+im <- InteractionMatrix(obj, radius = 40)
+head(im[order(-im$interaction_score), ])
+#> <phenoscapR> Phenotype interaction matrix
+#>   4 phenotypes; score = log2(observed / expected)
+#>   strongest attractions:
+#>         from       to interaction_score
+#>       B cell   B cell          2.446922
+#>        T reg    T reg          1.990115
+#>     T helper    T reg          1.893254
+#>        T reg T helper          1.893254
+#>  T cytotoxic T helper          1.579319
+
+InteractionPlot(im)
 ```
 
-#### Interaction Matrix
+![](phenoscapR_files/figure-html/interactions-1.png)
+
+#### Marker signatures per phenotype
 
 ``` r
 
-interactions <- interaction_matrix(cells, radius = 50)
-interactions
+MarkerHeatmap(obj)
 ```
 
-### Visualisation
+![](phenoscapR_files/figure-html/heatmap-1.png)
 
-#### Cell Map
+### Where to next
 
-``` r
+phenoscapR has much more spatial machinery — Ripley’s K, Moran’s I,
+neighbourhood-enrichment permutation tests, the pair correlation
+function, Delaunay contact graphs — and a full gallery of plots and
+dimensionality reductions.
 
-plot_cell_map(cells, point_size = 1)
-```
-
-![Cell phenotype map](phenoscapR_files/figure-html/cell-map-1.png)
-
-Cell phenotype map
-
-#### Density Plot
-
-``` r
-
-plot_density(cells, point_size = 1)
-```
-
-![Cell density map](phenoscapR_files/figure-html/density-plot-1.png)
-
-Cell density map
-
-#### Marker Heatmap
-
-``` r
-
-plot_heatmap(cells)
-```
-
-![Mean marker expression per
-phenotype](phenoscapR_files/figure-html/heatmap-1.png)
-
-Mean marker expression per phenotype
-
-#### Interaction Heatmap
-
-``` r
-
-plot_interactions(interactions)
-```
-
-![Spatial interaction
-scores](phenoscapR_files/figure-html/interaction-plot-1.png)
-
-Spatial interaction scores
+| Vignette | Focus |
+|----|----|
+| [The SpatialCellData Object](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.md) | class internals, import, accessors, subsetting |
+| [Advanced Spatial Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.md) | Ripley’s K, Moran’s I, enrichment, choosing a statistic |
+| [Visualisation Gallery](https://cttir.github.io/phenoscapR/articles/phenoscapR-04-visualisation.md) | every plotting function, side by side |
 
 ## Use of LLM tools
 
