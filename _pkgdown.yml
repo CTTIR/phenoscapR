@@ -224,3 +224,16 @@ reference:
       - PaletteContinuous
       - PaletteDiscrete
       - CustomGradient
+
+  - title: "Shiny Application"
+    desc: >
+      Launch the interactive phenoscapR Shiny interface to run the full
+      analysis workflow and explore results with live plots and tables.
+    contents:
+      - run_app
+
+  - title: "Datasets"
+    desc: >
+      Bundled example data used throughout the documentation and vignettes.
+    contents:
+      - phenoscapR_example
