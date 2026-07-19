@@ -43,12 +43,15 @@ Suggests:
     SeuratObject,
     shiny,
     shinytest2,
+    songR,
     SpatialExperiment,
     SummarizedExperiment,
     testthat (>= 3.0.0),
     thematic,
     uwot,
     withr
+Remotes:
+    CTTIR/songR
 Config/testthat/edition: 3
 Config/Needs/website: CTTIR/themakR, pkgdown
 Encoding: UTF-8

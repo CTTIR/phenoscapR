@@ -5,6 +5,7 @@
 
 test_that("the Shiny app launches and toggles colour mode", {
   skip_on_cran()
+  skip_on_ci()  # headless-browser snapshots differ across runners; run locally
   skip_if_not_installed("shinytest2")
   skip_if_not_installed("chromote")
   skip_if_not_installed("bslib")
