@@ -306,7 +306,7 @@ RunSONG <- function(object, dims = 30L, use_pca = TRUE, slot = "data",
   args <- list(input, ...)
   if (!is.null(seed)) args$seed <- seed
 
-  fit <- do.call(songR::song, args)
+  fit <- do.call(getExportedValue("songR", "song"), args)
   emb <- fit$embedding
   if (is.null(emb)) {
     stop("songR::song() did not return an 'embedding' element.", call. = FALSE)

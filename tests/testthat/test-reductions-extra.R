@@ -88,6 +88,7 @@ test_that(".require_pkg gives the r-universe hint for songR", {
 })
 
 test_that("RunSONG stores a 2D embedding with a mocked backend", {
+  skip_if_not_installed("songR")
   obj <- make_obj(n = 30L)
   local_mocked_bindings(
     requireNamespace = function(...) TRUE,
