@@ -2,6 +2,7 @@ citHeader("To cite phenoscapR in publications, use:")
 
 bibentry(
   bibtype  = "Manual",
+  doi      = "10.5281/zenodo.21889952",
   title    = "phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data",
   author   = c(person("R.", "Heller"), person("Hanno", "Witte")),
   year     = "2026",

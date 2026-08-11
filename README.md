@@ -1,5 +1,7 @@
 # phenoscapR <img src="man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo"/>
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21889952.svg)](https://doi.org/10.5281/zenodo.21889952)
+
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/CTTIR/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg)](https://cttir.github.io/phenoscapR/)

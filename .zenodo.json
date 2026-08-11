@@ -1,0 +1,38 @@
+{
+  "upload_type": "software",
+  "title": "phenoscapR: Reading, analysis and visualisation of single-cell spatial biology data",
+  "version": "0.1.0",
+  "publication_date": "2026-08-11",
+  "description": "<p>phenoscapR supports the analysis of single-cell spatial biology data produced by multiplexed imaging platforms. It imports cell segmentation output from commonly used image analysis software and provides quality control, normalisation of marker intensities, and computation of spatial statistics such as nearest-neighbour distances and cell density. Results can be rendered as publication-ready cell phenotype maps and spatial interaction networks. The package is aimed at researchers who need to move from segmented imaging output to interpretable spatial summaries without switching between several tools.</p>",
+  "creators": [
+    {
+      "name": "Heller, Raban",
+      "orcid": "0000-0001-8006-9742"
+    },
+    {
+      "name": "Witte, Hanno"
+    }
+  ],
+  "contributors": [],
+  "license": "mit",
+  "access_right": "open",
+  "language": "eng",
+  "keywords": [
+    "spatial-biology",
+    "single-cell",
+    "multiplexed-imaging",
+    "spatial-proteomics",
+    "phenotyping",
+    "r-package",
+    "rstats"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/CTTIR/phenoscapR",
+      "relation": "isSupplementTo",
+      "scheme": "url",
+      "resource_type": "software"
+    }
+  ],
+  "notes": "Prepared draft. Not yet published."
+}
