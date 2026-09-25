@@ -30,6 +30,7 @@ Suggests:
     bsicons,
     bslib (>= 0.6.0),
     covr,
+    cellspecR (>= 1.0.0),
     deldir,
     knitr,
     mclust,
@@ -51,7 +52,8 @@ Suggests:
     uwot,
     withr
 Remotes:
-    CTTIR/songR
+    CTTIR/songR,
+    CTTIR/cellspecR
 Config/testthat/edition: 3
 Config/Needs/website: CTTIR/themakR, pkgdown
 Encoding: UTF-8

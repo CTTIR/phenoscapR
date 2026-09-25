@@ -1,5 +1,9 @@
 # phenoscapR development
 
+* `FromCellspec()` preserves canonical feature dictionaries, missing features,
+  cell keys, physical coordinates and original-import provenance. Independent
+  images become separate spatial samples even when biological sample IDs match.
+
 * Delaunay networks now triangulate each sample independently and preserve
   full-object row indices. Missing sample IDs and groups with fewer than three
   cells fail explicitly instead of allowing cross-sample edges.

@@ -193,6 +193,7 @@ setMethod("Idents", "SpatialCellData", function(object) {
 #' @export
 setMethod("[", signature(x = "SpatialCellData"), function(x, i, j, drop = FALSE) {
   if (!missing(i)) {
+    source_snapshot <- attr(x@meta_data, "cellspec_import")
     frozen <- attr(x@meta_data, "frozen_spatial_labels")
     if (is.null(frozen)) frozen <- list()
     labels <- intersect(c("neighbourhood", "domain", "cluster"), names(x@meta_data))
@@ -208,6 +209,7 @@ setMethod("[", signature(x = "SpatialCellData"), function(x, i, j, drop = FALSE)
     x@meta_data <- x@meta_data[i, , drop = FALSE]
     rownames(x@meta_data) <- NULL
     if (length(frozen)) attr(x@meta_data, "frozen_spatial_labels") <- frozen
+    if (!is.null(source_snapshot)) attr(x@meta_data, "cellspec_import") <- source_snapshot
     if (length(x@reductions) > 0L) {
       x@reductions <- lapply(x@reductions, function(e) e[i, , drop = FALSE])
     }
