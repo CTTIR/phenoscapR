@@ -1,5 +1,11 @@
 # phenoscapR development
 
+* `ExactPatientTests()` enumerates declared independent-patient contrasts with
+  complete-patient missingness and explicit allocation resolution.
+  `AdjustPatientFamilies()` retains unavailable hypotheses and reports both
+  finite-only and declared-family BH/BY adjustments. Existing differential
+  abundance methods are unchanged.
+
 * `FromCellspec()` preserves canonical feature dictionaries, missing features,
   cell keys, physical coordinates and original-import provenance. Independent
   images become separate spatial samples even when biological sample IDs match.
