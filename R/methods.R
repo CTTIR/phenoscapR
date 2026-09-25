@@ -173,6 +173,19 @@ setMethod("Idents", "SpatialCellData", function(object) {
 #' Subset a SpatialCellData Object
 #'
 #' @param x A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
+#' Supplying cell indices clears cached spatial results and the derived
+#' \code{nn_distance} and \code{density} metadata columns. Recompute these
+#' after filtering, reordering or duplicating cells. Marker-only subsetting
+#' preserves spatial results; dimensional reductions are subset by cell.
+#' Phenotype, cluster, neighbourhood and domain labels remain frozen annotations
+#' from the original fit for plotting and comparison; they do not describe a
+#' refit on the subset. Neither labels nor retained reductions are refitted.
+#' The metadata attribute \code{frozen_spatial_labels} records each retained
+#' spatial label's original fit row count; further subsetting preserves it.
+#' Recomputing an assignment clears its frozen-label record.
+#' Recompute spatial assignments to describe the new neighbourhoods. Marker-only
+#' subsetting does not revalidate expression-dependent cached analyses.
+#'
 #' @param i Cell indices (integer or logical).
 #' @param j Marker indices (integer, logical, or character).
 #' @param drop Ignored.
@@ -180,11 +193,21 @@ setMethod("Idents", "SpatialCellData", function(object) {
 #' @export
 setMethod("[", signature(x = "SpatialCellData"), function(x, i, j, drop = FALSE) {
   if (!missing(i)) {
+    frozen <- attr(x@meta_data, "frozen_spatial_labels")
+    if (is.null(frozen)) frozen <- list()
+    labels <- intersect(c("neighbourhood", "domain", "cluster"), names(x@meta_data))
+    for (label in setdiff(labels, names(frozen))) {
+      frozen[[label]] <- list(scope = "original_fit", source_n_cells = NCells(x))
+    }
+    x@spatial <- list()
+    derived <- c("nn_distance", "density")
+    x@meta_data <- x@meta_data[, setdiff(names(x@meta_data), derived), drop = FALSE]
     x@counts    <- x@counts[i, , drop = FALSE]
     x@data      <- x@data[i, , drop = FALSE]
     x@coords    <- x@coords[i, , drop = FALSE]
     x@meta_data <- x@meta_data[i, , drop = FALSE]
     rownames(x@meta_data) <- NULL
+    if (length(frozen)) attr(x@meta_data, "frozen_spatial_labels") <- frozen
     if (length(x@reductions) > 0L) {
       x@reductions <- lapply(x@reductions, function(e) e[i, , drop = FALSE])
     }
@@ -225,3 +248,14 @@ setMethod("$", signature(x = "SpatialCellData"), function(x, name) {
 setMethod("dim", "SpatialCellData", function(x) {
   dim(x@counts)
 })
+
+#' Clear a frozen-label record when the assignment is recomputed
+#' @noRd
+.clear_frozen_spatial_label <- function(object, label) {
+  frozen <- attr(object@meta_data, "frozen_spatial_labels")
+  if (!is.null(frozen)) {
+    frozen[[label]] <- NULL
+    attr(object@meta_data, "frozen_spatial_labels") <- if (length(frozen)) frozen else NULL
+  }
+  object
+}

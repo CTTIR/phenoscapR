@@ -7,7 +7,19 @@
 \S4method{[}{SpatialCellData}(x, i, j, drop = FALSE)
 }
 \arguments{
-\item{x}{A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.}
+\item{x}{A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
+Supplying cell indices clears cached spatial results and the derived
+\code{nn_distance} and \code{density} metadata columns. Recompute these
+after filtering, reordering or duplicating cells. Marker-only subsetting
+preserves spatial results; dimensional reductions are subset by cell.
+Phenotype, cluster, neighbourhood and domain labels remain frozen annotations
+from the original fit for plotting and comparison; they do not describe a
+refit on the subset. Neither labels nor retained reductions are refitted.
+The metadata attribute \code{frozen_spatial_labels} records each retained
+spatial label's original fit row count; further subsetting preserves it.
+Recomputing an assignment clears its frozen-label record.
+Recompute spatial assignments to describe the new neighbourhoods. Marker-only
+subsetting does not revalidate expression-dependent cached analyses.}
 
 \item{i}{Cell indices (integer or logical).}
 

@@ -23,3 +23,6 @@
 ^phenoscapR-.*\.pdf$
 ^figure$
 ^_coverage$
+^instructions$
+^\.zenodo\.json$
+^CITATION\.cff$

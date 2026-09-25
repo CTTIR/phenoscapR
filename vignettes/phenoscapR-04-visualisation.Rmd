@@ -47,10 +47,11 @@ data(phenoscapR_example)
 obj <- phenoscapR_example
 obj@meta_data$phenotype <- obj@meta_data$phenotype_true
 obj <- NormaliseData(obj, method = "zscore")
-obj <- CellDensity(obj, radius = 40)
 
 # A single tissue for the spatial maps.
 a <- obj[obj$sample_id == "tonsil_A", ]
+# Cell subsetting invalidates cached local density; compute it on this tissue.
+a <- CellDensity(a, radius = 40)
 markers <- c("CD20", "CD3", "CD8", "PanCK")
 ```
 

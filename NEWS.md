@@ -1,3 +1,16 @@
+# phenoscapR development
+
+* Delaunay networks now triangulate each sample independently and preserve
+  full-object row indices. Missing sample IDs and groups with fewer than three
+  cells fail explicitly instead of allowing cross-sample edges.
+* Cell subsetting clears cached spatial results and neighbour distance/density
+  columns, preventing stale edges and summaries after filtering or reordering.
+  Cluster, neighbourhood and domain labels remain frozen annotations from the
+  original fit for plotting; recompute them to describe the new neighbourhoods.
+  Marker-only subsetting retains spatial results.
+* Differential abundance rejects missing/empty conditions or sample IDs and
+  conflicting conditions within a sample before aggregating proportions.
+
 # phenoscapR 2.1.0
 
 * Added an interactive **Shiny app**, styled 1:1 to the Hugo Coder theme via

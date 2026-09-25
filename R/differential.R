@@ -12,7 +12,8 @@
 #' @param object A \code{\link{SpatialCellData-class}} object with several
 #'   samples.
 #' @param condition Character. Metadata column giving each cell's condition
-#'   (constant within a sample).
+#'   (constant within a sample). Missing or empty conditions and sample IDs
+#'   are rejected, as are conflicting conditions within a sample.
 #' @param phenotype_col Character. Phenotype column. Default \code{"phenotype"}.
 #' @param test Character. \code{"wilcox"} (default) or \code{"t"} for two groups;
 #'   \code{"kruskal"} for more than two.
@@ -40,6 +41,16 @@ DifferentialAbundance <- function(object, condition,
   }
   if (!phenotype_col %in% names(md)) {
     stop("Phenotype column '", phenotype_col, "' not found.", call. = FALSE)
+  }
+
+  sample_ids <- .spatial_sample_ids(md, nrow(md))
+  conditions <- as.character(md[[condition]])
+  if (anyNA(conditions) || any(!nzchar(trimws(conditions)))) {
+    stop("Every cell must have a non-missing, non-empty condition.", call. = FALSE)
+  }
+  per_sample <- split(conditions, sample_ids)
+  if (any(vapply(per_sample, function(z) length(unique(z)) != 1L, logical(1L)))) {
+    stop("Condition must be constant within each sample.", call. = FALSE)
   }
 
   prop <- prop.table(table(md$sample_id, md[[phenotype_col]]), margin = 1L)

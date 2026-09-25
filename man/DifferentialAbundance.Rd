@@ -16,7 +16,8 @@ DifferentialAbundance(
 samples.}
 
 \item{condition}{Character. Metadata column giving each cell's condition
-(constant within a sample).}
+(constant within a sample). Missing or empty conditions and sample IDs
+are rejected, as are conflicting conditions within a sample.}
 
 \item{phenotype_col}{Character. Phenotype column. Default \code{"phenotype"}.}
 

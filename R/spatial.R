@@ -761,6 +761,7 @@ SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
     }
   )
 
+  object <- .clear_frozen_spatial_label(object, "cluster")
   object@meta_data$cluster <- as.character(cluster_ids)
   object
 }
@@ -768,7 +769,10 @@ SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
 #' Delaunay Triangulation Network
 #'
 #' Computes a Delaunay triangulation of cell positions and stores edges
-#' in the \code{spatial} slot.
+#' in the \code{spatial} slot. Each \code{sample_id} is triangulated
+#' separately; it must identify one independent spatial coordinate frame.
+#' Every sample must contain at least three cells. Edge endpoints refer to
+#' cell rows in the complete object, never rows local to a sample.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param max_edge Numeric or \code{NULL}. Maximum edge length to retain.
@@ -789,7 +793,16 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
   n <- nrow(xy)
   if (n < 3L) stop("Need at least 3 cells for triangulation.", call. = FALSE)
 
-  edges <- .delaunay_edges(xy)
+  sample_ids <- .spatial_sample_ids(object@meta_data, n)
+  groups <- split(seq_len(n), sample_ids)
+  if (any(lengths(groups) < 3L)) {
+    stop("Need at least 3 cells in each sample for triangulation.", call. = FALSE)
+  }
+  edges <- do.call(rbind, lapply(groups, function(rows) {
+    local <- .delaunay_edges(xy[rows, , drop = FALSE])
+    data.frame(from = rows[local$from], to = rows[local$to])
+  }))
+  rownames(edges) <- NULL
   edges$distance <- sqrt((xy[edges$from, 1L] - xy[edges$to, 1L])^2 +
                          (xy[edges$from, 2L] - xy[edges$to, 2L])^2)
 
@@ -800,6 +813,17 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
 
   object@spatial[["delaunay_edges"]] <- edges
   object
+}
+
+#' Validate independent sample identifiers before spatial/sample aggregation
+#' @noRd
+.spatial_sample_ids <- function(meta_data, n) {
+  ids <- meta_data$sample_id
+  if (length(ids) != n || anyNA(ids) ||
+      any(!nzchar(trimws(as.character(ids))))) {
+    stop("sample_id must be non-missing and non-empty for every cell.", call. = FALSE)
+  }
+  as.character(ids)
 }
 
 #' Delaunay edge list for a set of 2-D points

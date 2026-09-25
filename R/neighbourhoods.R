@@ -63,6 +63,7 @@ CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
 
   if (!is.null(seed)) set.seed(seed)
   km <- stats::kmeans(comp, centers = n_neighbourhoods, nstart = 10L)
+  object <- .clear_frozen_spatial_label(object, "neighbourhood")
   object@meta_data$neighbourhood <- paste0("CN", km$cluster)
   centres <- km$centers
   rownames(centres) <- paste0("CN", seq_len(nrow(centres)))
@@ -121,6 +122,7 @@ SpatialDomains <- function(object, n_domains = 6L, k = 20L, slot = "data",
 
   if (!is.null(seed)) set.seed(seed)
   km <- stats::kmeans(smoothed, centers = n_domains, nstart = 10L)
+  object <- .clear_frozen_spatial_label(object, "domain")
   object@meta_data$domain <- paste0("D", km$cluster)
   object
 }
