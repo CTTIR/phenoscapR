@@ -30,5 +30,6 @@ if (requireNamespace("SpatialExperiment", quietly = TRUE)) {
   data(phenoscapR_example)
   spe <- as_SpatialExperiment(phenoscapR_example)
 }
+#> Warning: replacing previous import ‘S4Arrays::makeNindexFromArrayViewport’ by ‘DelayedArray::makeNindexFromArrayViewport’ when loading ‘SummarizedExperiment’
 # }
 ```

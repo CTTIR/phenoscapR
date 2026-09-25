@@ -11,6 +11,7 @@
 <url><loc>https://cttir.github.io/phenoscapR/authors.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/index.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/news/index.html</loc></url>
+<url><loc>https://cttir.github.io/phenoscapR/reference/AdjustPatientFamilies.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/AnnotateClusters.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/BoxPlot.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/CellDensity.html</loc></url>
@@ -27,9 +28,11 @@
 <url><loc>https://cttir.github.io/phenoscapR/reference/DotPlot.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/EmbeddingPlot.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/Embeddings.html</loc></url>
+<url><loc>https://cttir.github.io/phenoscapR/reference/ExactPatientTests.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/ExpressionClusters.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/FeaturePlot.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/FindNeighbours.html</loc></url>
+<url><loc>https://cttir.github.io/phenoscapR/reference/FromCellspec.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/GetData.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/HistogramPlot.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/Idents.html</loc></url>

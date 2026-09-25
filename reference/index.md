@@ -50,6 +50,8 @@ Export, QuPath Minimal, and flat segmentation format.
 
 - [`read_spatial()`](https://cttir.github.io/phenoscapR/reference/read_spatial.md)
   : Read Single-Cell Spatial Biology Data
+- [`FromCellspec()`](https://cttir.github.io/phenoscapR/reference/FromCellspec.md)
+  : Import a Canonical Cell Table Without Losing Spatial Identity
 
 ## Quality Control & Preprocessing
 
@@ -143,6 +145,10 @@ sample as the unit of replication.
 
 - [`DifferentialAbundance()`](https://cttir.github.io/phenoscapR/reference/DifferentialAbundance.md)
   : Differential Abundance of Phenotypes Across Conditions
+- [`ExactPatientTests()`](https://cttir.github.io/phenoscapR/reference/ExactPatientTests.md)
+  : Exact Allocation Tests of Independent Patient Endpoints
+- [`AdjustPatientFamilies()`](https://cttir.github.io/phenoscapR/reference/AdjustPatientFamilies.md)
+  : Adjust Explicitly Declared Patient-Test Families
 
 ## Platform Readers
 
