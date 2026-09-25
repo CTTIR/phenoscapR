@@ -85,6 +85,7 @@ reference:
       Export, QuPath Minimal, and flat segmentation format.
     contents:
       - read_spatial
+      - FromCellspec
 
   - title: "Quality Control & Preprocessing"
     desc: >
@@ -149,6 +150,8 @@ reference:
       sample as the unit of replication.
     contents:
       - DifferentialAbundance
+      - ExactPatientTests
+      - AdjustPatientFamilies
 
   - title: "Platform Readers"
     desc: >
