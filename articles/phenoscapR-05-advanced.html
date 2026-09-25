@@ -189,7 +189,10 @@ a permutation null.</p>
 <h3 id="cellular-neighbourhoods-niches">Cellular neighbourhoods (niches)<a class="anchor" aria-label="anchor" href="#cellular-neighbourhoods-niches"></a>
 </h3>
 <p>Cluster cells by the phenotype composition of their local
-neighbourhood.</p>
+neighbourhood. Cell subsetting retains these labels as frozen
+annotations from the cohort fit, so the tissue maps below show that
+original fit. Recompute neighbourhoods or domains after filtering if the
+aim is to describe the changed cell population.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CellularNeighbourhoods.html">CellularNeighbourhoods</a></span><span class="op">(</span><span class="va">obj</span>, n_neighbourhoods <span class="op">=</span> <span class="fl">6</span>, k <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">obj</span><span class="op">$</span><span class="va">neighbourhood</span><span class="op">)</span></span>

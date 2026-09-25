@@ -146,6 +146,10 @@ ScreePlot(obj)
 ### Cellular neighbourhoods (niches)
 
 Cluster cells by the phenotype composition of their local neighbourhood.
+Cell subsetting retains these labels as frozen annotations from the
+cohort fit, so the tissue maps below show that original fit. Recompute
+neighbourhoods or domains after filtering if the aim is to describe the
+changed cell population.
 
 ``` r
 

@@ -55,7 +55,19 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A <code><a href="SpatialCellData-class.html">SpatialCellData</a></code> object.</p></dd>
+<dd><p>A <code><a href="SpatialCellData-class.html">SpatialCellData</a></code> object.
+Supplying cell indices clears cached spatial results and the derived
+<code>nn_distance</code> and <code>density</code> metadata columns. Recompute these
+after filtering, reordering or duplicating cells. Marker-only subsetting
+preserves spatial results; dimensional reductions are subset by cell.
+Phenotype, cluster, neighbourhood and domain labels remain frozen annotations
+from the original fit for plotting and comparison; they do not describe a
+refit on the subset. Neither labels nor retained reductions are refitted.
+The metadata attribute <code>frozen_spatial_labels</code> records each retained
+spatial label's original fit row count; further subsetting preserves it.
+Recomputing an assignment clears its frozen-label record.
+Recompute spatial assignments to describe the new neighbourhoods. Marker-only
+subsetting does not revalidate expression-dependent cached analyses.</p></dd>
 
 
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>

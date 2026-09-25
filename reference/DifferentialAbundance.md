@@ -28,7 +28,8 @@ DifferentialAbundance(
 - condition:
 
   Character. Metadata column giving each cell's condition (constant
-  within a sample).
+  within a sample). Missing or empty conditions and sample IDs are
+  rejected, as are conflicting conditions within a sample.
 
 - phenotype_col:
 
