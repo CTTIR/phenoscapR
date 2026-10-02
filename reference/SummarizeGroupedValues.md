@@ -61,11 +61,15 @@ SummarizeGroupedValues(
 ## Value
 
 Data frame sorted by group keys with supplied/available counts, mean,
-median, threshold fraction, weighted mean, separate availability
-statuses and the missingness policy. Status is COMPLETE, PARTIAL,
-INSUFFICIENT or UNAVAILABLE; optional weighted status also uses
-NOT_REQUESTED and NO_POSITIVE_WEIGHT. Empty input returns a typed empty
-table. Numerical overflow fails instead of emitting an infinite summary.
+median, threshold fraction, weighted mean, total available weight, and
+separate availability statuses and the missingness policy. Status is
+COMPLETE, PARTIAL, INSUFFICIENT or UNAVAILABLE; optional weighted status
+also uses NOT_REQUESTED and NO_POSITIVE_WEIGHT. Empty input returns a
+typed empty table. Numerical overflow or product underflow fails rather
+than producing a misleading summary. `weight_sum` counts only pairs with
+both value and weight available; it is zero for observed zero weights,
+and NA when policy suppresses a weighted summary or weights were not
+requested.
 
 ## Details
 
@@ -85,6 +89,8 @@ d <- data.frame(sample = c("one", "one"), cell = c("a", "b"),
 SummarizeGroupedValues(d, "sample", "cell", "score", "area", threshold = 2)
 #>   sample n_supplied n_available n_unavailable mean median fraction_at_least
 #> 1    one          2           2             0    2      2               0.5
-#>     status n_weighted_available weighted_mean weighted_status missing_policy
-#> 1 COMPLETE                    2           2.5        COMPLETE      propagate
+#>     status n_weighted_available weighted_mean weighted_status weight_sum
+#> 1 COMPLETE                    2           2.5        COMPLETE          4
+#>   missing_policy
+#> 1      propagate
 ```
