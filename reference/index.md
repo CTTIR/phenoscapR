@@ -125,6 +125,8 @@ and expression-based clustering.
   : Summarize Continuous Observations in Explicit Groups
 - [`CorrelateGroupedRanks()`](https://cttir.github.io/phenoscapR/reference/CorrelateGroupedRanks.md)
   : Correlate Paired Ranks Within Explicit Groups
+- [`CountDisjointEdges()`](https://cttir.github.io/phenoscapR/reference/CountDisjointEdges.md)
+  : Count Undirected Edges Between Disjoint Node Sets
 - [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
   : Pair Correlation Function
 - [`CrossNNDistance()`](https://cttir.github.io/phenoscapR/reference/CrossNNDistance.md)
