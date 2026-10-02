@@ -178,6 +178,10 @@ example dataset and comprehensive vignettes.
 
 # phenoscapR 0.1.0
 
+* Added `CountRadiusSets()` for ID-keyed full-frame radius counts of explicit
+  reference sets, with complete query outputs, a required numerical search
+  envelope, and installed backend fingerprints.
+
 * Initial release.
 * Read single-cell spatial biology data with `read_spatial()`.
 * Quality control with `qc_filter()`.
