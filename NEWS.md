@@ -178,6 +178,10 @@ example dataset and comprehensive vignettes.
 
 # phenoscapR 0.1.0
 
+* Added `ContrastGroupedRanks()` for descriptive grouped Cliff deltas with
+  explicit arm and missingness policies, complete registries and exact available
+  pair counts without allocating cross-pair matrices.
+
 * Fixed sorting of native-encoded non-ASCII keys in disjoint edge counts,
   grouped overlap contrasts and exact patient tests while preserving returned
   keys and numerical results.

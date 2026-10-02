@@ -133,6 +133,7 @@ reference:
       - SummarizeFixedGrid
       - SummarizeGroupedValues
       - CorrelateGroupedRanks
+      - ContrastGroupedRanks
       - CountDisjointEdges
       - CountRadiusSets
       - ContrastGroupedOverlap
