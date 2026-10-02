@@ -95,7 +95,7 @@ ExactPatientTests <- function(endpoints, design, hypotheses,
     h <- hypotheses[i, registry, drop = FALSE]
     d <- contrasts[[h$contrast_id]]
     # Sorting fixes summation order independently of input table row order.
-    d <- d[order(d$patient_id, method = "radix"), , drop = FALSE]
+    d <- d[order(enc2utf8(d$patient_id), method = "radix"), , drop = FALSE]
     e <- endpoints[endpoints$endpoint_id == h$endpoint_id, , drop = FALSE]
     m <- match(d$patient_id, e$patient_id)
     value <- e$value[m]

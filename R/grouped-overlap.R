@@ -130,7 +130,8 @@ ContrastGroupedOverlap <- function(data, registry, groups, strata, id, positive,
     do.call(paste0, unname(parts))
   }
   sort_rows <- function(x, columns) {
-    x <- x[do.call(order, c(unname(x[columns]), list(method = "radix"))), , drop = FALSE]
+    sort_keys <- lapply(x[columns], enc2utf8)
+    x <- x[do.call(order, c(unname(sort_keys), list(method = "radix"))), , drop = FALSE]
     rownames(x) <- NULL
     x
   }

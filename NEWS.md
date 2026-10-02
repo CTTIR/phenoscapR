@@ -178,6 +178,10 @@ example dataset and comprehensive vignettes.
 
 # phenoscapR 0.1.0
 
+* Fixed sorting of native-encoded non-ASCII keys in disjoint edge counts,
+  grouped overlap contrasts and exact patient tests while preserving returned
+  keys and numerical results.
+
 * Added `CountRadiusSets()` for ID-keyed full-frame radius counts of explicit
   reference sets, with complete query outputs, a required numerical search
   envelope, and installed backend fingerprints.

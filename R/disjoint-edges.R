@@ -173,7 +173,8 @@ CountDisjointEdges <- function(nodes, edges, registry, groups, frame, id,
   out$geometry_recomputed <- rep(FALSE, n)
   out$geometry_authentication <- rep("CALLER_DECLARED_NOT_VERIFIED", n)
   out$schema_version <- rep("1.0.0", n)
-  out <- out[do.call(order, c(unname(out[keys]), list(method = "radix"))), , drop = FALSE]
+  sort_keys <- lapply(out[keys], enc2utf8)
+  out <- out[do.call(order, c(unname(sort_keys), list(method = "radix"))), , drop = FALSE]
   rownames(out) <- NULL
   out
 }
