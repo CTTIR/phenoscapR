@@ -121,6 +121,8 @@ and expression-based clustering.
   : Assign Physical Cell Coordinates to Fixed Square Grids
 - [`SummarizeFixedGrid()`](https://cttir.github.io/phenoscapR/reference/SummarizeFixedGrid.md)
   : Summarize Cell Annotations Within Fixed Grids
+- [`SummarizeGroupedValues()`](https://cttir.github.io/phenoscapR/reference/SummarizeGroupedValues.md)
+  : Summarize Continuous Observations in Explicit Groups
 - [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
   : Pair Correlation Function
 - [`CrossNNDistance()`](https://cttir.github.io/phenoscapR/reference/CrossNNDistance.md)
