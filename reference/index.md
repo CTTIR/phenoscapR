@@ -163,6 +163,8 @@ sample as the unit of replication.
   : Differential Abundance of Phenotypes Across Conditions
 - [`ExactPatientTests()`](https://cttir.github.io/phenoscapR/reference/ExactPatientTests.md)
   : Exact Allocation Tests of Independent Patient Endpoints
+- [`LeaveOnePatientOut()`](https://cttir.github.io/phenoscapR/reference/LeaveOnePatientOut.md)
+  : Exact Patient Omission Diagnostics for Declared Hypotheses
 - [`AdjustPatientFamilies()`](https://cttir.github.io/phenoscapR/reference/AdjustPatientFamilies.md)
   : Adjust Explicitly Declared Patient-Test Families
 
