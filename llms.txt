@@ -344,6 +344,8 @@ and expression-based clustering.
   : Moran's I Spatial Autocorrelation
 - [`QuadratAnalysis()`](https://cttir.github.io/phenoscapR/reference/QuadratAnalysis.md)
   : Quadrat Analysis
+- [`AssignFixedGrid()`](https://cttir.github.io/phenoscapR/reference/AssignFixedGrid.md)
+  : Assign Physical Cell Coordinates to Fixed Square Grids
 - [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
   : Pair Correlation Function
 - [`CrossNNDistance()`](https://cttir.github.io/phenoscapR/reference/CrossNNDistance.md)
