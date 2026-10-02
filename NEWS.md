@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Explicit grouped rank correlations retain paired availability counts, ties
+  and constant-value statuses without manufacturing absent groups.
+
 * Grouped summaries expose the available weight total as an explicit denominator,
   retaining unknown and observed-zero weight totals separately.
 
