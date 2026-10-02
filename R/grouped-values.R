@@ -25,11 +25,15 @@
 #' @param missing Missingness policy: `"propagate"` or explicit `"available"`.
 #'
 #' @return Data frame sorted by group keys with supplied/available counts, mean,
-#'   median, threshold fraction, weighted mean, separate availability statuses and
+#'   median, threshold fraction, weighted mean, total available weight, and separate
+#'   availability statuses and
 #'   the missingness policy. Status is COMPLETE, PARTIAL, INSUFFICIENT or
 #'   UNAVAILABLE; optional weighted status also uses NOT_REQUESTED and
 #'   NO_POSITIVE_WEIGHT. Empty input returns a typed empty table. Numerical
-#'   overflow fails instead of emitting an infinite summary.
+#'   overflow or product underflow fails rather than producing a misleading summary.
+#'   `weight_sum` counts only pairs with both value and weight available; it is
+#'   zero for observed zero weights, and NA when policy suppresses a weighted
+#'   summary or weights were not requested.
 #' @examples
 #' d <- data.frame(sample = c("one", "one"), cell = c("a", "b"),
 #'   score = c(1, 3), area = c(1, 3))
@@ -49,7 +53,7 @@ SummarizeGroupedValues <- function(data, groups, id, value, weight = NULL,
                   (is.null(weight) || valid_name(weight)), "Invalid selected columns")
   outputs <- c("n_supplied", "n_available", "n_unavailable", "mean", "median",
     "fraction_at_least", "status", "n_weighted_available", "weighted_mean",
-    "weighted_status", "missing_policy")
+    "weighted_status", "weight_sum", "missing_policy")
   .exact_assert(!any(groups %in% outputs) && !id %in% groups &&
                   !value %in% c(groups, id) &&
                   (is.null(weight) || !weight %in% c(groups, id, value)),
@@ -87,6 +91,7 @@ SummarizeGroupedValues <- function(data, groups, id, value, weight = NULL,
     median_value <- if (use) stats::median(v[keep]) else NA_real_
     fraction <- if (use && !is.null(threshold)) mean(v[keep] >= threshold) else NA_real_
     weighted <- NA_real_
+    total_weight <- NA_real_
     nw <- NA_integer_
     ws <- "NOT_REQUESTED"
     if (!is.null(w)) {
@@ -94,6 +99,10 @@ SummarizeGroupedValues <- function(data, groups, id, value, weight = NULL,
       nw <- sum(good)
       ws <- describe(nw, length(v))
       if (nw >= min_available && !any(w[good] > 0)) ws <- "NO_POSITIVE_WEIGHT"
+      if (allowed(nw, length(v))) {
+        total_weight <- sum(w[good])
+        .exact_assert(is.finite(total_weight), "Numerical range exceeded in weight total")
+      }
       if (allowed(nw, length(v)) && any(w[good] > 0)) {
         products <- v[good] * w[good]
         .exact_assert(is.finite(sum(w[good])) && all(is.finite(products)) &&
@@ -109,7 +118,8 @@ SummarizeGroupedValues <- function(data, groups, id, value, weight = NULL,
     list(n_supplied = length(v), n_available = n, n_unavailable = length(v) - n,
       mean = mean_value, median = median_value, fraction_at_least = fraction,
       status = describe(n, length(v)), n_weighted_available = nw,
-      weighted_mean = weighted, weighted_status = ws, missing_policy = missing)
+      weighted_mean = weighted, weighted_status = ws, weight_sum = total_weight,
+      missing_policy = missing)
   }
   if (!nrow(data)) {
     template <- summarize(numeric(), if (!is.null(weight)) numeric() else NULL)

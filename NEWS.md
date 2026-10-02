@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Grouped summaries expose the available weight total as an explicit denominator,
+  retaining unknown and observed-zero weight totals separately.
+
 * Add explicit grouped continuous summaries with separate value/weight
   availability and caller-declared missingness and minimum-count policies.
 

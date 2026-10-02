@@ -74,3 +74,24 @@ test_that("weighted denominator overflow and multi-key name capture fail safely"
   expect_error(SummarizeGroupedValues(d, "sample", "id", "signal", "weight"),
     "Numerical range")
 })
+
+
+test_that("weight totals expose the actual denominator without inventing availability", {
+  d <- data.frame(sample = c("a", "a", "a", "b"), id = letters[1:4],
+    signal = c(1, 3, NA, 9), weight = c(1, 3, 5, 0))
+  z <- SummarizeGroupedValues(d, "sample", "id", "signal", "weight")
+  expect_equal(z$weight_sum, c(NA, 0))
+  z <- SummarizeGroupedValues(d, "sample", "id", "signal", "weight",
+    missing = "available")
+  expect_equal(z$weight_sum, c(4, 0))
+  expect_equal(z$weighted_mean[1] * z$weight_sum[1], 10)
+  d$signal[3] <- 7; d$weight[3] <- NA_real_
+  z <- SummarizeGroupedValues(d, "sample", "id", "signal", "weight")
+  expect_equal(z$mean[1], 11 / 3)
+  expect_equal(z$weight_sum, c(NA, 0))
+  z <- SummarizeGroupedValues(d, "sample", "id", "signal", "weight",
+    missing = "available", min_available = 3)
+  expect_identical(z$weight_sum, c(NA_real_, NA_real_))
+  expect_identical(SummarizeGroupedValues(d[0, ], "sample", "id", "signal")$weight_sum,
+    numeric())
+})

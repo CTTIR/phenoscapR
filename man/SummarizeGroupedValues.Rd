@@ -36,11 +36,15 @@ available values greater than or equal to this fixed threshold.}
 }
 \value{
 Data frame sorted by group keys with supplied/available counts, mean,
-median, threshold fraction, weighted mean, separate availability statuses and
+median, threshold fraction, weighted mean, total available weight, and separate
+availability statuses and
 the missingness policy. Status is COMPLETE, PARTIAL, INSUFFICIENT or
 UNAVAILABLE; optional weighted status also uses NOT_REQUESTED and
 NO_POSITIVE_WEIGHT. Empty input returns a typed empty table. Numerical
-overflow fails instead of emitting an infinite summary.
+overflow or product underflow fails rather than producing a misleading summary.
+\code{weight_sum} counts only pairs with both value and weight available; it is
+zero for observed zero weights, and NA when policy suppresses a weighted
+summary or weights were not requested.
 }
 \description{
 Computes arithmetic means, medians and optional threshold fractions or
