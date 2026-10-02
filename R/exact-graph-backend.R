@@ -70,16 +70,16 @@
     "Required backend packages unavailable"
   )
   ns <- asNamespace("deldir")
-  root <- normalizePath(getNamespaceInfo(ns, "path"), mustWork = TRUE)
+  root <- normalizePath(getNamespaceInfo(ns, "path"), winslash = "/", mustWork = TRUE)
   desc <- file.path(root, "DESCRIPTION")
   dll <- getLoadedDLLs()[["deldir"]]
   .ed_assert(
     !is.null(dll) && identical(dll[["dynamicLookup"]], FALSE),
     "Registered backend DLL required"
   )
-  path <- normalizePath(dll[["path"]], mustWork = TRUE)
+  path <- normalizePath(dll[["path"]], winslash = "/", mustWork = TRUE)
   .ed_assert(
-    startsWith(path, paste0(root, .Platform$file.sep, "libs", .Platform$file.sep)),
+    startsWith(path, paste0(root, "/libs/")),
     "Loaded DLL is outside the loaded package library"
   )
   sorter <- get("binsrtR", envir = ns, inherits = FALSE)
@@ -127,7 +127,7 @@
     .ed_assert(inherits(s, "NativeSymbolInfo") && identical(s$name, name) &&
       identical(as.integer(s$numParameters), arity) &&
       identical(s$dll[["name"]], "deldir") &&
-      identical(normalizePath(s$dll[["path"]], mustWork = TRUE), path) &&
+      identical(normalizePath(s$dll[["path"]], winslash = "/", mustWork = TRUE), path) &&
       identical(s$dll[["dynamicLookup"]], FALSE), "Registered symbol metadata mismatch")
   }
   # Fresh namespace/registration lookup, never a caller-provided pointer.

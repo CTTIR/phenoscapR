@@ -61,3 +61,25 @@ test_that('private lexical helpers remain available without namespace mutation',
  expect_identical(ls(private),before);expect_identical(environment(w),private)
  expect_identical(parent.env(environment(bound$wrapper)),private)
 })
+
+test_that('backend DLL containment uses consistent normalized Windows separators', {
+  backend <- getFromNamespace('.ed_backend', 'phenoscapR')
+  probe <- function(dll_path) {
+    e <- new.env(parent = environment(backend))
+    e$requireNamespace <- function(...) TRUE
+    e$asNamespace <- function(...) new.env(parent = emptyenv())
+    e$getNamespaceInfo <- function(...) 'C:/library/deldir'
+    e$getLoadedDLLs <- function() list(deldir = list(dynamicLookup = FALSE, path = dll_path))
+    e$normalizePath <- function(path, winslash = '\\', mustWork = NA) {
+      stopifnot(isTRUE(mustWork))
+      if (winslash == '/') path else chartr('/', '\\', path)
+    }
+    e$get <- function(...) stop('CONTAINMENT_PASSED', call. = FALSE)
+    environment(backend) <- e
+    backend(contract())
+  }
+  expect_error(probe('C:/library/deldir/libs/x64/deldir.dll'), 'CONTAINMENT_PASSED')
+  expect_error(probe('C:/library/deldir-other/libs/deldir.dll'), 'outside')
+  expect_error(probe('C:/library/deldir/libs-other/deldir.dll'), 'outside')
+  expect_error(probe('C:/elsewhere/deldir.dll'), 'outside')
+})

@@ -1,5 +1,7 @@
 # phenoscapR development
 
+- Normalize backend DLL paths consistently on Windows while preserving strict package-library containment and native provenance checks.
+
 * Build complete explicitly ordered Delaunay geometries with caller-pinned native
   contracts, full-graph validation before eligibility induction, and pure integer
   workspace preflight. Unsupported backends or geometry fail without fallback.
