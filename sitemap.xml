@@ -15,6 +15,7 @@
 <url><loc>https://cttir.github.io/phenoscapR/reference/AnnotateClusters.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/AssignFixedGrid.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/BoxPlot.html</loc></url>
+<url><loc>https://cttir.github.io/phenoscapR/reference/BuildExactDelaunayEdges.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/CellDensity.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/CellMap.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/CellularNeighbourhoods.html</loc></url>
@@ -58,6 +59,7 @@
 <url><loc>https://cttir.github.io/phenoscapR/reference/PaletteDiscrete.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/PhenotypeCells.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/PhenotypeSummary.html</loc></url>
+<url><loc>https://cttir.github.io/phenoscapR/reference/PlanExactDelaunayWorkspace.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/QCFilter.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/QCPlot.html</loc></url>
 <url><loc>https://cttir.github.io/phenoscapR/reference/QuadratAnalysis.html</loc></url>

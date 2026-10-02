@@ -131,6 +131,10 @@ and expression-based clustering.
   : Count Undirected Edges Between Disjoint Node Sets
 - [`CountRadiusSets()`](https://cttir.github.io/phenoscapR/reference/CountRadiusSets.md)
   : Count Reference Sets Within Explicit Euclidean Radii
+- [`BuildExactDelaunayEdges()`](https://cttir.github.io/phenoscapR/reference/BuildExactDelaunayEdges.md)
+  : Build Explicitly Ordered Delaunay Graphs with a Pinned Backend
+- [`PlanExactDelaunayWorkspace()`](https://cttir.github.io/phenoscapR/reference/PlanExactDelaunayWorkspace.md)
+  : Preflight Integer Workspace Bounds for Exact Delaunay Construction
 - [`ContrastGroupedOverlap()`](https://cttir.github.io/phenoscapR/reference/ContrastGroupedOverlap.md)
   : Contrast Explicit Groups Within Finite-Metric Overlap Strata
 - [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
