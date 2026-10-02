@@ -132,6 +132,7 @@ reference:
       - AssignFixedGrid
       - SummarizeFixedGrid
       - SummarizeGroupedValues
+      - CorrelateGroupedRanks
       - PairCorrelation
       - CrossNNDistance
       - ExpressionClusters
