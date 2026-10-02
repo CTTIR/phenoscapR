@@ -127,6 +127,8 @@ and expression-based clustering.
   : Correlate Paired Ranks Within Explicit Groups
 - [`CountDisjointEdges()`](https://cttir.github.io/phenoscapR/reference/CountDisjointEdges.md)
   : Count Undirected Edges Between Disjoint Node Sets
+- [`CountRadiusSets()`](https://cttir.github.io/phenoscapR/reference/CountRadiusSets.md)
+  : Count Reference Sets Within Explicit Euclidean Radii
 - [`ContrastGroupedOverlap()`](https://cttir.github.io/phenoscapR/reference/ContrastGroupedOverlap.md)
   : Contrast Explicit Groups Within Finite-Metric Overlap Strata
 - [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
