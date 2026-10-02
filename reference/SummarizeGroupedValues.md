@@ -31,11 +31,14 @@ SummarizeGroupedValues(
 - groups:
 
   Nonempty character vector of distinct group columns. Their values must
-  be nonempty character vectors without NA.
+  be dimensionless, nonblank character vectors without NA.
 
 - id:
 
-  Character column naming observations within each group.
+  Character name of the observation ID column. IDs must be
+  dimensionless, nonblank character values without NA, unique within
+  each complete group key. The reserved ASCII 28 separator is rejected
+  in keys.
 
 - value:
 

@@ -80,11 +80,13 @@ does not establish independence, eligibility, review authority or tissue area.</
 
 <dt id="arg-groups">groups<a class="anchor" aria-label="anchor" href="#arg-groups"></a></dt>
 <dd><p>Nonempty character vector of distinct group columns. Their
-values must be nonempty character vectors without NA.</p></dd>
+values must be dimensionless, nonblank character vectors without NA.</p></dd>
 
 
 <dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
-<dd><p>Character column naming observations within each group.</p></dd>
+<dd><p>Character name of the observation ID column. IDs must be
+dimensionless, nonblank character values without NA, unique within each
+complete group key. The reserved ASCII 28 separator is rejected in keys.</p></dd>
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
