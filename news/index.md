@@ -194,6 +194,10 @@ reproducible example dataset and comprehensive vignettes.
 
 ## phenoscapR 0.1.0
 
+- Fixed sorting of native-encoded non-ASCII keys in disjoint edge
+  counts, grouped overlap contrasts and exact patient tests while
+  preserving returned keys and numerical results.
+
 - Added
   [`CountRadiusSets()`](https://cttir.github.io/phenoscapR/reference/CountRadiusSets.md)
   for ID-keyed full-frame radius counts of explicit reference sets, with
