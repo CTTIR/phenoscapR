@@ -159,6 +159,7 @@ reference:
     contents:
       - DifferentialAbundance
       - ExactPatientTests
+      - LeaveOnePatientOut
       - AdjustPatientFamilies
 
   - title: "Platform Readers"

@@ -1,5 +1,9 @@
 # phenoscapR development
 
+* `LeaveOnePatientOut()` evaluates explicitly registered patient omissions using
+  the existing exhaustive exact test, retaining incomplete-full and empty-arm
+  outcomes, availability counts and effect-direction diagnostics.
+
 * Contrast explicit groups within finite-metric overlap strata while retaining
   policy, evaluable and matched denominators, per-observation weights, stable
   effective control counts and separately requested quality criteria.
