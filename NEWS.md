@@ -1,5 +1,9 @@
 # phenoscapR development
 
+* Contrast explicit groups within finite-metric overlap strata while retaining
+  policy, evaluable and matched denominators, per-observation weights, stable
+  effective control counts and separately requested quality criteria.
+
 * Count supplied undirected edges between explicit disjoint node sets using
   complete group/frame registries, stable IDs, isolated-node denominators and
   separate zero-denominator statuses without claiming geometry reconstruction.

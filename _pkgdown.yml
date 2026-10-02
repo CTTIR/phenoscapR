@@ -134,6 +134,7 @@ reference:
       - SummarizeGroupedValues
       - CorrelateGroupedRanks
       - CountDisjointEdges
+      - ContrastGroupedOverlap
       - PairCorrelation
       - CrossNNDistance
       - ExpressionClusters
