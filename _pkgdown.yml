@@ -136,6 +136,8 @@ reference:
       - ContrastGroupedRanks
       - CountDisjointEdges
       - CountRadiusSets
+      - BuildExactDelaunayEdges
+      - PlanExactDelaunayWorkspace
       - ContrastGroupedOverlap
       - PairCorrelation
       - CrossNNDistance

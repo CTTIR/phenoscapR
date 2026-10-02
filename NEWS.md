@@ -1,5 +1,9 @@
 # phenoscapR development
 
+* Build complete explicitly ordered Delaunay geometries with caller-pinned native
+  contracts, full-graph validation before eligibility induction, and pure integer
+  workspace preflight. Unsupported backends or geometry fail without fallback.
+
 * `LeaveOnePatientOut()` evaluates explicitly registered patient omissions using
   the existing exhaustive exact test, retaining incomplete-full and empty-arm
   outcomes, availability counts and effect-direction diagnostics.
