@@ -178,6 +178,10 @@ example dataset and comprehensive vignettes.
 
 # phenoscapR 0.1.0
 
+* Fixed selected key names such as `collapse`, `sep` and `...` in grouped
+  summaries and rank correlations, retaining duplicate-ID validation. Shared
+  key validation now rejects matrix-valued keys across its public consumers.
+
 * Added `ContrastGroupedRanks()` for descriptive grouped Cliff deltas with
   explicit arm and missingness policies, complete registries and exact available
   pair counts without allocating cross-pair matrices.

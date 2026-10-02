@@ -15,8 +15,10 @@
 #'
 #' @param data Data frame containing group/observation keys and numeric values.
 #' @param groups Nonempty character vector of distinct group columns. Their
-#'   values must be nonempty character vectors without NA.
-#' @param id Character column naming observations within each group.
+#'   values must be dimensionless, nonblank character vectors without NA.
+#' @param id Character name of the observation ID column. IDs must be
+#'   dimensionless, nonblank character values without NA, unique within each
+#'   complete group key. The reserved ASCII 28 separator is rejected in keys.
 #' @param value Character column containing finite numeric values or NA.
 #' @param weight Optional character column with finite nonnegative weights or NA.
 #' @param threshold Optional finite numeric scalar. Reports the fraction of
@@ -126,11 +128,15 @@ SummarizeGroupedValues <- function(data, groups, id, value, weight = NULL,
     return(cbind(data[0, groups, drop = FALSE], as.data.frame(template)[0, ]))
   }
   d <- data.table::as.data.table(data[c(groups, value, weight)])
+  internal_groups <- paste0("group_", seq_along(groups))
+  internal_values <- if (is.null(weight)) "value_input" else c("value_input", "weight_input")
+  data.table::setnames(d, c(internal_groups, internal_values))
   summarize_columns <- function(part) {
     summarize(part[[1L]], if (ncol(part) > 1L) part[[2L]] else NULL)
   }
   result <- do.call("[", list(d, j = quote(summarize_columns(.SD)),
-    by = groups, .SDcols = c(value, weight)))
-  data.table::setorderv(result, groups)
+    by = internal_groups, .SDcols = internal_values))
+  data.table::setorderv(result, internal_groups)
+  data.table::setnames(result, internal_groups, groups)
   as.data.frame(result)
 }

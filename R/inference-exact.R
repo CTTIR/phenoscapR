@@ -11,10 +11,10 @@
 
 .exact_keys <- function(x, columns) {
   .exact_assert(all(vapply(x[columns], function(z) {
-    is.character(z) && !anyNA(z) && all(nzchar(trimws(z))) &&
+    is.character(z) && is.null(dim(z)) && !anyNA(z) && all(nzchar(trimws(z))) &&
       !any(grepl("\034", z, fixed = TRUE))
   }, logical(1))), "Keys must be nonempty character values without reserved separators")
-  do.call(paste, c(x[columns], sep = "\034"))
+  do.call(paste, c(unname(x[columns]), list(sep = "\034")))
 }
 
 #' Exact Allocation Tests of Independent Patient Endpoints

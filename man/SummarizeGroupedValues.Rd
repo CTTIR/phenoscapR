@@ -19,9 +19,11 @@ SummarizeGroupedValues(
 \item{data}{Data frame containing group/observation keys and numeric values.}
 
 \item{groups}{Nonempty character vector of distinct group columns. Their
-values must be nonempty character vectors without NA.}
+values must be dimensionless, nonblank character vectors without NA.}
 
-\item{id}{Character column naming observations within each group.}
+\item{id}{Character name of the observation ID column. IDs must be
+dimensionless, nonblank character values without NA, unique within each
+complete group key. The reserved ASCII 28 separator is rejected in keys.}
 
 \item{value}{Character column containing finite numeric values or NA.}
 
