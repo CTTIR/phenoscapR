@@ -131,6 +131,7 @@ reference:
       - QuadratAnalysis
       - AssignFixedGrid
       - SummarizeFixedGrid
+      - SummarizeGroupedValues
       - PairCorrelation
       - CrossNNDistance
       - ExpressionClusters

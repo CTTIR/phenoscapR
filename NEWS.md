@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Add explicit grouped continuous summaries with separate value/weight
+  availability and caller-declared missingness and minimum-count policies.
+
 * Add keyed fixed-grid annotation summaries with explicit unknown category and
   indicator counts, preserving sample boundaries and incomplete fractions.
 
