@@ -129,6 +129,7 @@ reference:
       - RipleysK
       - MoransI
       - QuadratAnalysis
+      - AssignFixedGrid
       - PairCorrelation
       - CrossNNDistance
       - ExpressionClusters

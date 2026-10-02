@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Add explicit physical fixed-grid membership with sample/frame validation,
+  deterministic keys, and fail-closed numerical containment checks.
+
 * `ExactPatientTests()` enumerates declared independent-patient contrasts with
   complete-patient missingness and explicit allocation resolution.
   `AdjustPatientFamilies()` retains unavailable hypotheses and reports both
