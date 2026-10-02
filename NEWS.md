@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Add keyed fixed-grid annotation summaries with explicit unknown category and
+  indicator counts, preserving sample boundaries and incomplete fractions.
+
 * Add explicit physical fixed-grid membership with sample/frame validation,
   deterministic keys, and fail-closed numerical containment checks.
 

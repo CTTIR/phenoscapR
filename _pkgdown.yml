@@ -130,6 +130,7 @@ reference:
       - MoransI
       - QuadratAnalysis
       - AssignFixedGrid
+      - SummarizeFixedGrid
       - PairCorrelation
       - CrossNNDistance
       - ExpressionClusters
