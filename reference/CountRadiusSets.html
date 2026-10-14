@@ -162,7 +162,7 @@ independent frames. Factors and numeric IDs are not coerced. Selected roles
 within each input table must be distinct. Unknown frames, duplicate keys,
 missing memberships and malformed inputs raise errors. Extra node columns are
 ignored; a tile column does not partition a frame unless selected as a key.</p>
-<p>Searches use <code><a href="https://rdrr.io/pkg/dbscan/man/frNN.html" class="external-link">dbscan::frNN()</a></code> with explicit query mode, <code>search = "kdtree"</code>,
+<p>Searches use <code><a href="http://michael.hahsler.net/dbscan/reference/frNN.html" class="external-link">dbscan::frNN()</a></code> with explicit query mode, <code>search = "kdtree"</code>,
 <code>approx = 0</code> and <code>sort = FALSE</code>, without a fallback. Returned distances are
 filtered inclusively using <code>distance &lt;= radius</code>. Self exclusion compares IDs
 within the complete frame key. Distinct coincident IDs remain neighbors.</p>
@@ -220,7 +220,7 @@ coordinates or historical geometry and does not infer fractions or weights.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "dbscan::frNN"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $backend$version</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1.2.6"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1.2.7"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $backend$search</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "kdtree"</span>
@@ -235,14 +235,14 @@ coordinates or historical geometry and does not infer fractions or weights.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "um"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $backend$description_sha256</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "e82cd4f76e661a69a460385e83e955a0d85d5059ba39dc4e443d317ed68cf823"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "78723651d89cd30ebd0d2998b3624b47dfb17c31b1ce75ff76e2ae12a63e63a6"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $backend$function_sha256</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2909346448cf1aa01da5e993a92fabb08de8ec3550a449a35bfdd20c27cc1b93"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0a22705eae7c642abb21d9bf95a1d1e18767d73d86f058014a4c9a6495547b94"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $backend$native_sha256</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                          dbscan.so </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "fbb349bbd7a9b7bcf8c3d000956da83d78f7303506d53c3a303ce5088d971168" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "edec615302d946636d88c7c4151e91a496374f8b1ab18c5d7c91efc1429ffa5e" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $backend$authority</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CURRENT_INSTALLED_BACKEND_NOT_HISTORICAL_AUTHENTICATION"</span>

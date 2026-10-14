@@ -23,7 +23,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![Codecov test
 coverage](https://codecov.io/gh/cttir/phenoscapR/graph/badge.svg)](https://app.codecov.io/gh/cttir/phenoscapR)
 
-### Overview
+## Overview
 
 **phenoscapR** takes you from a raw multiplexed-imaging
 cell-segmentation table all the way to publication-ready spatial
@@ -45,7 +45,7 @@ vignette), and a low-level **`data.table` interface**
 …) for scripting. They share one compute engine, so results are
 identical.
 
-### The bundled example dataset
+## The bundled example dataset
 
 The package ships `phenoscapR_example`, a fully synthetic two-sample
 tonsil assay with planted spatial niches (a B-cell follicle, an
@@ -86,7 +86,7 @@ table(phenoscapR_example$sample_id, phenoscapR_example$phenotype_true)
 > [`vignette("phenoscapR-02-object-model")`](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.md)
 > for the object model and import details.
 
-### 1. Quality control
+## 1. Quality control
 
 [`QCFilter()`](https://cttir.github.io/phenoscapR/reference/QCFilter.md)
 removes implausibly small or large cells and, optionally, cells outside
@@ -114,7 +114,7 @@ QCPlot(obj, x = "cell_area", y = "density", colour_by = "phenotype_true")
 
 ![](phenoscapR_files/figure-html/qcplot-1.png)
 
-### 2. Normalisation
+## 2. Normalisation
 
 [`NormaliseData()`](https://cttir.github.io/phenoscapR/reference/NormaliseData.md)
 rescales each marker. `"zscore"` centres and scales to unit variance;
@@ -131,7 +131,7 @@ round(GetData(obj)[1:4, ], 2)
 #> [4,] -0.59 -0.47 -0.39  2.10 -0.30 -0.61 -0.28  0.62
 ```
 
-### 3. Phenotyping
+## 3. Phenotyping
 
 Assign phenotypes by thresholding normalised markers. Because the data
 are z-scored, a threshold of `1` means “at least one standard deviation
@@ -172,7 +172,7 @@ CompositionPlot(obj, group_by = "sample_id")
 
 ![](phenoscapR_files/figure-html/composition-1.png)
 
-### 4. The phenotype map
+## 4. The phenotype map
 
 [`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md)
 is the workhorse plot — every cell drawn at its tissue position,
@@ -197,9 +197,9 @@ FeaturePlot(tonsil_a, features = c("CD20", "CD3", "PanCK"))
 
 ![](phenoscapR_files/figure-html/featureplot-1.png)
 
-### 5. Spatial analysis
+## 5. Spatial analysis
 
-#### Local density and nearest neighbours
+### Local density and nearest neighbours
 
 ``` r
 
@@ -213,7 +213,7 @@ DensityPlot(tonsil_a <- CellDensity(tonsil_a, radius = 40))
 
 ![](phenoscapR_files/figure-html/nn-density-1.png)
 
-#### Phenotype interactions
+### Phenotype interactions
 
 [`InteractionMatrix()`](https://cttir.github.io/phenoscapR/reference/InteractionMatrix.md)
 counts, per sample, how often each phenotype pair sits within `radius`
@@ -240,7 +240,7 @@ InteractionPlot(im)
 
 ![](phenoscapR_files/figure-html/interactions-1.png)
 
-#### Marker signatures per phenotype
+### Marker signatures per phenotype
 
 ``` r
 
@@ -249,7 +249,7 @@ MarkerHeatmap(obj)
 
 ![](phenoscapR_files/figure-html/heatmap-1.png)
 
-### Where to next
+## Where to next
 
 phenoscapR has much more spatial machinery — Ripley’s K, Moran’s I,
 neighbourhood-enrichment permutation tests, the pair correlation
@@ -261,21 +261,3 @@ dimensionality reductions.
 | [The SpatialCellData Object](https://cttir.github.io/phenoscapR/articles/phenoscapR-02-object-model.md) | class internals, import, accessors, subsetting |
 | [Advanced Spatial Analysis](https://cttir.github.io/phenoscapR/articles/phenoscapR-03-spatial-analysis.md) | Ripley’s K, Moran’s I, enrichment, choosing a statistic |
 | [Visualisation Gallery](https://cttir.github.io/phenoscapR/articles/phenoscapR-04-visualisation.md) | every plotting function, side by side |
-
-## Use of LLM tools
-
-Portions of this package were prepared with assistance from large
-language model tooling for narrowly defined, non-authorial tasks:
-copyediting, prose smoothing, Markdown/LaTeX formatting, scaffolding of
-boilerplate files (CI configs, build scripts), code refactoring. The
-tools used were [Chat
-AI](https://kisski.gwdg.de/leistungen/2-02-llm-service/), the LLM
-service of KISSKI (GWDG), and a self-hosted **Mistral Small (24B,
-Apache-2.0)** run locally via [Ollama](https://ollama.com/) and the
-`ollamar` R package — local inference only, with no data sent to third
-parties for the self-hosted model.
-
-All scientific claims, methodological choices, analyses,
-interpretations, and conclusions are the author’s own. No LLM-generated
-text was incorporated without review and revision, and every reference
-was verified against its DOI, arXiv ID, or ISBN.

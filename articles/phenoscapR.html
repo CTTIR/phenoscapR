@@ -80,9 +80,9 @@
 <p><a href="https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://cttir.github.io/phenoscapR/"><img src="https://github.com/CTTIR/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="https://CRAN.R-project.org/package=phenoscapR" class="external-link"><img src="https://www.r-pkg.org/badges/version/phenoscapR" alt="CRAN status"></a> <a href="https://app.codecov.io/gh/CTTIR/phenoscapR?branch=main" class="external-link"><img src="https://codecov.io/gh/CTTIR/phenoscapR/branch/main/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://cran.r-project.org/package=phenoscapR" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/phenoscapR" alt="CRAN downloads"></a> <a href="https://cran.r-project.org/package=phenoscapR" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/phenoscapR" alt="CRAN downloads total"></a> <a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <!-- badges: end --></p>
 <p><img src="../reference/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"></p>
 <p><a href="https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml" class="external-link"><img src="https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml/badge.svg" alt="test-coverage"></a> <a href="https://github.com/cttir/phenoscapR/actions/workflows/lint.yaml" class="external-link"><img src="https://github.com/cttir/phenoscapR/actions/workflows/lint.yaml/badge.svg" alt="lint"></a> <a href="https://app.codecov.io/gh/cttir/phenoscapR" class="external-link"><img src="https://codecov.io/gh/cttir/phenoscapR/graph/badge.svg" alt="Codecov test coverage"></a></p>
-<div class="section level3">
-<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h3>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p><strong>phenoscapR</strong> takes you from a raw multiplexed-imaging
 cell-segmentation table all the way to publication-ready spatial
 statistics and figures. The workflow mirrors the way single-cell
@@ -110,9 +110,9 @@ object (used throughout this vignette), and a low-level
 (<code><a href="../reference/read_spatial.html">read_spatial()</a></code>, <code><a href="../reference/qc_filter.html">qc_filter()</a></code>, …) for
 scripting. They share one compute engine, so results are identical.</p>
 </div>
-<div class="section level3">
-<h3 id="the-bundled-example-dataset">The bundled example dataset<a class="anchor" aria-label="anchor" href="#the-bundled-example-dataset"></a>
-</h3>
+<div class="section level2">
+<h2 id="the-bundled-example-dataset">The bundled example dataset<a class="anchor" aria-label="anchor" href="#the-bundled-example-dataset"></a>
+</h2>
 <p>The package ships <code>phenoscapR_example</code>, a fully synthetic
 two-sample tonsil assay with planted spatial niches (a B-cell follicle,
 an overlapping T-cell zone, an epithelial region, and scattered
@@ -146,9 +146,9 @@ segmentation tables. See
 and import details.</p>
 </blockquote>
 </div>
-<div class="section level3">
-<h3 id="quality-control">1. Quality control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
-</h3>
+<div class="section level2">
+<h2 id="quality-control">1. Quality control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
+</h2>
 <p><code><a href="../reference/QCFilter.html">QCFilter()</a></code> removes implausibly small or large cells and,
 optionally, cells outside an intensity band. We work on a copy so the
 original stays intact.</p>
@@ -167,9 +167,9 @@ metadata columns:</p>
 <span><span class="fu"><a href="../reference/QCPlot.html">QCPlot</a></span><span class="op">(</span><span class="va">obj</span>, x <span class="op">=</span> <span class="st">"cell_area"</span>, y <span class="op">=</span> <span class="st">"density"</span>, colour_by <span class="op">=</span> <span class="st">"phenotype_true"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="phenoscapR_files/figure-html/qcplot-1.png" class="r-plt" alt="" width="672"></p>
 </div>
-<div class="section level3">
-<h3 id="normalisation">2. Normalisation<a class="anchor" aria-label="anchor" href="#normalisation"></a>
-</h3>
+<div class="section level2">
+<h2 id="normalisation">2. Normalisation<a class="anchor" aria-label="anchor" href="#normalisation"></a>
+</h2>
 <p><code><a href="../reference/NormaliseData.html">NormaliseData()</a></code> rescales each marker.
 <code>"zscore"</code> centres and scales to unit variance;
 <code>"minmax"</code> maps to <code>[0, 1]</code>;
@@ -183,9 +183,9 @@ metadata columns:</p>
 <span><span class="co">#&gt; [3,] -0.67 -0.49 -0.37 -0.58 -0.38  0.72 -0.30  3.14</span></span>
 <span><span class="co">#&gt; [4,] -0.59 -0.47 -0.39  2.10 -0.30 -0.61 -0.28  0.62</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="phenotyping">3. Phenotyping<a class="anchor" aria-label="anchor" href="#phenotyping"></a>
-</h3>
+<div class="section level2">
+<h2 id="phenotyping">3. Phenotyping<a class="anchor" aria-label="anchor" href="#phenotyping"></a>
+</h2>
 <p>Assign phenotypes by thresholding normalised markers. Because the
 data are z-scored, a threshold of <code>1</code> means “at least one
 standard deviation above the marker’s mean”.
@@ -213,9 +213,9 @@ sample:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/CompositionPlot.html">CompositionPlot</a></span><span class="op">(</span><span class="va">obj</span>, group_by <span class="op">=</span> <span class="st">"sample_id"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="phenoscapR_files/figure-html/composition-1.png" class="r-plt" alt="" width="672"></p>
 </div>
-<div class="section level3">
-<h3 id="the-phenotype-map">4. The phenotype map<a class="anchor" aria-label="anchor" href="#the-phenotype-map"></a>
-</h3>
+<div class="section level2">
+<h2 id="the-phenotype-map">4. The phenotype map<a class="anchor" aria-label="anchor" href="#the-phenotype-map"></a>
+</h2>
 <p><code><a href="../reference/CellMap.html">CellMap()</a></code> is the workhorse plot — every cell drawn at
 its tissue position, coloured by phenotype. Spatial structure (the
 follicle, the T-cell zone) is immediately visible.</p>
@@ -229,12 +229,12 @@ follicle, the T-cell zone) is immediately visible.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/FeaturePlot.html">FeaturePlot</a></span><span class="op">(</span><span class="va">tonsil_a</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD20"</span>, <span class="st">"CD3"</span>, <span class="st">"PanCK"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="phenoscapR_files/figure-html/featureplot-1.png" class="r-plt" alt="" width="672"></p>
 </div>
+<div class="section level2">
+<h2 id="spatial-analysis">5. Spatial analysis<a class="anchor" aria-label="anchor" href="#spatial-analysis"></a>
+</h2>
 <div class="section level3">
-<h3 id="spatial-analysis">5. Spatial analysis<a class="anchor" aria-label="anchor" href="#spatial-analysis"></a>
+<h3 id="local-density-and-nearest-neighbours">Local density and nearest neighbours<a class="anchor" aria-label="anchor" href="#local-density-and-nearest-neighbours"></a>
 </h3>
-<div class="section level4">
-<h4 id="local-density-and-nearest-neighbours">Local density and nearest neighbours<a class="anchor" aria-label="anchor" href="#local-density-and-nearest-neighbours"></a>
-</h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FindNeighbours.html">FindNeighbours</a></span><span class="op">(</span><span class="va">obj</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/Meta.html">Meta</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">$</span><span class="va">nn_distance</span><span class="op">)</span></span>
@@ -244,9 +244,9 @@ follicle, the T-cell zone) is immediately visible.</p>
 <span><span class="fu"><a href="../reference/DensityPlot.html">DensityPlot</a></span><span class="op">(</span><span class="va">tonsil_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CellDensity.html">CellDensity</a></span><span class="op">(</span><span class="va">tonsil_a</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="phenoscapR_files/figure-html/nn-density-1.png" class="r-plt" alt="" width="672"></p>
 </div>
-<div class="section level4">
-<h4 id="phenotype-interactions">Phenotype interactions<a class="anchor" aria-label="anchor" href="#phenotype-interactions"></a>
-</h4>
+<div class="section level3">
+<h3 id="phenotype-interactions">Phenotype interactions<a class="anchor" aria-label="anchor" href="#phenotype-interactions"></a>
+</h3>
 <p><code><a href="../reference/InteractionMatrix.html">InteractionMatrix()</a></code> counts, per sample, how often each
 phenotype pair sits within <code>radius</code> of one another versus
 what random mixing would predict. The score is
@@ -269,17 +269,17 @@ across samples.</p>
 <span><span class="fu"><a href="../reference/InteractionPlot.html">InteractionPlot</a></span><span class="op">(</span><span class="va">im</span><span class="op">)</span></span></code></pre></div>
 <p><img src="phenoscapR_files/figure-html/interactions-1.png" class="r-plt" alt="" width="672"></p>
 </div>
-<div class="section level4">
-<h4 id="marker-signatures-per-phenotype">Marker signatures per phenotype<a class="anchor" aria-label="anchor" href="#marker-signatures-per-phenotype"></a>
-</h4>
+<div class="section level3">
+<h3 id="marker-signatures-per-phenotype">Marker signatures per phenotype<a class="anchor" aria-label="anchor" href="#marker-signatures-per-phenotype"></a>
+</h3>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/MarkerHeatmap.html">MarkerHeatmap</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
 <p><img src="phenoscapR_files/figure-html/heatmap-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="where-to-next">Where to next<a class="anchor" aria-label="anchor" href="#where-to-next"></a>
-</h3>
+<div class="section level2">
+<h2 id="where-to-next">Where to next<a class="anchor" aria-label="anchor" href="#where-to-next"></a>
+</h2>
 <p>phenoscapR has much more spatial machinery — Ripley’s K, Moran’s I,
 neighbourhood-enrichment permutation tests, the pair correlation
 function, Delaunay contact graphs — and a full gallery of plots and
@@ -311,23 +311,6 @@ Gallery</a></td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section level2">
-<h2 id="use-of-llm-tools">Use of LLM tools<a class="anchor" aria-label="anchor" href="#use-of-llm-tools"></a>
-</h2>
-<p>Portions of this package were prepared with assistance from large
-language model tooling for narrowly defined, non-authorial tasks:
-copyediting, prose smoothing, Markdown/LaTeX formatting, scaffolding of
-boilerplate files (CI configs, build scripts), code refactoring. The
-tools used were <a href="https://kisski.gwdg.de/leistungen/2-02-llm-service/" class="external-link">Chat AI</a>,
-the LLM service of KISSKI (GWDG), and a self-hosted <strong>Mistral
-Small (24B, Apache-2.0)</strong> run locally via <a href="https://ollama.com/" class="external-link">Ollama</a> and the <code>ollamar</code> R
-package — local inference only, with no data sent to third parties for
-the self-hosted model.</p>
-<p>All scientific claims, methodological choices, analyses,
-interpretations, and conclusions are the author’s own. No LLM-generated
-text was incorporated without review and revision, and every reference
-was verified against its DOI, arXiv ID, or ISBN.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

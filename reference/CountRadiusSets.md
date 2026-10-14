@@ -127,8 +127,8 @@ raise errors. Extra node columns are ignored; a tile column does not
 partition a frame unless selected as a key.
 
 Searches use
-[`dbscan::frNN()`](https://rdrr.io/pkg/dbscan/man/frNN.html) with
-explicit query mode, `search = "kdtree"`, `approx = 0` and
+[`dbscan::frNN()`](http://michael.hahsler.net/dbscan/reference/frNN.md)
+with explicit query mode, `search = "kdtree"`, `approx = 0` and
 `sort = FALSE`, without a fallback. Returned distances are filtered
 inclusively using `distance <= radius`. Self exclusion compares IDs
 within the complete frame key. Distinct coincident IDs remain neighbors.
@@ -190,7 +190,7 @@ CountRadiusSets(nodes, frames, "sample", "frame", "id", "x", "y",
 #> [1] "dbscan::frNN"
 #> 
 #> $backend$version
-#> [1] "1.2.6"
+#> [1] "1.2.7"
 #> 
 #> $backend$search
 #> [1] "kdtree"
@@ -205,14 +205,14 @@ CountRadiusSets(nodes, frames, "sample", "frame", "id", "x", "y",
 #> [1] "um"
 #> 
 #> $backend$description_sha256
-#> [1] "e82cd4f76e661a69a460385e83e955a0d85d5059ba39dc4e443d317ed68cf823"
+#> [1] "78723651d89cd30ebd0d2998b3624b47dfb17c31b1ce75ff76e2ae12a63e63a6"
 #> 
 #> $backend$function_sha256
-#> [1] "2909346448cf1aa01da5e993a92fabb08de8ec3550a449a35bfdd20c27cc1b93"
+#> [1] "0a22705eae7c642abb21d9bf95a1d1e18767d73d86f058014a4c9a6495547b94"
 #> 
 #> $backend$native_sha256
 #>                                                          dbscan.so 
-#> "fbb349bbd7a9b7bcf8c3d000956da83d78f7303506d53c3a303ce5088d971168" 
+#> "edec615302d946636d88c7c4151e91a496374f8b1ab18c5d7c91efc1429ffa5e" 
 #> 
 #> $backend$authority
 #> [1] "CURRENT_INSTALLED_BACKEND_NOT_HISTORICAL_AUTHENTICATION"
