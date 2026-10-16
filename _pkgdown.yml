@@ -132,6 +132,7 @@ reference:
       - AssignFixedGrid
       - SummarizeFixedGrid
       - SummarizeGroupedValues
+      - AssemblePairedSummaries
       - CorrelateGroupedRanks
       - ContrastGroupedRanks
       - CountDisjointEdges
