@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Assemble explicitly registered paired summaries with missing-side, count and
+  value availability retained separately from descriptive contrasts.
+
 - Normalize backend DLL paths consistently on Windows while preserving strict package-library containment and native provenance checks.
 
 * Build complete explicitly ordered Delaunay geometries with caller-pinned native
