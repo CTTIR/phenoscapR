@@ -123,6 +123,8 @@ and expression-based clustering.
   : Summarize Cell Annotations Within Fixed Grids
 - [`SummarizeGroupedValues()`](https://cttir.github.io/phenoscapR/reference/SummarizeGroupedValues.md)
   : Summarize Continuous Observations in Explicit Groups
+- [`AssemblePairedSummaries()`](https://cttir.github.io/phenoscapR/reference/AssemblePairedSummaries.md)
+  : Assemble Registered Paired Summaries
 - [`CorrelateGroupedRanks()`](https://cttir.github.io/phenoscapR/reference/CorrelateGroupedRanks.md)
   : Correlate Paired Ranks Within Explicit Groups
 - [`ContrastGroupedRanks()`](https://cttir.github.io/phenoscapR/reference/ContrastGroupedRanks.md)
