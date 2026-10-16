@@ -123,6 +123,8 @@ and expression-based clustering.
   : Summarize Cell Annotations Within Fixed Grids
 - [`SummarizeGroupedCountFractions()`](https://cttir.github.io/phenoscapR/reference/SummarizeGroupedCountFractions.md)
   : Summarize Grouped Subset Counts as Fractions
+- [`CompleteRegisteredValues()`](https://cttir.github.io/phenoscapR/reference/CompleteRegisteredValues.md)
+  : Complete Numeric Observations Against an Explicit Registry
 - [`SummarizeGroupedValues()`](https://cttir.github.io/phenoscapR/reference/SummarizeGroupedValues.md)
   : Summarize Continuous Observations in Explicit Groups
 - [`AssemblePairedSummaries()`](https://cttir.github.io/phenoscapR/reference/AssemblePairedSummaries.md)
