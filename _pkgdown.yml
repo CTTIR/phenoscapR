@@ -131,6 +131,7 @@ reference:
       - QuadratAnalysis
       - AssignFixedGrid
       - SummarizeFixedGrid
+      - SummarizeGroupedCountFractions
       - SummarizeGroupedValues
       - AssemblePairedSummaries
       - CorrelateGroupedRanks

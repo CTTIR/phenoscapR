@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Summarize grouped subset counts with exact bounded count totals, propagated
+  missingness and explicit zero-denominator status before fraction division.
+
 * Assemble explicitly registered paired summaries with missing-side, count and
   value availability retained separately from descriptive contrasts.
 
