@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Complete scalar observations against an explicit registry and absent-value
+  policy while preserving observed missingness, metadata and row provenance.
+
 * Summarize grouped subset counts with exact bounded count totals, propagated
   missingness and explicit zero-denominator status before fraction division.
 
