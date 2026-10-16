@@ -133,6 +133,7 @@ reference:
       - SummarizeFixedGrid
       - SummarizeGroupedCountFractions
       - CompleteRegisteredValues
+      - ApplyGroupedThresholds
       - SummarizeGroupedValues
       - AssemblePairedSummaries
       - CorrelateGroupedRanks

@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Apply supplied group thresholds with strict comparisons, validated reference
+  coverage and separate eligibility and missing-value provenance.
+
 * Complete scalar observations against an explicit registry and absent-value
   policy while preserving observed missingness, metadata and row provenance.
 
