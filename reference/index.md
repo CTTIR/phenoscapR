@@ -125,6 +125,8 @@ and expression-based clustering.
   : Summarize Grouped Subset Counts as Fractions
 - [`CompleteRegisteredValues()`](https://cttir.github.io/phenoscapR/reference/CompleteRegisteredValues.md)
   : Complete Numeric Observations Against an Explicit Registry
+- [`ProjectSpatialTable()`](https://cttir.github.io/phenoscapR/reference/ProjectSpatialTable.md)
+  : Project Spatial Tables Without Changing Column Metadata
 - [`ApplyGroupedThresholds()`](https://cttir.github.io/phenoscapR/reference/ApplyGroupedThresholds.md)
   : Apply Supplied Group Thresholds to Observations
 - [`SummarizeGroupedValues()`](https://cttir.github.io/phenoscapR/reference/SummarizeGroupedValues.md)
