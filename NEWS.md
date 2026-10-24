@@ -1,5 +1,8 @@
 # phenoscapR development
 
+* Project explicit spatial-table rows and columns while retaining column
+  metadata, repeated-row order and typed empty results without changing inputs.
+
 * Apply supplied group thresholds with strict comparisons, validated reference
   coverage and separate eligibility and missing-value provenance.
 
