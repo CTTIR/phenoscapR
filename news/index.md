@@ -1,6 +1,119 @@
 # Changelog
 
-## phenoscapR 2.1.0
+## phenoscapR 0.1.1
+
+- Prepare a release with explicit patient-level inference, grouped
+  summaries, spatial-table projection, and the existing single-cell
+  spatial analysis APIs.
+- Document GitHub access for the optional cellspecR and songR packages
+  and correct the SONG installation hint. Conditional dependency checks
+  remain in place; no analytical algorithms or public function
+  signatures change.
+- Align package and citation metadata, retain release notes in source
+  archives, and distinguish current release information from earlier
+  development labels.
+
+### Historical development notes
+
+The entries below retain the earlier development record. Their original
+version labels are historical project labels, not a sequence of CRAN
+releases. The package version for this release is 0.1.1.
+
+#### Original development label: phenoscapR development
+
+- Project explicit spatial-table rows and columns while retaining column
+  metadata, repeated-row order and typed empty results without changing
+  inputs.
+
+- Apply supplied group thresholds with strict comparisons, validated
+  reference coverage and separate eligibility and missing-value
+  provenance.
+
+- Complete scalar observations against an explicit registry and
+  absent-value policy while preserving observed missingness, metadata
+  and row provenance.
+
+- Summarize grouped subset counts with exact bounded count totals,
+  propagated missingness and explicit zero-denominator status before
+  fraction division.
+
+- Assemble explicitly registered paired summaries with missing-side,
+  count and value availability retained separately from descriptive
+  contrasts.
+
+- Normalize backend DLL paths consistently on Windows while preserving
+  strict package-library containment and native provenance checks.
+
+- Build complete explicitly ordered Delaunay geometries with
+  caller-pinned native contracts, full-graph validation before
+  eligibility induction, and pure integer workspace preflight.
+  Unsupported backends or geometry fail without fallback.
+
+- [`LeaveOnePatientOut()`](https://cttir.github.io/phenoscapR/reference/LeaveOnePatientOut.md)
+  evaluates explicitly registered patient omissions using the existing
+  exhaustive exact test, retaining incomplete-full and empty-arm
+  outcomes, availability counts and effect-direction diagnostics.
+
+- Contrast explicit groups within finite-metric overlap strata while
+  retaining policy, evaluable and matched denominators, per-observation
+  weights, stable effective control counts and separately requested
+  quality criteria.
+
+- Count supplied undirected edges between explicit disjoint node sets
+  using complete group/frame registries, stable IDs, isolated-node
+  denominators and separate zero-denominator statuses without claiming
+  geometry reconstruction.
+
+- Explicit grouped rank correlations retain paired availability counts,
+  ties and constant-value statuses without manufacturing absent groups.
+
+- Grouped summaries expose the available weight total as an explicit
+  denominator, retaining unknown and observed-zero weight totals
+  separately.
+
+- Add explicit grouped continuous summaries with separate value/weight
+  availability and caller-declared missingness and minimum-count
+  policies.
+
+- Add keyed fixed-grid annotation summaries with explicit unknown
+  category and indicator counts, preserving sample boundaries and
+  incomplete fractions.
+
+- Add explicit physical fixed-grid membership with sample/frame
+  validation, deterministic keys, and fail-closed numerical containment
+  checks.
+
+- [`ExactPatientTests()`](https://cttir.github.io/phenoscapR/reference/ExactPatientTests.md)
+  enumerates declared independent-patient contrasts with
+  complete-patient missingness and explicit allocation resolution.
+  [`AdjustPatientFamilies()`](https://cttir.github.io/phenoscapR/reference/AdjustPatientFamilies.md)
+  retains unavailable hypotheses and reports both finite-only and
+  declared-family BH/BY adjustments. Existing differential abundance
+  methods are unchanged.
+
+- [`FromCellspec()`](https://cttir.github.io/phenoscapR/reference/FromCellspec.md)
+  preserves canonical feature dictionaries, missing features, cell keys,
+  physical coordinates and original-import provenance. Independent
+  images become separate spatial samples even when biological sample IDs
+  match.
+
+- Delaunay networks now triangulate each sample independently and
+  preserve full-object row indices. Missing sample IDs and groups with
+  fewer than three cells fail explicitly instead of allowing
+  cross-sample edges.
+
+- Cell subsetting clears cached spatial results and neighbour
+  distance/density columns, preventing stale edges and summaries after
+  filtering or reordering. Cluster, neighbourhood and domain labels
+  remain frozen annotations from the original fit for plotting;
+  recompute them to describe the new neighbourhoods. Marker-only
+  subsetting retains spatial results.
+
+- Differential abundance rejects missing/empty conditions or sample IDs
+  and conflicting conditions within a sample before aggregating
+  proportions.
+
+#### Original development label: phenoscapR 2.1.0
 
 - Added an interactive **Shiny app**, styled 1:1 to the Hugo Coder theme
   via `bslib` / Bootstrap 5 and a `_brand.yml`, launched with
@@ -18,7 +131,7 @@
 - Hanno Witte is credited as co-author throughout (README, citation,
   site).
 
-## phenoscapR 2.0.0
+#### Original development label: phenoscapR 2.0.0
 
 Major feature release: higher-order spatial structure, unsupervised
 phenotyping, differential testing, platform readers, and ecosystem
@@ -57,7 +170,7 @@ interop.
   [`as_SpatialCellData()`](https://cttir.github.io/phenoscapR/reference/as_SpatialCellData.md)
   convert to and from Seurat / SpatialExperiment.
 
-## phenoscapR 1.2.0
+#### Original development label: phenoscapR 1.2.0
 
 Deeper, more rigorous statistics.
 
@@ -83,7 +196,7 @@ Deeper, more rigorous statistics.
 - The translation sweep and Moran weighting are exercised against direct
   references in the test suite.
 
-## phenoscapR 1.1.0
+#### Original development label: phenoscapR 1.1.0
 
 API coherence.
 
@@ -103,7 +216,7 @@ API coherence.
   a `lint` GitHub Actions workflow running lintr and goodpractice.
 - Hanno Witte added as a package author.
 
-## phenoscapR 1.0.1
+#### Original development label: phenoscapR 1.0.1
 
 Robustness and scalability hardening.
 
@@ -124,13 +237,13 @@ Robustness and scalability hardening.
   (renaming them would mask a labelling mistake).
 - Added large-n and backend-equivalence regression tests.
 
-## phenoscapR 1.0.0
+#### Original development label: phenoscapR 1.0.0
 
 First stable release. This version consolidates the package onto a
 single compute engine, hardens the spatial statistics, and ships a
 reproducible example dataset and comprehensive vignettes.
 
-### New features
+##### New features
 
 - Bundled synthetic example dataset `phenoscapR_example` (two samples,
   eight markers, planted spatial niches) used across all examples,
@@ -153,7 +266,7 @@ reproducible example dataset and comprehensive vignettes.
   function, and a “choosing a spatial statistic” guide in the
   spatial-analysis vignette.
 
-### Correctness and robustness
+##### Correctness and robustness
 
 - Spatial statistics are now **sample-aware**:
   [`interaction_matrix()`](https://cttir.github.io/phenoscapR/reference/interaction_matrix.md)
@@ -176,7 +289,7 @@ reproducible example dataset and comprehensive vignettes.
   back to the default instead of erroring; advertised palettes are
   limited to those the backend actually provides.
 
-### Performance
+##### Performance
 
 - All neighbour queries route through a shared kd-tree search engine
   (`RANN`, Suggests) with an exact, memory-bounded base-R fallback,
@@ -185,14 +298,14 @@ reproducible example dataset and comprehensive vignettes.
   graph is computed once. Large sections (10^(4–10)5 cells) that
   previously needed multi-gigabyte distance matrices now run in seconds.
 
-### Infrastructure
+##### Infrastructure
 
 - Consolidated the snake_case and `SpatialCellData` APIs onto one
   internal compute core so both faces stay in sync.
 - Added `inst/CITATION`, expanded the test suite, and raised coverage to
   ~83%.
 
-## phenoscapR 0.1.0
+#### Original development label: phenoscapR 0.1.0
 
 - Fixed selected key names such as `collapse`, `sep` and `...` in
   grouped summaries and rank correlations, retaining duplicate-ID

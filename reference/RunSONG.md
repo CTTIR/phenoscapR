@@ -59,8 +59,11 @@ The object with a `"song"` entry in its `reductions` slot.
 
 ## Details
 
-songR is available from the CTTIR R-universe:
-`install.packages("songR", repos = "https://cttir.r-universe.dev")`.
+The optional songR package is available from
+<https://github.com/CTTIR/songR>. After installing remotes, use
+`remotes::install_github("CTTIR/songR")`. This function reports a
+missing dependency without installing software or changing the input
+object.
 
 ## Examples
 

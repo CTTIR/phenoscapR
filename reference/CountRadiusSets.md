@@ -205,14 +205,14 @@ CountRadiusSets(nodes, frames, "sample", "frame", "id", "x", "y",
 #> [1] "um"
 #> 
 #> $backend$description_sha256
-#> [1] "78723651d89cd30ebd0d2998b3624b47dfb17c31b1ce75ff76e2ae12a63e63a6"
+#> [1] "bdbfb6af0d1e05ba8c4de649e3aa0089d199f26672621187e7c4ea9b3d9f25a3"
 #> 
 #> $backend$function_sha256
 #> [1] "0a22705eae7c642abb21d9bf95a1d1e18767d73d86f058014a4c9a6495547b94"
 #> 
 #> $backend$native_sha256
 #>                                                          dbscan.so 
-#> "edec615302d946636d88c7c4151e91a496374f8b1ab18c5d7c91efc1429ffa5e" 
+#> "74f880d06549071ce25b244a1dcea31217828f062778d665ba3072e4a6d484b3" 
 #> 
 #> $backend$authority
 #> [1] "CURRENT_INSTALLED_BACKEND_NOT_HISTORICAL_AUTHENTICATION"
