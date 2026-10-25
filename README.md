@@ -1,4 +1,4 @@
-# phenoscapR <img src="man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo"/>
+# phenoscapR <img src="man/figures/logo.png" align="right" width="120" height="139" alt="phenoscapR logo" />
 
 
 <!-- badges: start -->
@@ -206,3 +206,8 @@ citation("phenoscapR")
 ## License
 
 MIT © R. Heller and Hanno Witte
+
+## Branding
+
+Editable R sources and regeneration instructions are in
+[tools/branding](https://github.com/CTTIR/phenoscapR/tree/main/tools/branding).
