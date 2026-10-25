@@ -40,8 +40,10 @@ noise-robust, and preserves global structure. By default the embedding is
 computed on the top principal components (see \code{use_pca}).
 }
 \details{
-\pkg{songR} is available from the CTTIR R-universe:
-\code{install.packages("songR", repos = "https://cttir.r-universe.dev")}.
+The optional \pkg{songR} package is available from
+\url{https://github.com/CTTIR/songR}. After installing \pkg{remotes}, use
+\code{remotes::install_github("CTTIR/songR")}. This function reports a
+missing dependency without installing software or changing the input object.
 }
 \examples{
 \donttest{

@@ -1,6 +1,5 @@
 # phenoscapR <img src="man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo"/>
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21889952.svg)](https://doi.org/10.5281/zenodo.21889952)
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml)
@@ -49,6 +48,13 @@ statistics, and publication-ready visualisation — using an efficient
   **Quadrat Analysis**, **Pair Correlation Function**, **Cross Nearest-Neighbour
   Distance**, **Delaunay Networks**, **Expression Clustering**
 
+### Patient-level Inference and Registered Summaries
+- Exact label-allocation tests for declared patient contrasts (`ExactPatientTests()`)
+- Declared-family BH/BY adjustment with unavailable hypotheses retained
+  (`AdjustPatientFamilies()`)
+- Explicit registries, denominator provenance, grouped summaries, and spatial
+  table projection without inferring patient identity or biological labels
+
 ### Visualisation
 - Tissue cell maps, feature plots, density maps, spatial network plots
 - Distribution plots: violin, box, ridge, histogram, dot plot
@@ -67,6 +73,18 @@ pak::pak("cttir/phenoscapR")
 # install.packages("remotes")
 remotes::install_github("cttir/phenoscapR")
 ```
+
+Optional canonical cell-table imports and SONG embeddings require packages
+available from their public GitHub repositories:
+
+```r
+# install.packages("remotes")
+remotes::install_github("CTTIR/cellspecR")  # For FromCellspec()
+remotes::install_github("CTTIR/songR")      # For RunSONG()
+```
+
+These packages are optional. Calling the corresponding function without its
+dependency reports an error; phenoscapR does not install packages automatically.
 
 ## Quick Start
 
@@ -182,27 +200,9 @@ citation("phenoscapR")
 ```
 
 > Heller, R. & Witte, H. (2026). phenoscapR: Read, Analyse, and Visualise
-> Single-Cell Spatial Biology Data.
+> Single-Cell Spatial Biology Data. R package version 0.1.1.
 > <https://cttir.github.io/phenoscapR/>
 
 ## License
 
 MIT © R. Heller and Hanno Witte
-
-## Use of LLM tools
-
-Where applicable, LLM tools were used for narrowly defined, non-authorial tasks:
-copyediting, prose refinement, Markdown/LaTeX formatting, boilerplate scaffolding
-(such as CI configurations and build scripts), and code refactoring. Tools included
-[Chat AI](https://kisski.gwdg.de/leistungen/2-02-llm-service/), the KISSKI
-(GWDG) service, and self-hosted **Mistral Small (24B, Apache-2.0)** served through
-a local **vLLM architecture** on an Ubuntu Linux workstation with Intel
-processors and NVIDIA GPUs. The self-hosted model ran locally, with no data sent
-to third parties.
-
-All scientific claims, methodological choices, analyses, interpretations and
-conclusions remain the authors' own. Where applicable, LLM-generated material
-must be reviewed and revised before inclusion, and references must be verified
-against their DOI, arXiv ID or ISBN.
-
-Local software setup: vLLM with Python/PyTorch, plus R and RStudio.

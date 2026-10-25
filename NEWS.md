@@ -1,4 +1,20 @@
-# phenoscapR development
+# phenoscapR 0.1.1
+
+* Prepare a release with explicit patient-level inference, grouped summaries,
+  spatial-table projection, and the existing single-cell spatial analysis APIs.
+* Document GitHub access for the optional cellspecR and songR packages and
+  correct the SONG installation hint. Conditional dependency checks remain in
+  place; no analytical algorithms or public function signatures change.
+* Align package and citation metadata, retain release notes in source archives,
+  and distinguish current release information from earlier development labels.
+
+## Historical development notes
+
+The entries below retain the earlier development record. Their original version
+labels are historical project labels, not a sequence of CRAN releases. The
+package version for this release is 0.1.1.
+
+### Original development label: phenoscapR development
 
 * Project explicit spatial-table rows and columns while retaining column
   metadata, repeated-row order and typed empty results without changing inputs.
@@ -69,7 +85,7 @@
 * Differential abundance rejects missing/empty conditions or sample IDs and
   conflicting conditions within a sample before aggregating proportions.
 
-# phenoscapR 2.1.0
+### Original development label: phenoscapR 2.1.0
 
 * Added an interactive **Shiny app**, styled 1:1 to the Hugo Coder theme via
   `bslib` / Bootstrap 5 and a `_brand.yml`, launched with `run_app()`. It covers
@@ -81,7 +97,7 @@
   exported functions, with a `shinytest2` smoke test (light and dark).
 * Hanno Witte is credited as co-author throughout (README, citation, site).
 
-# phenoscapR 2.0.0
+### Original development label: phenoscapR 2.0.0
 
 Major feature release: higher-order spatial structure, unsupervised
 phenotyping, differential testing, platform readers, and ecosystem interop.
@@ -102,7 +118,7 @@ phenotyping, differential testing, platform readers, and ecosystem interop.
 * **Ecosystem interop**: `as_Seurat()`, `as_SpatialExperiment()`, and
   `as_SpatialCellData()` convert to and from Seurat / SpatialExperiment.
 
-# phenoscapR 1.2.0
+### Original development label: phenoscapR 1.2.0
 
 Deeper, more rigorous statistics.
 
@@ -120,7 +136,7 @@ Deeper, more rigorous statistics.
 * The translation sweep and Moran weighting are exercised against direct
   references in the test suite.
 
-# phenoscapR 1.1.0
+### Original development label: phenoscapR 1.1.0
 
 API coherence.
 
@@ -137,7 +153,7 @@ API coherence.
   `lint` GitHub Actions workflow running lintr and goodpractice.
 * Hanno Witte added as a package author.
 
-# phenoscapR 1.0.1
+### Original development label: phenoscapR 1.0.1
 
 Robustness and scalability hardening.
 
@@ -153,13 +169,13 @@ Robustness and scalability hardening.
   error (renaming them would mask a labelling mistake).
 * Added large-n and backend-equivalence regression tests.
 
-# phenoscapR 1.0.0
+### Original development label: phenoscapR 1.0.0
 
 First stable release. This version consolidates the package onto a single
 compute engine, hardens the spatial statistics, and ships a reproducible
 example dataset and comprehensive vignettes.
 
-## New features
+#### New features
 
 * Bundled synthetic example dataset `phenoscapR_example` (two samples, eight
   markers, planted spatial niches) used across all examples, tests, and
@@ -170,7 +186,7 @@ example dataset and comprehensive vignettes.
 * New Visualisation Gallery vignette demonstrating every plotting function, and
   a "choosing a spatial statistic" guide in the spatial-analysis vignette.
 
-## Correctness and robustness
+#### Correctness and robustness
 
 * Spatial statistics are now **sample-aware**: `interaction_matrix()` and
   friends never count neighbours across samples, and the single-window
@@ -186,7 +202,7 @@ example dataset and comprehensive vignettes.
   the default instead of erroring; advertised palettes are limited to those the
   backend actually provides.
 
-## Performance
+#### Performance
 
 * All neighbour queries route through a shared kd-tree search engine (`RANN`,
   Suggests) with an exact, memory-bounded base-R fallback, replacing the
@@ -195,13 +211,13 @@ example dataset and comprehensive vignettes.
   sections (10^4–10^5 cells) that previously needed multi-gigabyte distance
   matrices now run in seconds.
 
-## Infrastructure
+#### Infrastructure
 
 * Consolidated the snake_case and `SpatialCellData` APIs onto one internal
   compute core so both faces stay in sync.
 * Added `inst/CITATION`, expanded the test suite, and raised coverage to ~83%.
 
-# phenoscapR 0.1.0
+### Original development label: phenoscapR 0.1.0
 
 * Fixed selected key names such as `collapse`, `sep` and `...` in grouped
   summaries and rank correlations, retaining duplicate-ID validation. Shared

@@ -38,6 +38,10 @@ dictionary, image/channel tables, input provenance, adjacency and raw feature
 support. Its scope remains original_import after subsetting: adjacency and
 support in this snapshot are not current subset results or active graphs.
 No reviewed tissue window or observation area is inferred from cell centroids.
+
+The optional \pkg{cellspecR} package is available from
+\url{https://github.com/CTTIR/cellspecR}. After installing \pkg{remotes}, use
+\code{remotes::install_github("CTTIR/cellspecR")}.
 }
 \examples{
 if (requireNamespace("cellspecR", quietly = TRUE)) {

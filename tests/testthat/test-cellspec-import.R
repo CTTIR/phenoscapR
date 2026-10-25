@@ -90,3 +90,15 @@ test_that("source provenance and patient mapping cannot be overwritten silently"
   expect_equal(NCells(y), 0L)
   expect_identical(y@counts, x$measurements)
 })
+
+
+test_that("canonical import refuses a missing optional dependency before input access", {
+  original <- FromCellspec
+  context <- new.env(parent = environment(original))
+  context$requireNamespace <- function(package, ...) !identical(package, "cellspecR")
+  import <- original
+  environment(import) <- context
+  expect_error(import(NULL), "FromCellspec requires the cellspecR package.",
+               fixed = TRUE)
+  expect_identical(FromCellspec, original)
+})

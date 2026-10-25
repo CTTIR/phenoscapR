@@ -78,13 +78,23 @@ test_that("non-PCA embedding input uses the marker matrix directly", {
   expect_equal(dim(Embeddings(emb_obj, "umap")), c(60L, 2L))
 })
 
-test_that(".require_pkg gives the r-universe hint for songR", {
-  local_mocked_bindings(
-    requireNamespace = function(package, ...) !identical(package, "songR"),
-    .package = "base"
-  )
-  err <- expect_error(RunSONG(make_obj()), "requires the 'songR' package")
-  expect_match(conditionMessage(err), "cttir.r-universe.dev")
+test_that("RunSONG reports its optional GitHub dependency without changing input", {
+  original <- get(".require_pkg", envir = asNamespace("phenoscapR"))
+  context <- new.env(parent = environment(original))
+  context$requireNamespace <- function(package, ...) !identical(package, "songR")
+  helper <- original
+  environment(helper) <- context
+  context$.require_pkg <- helper
+  run <- RunSONG
+  environment(run) <- context
+  object <- make_obj()
+  before <- serialize(object, NULL)
+  err <- expect_error(run(object), "requires the 'songR' package")
+  expect_match(conditionMessage(err), 'remotes::install_github("CTTIR/songR")',
+               fixed = TRUE)
+  expect_identical(serialize(object, NULL), before)
+  expect_identical(get(".require_pkg", envir = asNamespace("phenoscapR")),
+                   original)
 })
 
 test_that("RunSONG stores a 2D embedding with a mocked backend", {

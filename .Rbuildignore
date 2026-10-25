@@ -5,7 +5,6 @@
 ^\.github$
 ^\.git$
 ^\.gitignore$
-^NEWS\.md$
 ^_test$
 ^phenoscapR-pdf\.pdf$
 ^_pkgdown\.ya?ml$

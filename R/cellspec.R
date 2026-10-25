@@ -19,6 +19,10 @@
 #' support in this snapshot are not current subset results or active graphs.
 #' No reviewed tissue window or observation area is inferred from cell centroids.
 #'
+#' The optional \pkg{cellspecR} package is available from
+#' \url{https://github.com/CTTIR/cellspecR}. After installing \pkg{remotes}, use
+#' \code{remotes::install_github("CTTIR/cellspecR")}.
+#'
 #' @param x A structurally valid cellspec object. Requires cellspecR.
 #' @param features Unique ordered feature identifiers, or NULL for all features.
 #' @param project Character scalar naming the project.

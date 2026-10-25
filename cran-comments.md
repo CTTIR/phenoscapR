@@ -1,39 +1,38 @@
-## R CMD check results
+## Local check result
 
-0 errors | 0 warnings | 2 notes
+phenoscapR 0.1.1 was checked on 25 October 2026 using R 4.6.1 on Ubuntu
+26.04 LTS (x86_64-pc-linux-gnu).
 
-## Test environments
+Source archive SHA-256:
+`6cb6b0753b4132a808cc016968da0dba42fb5df6ad63d21318e916c25597f185`
 
-* Windows 11 x64, R 4.5.2 (local)
-* GitHub Actions: ubuntu-latest (R devel, release, oldrel-1), macOS-latest (release), windows-latest (release)
-* win-builder (R-devel)
+`R CMD check --as-cran` completed with **0 errors, 0 warnings and 2 NOTEs**.
+Examples, tests, vignette rebuilding, and the PDF and HTML manuals passed.
+The check used `_R_CHECK_FORCE_SUGGESTS_=false`,
+`PHENOSCAPR_TEST_SONG=false` and `R_TEXI2DVICMD=emulation`.
 
-## Notes
+## Incoming feasibility NOTE
 
-* NOTE: "New submission" — this is the first submission of this package to CRAN.
+This is a new submission. The optional Suggested packages cellspecR and songR
+are available from https://github.com/CTTIR/cellspecR and
+https://github.com/CTTIR/songR, as documented in Description. Their use is
+conditional; the package does not install or download them automatically.
 
-* NOTE: "Found the following (possibly) invalid URLs" — the GitHub repository
-  (https://github.com/cttir/phenoscapR) and pkgdown site
-  (https://cttir.github.io/phenoscapR/) may return 404 during local checking
-  if the pkgdown site has not yet been published. These URLs resolve correctly
-  once the site is built and deployed via GitHub Actions.
+songR was unavailable during the package check. The live SONG numerical test
+was also explicitly disabled; this check does not qualify that optional backend.
+A separate check of the same installed archive made both cellspecR and songR
+unavailable and verified informative FromCellspec()/RunSONG() refusals, along
+with patient-level exact inference, declared-family adjustment and PCA smoke
+cases. It preserved the supplied inputs and used no namespace mocking.
 
-* NOTE: "Suggests or Enhances not in mainstream repositories: songR" — songR is
-  an optional add-on (used only by the optional RunSONG() embedding) and is
-  distributed via the maintainer's R-universe, declared in
-  Additional_repositories. All functionality that depends on it is guarded with
-  requireNamespace() and skipped gracefully when it is absent, so the package
-  installs, checks, and runs fully without it.
+## Foreign-function NOTE
 
-## Optional dependencies
+Static checking cannot evaluate `target[[.NAME]]` and `backend$master` outside
+their runtime contexts in two `.Fortran` calls. Both expressions hold registered
+`NativeSymbolInfo` objects selected by the exact Delaunay adapter. Before dispatch,
+the adapter checks routine names, argument counts, DLL identity and library
+containment, and requires dynamic lookup to be disabled. It uses local function
+copies without modifying the installed dependency namespace.
 
-Every Suggested package is optional and accessed only through
-requireNamespace() guards, so the package installs and checks without any of
-them. This includes the Bioconductor packages (SpatialExperiment,
-SummarizedExperiment, S4Vectors), used only by the interop converters, and the
-Shiny stack (shiny, bslib, sass, thematic, reactable, bsicons, brand.yml), used
-only by the optional run_app() interface.
-
-## Downstream dependencies
-
-This is a new package with no downstream dependencies.
+The supported backend profile is deldir 2.0-4; unsupported profiles are refused.
+The registration diagnostic is retained and explained rather than suppressed.
