@@ -1,4 +1,4 @@
-# phenoscapR
+# phenoscapR ![phenoscapR logo](reference/figures/logo-with-name.png)
 
 **phenoscapR** provides a complete toolkit for reading, processing,
 analysing, and visualising single-cell spatial biology data from
