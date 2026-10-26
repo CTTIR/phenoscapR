@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 has_deldir <- requireNamespace("deldir", quietly = TRUE)
 ```
 
-<img src="../man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"/>
+<img src="../man/figures/logo-with-name.svg" align="right" width="120" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"/>
 
 ## Overview
 

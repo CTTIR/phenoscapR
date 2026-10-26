@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<img src="../man/figures/logo.svg" align="right" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"/>
+<img src="../man/figures/logo-with-name.svg" align="right" width="120" height="139" alt="phenoscapR hex logo" style="margin-left:12px;margin-bottom:4px;"/>
 
 [![R-CMD-check](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml)
 [![test-coverage](https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml)
