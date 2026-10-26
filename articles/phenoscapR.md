@@ -15,7 +15,7 @@ MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.or
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
-![phenoscapR hex logo](../reference/figures/logo.svg)
+![phenoscapR hex logo](../reference/figures/logo-with-name.svg)
 
 [![R-CMD-check](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/R-CMD-check.yaml)
 [![test-coverage](https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/cttir/phenoscapR/actions/workflows/test-coverage.yaml)

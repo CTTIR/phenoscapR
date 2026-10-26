@@ -15,7 +15,7 @@ MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.or
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
-![phenoscapR hex logo](../reference/figures/logo.svg)
+![phenoscapR hex logo](../reference/figures/logo-with-name.svg)
 
 This vignette tours the capabilities added beyond the core workflow: a
 coherent result API, higher-order spatial structure, rigorous
