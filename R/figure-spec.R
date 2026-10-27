@@ -196,7 +196,11 @@ WriteFigure <- function(spec, data, pdf, png, style = ManuscriptStyle()) {
 
 .fig_colour <- function(x, style) {
   if (is.null(x)) return(NULL)
-  if (is.list(x)) return(lapply(x, .fig_colour, style = style))
+  if (is.list(x)) {
+    out <- lapply(x, .fig_colour, style = style)
+    flat <- all(vapply(out, function(v) is.character(v) && length(v) == 1L, logical(1)))
+    return(if (flat) unlist(out) else out)
+  }
   if (!is.character(x)) return(x)
   if (length(x) == 1L && grepl("^[a-z_]+$", x) && x %in% names(style$palettes) && !x %in% names(style$colour)) {
     return(style$palettes[[x]])

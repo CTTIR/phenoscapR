@@ -13,8 +13,8 @@ PtLinewidth(pt)
 Numeric 'ggplot2' \code{linewidth}.
 }
 \description{
-'ggplot2' line widths are in millimetres scaled by about 0.75; this
-converts a width given in typographic points.
+'ggplot2' draws a line width of 1 as 0.75 mm (R's line width unit is
+1/96 inch); this converts a width given in typographic points.
 }
 \examples{
 PtLinewidth(0.5)

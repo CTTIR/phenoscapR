@@ -10,7 +10,7 @@ test_that("the manuscript style can be read and partly overridden", {
   expect_error(ManuscriptStyle(size = list(huge = 3)), "Unknown size")
   expect_error(ManuscriptStyle(nonsense = 1), "named entries")
   expect_true(all(grepl("^#[0-9A-Fa-f]{6}$", unlist(ManuscriptPalettes()))))
-  expect_equal(PtLinewidth(ggplot2::.pt), 1)
+  expect_equal(PtLinewidth(0.75 * ggplot2::.pt), 1)
 })
 
 test_that("P values follow the two-digit and power-of-ten rule", {

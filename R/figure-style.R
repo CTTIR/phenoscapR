@@ -131,15 +131,15 @@ ManuscriptPalettes <- function() {
 
 #' Convert Points to a 'ggplot2' Line Width
 #'
-#' 'ggplot2' line widths are in millimetres scaled by about 0.75; this
-#' converts a width given in typographic points.
+#' 'ggplot2' draws a line width of 1 as 0.75 mm (R's line width unit is
+#' 1/96 inch); this converts a width given in typographic points.
 #'
 #' @param pt Numeric line width in points.
 #' @return Numeric 'ggplot2' `linewidth`.
 #' @examples
 #' PtLinewidth(0.5)
 #' @export
-PtLinewidth <- function(pt) pt / ggplot2::.pt
+PtLinewidth <- function(pt) pt / (0.75 * ggplot2::.pt)
 
 .fig_check_style <- function(style) {
   if (!inherits(style, "phenoscapR_style")) {
@@ -209,6 +209,7 @@ ThemeManuscript <- function(style = ManuscriptStyle(), grid = c("y", "x", "both"
       axis.text.y = text_el(s$tick, margin = ggplot2::margin(r = 1)),
       axis.ticks = ggplot2::element_line(colour = k$ink, linewidth = PtLinewidth(l$tick)),
       axis.ticks.length = ggplot2::unit(l$tick_length, "pt"),
+      axis.minor.ticks.length = ggplot2::unit(l$tick_length * 0.55, "pt"),
       axis.line.x = if (axes %in% c("xy", "x")) axis_line else blank,
       axis.line.y = if (axes %in% c("xy", "y")) axis_line else blank,
       panel.grid.major.y = if (grid %in% c("y", "both")) grid_line else blank,

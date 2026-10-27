@@ -71,15 +71,31 @@ PlotPairedPatients <- function(data, patient = "patient", group = "group",
     ggplot2::geom_point(data = d[d$excluded, , drop = FALSE], shape = 21, fill = "white",
                         size = .fig_area(7), stroke = PtLinewidth(0.6), na.rm = TRUE) +
     ggplot2::geom_line(data = tested, linewidth = PtLinewidth(0.6), alpha = 0.85, na.rm = TRUE) +
-    ggplot2::geom_point(data = tested, shape = 16, size = .fig_area(7), na.rm = TRUE) +
+    ggplot2::geom_point(data = tested, shape = 16, size = .fig_area(7), stroke = 0, na.rm = TRUE) +
     ggplot2::geom_segment(data = med, ggplot2::aes(x = .data$x - 0.2, xend = .data$x + 0.2,
                                                    y = .data$value, yend = .data$value),
                           inherit.aes = FALSE, colour = k$ink, linewidth = PtLinewidth(1.3)) +
     ggplot2::scale_x_continuous(breaks = seq_along(conditions), labels = .fig_labels(labels),
                                 limits = c(0.6, length(conditions) + 0.4), expand = c(0, 0)) +
-    (if (log_y) ggplot2::scale_y_log10(limits = y_limits) else ggplot2::scale_y_continuous(limits = y_limits)) +
+    (if (log_y) .fig_scale_log10("y", y_limits, d$value) else ggplot2::scale_y_continuous(limits = y_limits)) +
     .fig_group_scale(group_colours) +
     ggplot2::labs(x = if (is.null(x_label)) NULL else TypesetLabel(x_label),
                   y = if (is.null(y_label)) NULL else TypesetLabel(y_label)) +
     ThemeManuscript(style, grid = "y")
+}
+
+# Logarithmic axis as in common figure code: majors at powers of ten
+# labelled 10^k, unlabelled minor ticks at 2-9 times each power.
+.fig_scale_log10 <- function(axis = c("y", "x"), limits = NULL, data_range = NULL) {
+  axis <- match.arg(axis)
+  r <- if (!is.null(limits)) limits else data_range
+  r <- r[is.finite(r) & r > 0]
+  lo <- if (length(r)) floor(log10(min(r))) - 1 else -1
+  hi <- if (length(r)) ceiling(log10(max(r))) + 1 else 3
+  majors <- 10^(lo:hi)
+  minors <- as.vector(outer(2:9, majors))
+  labels <- if (.fig_has_rich_text()) paste0("10<sup>", lo:hi, "</sup>") else parse(text = paste0("10^", lo:hi))
+  scale <- if (axis == "y") ggplot2::scale_y_log10 else ggplot2::scale_x_log10
+  scale(limits = limits, breaks = majors, labels = labels, minor_breaks = minors,
+        guide = ggplot2::guide_axis(minor.ticks = TRUE))
 }
