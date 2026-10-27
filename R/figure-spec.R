@@ -203,3 +203,23 @@ WriteFigure <- function(spec, data, pdf, png, style = ManuscriptStyle()) {
   }, character(1))
   stats::setNames(out, names(x))
 }
+
+#' Read a Plot Data Table
+#'
+#' Reads a tab-separated (optionally gzipped), comma-separated or RDS table
+#' as a plain data frame with the column names unchanged, using one thread.
+#' Empty strings and `NA` are missing values.
+#'
+#' @param path File path.
+#' @return A data frame (or the RDS object).
+#' @examples
+#' f <- tempfile(fileext = ".tsv")
+#' writeLines(c("patient\tvalue", "p1\t2.5"), f)
+#' ReadPlotTable(f)
+#' @export
+ReadPlotTable <- function(path) {
+  if (!is.character(path) || length(path) != 1L || !file.exists(path)) {
+    stop("path must be an existing file.", call. = FALSE)
+  }
+  .fig_read_input(path)
+}
