@@ -111,6 +111,16 @@ RenderFigure <- function(spec, data = list(), style = ManuscriptStyle()) {
                 texts = c(texts, legends), style = style)
 }
 
+#' Read a Figure Specification
+#'
+#' Reads one or more JSON specification files (or a directory of them) and
+#' merges them as described in [RenderFigure()].
+#'
+#' @param paths JSON file paths or one directory.
+#' @return The merged specification list.
+#' @export
+ReadFigureSpec <- function(paths) .fig_read_spec(paths)
+
 # Read one or more JSON specification files and merge them.
 .fig_read_spec <- function(paths) {
   if (!requireNamespace("jsonlite", quietly = TRUE)) stop("Reading a JSON specification needs 'jsonlite'.", call. = FALSE)
