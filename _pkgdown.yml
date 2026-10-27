@@ -168,6 +168,27 @@ reference:
       - ExactPatientTests
       - LeaveOnePatientOut
       - AdjustPatientFamilies
+      - ContrastPatientEndpoints
+      - ExactPairedTests
+      - PairedDifferences
+      - BootstrapMedianInterval
+      - PermutationCorrelation
+
+  - title: "Section Summaries and Parity Checks"
+    desc: >
+      Read cell tables from NumPy archives, summarise sections (nearest-target
+      distances, composition, densities, Delaunay neighbour types) and compare
+      recomputed tables or arrays with reference results by key and tolerance.
+    contents:
+      - ReadCellArrays
+      - SummarizeNearestDistances
+      - SummarizeCellComposition
+      - NeighbourTypeCounts
+      - CompareTables
+      - CompareArrays
+      - SummarizeComparisons
+      - StackTables
+      - RecodeValues
 
   - title: "Platform Readers"
     desc: >

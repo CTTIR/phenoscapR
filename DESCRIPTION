@@ -54,6 +54,7 @@ Suggests:
     sass,
     Seurat,
     SeuratObject,
+    sf,
     shiny,
     shinytest2,
     songR,
