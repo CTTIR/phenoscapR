@@ -7,7 +7,8 @@
 RenderFigure(spec, data = list(), style = ManuscriptStyle())
 }
 \arguments{
-\item{spec}{A specification list or the path of a JSON file.}
+\item{spec}{A specification list, a JSON path, several JSON paths or a
+directory of JSON files.}
 
 \item{data}{Named list of data frames (or other inputs) referred to by
 the panels.}
@@ -27,6 +28,17 @@ optional \code{letter}, \code{letter_at}, \code{heading} and \code{note}, a \cod
 \code{\link[=FigureGrammars]{FigureGrammars()}}, the name(s) of its \code{data} and builder \code{args}.
 }
 \details{
+Positions can also be given as fractions of the page, as in figure code
+that places axes with \verb{[left, bottom, width, height]} fractions: a panel
+\code{axes} field replaces \code{box}, \code{letter_xy} replaces \code{letter_at}, and a text
+or legend \code{xy} replaces \code{at} (fractions measured from the bottom-left
+corner; letters and texts hang from the given point).
+
+A specification may be split over several files: give a character vector
+of JSON paths (or a directory of \verb{*.json} files). Page fields are taken
+from the first file that has them; \code{panels}, \code{texts} and \code{legends} are
+concatenated in file order.
+
 Colours in \code{args}, \code{texts} and \code{legends} may be hex values, style colour
 names (\code{"ink"}, \code{"muted"}, ...) or palette entries written
 \code{"palette/name"} (for example \code{"groups/group1"}); character vectors and

@@ -100,3 +100,21 @@ test_that("specifications resolve grammars, data and colour references", {
   expect_true(file.exists(file.path(dir, "s.pdf")))
   expect_true(all(names(FigureGrammars()) != ""))
 })
+
+test_that("page fractions and split specification files are accepted", {
+  skip_if_not(capabilities("cairo"))
+  dir <- withr::local_tempdir()
+  d <- data.frame(patient = rep(c("p1", "p2"), each = 2), group = "g1", condition = rep(c("x", "y"), 2),
+                  value = c(1, 2, 2, 3))
+  jsonlite::write_json(list(height_mm = 100, width_mm = 100), file.path(dir, "00-page.json"), auto_unbox = TRUE)
+  jsonlite::write_json(list(panels = list(list(axes = c(0.1, 0.5, 0.4, 0.3), letter = "a", letter_xy = c(0.01, 0.99),
+                                               grammar = "paired_patients", data = "values"))),
+                       file.path(dir, "10-a.json"), auto_unbox = TRUE)
+  jsonlite::write_json(list(texts = list(list(label = "x", xy = c(0.5, 0.5)))), file.path(dir, "20-b.json"),
+                       auto_unbox = TRUE)
+  fig <- RenderFigure(dir, list(values = d))
+  expect_equal(fig$panels[[1]]$box, c(10, 20, 40, 30))
+  expect_equal(fig$panels[[1]]$letter_at, c(1, 1))
+  expect_equal(fig$texts[[1]]$at, c(50, 50))
+  expect_error(RenderFigure(file.path(dir, "absent.json")), "not found")
+})

@@ -42,12 +42,24 @@ FigureGrammars <- function() {
 #' optional `letter`, `letter_at`, `heading` and `note`, a `grammar` from
 #' [FigureGrammars()], the name(s) of its `data` and builder `args`.
 #'
+#' Positions can also be given as fractions of the page, as in figure code
+#' that places axes with `[left, bottom, width, height]` fractions: a panel
+#' `axes` field replaces `box`, `letter_xy` replaces `letter_at`, and a text
+#' or legend `xy` replaces `at` (fractions measured from the bottom-left
+#' corner; letters and texts hang from the given point).
+#'
+#' A specification may be split over several files: give a character vector
+#' of JSON paths (or a directory of `*.json` files). Page fields are taken
+#' from the first file that has them; `panels`, `texts` and `legends` are
+#' concatenated in file order.
+#'
 #' Colours in `args`, `texts` and `legends` may be hex values, style colour
 #' names (`"ink"`, `"muted"`, ...) or palette entries written
 #' `"palette/name"` (for example `"groups/group1"`); character vectors and
 #' named lists of such values are resolved element by element.
 #'
-#' @param spec A specification list or the path of a JSON file.
+#' @param spec A specification list, a JSON path, several JSON paths or a
+#'   directory of JSON files.
 #' @param data Named list of data frames (or other inputs) referred to by
 #'   the panels.
 #' @param style A [ManuscriptStyle()] object; `spec$style` entries are
@@ -55,11 +67,7 @@ FigureGrammars <- function() {
 #' @return A [ComposeFigure()] result.
 #' @export
 RenderFigure <- function(spec, data = list(), style = ManuscriptStyle()) {
-  if (is.character(spec) && length(spec) == 1L) {
-    if (!requireNamespace("jsonlite", quietly = TRUE)) stop("Reading a JSON specification needs 'jsonlite'.", call. = FALSE)
-    spec <- jsonlite::read_json(spec, simplifyVector = TRUE, simplifyDataFrame = FALSE,
-                                simplifyMatrix = FALSE)
-  }
+  if (is.character(spec)) spec <- .fig_read_spec(spec)
   if (!is.list(spec) || is.null(spec$height_mm) || !is.list(spec$panels)) {
     stop("spec needs height_mm and a list of panels.", call. = FALSE)
   }
@@ -67,6 +75,10 @@ RenderFigure <- function(spec, data = list(), style = ManuscriptStyle()) {
   style <- .fig_check_style(style)
   if (!is.null(spec$style)) style <- do.call(ManuscriptStyle, utils::modifyList(unclass(style), spec$style))
   grammars <- FigureGrammars()
+  W <- if (is.null(spec$width_mm)) style$page$width_mm else spec$width_mm
+  H <- spec$height_mm
+  frac_box <- function(a) c(a[1] * W, (1 - a[2] - a[4]) * H, a[3] * W, a[4] * H)
+  frac_at <- function(a) c(a[1] * W, (1 - a[2]) * H)
   panels <- lapply(seq_along(spec$panels), function(i) {
     p <- spec$panels[[i]]
     plot <- NULL
@@ -77,11 +89,13 @@ RenderFigure <- function(spec, data = list(), style = ManuscriptStyle()) {
       inputs <- .fig_panel_data(p$data, data, i)
       plot <- do.call(fun, c(inputs, args, list(style = style)))
     }
-    FigurePanel(plot, box = unlist(p$box), letter = p$letter, letter_at = unlist(p$letter_at),
+    box <- if (!is.null(p$axes)) frac_box(unlist(p$axes)) else unlist(p$box)
+    letter_at <- if (!is.null(p$letter_xy)) frac_at(unlist(p$letter_xy)) else unlist(p$letter_at)
+    FigurePanel(plot, box = box, letter = p$letter, letter_at = letter_at,
                 heading = p$heading, note = p$note, fill_box = isTRUE(p$fill_box))
   })
   texts <- lapply(spec$texts, function(t) {
-    FigureText(t$label, unlist(t$at), size = t$size,
+    FigureText(t$label, if (!is.null(t$xy)) frac_at(unlist(t$xy)) else unlist(t$at), size = t$size,
                colour = if (is.null(t$colour)) NULL else .fig_colour(t$colour, style),
                bold = isTRUE(t$bold), hjust = if (is.null(t$hjust)) 0 else t$hjust,
                vjust = if (is.null(t$vjust)) 1 else t$vjust, angle = if (is.null(t$angle)) 0 else t$angle)
@@ -90,10 +104,30 @@ RenderFigure <- function(spec, data = list(), style = ManuscriptStyle()) {
     FigureGrob(LegendKeys(unlist(l$labels), .fig_colour(unlist(l$colours), style),
                           shape = if (is.null(l$shape)) "point" else unlist(l$shape),
                           ncol = if (is.null(l$ncol)) length(l$labels) else l$ncol,
-                          size = l$size, style = style), unlist(l$at))
+                          size = l$size, style = style),
+               if (!is.null(l$xy)) frac_at(unlist(l$xy)) else unlist(l$at))
   })
   ComposeFigure(panels, height_mm = spec$height_mm, width_mm = spec$width_mm,
                 texts = c(texts, legends), style = style)
+}
+
+# Read one or more JSON specification files and merge them.
+.fig_read_spec <- function(paths) {
+  if (!requireNamespace("jsonlite", quietly = TRUE)) stop("Reading a JSON specification needs 'jsonlite'.", call. = FALSE)
+  if (length(paths) == 1L && dir.exists(paths)) {
+    paths <- sort(list.files(paths, pattern = "\\.json$", full.names = TRUE))
+  }
+  if (!length(paths) || !all(file.exists(paths))) stop("Specification file(s) not found.", call. = FALSE)
+  parts <- lapply(paths, jsonlite::read_json, simplifyVector = TRUE, simplifyDataFrame = FALSE,
+                  simplifyMatrix = FALSE)
+  out <- list(panels = list(), texts = list(), legends = list())
+  for (x in parts) {
+    for (field in setdiff(names(x), c("panels", "texts", "legends"))) {
+      if (is.null(out[[field]])) out[[field]] <- x[[field]]
+    }
+    for (field in c("panels", "texts", "legends")) out[[field]] <- c(out[[field]], x[[field]])
+  }
+  out
 }
 
 #' Write a Figure from a Specification
