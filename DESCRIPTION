@@ -45,6 +45,7 @@ Suggests:
     jsonlite,
     knitr,
     mclust,
+    png,
     RANN,
     ragg,
     reactable,
