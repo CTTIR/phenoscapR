@@ -42,6 +42,7 @@ Suggests:
     deldir,
     ggtext,
     gridtext,
+    isoband,
     jsonlite,
     knitr,
     mclust,
