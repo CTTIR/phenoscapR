@@ -31,7 +31,8 @@ Imports:
     methods,
     stats,
     utils,
-    grDevices
+    grDevices,
+    grid
 Suggests:
     brand.yml,
     bsicons,
@@ -39,10 +40,13 @@ Suggests:
     covr,
     cellspecR (>= 1.0.0),
     deldir,
+    ggtext,
+    gridtext,
     jsonlite,
     knitr,
     mclust,
     RANN,
+    ragg,
     reactable,
     rmarkdown,
     Rtsne,
