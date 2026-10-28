@@ -1,3 +1,33 @@
+# phenoscapR (development version)
+
+* Patient-level and cell-level analysis exports: `ExactPairedTests()` (exact
+  signed-rank test over all sign flips with midranks, exact sign test,
+  direction interval and leave-one-out rows), `PairedDifferences()`,
+  `ContrastPatientEndpoints()`, `BootstrapMedianInterval()`,
+  `PermutationCorrelation()`, `NeighbourTypeCounts()` (Delaunay neighbours
+  within a maximum edge length, GEOS or deldir), `SummarizeNearestDistances()`,
+  `SummarizeCellComposition()`, `ReadCellArrays()` and keyed comparisons with
+  `CompareTables()`, `CompareArrays()` and `SummarizeComparisons()`.
+* Manuscript figures: a figure style, page composition in millimetres and
+  figures rendered from declarative specifications through registered plot
+  grammars, with plot-data builders for patient-level, matrix, embedding and
+  image panels.
+* One set of generic plot-data helpers named `PlotData*()` (select, reshape,
+  join, bind, recode, summarise, count, rank, compute and write text), with
+  `filter` and `into` as common argument names, and one template syntax in
+  `FormatTemplate()`.
+* Tick placement of common plotting code as `NiceBreaks()` (also with
+  intervals that follow the axis length); `LegendKeys()` gains marker sizes,
+  spacings, column-major filling and diamond and patch keys; figure texts can
+  sit on their baseline; typesetting can be switched off per figure, panel,
+  text or legend, or for single rules; straight quotes stay straight.
+* Exact paired tests, contrasts of patient endpoints, bootstrap median
+  intervals, permutation correlations, section summaries, Delaunay neighbour
+  type counts and keyed parity checks of recomputed tables and arrays.
+* `SaveFigure()` and `WriteFigure()` give the same files whatever was saved
+  before in the session: rich text is measured afresh for every figure, not
+  taken from gridtext's session-wide cache.
+
 # phenoscapR 0.1.1
 
 * Standardize the named v5 package logo across README, documentation pages

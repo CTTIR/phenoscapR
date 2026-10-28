@@ -8,8 +8,10 @@ test_that("the Shiny app launches and toggles colour mode", {
   skip_on_ci()  # headless-browser snapshots differ across runners; run locally
   skip_if_not_installed("shinytest2")
   skip_if_not_installed("chromote")
-  skip_if_not_installed("bslib")
-  skip_if_not_installed("reactable")
+  # The app's own requirements, as checked by run_app().
+  for (pkg in c("shiny", "bslib", "sass", "thematic", "reactable", "bsicons", "brand.yml")) {
+    skip_if_not_installed(pkg)
+  }
 
   app_dir <- system.file("app", package = "phenoscapR")
   skip_if(!nzchar(app_dir), "app directory not installed")
