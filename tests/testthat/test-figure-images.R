@@ -20,6 +20,9 @@ test_that("nearest-label distances equal a brute-force search", {
   own <- NearestLabelDistance(d, "tum", column = "dt", self = NULL)
   i <- which(t)[1]
   expect_equal(own$dt[i], min(sqrt((d$x[t][-1] - d$x[i])^2 + (d$y[t][-1] - d$y[i])^2)))
+  one <- NearestLabelDistance(data.frame(x = c(0, 3, 10), y = c(0, 4, 0), label = c("t", "a", "a")), "t", column = "d")
+  expect_equal(one$d, c(0, 5, 10))
+  expect_equal(NearestLabelDistance(one, "t", column = "e", self = NULL)$e, c(NA, 5, 10))
 })
 
 test_that("map fields, interface zones, grid snapping and classes", {

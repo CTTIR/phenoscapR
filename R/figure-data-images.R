@@ -30,14 +30,10 @@ NearestLabelDistance <- function(cells, labels, column = "distance", x = "x", y 
   d <- rep(NA_real_, nrow(cells))
   if (any(target)) {
     if (is.null(self)) {
-      nn <- dbscan::kNN(xy[target, , drop = FALSE], k = 1L, query = xy[!target, , drop = FALSE])
-      d[!target] <- nn$dist[, 1L]
+      if (any(!target)) d[!target] <- .fig_c_nearest(xy[target, , drop = FALSE], xy[!target, , drop = FALSE])
       if (sum(target) > 1L) d[target] <- dbscan::kNN(xy[target, , drop = FALSE], k = 1L)$dist[, 1L]
     } else {
-      if (any(!target)) {
-        d[!target] <- dbscan::kNN(xy[target, , drop = FALSE], k = 1L,
-                                  query = xy[!target, , drop = FALSE])$dist[, 1L]
-      }
+      if (any(!target)) d[!target] <- .fig_c_nearest(xy[target, , drop = FALSE], xy[!target, , drop = FALSE])
       d[target] <- self
     }
   }
@@ -656,3 +652,10 @@ CellPositionsFor <- function(table, cells, labels = NULL, source = "sample_id", 
   out
 }
 
+
+# Distance from each query point to the nearest reference point (exact
+# k-d tree search; a single reference point is measured directly).
+.fig_c_nearest <- function(ref, query) {
+  if (nrow(ref) == 1L) return(sqrt((query[, 1L] - ref[1L, 1L])^2 + (query[, 2L] - ref[1L, 2L])^2))
+  dbscan::kNN(ref, k = 1L, query = query)$dist[, 1L]
+}
