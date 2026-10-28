@@ -262,3 +262,10 @@ test_that("summaries and counts of an empty selection have no fake groups", {
   expect_equal(PlotDataCount(d), data.frame(n = 3L, share = 100))
   expect_equal(PlotDataSummarise(d, "v", by = "type"), data.frame(type = c("x", "y"), v = c(4, 2)))
 })
+
+test_that("cross shares of an empty-string level are computed", {
+  s <- PlotDataCrossShares(data.frame(r = c("", "a", ""), c = c("x", "x", "y")), "r", "c")
+  expect_identical(s$r, c("", "", "a", "a"))
+  expect_identical(s$total, c(2, 2, 1, 1))
+  expect_equal(s$share, c(50, 50, 100, 0))
+})

@@ -907,7 +907,7 @@ PlotDataCrossShares <- function(data, row, column, filter = NULL, rows = NULL, c
   out <- data.frame(a = rep(rows, times = length(columns)), b = rep(columns, each = length(rows)),
                     n = as.vector(tab), stringsAsFactors = FALSE)
   tot <- rowSums(tab)
-  out$total <- unname(tot[out$a])
+  out$total <- unname(tot[match(out$a, rows)])  # by position: "" is not a usable name
   out$share <- ifelse(out$total > 0, scale * out$n / out$total, NA_real_)
   names(out)[1:2] <- c(row, column)
   out <- out[order(match(out[[row]], rows), match(out[[column]], columns)), , drop = FALSE]

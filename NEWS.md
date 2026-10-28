@@ -66,6 +66,8 @@
 * `PlotDataSummarise()` with groups returns no rows when `filter` selects
   nothing, instead of one row with a missing group; `PlotDataCount()` without
   groups returns `n = 0` instead of failing.
+* `PlotDataCrossShares()` computes totals and shares for an empty-string
+  level, which used to get missing values.
 
 # phenoscapR 0.1.1
 
