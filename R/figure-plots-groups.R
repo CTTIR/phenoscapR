@@ -522,9 +522,17 @@ PlotBars <- function(data, x = "x", y = "value", series = NULL, x_order = NULL, 
                                                   linetype = "32")
               else ggplot2::geom_hline(yintercept = rv, colour = k$muted, linewidth = PtLinewidth(0.6), linetype = "32"))
     if (!is.null(reference_label)) {
-      p <- p + .figA_text_layer(data.frame(x = length(x_order) - 0.5, y = rv + reference_label_dy,
-                                           label = .figA_note(reference_label, stats), hjust = 1, vjust = 0,
-                                           fontsize = reference_label_size, colour = k$muted), style)
+      # Beside the line, between the last two categories (transposed for
+      # horizontal bars, whose last category is at the bottom).
+      text <- .figA_note(reference_label, stats)
+      lab <- if (horizontal) {
+        data.frame(x = rv + reference_label_dy, y = 1.5, label = text, hjust = 0, vjust = 0,
+                   fontsize = reference_label_size, colour = k$muted)
+      } else {
+        data.frame(x = length(x_order) - 0.5, y = rv + reference_label_dy, label = text, hjust = 1, vjust = 0,
+                   fontsize = reference_label_size, colour = k$muted)
+      }
+      p <- p + .figA_text_layer(lab, style)
     }
   }
   if (!is.null(bar_label)) {

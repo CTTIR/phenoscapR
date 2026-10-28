@@ -59,6 +59,8 @@
 * The template format `{n|d}` writes every digit (`100000`, not `1e+05`).
 * Heatmaps and dot matrices with zero-width colour limits (a constant matrix)
   take the first colour of the scale instead of missing fills.
+* Horizontal `PlotBars()` and `PlotStackedBars()` place the reference label
+  and the top values on the value axis; their coordinates used to be swapped.
 
 # phenoscapR 0.1.1
 

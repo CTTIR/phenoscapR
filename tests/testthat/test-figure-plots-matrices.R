@@ -186,3 +186,16 @@ test_that("the matrix, bar and embedding grammars work from figure specification
   expect_gt(file.size(file.path(dir, "s.png")), 1000)
 })
 
+
+test_that("horizontal stacked bars print the top values beyond the bar ends", {
+  d <- data.frame(x = rep(c("p1", "p2", "p3"), each = 2), stack = rep(c("A", "B"), 3),
+                  value = c(30, 70, 50, 50, 20, 80), area = rep(c(1.5, 2, 3), each = 2))
+  top <- function(p) ggplot2::layer_data(p, length(p$layers))
+  v <- PlotStackedBars(d, top_text = "area")
+  h <- PlotStackedBars(d, horizontal = TRUE, top_text = "area")
+  expect_equal(top(v)[, c("x", "y")], data.frame(x = c(1, 2, 3), y = 101.5))
+  expect_equal(top(h)[, c("x", "y")], data.frame(x = 101.5, y = c(3, 2, 1)))
+  expect_identical(top(h)$label, top(v)$label)
+  ht <- PlotStackedBars(d, horizontal = TRUE, top_text = "area", top_title = "Area")
+  expect_equal(unlist(top(ht)[, c("x", "y")]), c(x = 101.5, y = 3.6))
+})

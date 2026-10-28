@@ -102,7 +102,8 @@ not, display mapping and named text colours.}
 \item{axes}{Draw the value and category axis lines.}
 
 \item{top_text}{Optional column with one value per category, printed
-above the bar with \code{top_format} at \code{top_at} (value units).}
+above the bar (right of it for horizontal bars) with \code{top_format} at
+\code{top_at} (value units).}
 
 \item{top_format, top_at, top_size, top_colour}{Format and placement.}
 
@@ -115,7 +116,8 @@ breaks then follow \code{\link[=NiceBreaks]{NiceBreaks()}} instead of \code{\lin
 \item{value_expand}{Default upper limit as a multiple of the tallest bar.}
 
 \item{top_title}{Optional text left (or right) of the top values, at
-\code{top_title_at} category units from the first bar centre.}
+\code{top_title_at} category units from the first bar centre (above or below
+them for horizontal bars).}
 
 \item{top_title_at, top_title_hjust}{Placement of \code{top_title}.}
 

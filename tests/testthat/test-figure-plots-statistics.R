@@ -198,3 +198,14 @@ test_that("grouped scatter writes a corner note from summary data", {
   built(p)
   expect_true("Spearman's rho = 0.60\np = 0.42" %in% layer_text(p))
 })
+
+test_that("horizontal bars put the reference label on the value axis", {
+  d <- data.frame(x = c("a", "b", "c", "d"), value = c(10, 20, 30, 40))
+  text_data <- function(p) Filter(function(l) "label" %in% names(l$data), p$layers)[[1]]$data
+  v <- text_data(PlotBars(d, stats = data.frame(ref = 25), reference = "ref", reference_label = "ref {ref}"))
+  expect_equal(c(v$x, v$y, v$hjust, v$vjust), c(3.5, 26.5, 1, 0))
+  h <- text_data(PlotBars(d, horizontal = TRUE, stats = data.frame(ref = 25), reference = "ref",
+                          reference_label = "ref {ref}"))
+  expect_equal(c(h$x, h$y, h$hjust, h$vjust), c(26.5, 1.5, 0, 0))
+  expect_identical(h$label, v$label)
+})

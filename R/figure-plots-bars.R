@@ -37,12 +37,14 @@
 #' @param category_ticks Draw tick marks at the categories.
 #' @param axes Draw the value and category axis lines.
 #' @param top_text Optional column with one value per category, printed
-#'   above the bar with `top_format` at `top_at` (value units).
+#'   above the bar (right of it for horizontal bars) with `top_format` at
+#'   `top_at` (value units).
 #' @param top_format,top_at,top_size,top_colour Format and placement.
 #' @param top_offset Optional offset (value units) of the top values above
 #'   each bar instead of the fixed position `top_at`.
 #' @param top_title Optional text left (or right) of the top values, at
-#'   `top_title_at` category units from the first bar centre.
+#'   `top_title_at` category units from the first bar centre (above or below
+#'   them for horizontal bars).
 #' @param top_title_at,top_title_hjust Placement of `top_title`.
 #' @param reference Optional reference line: list of `value`, `colour`,
 #'   `width` (points) and `linetype`.
@@ -197,12 +199,24 @@ PlotStackedBars <- function(data, x = "x", stack = "stack", value = "value", x_o
     tt$text <- if (is.numeric(tt$v)) sprintf(top_format, tt$v) else as.character(tt$v)
     tc <- .fig_colour(top_colour, style)
     ty <- if (is.null(top_offset)) top_at else unname(totals[as.character(tt$pos)]) + top_offset
-    p <- p + ggplot2::annotate("text", x = tt$pos, y = ty, label = tt$text, colour = tc,
-                               size = .fig_text_size(top_size), family = style$family, vjust = 0)
+    if (horizontal) {
+      # Beyond the bar end on the value axis, at the category position.
+      p <- p + ggplot2::annotate("text", x = ty, y = n - tt$pos + 1, label = tt$text, colour = tc,
+                                 size = .fig_text_size(top_size), family = style$family, hjust = 0, vjust = 0.5)
+    } else {
+      p <- p + ggplot2::annotate("text", x = tt$pos, y = ty, label = tt$text, colour = tc,
+                                 size = .fig_text_size(top_size), family = style$family, vjust = 0)
+    }
     if (!is.null(top_title)) {
-      p <- p + ggplot2::annotate("text", x = 1 + top_title_at, y = top_at, label = TypesetLabel(top_title, rich = FALSE),
-                                 colour = tc, size = .fig_text_size(top_size), family = style$family,
-                                 vjust = 0, hjust = top_title_hjust)
+      p <- p + if (horizontal) {
+        ggplot2::annotate("text", x = top_at, y = n - top_title_at, label = TypesetLabel(top_title, rich = FALSE),
+                          colour = tc, size = .fig_text_size(top_size), family = style$family,
+                          hjust = 0, vjust = 1 - top_title_hjust)
+      } else {
+        ggplot2::annotate("text", x = 1 + top_title_at, y = top_at, label = TypesetLabel(top_title, rich = FALSE),
+                          colour = tc, size = .fig_text_size(top_size), family = style$family,
+                          vjust = 0, hjust = top_title_hjust)
+      }
     }
   }
   if (!is.null(legend)) p <- p + .figb_annotation(.figb_marker_key(legend, colours, NULL, style))
