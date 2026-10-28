@@ -90,6 +90,8 @@
   and offset 3.7) are assigned instead of failing.
 * Nearest-neighbour distances of a cell without any other cell in its sample
   are `NA` instead of an error.
+* `PhenotypeCells()` and `phenotype_cells()` phenotype a single cell on several
+  markers instead of failing.
 
 # phenoscapR 0.1.1
 

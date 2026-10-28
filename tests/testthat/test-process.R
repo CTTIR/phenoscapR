@@ -114,3 +114,10 @@ test_that("minmax scaling of a constant marker keeps missing values", {
   dt <- data.table::data.table(M = c(5, NA, 5))
   expect_identical(normalise_markers(dt, method = "minmax")$M, c(0, NA, 0))
 })
+
+test_that("a single cell is phenotyped on several markers", {
+  o <- CreateSpatialObject(matrix(c(5, 0), 1, 2, dimnames = list(NULL, c("CD3", "CD8"))), data.frame(x = 0, y = 0))
+  expect_identical(PhenotypeCells(o, c(CD3 = 1, CD8 = 1))$phenotype, "CD3+")
+  dt <- data.table::data.table(CD3 = 5, CD8 = 2)
+  expect_identical(phenotype_cells(dt, list(CD3 = 1, CD8 = 1))$phenotype, "CD3+/CD8+")
+})

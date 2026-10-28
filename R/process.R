@@ -195,7 +195,8 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
   pos <- vapply(markers, function(m) mat[, m] >= thresholds[[m]],
                 logical(nrow(mat)))
   if (is.null(dim(pos))) {
-    pos <- matrix(pos, ncol = 1L, dimnames = list(NULL, markers))
+    # vapply() drops to a vector for a single cell.
+    pos <- matrix(pos, nrow = nrow(mat), dimnames = list(NULL, markers))
   }
 
   pheno <- apply(pos, 1L, function(row) {
