@@ -23,7 +23,8 @@ phenotype).
 }
 \description{
 Computes the nearest neighbour distance from each cell of one phenotype
-to cells of another phenotype.
+to cells of another phenotype. With \code{from} equal to \code{to}, the distance is to
+the nearest other cell of that phenotype.
 }
 \examples{
 counts <- matrix(rnorm(60), nrow = 30,

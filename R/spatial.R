@@ -1290,7 +1290,8 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
 #' Cross Nearest Neighbour Distance
 #'
 #' Computes the nearest neighbour distance from each cell of one phenotype
-#' to cells of another phenotype.
+#' to cells of another phenotype. With `from` equal to `to`, the distance is to
+#' the nearest other cell of that phenotype.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param from Character. Source phenotype.
@@ -1333,9 +1334,9 @@ CrossNNDistance <- function(object, from, to, by_sample = FALSE) {
   from_xy <- xy[from_idx, , drop = FALSE]
   to_xy   <- xy[to_idx, , drop = FALSE]
 
-  # Nearest target cell for each source cell. `from` and `to` are different
-  # phenotypes, hence disjoint, so no self-match to drop.
-  d <- .knn_mean_dist(from_xy, to_xy, k = 1L, drop_self = FALSE)
+  # Nearest target cell for each source cell; with `from` equal to `to` the
+  # cell itself is dropped, so the distance is to the nearest other cell.
+  d <- .knn_mean_dist(from_xy, to_xy, k = 1L, drop_self = identical(from, to))
   attr(d, "from") <- from
   attr(d, "to") <- to
   .as_result(d, "phenoscapR_crossnn")

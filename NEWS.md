@@ -50,6 +50,8 @@
   the blank used to stay.
 * `interaction_matrix()` counts neighbours in a table without `sample_id`
   as one sample; it used to return zeros.
+* `CrossNNDistance()` with `from` equal to `to` measures to the nearest other
+  cell; every cell used to find itself at distance 0.
 
 # phenoscapR 0.1.1
 

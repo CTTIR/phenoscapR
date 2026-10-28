@@ -175,3 +175,10 @@ test_that("DelaunayNetwork maps deldir's points back to rows when coordinates re
   expect_setequal(paste(e$from, e$to), c("1 3", "1 4", "1 5", "3 5", "4 5"))
   expect_equal(e$distance, sqrt((xy$x[e$from] - xy$x[e$to])^2 + (xy$y[e$from] - xy$y[e$to])^2))
 })
+
+test_that("CrossNNDistance within one phenotype measures to the nearest other cell", {
+  o <- CreateSpatialObject(matrix(1, 4, 1, dimnames = list(NULL, "M")), data.frame(x = c(0, 3, 10, 14), y = 0),
+                           data.frame(cell_id = 1:4, sample_id = "s", phenotype = c("A", "A", "B", "B")))
+  expect_equal(as.numeric(CrossNNDistance(o, "A", "A")), c(3, 3))
+  expect_equal(as.numeric(CrossNNDistance(o, "A", "B")), c(10, 7))
+})
