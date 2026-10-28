@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
 
-Tools for importing, processing, analysing, and visualising single-cell spatial biology data from multiplexed imaging platforms. Supports cell-table quality control, marker normalisation, phenotype summaries, spatial neighbourhood statistics, and explicit sample and coordinate-frame registries. Patient-level inference enumerates label allocations for declared contrasts and retains unavailable hypotheses when adjusting for multiple testing. Grouped summaries expose missingness, eligibility, and denominator provenance. Optional canonical cell-table import uses 'cellspecR' \url{https://github.com/CTTIR/cellspecR}; optional Self-Organising Nebulous Growths embeddings use 'songR' \url{https://github.com/CTTIR/songR}. Both optional packages are available from their respective GitHub repositories.
+Tools for importing, processing, analysing, and visualising single-cell spatial biology data from multiplexed imaging platforms. Supports cell-table quality control, marker normalisation, phenotype summaries, spatial neighbourhood statistics, and explicit sample and coordinate-frame registries. Patient-level inference enumerates label allocations for declared contrasts and retains unavailable hypotheses when adjusting for multiple testing. Grouped summaries expose missingness, eligibility, and denominator provenance. Optional canonical cell-table import uses 'cellspecR' \url{https://github.com/CTTIR/cellspecR}; optional Self-Organising Nebulous Growths embeddings use 'songR' \url{https://github.com/CTTIR/songR}. Both optional packages are available from \url{https://cttir.r-universe.dev}.
 }
 \seealso{
 Useful links:

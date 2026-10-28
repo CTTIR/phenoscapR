@@ -17,10 +17,11 @@ Description: Tools for importing, processing, analysing, and visualising
     import uses 'cellspecR' <https://github.com/CTTIR/cellspecR>; optional
     Self-Organising Nebulous Growths embeddings use 'songR'
     <https://github.com/CTTIR/songR>. Both optional packages are available
-    from their respective GitHub repositories.
+    from <https://cttir.r-universe.dev>.
 License: MIT + file LICENSE
 URL: https://cttir.github.io/phenoscapR/, https://github.com/cttir/phenoscapR
 BugReports: https://github.com/cttir/phenoscapR/issues
+Additional_repositories: https://cttir.r-universe.dev
 Depends:
     R (>= 4.1.0)
 Imports:
