@@ -52,6 +52,8 @@
   as one sample; it used to return zeros.
 * `CrossNNDistance()` with `from` equal to `to` measures to the nearest other
   cell; every cell used to find itself at distance 0.
+* `PhenotypeCells()` and `phenotype_cells()` treat a missing intensity as not
+  positive; such cells used to get labels such as `"CD3+/NA+"`.
 
 # phenoscapR 0.1.1
 

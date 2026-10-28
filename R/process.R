@@ -199,7 +199,8 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
   }
 
   pheno <- apply(pos, 1L, function(row) {
-    positive <- markers[row]
+    # A missing intensity is not a positive call.
+    positive <- markers[row %in% TRUE]
     if (length(positive) == 0L) return("Negative")
     paste0(positive, "+", collapse = "/")
   })

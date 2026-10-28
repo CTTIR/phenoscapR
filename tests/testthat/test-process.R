@@ -99,3 +99,11 @@ test_that("qc_filter and QCFilter keep the same cells", {
 
   expect_equal(nrow(dt_res), NCells(obj_res))
 })
+
+test_that("a missing intensity is not a positive call", {
+  c2 <- matrix(c(5, 5, NA, 0), 2, 2, dimnames = list(NULL, c("CD3", "CD8")))
+  o <- CreateSpatialObject(c2, data.frame(x = 0:1, y = 0))
+  expect_identical(PhenotypeCells(o, c(CD3 = 1, CD8 = 1))$phenotype, c("CD3+", "CD3+"))
+  dt <- data.table::data.table(CD3 = c(5, NA), CD8 = c(NA, 0))
+  expect_identical(phenotype_cells(dt, list(CD3 = 1, CD8 = 1))$phenotype, c("CD3+", "Negative"))
+})
