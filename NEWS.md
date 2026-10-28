@@ -22,9 +22,9 @@
   spacings, column-major filling and diamond and patch keys; figure texts can
   sit on their baseline; typesetting can be switched off per figure, panel,
   text or legend, or for single rules; straight quotes stay straight.
-* `SaveFigure()` and `WriteFigure()` give the same files whatever was saved
-  before in the session: rich text is measured afresh for every figure, not
-  taken from gridtext's session-wide cache.
+* `SaveFigure()` and `WriteFigure()` give the same files whatever was drawn
+  before in the session: with 'ragg', every PNG is drawn on a new capture
+  device, so rich text is measured afresh for every figure.
 
 # phenoscapR 0.1.1
 

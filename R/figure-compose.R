@@ -137,6 +137,13 @@ print.phenoscapR_figure <- function(x, newpage = TRUE, ...) {
 #' embedded TrueType fonts, PNG through 'ragg' at the style's resolution
 #' (falling back to the 'png' Cairo device when 'ragg' is absent).
 #'
+#' With 'ragg', the page is drawn on a new capture device for every save and
+#' the captured pixels are written by `ragg::agg_png()`. 'gridtext' keeps rich
+#' text metrics for the session under the device name, not its resolution, so
+#' a fresh device name makes the PNG independent of what was drawn before in
+#' the session. Without 'ragg', PNGs saved at different resolutions in one
+#' session can place rich text a pixel apart.
+#'
 #' @param figure A [ComposeFigure()] result.
 #' @param pdf Output PDF path, or `NULL`.
 #' @param png Output PNG path, or `NULL`.
@@ -150,7 +157,6 @@ SaveFigure <- function(figure, pdf = NULL, png = NULL, dpi = NULL) {
   if (is.null(dpi)) dpi <- style$page$dpi
   w <- figure$width_mm / 25.4
   h <- figure$height_mm / 25.4
-  .fig_reset_text_metrics()
   if (!is.null(pdf)) {
     if (!capabilities("cairo")) stop("PDF output needs R built with Cairo.", call. = FALSE)
     grDevices::cairo_pdf(pdf, width = w, height = h, family = style$family, onefile = TRUE)
@@ -158,28 +164,23 @@ SaveFigure <- function(figure, pdf = NULL, png = NULL, dpi = NULL) {
   }
   if (!is.null(png)) {
     if (requireNamespace("ragg", quietly = TRUE)) {
+      cap <- ragg::agg_capture(width = w, height = h, units = "in", res = dpi, background = "white")
+      img <- tryCatch({
+        print(figure)
+        cap(native = TRUE)
+      }, finally = grDevices::dev.off())
       ragg::agg_png(png, width = w, height = h, units = "in", res = dpi, background = "white")
+      tryCatch(grid::grid.raster(img, x = 0, y = 0, width = grid::unit(1, "npc"),
+                                 height = grid::unit(1, "npc"), just = c(0, 0), interpolate = FALSE),
+               finally = grDevices::dev.off())
     } else {
       if (!capabilities("cairo")) stop("PNG output needs 'ragg' or R built with Cairo.", call. = FALSE)
       grDevices::png(png, width = w, height = h, units = "in", res = dpi, type = "cairo",
                      bg = "white")
+      tryCatch(print(figure), finally = grDevices::dev.off())
     }
-    tryCatch(print(figure), finally = grDevices::dev.off())
   }
   invisible(c(pdf = pdf, png = png))
-}
-
-# gridtext keeps text metrics for the whole R session under a key of device
-# name, font and size only, so values measured while saving an earlier figure
-# can shift rich text in a later one. Every save starts from an empty cache, as
-# in a fresh session; the cache only fills while drawing on a device.
-.fig_reset_text_metrics <- function() {
-  if (!requireNamespace("gridtext", quietly = TRUE)) return(invisible())
-  for (name in c("font_info_cache", "text_info_cache")) {
-    cache <- tryCatch(utils::getFromNamespace(name, "gridtext"), error = function(e) NULL)
-    if (is.environment(cache)) rm(list = ls(cache, all.names = TRUE), envir = cache)
-  }
-  invisible()
 }
 
 # ---- drawing ------------------------------------------------------------------

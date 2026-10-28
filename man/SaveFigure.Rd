@@ -23,3 +23,11 @@ Writes the page at its exact size: PDF through the Cairo device with
 embedded TrueType fonts, PNG through 'ragg' at the style's resolution
 (falling back to the 'png' Cairo device when 'ragg' is absent).
 }
+\details{
+With 'ragg', the page is drawn on a new capture device for every save and
+the captured pixels are written by \code{ragg::agg_png()}. 'gridtext' keeps rich
+text metrics for the session under the device name, not its resolution, so
+a fresh device name makes the PNG independent of what was drawn before in
+the session. Without 'ragg', PNGs saved at different resolutions in one
+session can place rich text a pixel apart.
+}

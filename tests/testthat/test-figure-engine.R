@@ -8,16 +8,44 @@ draw_page <- function(fig, env = parent.frame()) {
   invisible(f)
 }
 
-test_that("every save measures rich text afresh", {
-  skip_if_not_installed("gridtext")
-  cache <- utils::getFromNamespace("text_info_cache", "gridtext")
-  assign("left over from an earlier figure", list(width_pt = 1, ascent_pt = 1), envir = cache)
-  fig <- ComposeFigure(list(FigurePanel(NULL, c(10, 10, 40, 20), letter = "a",
-                                        heading = "Cell territories in tissue")),
-                       height_mm = 40, width_mm = 60)
-  draw_page(fig)
-  expect_false(exists("left over from an earlier figure", envir = cache, inherits = FALSE))
-  expect_gt(length(ls(cache)), 0L)
+order_test_figure <- function() {
+  v <- data.frame(d = c(-0.9, 0.2, 0.7, -0.1, 0.8), p = c(0.02, 0.6, 0.04, 0.9, 1e-5), name = paste("e", 1:5))
+  p <- PlotVolcano(v, effect = "d", label = "name", top = 2)
+  ComposeFigure(list(FigurePanel(p, c(12, 8, 60, 45), letter = "a",
+                                 heading = "Order test: cell territories; p = 0.01")),
+                height_mm = 60, width_mm = 85)
+}
+
+test_that("saved figures do not depend on what was drawn before in the session", {
+  skip_without_cairo()
+  skip_if_not_installed("ragg")
+  fig <- order_test_figure()
+  dir <- withr::local_tempdir()
+  # The same texts drawn first at other resolutions, as a preview or a knitr chunk would.
+  for (res in c(72, 133)) {
+    ragg::agg_png(file.path(dir, "preview.png"), width = 4, height = 3, units = "in", res = res)
+    print(fig)
+    grDevices::dev.off()
+  }
+  SaveFigure(fig, pdf = file.path(dir, "a.pdf"), png = file.path(dir, "a.png"), dpi = 300)
+  SaveFigure(order_test_figure(), png = file.path(dir, "b.png"), dpi = 150)
+  SaveFigure(fig, pdf = file.path(dir, "c.pdf"), png = file.path(dir, "c.png"), dpi = 300)
+  expect_identical(readBin(file.path(dir, "a.png"), "raw", 1e7), readBin(file.path(dir, "c.png"), "raw", 1e7))
+  # A device that has never drawn these texts measures them afresh.
+  cap <- ragg::agg_capture(width = 85 / 25.4, height = 60 / 25.4, units = "in", res = 300, background = "white")
+  fresh <- tryCatch({
+    print(fig)
+    cap(native = TRUE)
+  }, finally = grDevices::dev.off())
+  expect_identical(as.integer(png::readPNG(file.path(dir, "a.png"), native = TRUE)), as.integer(fresh))
+  skip_on_cran()
+  skip_if(!nzchar(Sys.which("pdftoppm")), "pdftoppm is not available")
+  render <- function(f) {
+    out <- tempfile(tmpdir = dir)
+    system2("pdftoppm", c("-r", "300", "-gray", "-png", "-singlefile", shQuote(f), shQuote(out)))
+    readBin(paste0(out, ".png"), "raw", 1e8)
+  }
+  expect_identical(render(file.path(dir, "a.pdf")), render(file.path(dir, "c.pdf")))
 })
 
 test_that("typesetting keeps straight quotes and can be switched off by rule or entirely", {
