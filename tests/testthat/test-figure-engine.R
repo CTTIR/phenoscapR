@@ -8,6 +8,18 @@ draw_page <- function(fig, env = parent.frame()) {
   invisible(f)
 }
 
+test_that("every save measures rich text afresh", {
+  skip_if_not_installed("gridtext")
+  cache <- utils::getFromNamespace("text_info_cache", "gridtext")
+  assign("left over from an earlier figure", list(width_pt = 1, ascent_pt = 1), envir = cache)
+  fig <- ComposeFigure(list(FigurePanel(NULL, c(10, 10, 40, 20), letter = "a",
+                                        heading = "Cell territories in tissue")),
+                       height_mm = 40, width_mm = 60)
+  draw_page(fig)
+  expect_false(exists("left over from an earlier figure", envir = cache, inherits = FALSE))
+  expect_gt(length(ls(cache)), 0L)
+})
+
 test_that("typesetting keeps straight quotes and can be switched off by rule or entirely", {
   rich <- TypesetLabel(c("Spearman's rho", "patient's \"cells\" -- a ... b", "p ≥ 0.05", "P"), rich = TRUE)
   expect_identical(rich[1], "Spearman&#39;s rho")

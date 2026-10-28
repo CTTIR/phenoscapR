@@ -24,6 +24,9 @@
 * Exact paired tests, contrasts of patient endpoints, bootstrap median
   intervals, permutation correlations, section summaries, Delaunay neighbour
   type counts and keyed parity checks of recomputed tables and arrays.
+* `SaveFigure()` and `WriteFigure()` give the same files whatever was saved
+  before in the session: rich text is measured afresh for every figure, not
+  taken from gridtext's session-wide cache.
 
 # phenoscapR 0.1.1
 
