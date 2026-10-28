@@ -1,5 +1,13 @@
 # phenoscapR (development version)
 
+* Patient-level and cell-level analysis exports: `ExactPairedTests()` (exact
+  signed-rank test over all sign flips with midranks, exact sign test,
+  direction interval and leave-one-out rows), `PairedDifferences()`,
+  `ContrastPatientEndpoints()`, `BootstrapMedianInterval()`,
+  `PermutationCorrelation()`, `NeighbourTypeCounts()` (Delaunay neighbours
+  within a maximum edge length, GEOS or deldir), `SummarizeNearestDistances()`,
+  `SummarizeCellComposition()`, `ReadCellArrays()` and keyed comparisons with
+  `CompareTables()`, `CompareArrays()` and `SummarizeComparisons()`.
 * Manuscript figures: a figure style, page composition in millimetres and
   figures rendered from declarative specifications through registered plot
   grammars, with plot-data builders for patient-level, matrix, embedding and
