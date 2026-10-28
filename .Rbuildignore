@@ -27,3 +27,4 @@
 ^CITATION\.cff$
 ^tools/branding$
 ^man/figures/(icon-[0-9]+\.png|logo-.*\.(pdf|png|svg)|logo\.(pdf|png))$
+^tests/testthat/_snaps/app$
