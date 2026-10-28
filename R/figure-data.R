@@ -995,7 +995,9 @@ PlotDataRankRows <- function(data, id, columns = NULL, pattern = NULL, decreasin
 #' the category with the largest share (ties go to the earlier category in
 #' `columns`) and orders the groups by the position of that category in
 #' `priority`, then by the group value. Categories missing from `priority`
-#' take position zero, before all listed ones.
+#' take position zero, before all listed ones. A group without any share
+#' among `columns` has a missing `dominant` category and also takes position
+#' zero.
 #'
 #' @param data Long share table.
 #' @param row,column,value Column names.
@@ -1017,7 +1019,9 @@ PlotDataDominant <- function(data, row, column, value = "share", columns = NULL,
     s <- data[as.character(data[[row]]) == g, , drop = FALSE]
     s <- s[order(match(as.character(s[[column]]), columns)), , drop = FALSE]
     s <- s[as.character(s[[column]]) %in% columns, , drop = FALSE]
-    as.character(s[[column]][which.max(as.numeric(s[[value]]))])
+    top <- which.max(as.numeric(s[[value]]))
+    # A group without any share has no dominant category.
+    if (length(top)) as.character(s[[column]][top]) else NA_character_
   }, character(1))
   dshare <- vapply(seq_along(groups), function(i) {
     s <- data[as.character(data[[row]]) == groups[i] & as.character(data[[column]]) == dom[i], value]

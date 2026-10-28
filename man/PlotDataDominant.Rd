@@ -31,7 +31,9 @@ For each row group of a share table (from \code{\link[=PlotDataCrossShares]{Plot
 the category with the largest share (ties go to the earlier category in
 \code{columns}) and orders the groups by the position of that category in
 \code{priority}, then by the group value. Categories missing from \code{priority}
-take position zero, before all listed ones.
+take position zero, before all listed ones. A group without any share
+among \code{columns} has a missing \code{dominant} category and also takes position
+zero.
 }
 \examples{
 s <- PlotDataCrossShares(data.frame(cl = c(1, 1, 2, 3), type = c("b", "b", "a", "b")), "cl", "type")

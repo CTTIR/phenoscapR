@@ -276,3 +276,11 @@ test_that("counting and ranking accept data.table input", {
   w <- data.frame(id = c("a", "b"), x = 1:2, y = 3:4)
   expect_identical(PlotDataRankRows(data.table::as.data.table(w), "id", c("x", "y")), PlotDataRankRows(w, "id", c("x", "y")))
 })
+
+test_that("a group without shares has no dominant category", {
+  dd <- data.frame(g = c("1", "1", "2", "2"), col = c("A", "B", "A", "B"), share = c(0.2, 0.8, NA, NA))
+  out <- PlotDataDominant(dd, "g", "col")
+  expect_identical(out$g, c("2", "1"))
+  expect_identical(out$dominant, c(NA, "B"))
+  expect_identical(out$dominant_share, c(NA, 0.8))
+})
