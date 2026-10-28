@@ -1,5 +1,8 @@
 # Advanced Capabilities
 
+![phenoscapR logo](figures/logo.svg)![phenoscapR
+logo](figures/logo-dark.svg)
+
 [![R-CMD-check](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/CTTIR/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg)](https://cttir.github.io/phenoscapR/)
 [![CRAN
@@ -14,8 +17,6 @@ total](https://cranlogs.r-pkg.org/badges/grand-total/phenoscapR)](https://cran.r
 MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
-![phenoscapR hex logo](../reference/figures/logo-with-name.svg)
 
 This vignette tours the capabilities added beyond the core workflow: a
 coherent result API, higher-order spatial structure, rigorous

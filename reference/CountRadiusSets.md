@@ -127,7 +127,7 @@ raise errors. Extra node columns are ignored; a tile column does not
 partition a frame unless selected as a key.
 
 Searches use
-[`dbscan::frNN()`](http://michael.hahsler.net/dbscan/reference/frNN.md)
+[`dbscan::frNN()`](https://michael.hahsler.net/dbscan/reference/frNN.html)
 with explicit query mode, `search = "kdtree"`, `approx = 0` and
 `sort = FALSE`, without a fallback. Returned distances are filtered
 inclusively using `distance <= radius`. Self exclusion compares IDs
