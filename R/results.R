@@ -69,10 +69,12 @@ print.phenoscapR_moran <- function(x, ...) {
   cat(sprintf("  I = %.4f   (expected %.4f under no autocorrelation)\n",
               x$I, x$expected))
   cat(sprintf("  z = %.3f, p = %.3g\n", x$z_score, x$p_value))
-  verdict <- if (x$p_value < 0.05 && x$I > x$expected) {
+  verdict <- if (isTRUE(x$p_value < 0.05 && x$I > x$expected)) {
     "significant positive autocorrelation (clustered)"
-  } else if (x$p_value < 0.05 && x$I < x$expected) {
+  } else if (isTRUE(x$p_value < 0.05 && x$I < x$expected)) {
     "significant negative autocorrelation (dispersed)"
+  } else if (!is.finite(x$I)) {
+    "not evaluable"
   } else {
     "no significant spatial autocorrelation"
   }
@@ -87,8 +89,9 @@ print.phenoscapR_quadrat <- function(x, ...) {
   cat("<phenoscapR> Quadrat analysis (chi-squared test of CSR)\n")
   cat(sprintf("  grid %d x %d; chi-sq = %.1f, p = %.3g; VMR = %.2f\n",
               nrow(x$counts), ncol(x$counts), x$chi_sq, x$p_value, x$VMR))
-  cat("  ", if (x$VMR > 1) "clustered (VMR > 1)" else
-              if (x$VMR < 1) "regular (VMR < 1)" else "random",
+  cat("  ", if (isTRUE(x$VMR > 1)) "clustered (VMR > 1)" else
+              if (isTRUE(x$VMR < 1)) "regular (VMR < 1)" else
+              if (isTRUE(x$VMR == 1)) "random" else "not evaluable",
       "\n", sep = "")
   invisible(x)
 }

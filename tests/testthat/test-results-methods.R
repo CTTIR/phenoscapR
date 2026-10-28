@@ -74,3 +74,11 @@ test_that("per-sample bundle print lists each sample", {
   expect_true(any(grepl("tonsil_A", out)))
   expect_true(any(grepl("tonsil_B", out)))
 })
+
+test_that("results without a defined statistic print as not evaluable", {
+  m <- structure(list(I = NaN, expected = -0.1, z_score = NaN, p_value = NaN), class = "phenoscapR_moran")
+  expect_output(print(m), "not evaluable")
+  q <- structure(list(counts = matrix(5, 1, 1), chi_sq = 0, p_value = NA_real_, VMR = NA_real_),
+                 class = "phenoscapR_quadrat")
+  expect_output(print(q), "not evaluable")
+})

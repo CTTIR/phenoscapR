@@ -96,6 +96,9 @@
   as `qc_filter()` does; it used to fail.
 * `CellMap()`, `plot_cell_map()` and `DimPlot()` colour by a numeric column with a
   continuous scale instead of failing.
+* Moran's I and quadrat results without a defined statistic (no neighbours
+  within the radius, a single quadrat) print as not evaluable instead of
+  failing.
 
 # phenoscapR 0.1.1
 
