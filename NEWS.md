@@ -68,6 +68,10 @@
   groups returns `n = 0` instead of failing.
 * `PlotDataCrossShares()` computes totals and shares for an empty-string
   level, which used to get missing values.
+* Zero-row inputs give typed results without a phantom group in
+  `ExactPairedTests()`, `BootstrapMedianInterval()`,
+  `PermutationCorrelation()`, `CompareTables()` and `SummarizeComparisons()`;
+  without group columns they give one unavailable overall row.
 
 # phenoscapR 0.1.1
 

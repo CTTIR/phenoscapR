@@ -111,16 +111,20 @@ BootstrapMedianInterval <- function(data, value, groups = NULL, n_boot = 10000L,
       results[[k]] <- if (is.null(indices)) .an_with_seed(seed, one(k)) else one(k)
     }
   }
-  out <- data.frame(do.call(rbind, lapply(results, as.data.frame)))
+  out <- if (length(results)) {
+    data.frame(do.call(rbind, lapply(results, as.data.frame)))
+  } else {
+    data.frame(n = integer(), median = numeric(), lower = numeric(), upper = numeric())
+  }
   if (!is.null(groups)) {
     key <- data[vapply(parts, `[`, 1L, 1L), groups, drop = FALSE]
     rownames(key) <- NULL
     out <- cbind(key, out)
   }
-  out$conf_level <- conf_level
-  out$n_boot <- n_boot
-  out$seed <- if (is.null(seed) || !is.null(indices)) NA_real_ else seed
-  out$draws <- if (is.null(indices)) "R_MERSENNE_TWISTER" else "SUPPLIED"
+  out$conf_level <- rep(conf_level, nrow(out))
+  out$n_boot <- rep(n_boot, nrow(out))
+  out$seed <- rep(if (is.null(seed) || !is.null(indices)) NA_real_ else seed, nrow(out))
+  out$draws <- rep(if (is.null(indices)) "R_MERSENNE_TWISTER" else "SUPPLIED", nrow(out))
   rownames(out) <- NULL
   out
 }
@@ -219,15 +223,20 @@ PermutationCorrelation <- function(data, x, y, groups = NULL,
   results <- lapply(parts, function(ii) {
     if (permutations == "monte_carlo") .an_with_seed(seed, one(ii)) else one(ii)
   })
-  out <- data.frame(do.call(rbind, lapply(results, as.data.frame)))
+  out <- if (length(results)) {
+    data.frame(do.call(rbind, lapply(results, as.data.frame)))
+  } else {
+    data.frame(n = integer(), estimate = numeric(), p_value = numeric(), n_perm = numeric(),
+               status = character(), stringsAsFactors = FALSE)
+  }
   if (!is.null(groups)) {
     key <- data[vapply(parts, `[`, 1L, 1L), groups, drop = FALSE]
     rownames(key) <- NULL
     out <- cbind(key, out)
   }
-  out$method <- method
-  out$permutations <- permutations
-  out$seed <- if (is.null(seed) || permutations == "exact") NA_real_ else seed
+  out$method <- rep(method, nrow(out))
+  out$permutations <- rep(permutations, nrow(out))
+  out$seed <- rep(if (is.null(seed) || permutations == "exact") NA_real_ else seed, nrow(out))
   out <- out[c(groups, "n", "estimate", "p_value", "method", "permutations", "n_perm",
                "seed", "status")]
   rownames(out) <- NULL

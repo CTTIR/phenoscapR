@@ -55,3 +55,13 @@ test_that("comparison summaries pass only complete matching checks", {
   expect_identical(t$status, "PASS")
 })
 
+
+test_that("comparisons of empty tables have no phantom rows", {
+  e <- data.frame(k = character(), v = numeric())
+  ct <- CompareTables(e, e, keys = "k", columns = "v")
+  expect_identical(nrow(ct), 0L)
+  expect_type(ct$matches, "logical")
+  s <- SummarizeComparisons(ct)
+  expect_identical(nrow(s), 0L)
+  expect_identical(names(s)[1:2], c("check", "rows"))
+})

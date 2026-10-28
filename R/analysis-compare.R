@@ -132,9 +132,10 @@ CompareTables <- function(observed, reference, keys, columns, tolerance = 0,
     status <- ifelse(is.na(io), "MISSING_OBSERVED",
                      ifelse(is.na(ir) & !filled, "MISSING_REFERENCE",
                             ifelse(same, "MATCH", "MISMATCH")))
-    data.frame(key_table, row_key = row_key, column = col, reference_column = columns[[col]],
+    data.frame(key_table, row_key = row_key, column = rep(col, length(o)),
+               reference_column = rep(columns[[col]], length(o)),
                observed_value = .an_text(o), reference_value = .an_text(r), difference = diff,
-               tolerance = if (numeric_pair) tol[[col]] else NA_real_,
+               tolerance = rep(if (numeric_pair) tol[[col]] else NA_real_, length(o)),
                reference_filled = filled, matches = status == "MATCH", status = status,
                stringsAsFactors = FALSE, check.names = FALSE)
   })
@@ -277,6 +278,12 @@ SummarizeComparisons <- function(comparisons, unit = "row_key", expected_rows = 
       stringsAsFactors = FALSE))
   })
   out <- do.call(rbind, rows)
+  if (is.null(out)) {
+    # No compared rows: typed columns without rows.
+    out <- cbind(all[0L, by, drop = FALSE], data.frame(rows = integer(), matching_rows = integer(),
+      values = integer(), matching_values = integer(), max_difference = numeric(), tolerance = numeric(),
+      expected_rows = numeric(), status = character(), stringsAsFactors = FALSE))
+  }
   rownames(out) <- NULL
   out
 }

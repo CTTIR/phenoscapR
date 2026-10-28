@@ -67,3 +67,18 @@ test_that("Monte Carlo permutation p follows (b + 1) / (B + 1) and is seeded", {
   expect_error(PermutationCorrelation(data.frame(x = 1:12, y = 12:1), "x", "y",
                                       permutations = "exact"), "limited")
 })
+
+test_that("zero-row inputs give typed results without phantom groups", {
+  e <- data.frame(g = character(), x = numeric(), y = numeric())
+  b <- BootstrapMedianInterval(e, "x", groups = "g", n_boot = 10L)
+  expect_identical(nrow(b), 0L)
+  expect_type(b$median, "double")
+  b1 <- BootstrapMedianInterval(e, "x", n_boot = 10L)
+  expect_identical(b1$n, 0L)
+  expect_true(is.na(b1$median))
+  p <- PermutationCorrelation(e, "x", "y", groups = "g")
+  expect_identical(nrow(p), 0L)
+  expect_type(p$status, "character")
+  p1 <- PermutationCorrelation(e, "x", "y")
+  expect_identical(p1$status, "UNAVAILABLE")
+})

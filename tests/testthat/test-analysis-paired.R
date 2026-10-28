@@ -89,3 +89,19 @@ test_that("paired differences from one or several tables", {
   expect_error(PairedDifferences(list(first = t1), "unit", list(list(name = "a", x = "x1"))),
                "Unknown table")
 })
+
+test_that("zero-row inputs give typed results without phantom groups", {
+  e <- data.frame(id = character(), g = character(), d = numeric())
+  expect_identical(.an_key(e, "g"), character())
+  grouped <- ExactPairedTests(e, "d", groups = "g")
+  expect_identical(nrow(grouped), 0L)
+  expect_type(grouped$p_value, "double")
+  expect_type(grouped$hypothesis_id, "character")
+  overall <- ExactPairedTests(e, "d")
+  expect_identical(overall$n_available, 0L)
+  expect_identical(overall$status, "UNAVAILABLE_NO_NONZERO_DIFFERENCE")
+  expect_identical(overall$hypothesis_id, "all")
+  each <- ExactPairedTests(e, "d", groups = "g", id = "id", omit = "each")
+  expect_identical(nrow(each), 0L)
+  expect_true("omitted" %in% names(each))
+})

@@ -24,6 +24,7 @@
 
 # Character key of selected columns; one string per row.
 .an_key <- function(data, columns) {
+  if (!nrow(data)) return(character())
   if (!length(columns)) return(rep("", nrow(data)))
   parts <- lapply(columns, function(k) {
     z <- as.character(data[[k]])
@@ -33,8 +34,10 @@
   do.call(paste, c(parts, list(sep = "\034")))
 }
 
-# Groups in order of first appearance.
+# Groups in order of first appearance. Without group columns all rows form
+# one group, also when there are none.
 .an_split <- function(data, columns) {
+  if (!length(columns)) return(stats::setNames(list(seq_len(nrow(data))), ""))
   key <- .an_key(data, columns)
   split(seq_len(nrow(data)), factor(key, levels = unique(key)))
 }
@@ -199,13 +202,21 @@ ExactPairedTests <- function(data, value, groups = NULL, id = NULL, expected = N
     }
   }
   out <- do.call(rbind, rows)
+  if (is.null(out)) {
+    # No groups or no subjects: typed columns without rows.
+    direction <- if (is.null(expected) || is.null(direction_column)) expected else "less"
+    out <- as.data.frame(.an_paired_one(numeric(), direction, conf_level, max_n),
+                         stringsAsFactors = FALSE)[0L, , drop = FALSE]
+    if (omit == "each") out <- cbind(omitted = data[[id]][0L], out, stringsAsFactors = FALSE)
+    out <- cbind(data[0L, groups, drop = FALSE], out)
+  }
   rownames(out) <- NULL
   if (!is.null(groups)) {
     out$hypothesis_id <- do.call(paste, c(lapply(groups, function(g) as.character(out[[g]])),
                                           list(sep = " :: ")))
     if (omit == "each") out$hypothesis_id <- paste(out$hypothesis_id, out$omitted, sep = " :: ")
   } else {
-    out$hypothesis_id <- if (omit == "each") as.character(out$omitted) else "all"
+    out$hypothesis_id <- if (omit == "each") as.character(out$omitted) else rep("all", nrow(out))
   }
   if (!is.null(family)) {
     out$family_id <- do.call(paste, c(lapply(family, function(g) as.character(out[[g]])),
