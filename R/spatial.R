@@ -772,7 +772,9 @@ SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
 #' in the \code{spatial} slot. Each \code{sample_id} is triangulated
 #' separately; it must identify one independent spatial coordinate frame.
 #' Every sample must contain at least three cells. Edge endpoints refer to
-#' cell rows in the complete object, never rows local to a sample.
+#' cell rows in the complete object, never rows local to a sample. Of cells
+#' with identical coordinates, only the first is a vertex; the others get no
+#' edges.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param max_edge Numeric or \code{NULL}. Maximum edge length to retain.
@@ -838,8 +840,10 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
   if (requireNamespace("deldir", quietly = TRUE)) {
     dd <- deldir::deldir(xy[, 1L], xy[, 2L], suppressMsge = TRUE)
     segs <- dd$delsgs
-    from <- pmin(segs$ind1, segs$ind2)
-    to   <- pmax(segs$ind1, segs$ind2)
+    # deldir drops repeated coordinates and numbers the points it keeps; map
+    # them back to rows (later copies of a point get no edges).
+    from <- dd$ind.orig[pmin(segs$ind1, segs$ind2)]
+    to   <- dd$ind.orig[pmax(segs$ind1, segs$ind2)]
     return(data.frame(from = as.integer(from), to = as.integer(to)))
   }
 

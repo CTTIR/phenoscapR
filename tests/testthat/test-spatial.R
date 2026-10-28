@@ -155,3 +155,15 @@ test_that("neighbour distances and densities stay with their cells when samples 
   grouped <- data.table::data.table(sample_id = c("a", "a", "b", "b"), cell_id = 1:4, x = c(0, 1, 100, 300), y = 0)
   expect_equal(nearest_neighbours(grouped)$nn_distance, c(1, 1, 200, 200))
 })
+
+test_that("DelaunayNetwork maps deldir's points back to rows when coordinates repeat", {
+  skip_if_not_installed("deldir")
+  xy <- data.frame(x = c(0, 0, 10, 0, 10), y = c(0, 0, 0, 10, 10))
+  o <- CreateSpatialObject(matrix(1, 5, 1, dimnames = list(NULL, "M")), xy)
+  e <- DelaunayNetwork(o)@spatial$delaunay_edges
+  expect_false(2L %in% c(e$from, e$to))
+  expect_true(all(e$distance > 0))
+  # The four corners are co-circular; deldir takes the diagonal 1-5.
+  expect_setequal(paste(e$from, e$to), c("1 3", "1 4", "1 5", "3 5", "4 5"))
+  expect_equal(e$distance, sqrt((xy$x[e$from] - xy$x[e$to])^2 + (xy$y[e$from] - xy$y[e$to])^2))
+})

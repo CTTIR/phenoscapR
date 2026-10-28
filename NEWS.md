@@ -44,6 +44,8 @@
   with one formula on centred values and counts differences within rounding
   error, relative to the data, as ties. p values no longer change when values
   are shifted or rescaled; for well-conditioned data they are unchanged.
+* `DelaunayNetwork()` maps deldir's points back to cell rows when coordinates
+  repeat; edges used to point to the wrong cells after a duplicate.
 
 # phenoscapR 0.1.1
 
