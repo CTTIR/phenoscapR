@@ -147,6 +147,18 @@ test_that("schematics fill placeholders from data and lay out flows", {
   expect_identical(s2$shapes$x, s$shapes$x[s$shapes$type == "circle"])
 })
 
+test_that("schematic clouds leave the caller's random state as it was", {
+  cloud <- list(list(n = 4, x = 0, y = 0, rx = 1, ry = 1, r = 0.1, fill = "#FF0000"))
+  set.seed(11)
+  before <- .Random.seed
+  SchematicShapes(clouds = cloud, seed = 3)
+  expect_identical(.Random.seed, before)
+  rm(".Random.seed", envir = globalenv())
+  SchematicShapes(clouds = cloud, seed = 3)
+  expect_false(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+  set.seed(11)
+})
+
 test_that("image grammars are registered and draw on a composed page", {
   skip_if_not(capabilities("cairo"))
   skip_if_not_installed("ragg")

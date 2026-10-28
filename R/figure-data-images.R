@@ -448,12 +448,13 @@ SchematicShapes <- function(shapes = list(), clouds = list(), flow = NULL, value
     }
   }
   if (length(clouds)) {
-    old <- if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) get(".Random.seed", envir = globalenv())
-    on.exit(if (!is.null(old)) assign(".Random.seed", old, envir = globalenv()), add = TRUE)
-    set.seed(seed)
-    for (cl in clouds) {
-      a <- stats::runif(cl$n, 0, 2 * pi)
-      r <- sqrt(stats::runif(cl$n))
+    draws <- .figb_with_seed(seed, lapply(clouds, function(cl) {
+      list(a = stats::runif(cl$n, 0, 2 * pi), r = sqrt(stats::runif(cl$n)))
+    }))
+    for (j in seq_along(clouds)) {
+      cl <- clouds[[j]]
+      a <- draws[[j]]$a
+      r <- draws[[j]]$r
       for (k in seq_len(cl$n)) {
         rows[[length(rows) + 1L]] <- .fig_c_shape_row(list(
           type = "circle", x = cl$x + cl$rx * r[k] * cos(a[k]), y = cl$y + cl$ry * r[k] * sin(a[k]),

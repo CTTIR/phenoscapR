@@ -4,11 +4,13 @@
 # lookup of per-cell values stored on nested subsets of rows.
 
 # Evaluate with a fixed seed of R's default generator and restore the
-# caller's random number state afterwards.
+# caller's generator kind and random number state afterwards.
 .figb_with_seed <- function(seed, expr) {
   had <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
   if (had) old <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+  old_kind <- RNGkind()
   on.exit({
+    RNGkind(old_kind[1L], old_kind[2L], old_kind[3L])
     if (had) assign(".Random.seed", old, envir = globalenv()) else
       if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) rm(".Random.seed", envir = globalenv())
   }, add = TRUE)
