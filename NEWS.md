@@ -83,6 +83,8 @@
 * `PlotDataCount()` and `PlotDataRankRows()` accept data.table input.
 * `PlotDataDominant()` gives a group without any share a missing dominant
   category instead of failing.
+* `SummarizeGroupedValues()` accepts integer value and weight columns, which
+  used to fail when groups gave different column types.
 
 # phenoscapR 0.1.1
 

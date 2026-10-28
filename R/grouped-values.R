@@ -73,6 +73,9 @@ SummarizeGroupedValues <- function(data, groups, id, value, weight = NULL,
                     all(is.na(data[[weight]]) | data[[weight]] >= 0),
                   "Weights must be finite nonnegative values or NA")
   }
+  # Integer columns are summarised as doubles, so every group has the same types.
+  data[[value]] <- as.double(data[[value]])
+  if (!is.null(weight)) data[[weight]] <- as.double(data[[weight]])
   .exact_assert(is.numeric(min_available) && length(min_available) == 1L &&
                   is.finite(min_available) && min_available >= 1 &&
                   min_available == floor(min_available), "Invalid availability minimum")

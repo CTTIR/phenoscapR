@@ -95,3 +95,11 @@ test_that("weight totals expose the actual denominator without inventing availab
   expect_identical(SummarizeGroupedValues(d[0, ], "sample", "id", "signal")$weight_sum,
     numeric())
 })
+
+test_that("integer value and weight columns are summarised like doubles", {
+  d <- data.frame(g = c("a", "a", "b"), id = c("1", "2", "1"), v = c(1L, 3L, 3L), w = c(1L, 2L, NA))
+  r <- SummarizeGroupedValues(d, "g", "id", "v", weight = "w")
+  dd <- transform(d, v = as.double(v), w = as.double(w))
+  expect_identical(r, SummarizeGroupedValues(dd, "g", "id", "v", weight = "w"))
+  expect_identical(r$weight_sum, c(3, NA))
+})
