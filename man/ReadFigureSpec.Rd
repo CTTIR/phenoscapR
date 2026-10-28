@@ -16,3 +16,14 @@ The merged specification list.
 Reads one or more JSON specification files (or a directory of them) and
 merges them as described in \code{\link[=RenderFigure]{RenderFigure()}}.
 }
+\examples{
+if (requireNamespace("jsonlite", quietly = TRUE)) {
+  dir <- tempfile("spec")
+  dir.create(dir)
+  writeLines('{"height_mm": 50, "panels": [{"box": [15, 10, 45, 30], "grammar": "group_strip",
+    "data": "values"}]}', file.path(dir, "1-page.json"))
+  writeLines('{"texts": [{"label": "Note", "at": [5, 48]}]}', file.path(dir, "2-texts.json"))
+  str(ReadFigureSpec(dir), max.level = 1)
+  unlink(dir, recursive = TRUE)
+}
+}

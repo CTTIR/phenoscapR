@@ -54,3 +54,13 @@ the field's own values); \code{hi} is one or several terms, each a table name,
 a table name with a factor (\code{"slide*0.9"}) or a quantile (\code{"q0.995"});
 the largest term is used, and never less than \code{lo + min_span}.
 }
+\examples{
+set.seed(1)
+field <- list(channels = list(dna = matrix(runif(100, 0, 50), 10),
+                              cd3 = matrix(runif(100, 0, 20), 10)))
+views <- list(merge = list(list(channel = "dna", colour = "#3366FF", lo = "q0", hi = "q0.99"),
+                           list(channel = "cd3", colour = "#FF3300", lo = "q0.5", hi = "q1")))
+imgs <- CompositeFields(field, views)
+dim(imgs$images[[1]])
+imgs$info
+}

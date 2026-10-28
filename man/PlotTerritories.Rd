@@ -44,3 +44,13 @@ A 'grid' grob.
 Draws Voronoi territories from \code{\link[=TerritoryTiles]{TerritoryTiles()}} filled by class, with
 thin white borders, a frame and a scale bar; boxes mark sub-fields.
 }
+\examples{
+if (requireNamespace("deldir", quietly = TRUE)) {
+  set.seed(2)
+  d <- data.frame(x = runif(300, 0, 100), y = runif(300, 0, 100),
+                  label = sample(c("t", "a"), 300, TRUE))
+  tt <- TerritoryTiles(d, c(50, 50), 40, cap = 5, classes = list(tumour = "t"))
+  g <- PlotTerritories(tt, colours = list(tumour = "#F4B6C2", other = "#DDDDDD"))
+  grid::grid.newpage(); grid::grid.draw(g)
+}
+}

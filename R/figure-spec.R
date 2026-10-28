@@ -82,6 +82,13 @@ FigureGrammars <- function() {
 #' @param style A [ManuscriptStyle()] object; `spec$style` entries are
 #'   applied on top.
 #' @return A [ComposeFigure()] result.
+#' @examples
+#' d <- data.frame(group = rep(c("A", "B"), each = 3), value = c(1, 2, 3, 2, 3, 5))
+#' spec <- list(height_mm = 50, width_mm = 70, panels = list(
+#'   list(box = c(15, 10, 45, 30), letter = "a", heading = "Values", grammar = "group_strip",
+#'        data = "values", args = list(group_colours = list(A = "groups/group1", B = "groups/group2")))))
+#' fig <- RenderFigure(spec, list(values = d))
+#' grid::grid.newpage(); print(fig)
 #' @export
 RenderFigure <- function(spec, data = list(), style = ManuscriptStyle()) {
   if (is.character(spec)) spec <- .fig_read_spec(spec)
@@ -147,6 +154,16 @@ RenderFigure <- function(spec, data = list(), style = ManuscriptStyle()) {
 #'
 #' @param paths JSON file paths or one directory.
 #' @return The merged specification list.
+#' @examples
+#' if (requireNamespace("jsonlite", quietly = TRUE)) {
+#'   dir <- tempfile("spec")
+#'   dir.create(dir)
+#'   writeLines('{"height_mm": 50, "panels": [{"box": [15, 10, 45, 30], "grammar": "group_strip",
+#'     "data": "values"}]}', file.path(dir, "1-page.json"))
+#'   writeLines('{"texts": [{"label": "Note", "at": [5, 48]}]}', file.path(dir, "2-texts.json"))
+#'   str(ReadFigureSpec(dir), max.level = 1)
+#'   unlink(dir, recursive = TRUE)
+#' }
 #' @export
 ReadFigureSpec <- function(paths) .fig_read_spec(paths)
 
@@ -181,6 +198,16 @@ ReadFigureSpec <- function(paths) .fig_read_spec(paths)
 #' @param pdf,png Output paths.
 #' @param style A [ManuscriptStyle()] object.
 #' @return Output paths, invisibly.
+#' @examples
+#' values <- tempfile(fileext = ".tsv")
+#' write.table(data.frame(group = rep(c("A", "B"), each = 3), value = c(1, 2, 3, 2, 3, 5)),
+#'             values, sep = "\t", row.names = FALSE, quote = FALSE)
+#' spec <- list(height_mm = 50, width_mm = 70, panels = list(
+#'   list(box = c(15, 10, 45, 30), letter = "a", grammar = "group_strip", data = "values")))
+#' if (capabilities("cairo")) {
+#'   WriteFigure(spec, list(values = values), pdf = tempfile(fileext = ".pdf"),
+#'               png = tempfile(fileext = ".png"))
+#' }
 #' @export
 WriteFigure <- function(spec, data, pdf, png, style = ManuscriptStyle()) {
   data <- lapply(data, .fig_read_input)

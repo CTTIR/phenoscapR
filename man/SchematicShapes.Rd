@@ -55,3 +55,13 @@ shapes (rectangles, rounded boxes, ellipses, circles, segments, arrows and
 text) and, optionally, clouds of dots placed at random inside ellipses
 (\code{seed} makes them reproducible).
 }
+\examples{
+s <- SchematicShapes(
+  shapes = list(list(type = "roundrect", x = 0.5, y = 0.6, w = 0.6, h = 0.3,
+                     fill = "#EEEEEE", colour = "#999999", r = 1),
+                list(type = "text", x = 0.5, y = 0.6, label = "{n} cells")),
+  clouds = list(list(n = 20, x = 0.5, y = 0.2, rx = 0.3, ry = 0.1, r = 0.01, fill = "#7B2FBE")),
+  values = data.frame(count = c(120, 80)), fill = list(n = list(column = "count", fun = "sum", format = "\%.0f"))
+)
+head(s$shapes)
+}

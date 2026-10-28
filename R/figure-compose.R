@@ -116,6 +116,11 @@ ComposeFigure <- function(panels, height_mm, width_mm = NULL, texts = list(),
 #' @param at Numeric `c(left, top)` in millimetres.
 #' @param hjust,vjust Justification relative to `at`.
 #' @return A list of class `phenoscapR_grob`.
+#' @examples
+#' key <- FigureGrob(grid::textGrob("Legend text", just = c(0, 1)), at = c(5, 5))
+#' fig <- ComposeFigure(list(FigurePanel(NULL, c(5, 10, 40, 20), letter = "a")),
+#'                      height_mm = 35, width_mm = 60, texts = list(key))
+#' grid::grid.newpage(); print(fig)
 #' @export
 FigureGrob <- function(grob, at, hjust = 0, vjust = 1) {
   if (!inherits(grob, "grob")) stop("grob must be a grid grob.", call. = FALSE)
@@ -149,6 +154,16 @@ print.phenoscapR_figure <- function(x, newpage = TRUE, ...) {
 #' @param png Output PNG path, or `NULL`.
 #' @param dpi Raster resolution; defaults to the style's.
 #' @return The output paths, invisibly.
+#' @examples
+#' p <- ggplot2::ggplot(data.frame(x = 1:3, y = c(2, 1, 3)), ggplot2::aes(x, y)) +
+#'   ggplot2::geom_point()
+#' fig <- ComposeFigure(list(FigurePanel(p, c(10, 8, 50, 30), letter = "a")),
+#'                      height_mm = 45, width_mm = 70)
+#' if (capabilities("cairo")) {
+#'   out <- SaveFigure(fig, pdf = tempfile(fileext = ".pdf"),
+#'                     png = tempfile(fileext = ".png"), dpi = 72)
+#'   file.exists(out)
+#' }
 #' @export
 SaveFigure <- function(figure, pdf = NULL, png = NULL, dpi = NULL) {
   if (!inherits(figure, "phenoscapR_figure")) stop("figure must come from ComposeFigure().", call. = FALSE)

@@ -132,6 +132,15 @@ PlotCellMap <- function(data, layers = list(), rest = list(colour = "#E3E3E3", s
 #' @param title_size Title size (points).
 #' @param style A [ManuscriptStyle()] object.
 #' @return A 'grid' grob.
+#' @examples
+#' if (requireNamespace("deldir", quietly = TRUE)) {
+#'   set.seed(2)
+#'   d <- data.frame(x = runif(300, 0, 100), y = runif(300, 0, 100),
+#'                   label = sample(c("t", "a"), 300, TRUE))
+#'   tt <- TerritoryTiles(d, c(50, 50), 40, cap = 5, classes = list(tumour = "t"))
+#'   g <- PlotTerritories(tt, colours = list(tumour = "#F4B6C2", other = "#DDDDDD"))
+#'   grid::grid.newpage(); grid::grid.draw(g)
+#' }
 #' @export
 PlotTerritories <- function(data, colours, border_colour = "white", border_width = 0.12,
                             scale_bar = list(length = 100, label = "100 um", y = 0.07,
@@ -201,6 +210,17 @@ PlotTerritories <- function(data, colours, border_colour = "white", border_width
 #'   [PlotCellMap()].
 #' @param style A [ManuscriptStyle()] object.
 #' @return A 'grid' grob.
+#' @examples
+#' set.seed(3)
+#' field <- list(channels = list(cd3 = matrix(runif(400, 0, 100), 20),
+#'                               foxp3 = matrix(runif(400, 0, 100), 20)),
+#'               centre = c(10, 10), size = 10)
+#' g <- PlotFluorescenceField(field,
+#'   layers = list(list(channel = "cd3", colour = "#00C8FF", lo = "q0.01", hi = "q0.99"),
+#'                 list(channel = "foxp3", colour = "#FF00C8", lo = "q0.5", hi = "q1",
+#'                      overlay = TRUE)),
+#'   scale_bar = list(length = 5, label = "5 um"))
+#' grid::grid.newpage(); grid::grid.draw(g)
 #' @export
 PlotFluorescenceField <- function(field, layers, slide = NULL, levels = NULL, marks = NULL, index = NULL,
                                   marks_index = NULL, gamma = 0.8, min_span = 1, interpolate = TRUE,
@@ -291,6 +311,15 @@ PlotFluorescenceField <- function(field, layers, slide = NULL, levels = NULL, ma
 #' @param interpolate Smooth raster scaling.
 #' @param style A [ManuscriptStyle()] object.
 #' @return A 'grid' grob.
+#' @examples
+#' shapes <- SchematicShapes(shapes = list(
+#'   list(type = "roundrect", x = 0.5, y = 0.5, w = 0.8, h = 0.5, fill = "#EEEEEE",
+#'        colour = "#999999", r = 1),
+#'   list(type = "text", x = 0.5, y = 0.5, label = "Box"),
+#'   list(type = "arrow", x = 0.1, y = 0.1, xend = 0.9, yend = 0.1, colour = "#000000")))
+#' grid::grid.newpage(); grid::grid.draw(PlotImage(shapes))
+#' set.seed(4)
+#' grid::grid.newpage(); grid::grid.draw(PlotImage(array(runif(300), c(10, 10, 3))))
 #' @export
 PlotImage <- function(data, row = NULL, row_levels = NULL, tile_mm = 10, view_gap_mm = 0.36,
                       field_gap_mm = 1.8, row_pitch_mm = 11, column_labels = NULL, header_size = 4.6,

@@ -34,3 +34,9 @@ Looks up cells referenced by image and row (as in review ledgers and
 example lists) in per-image cell tables and adds their positions and
 further columns.
 }
+\examples{
+cells <- list(s1 = data.frame(row = 0:2, x = c(1, 5, 9), y = c(2, 4, 6), label = "a"),
+              s2 = data.frame(row = 0:1, x = c(3, 7), y = c(1, 1), label = "b"))
+refs <- data.frame(sample_id = c("s2", "s1"), row = c(1, 2))
+CellPositionsFor(refs, cells)
+}

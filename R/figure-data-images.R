@@ -202,6 +202,10 @@ NearestPartnerPairs <- function(cells, ids, partner, id = "row", x = "x", y = "y
 #' @param n Maximum number of cells.
 #' @param x,y,label Column names.
 #' @return The selected rows of `cells`.
+#' @examples
+#' d <- data.frame(x = c(1, 2, 3, 9), y = c(1, 1, 2, 9), label = c("a", "a", "b", "a"),
+#'                 dist = c(4, 2, 1, 3))
+#' FieldCellsRanked(d, centre = c(2, 2), half = 3, labels = "a", order_by = "dist")
 #' @export
 FieldCellsRanked <- function(cells, centre, half, labels, order_by = NULL, n = Inf,
                              x = "x", y = "y", label = "label") {
@@ -319,6 +323,12 @@ TerritoryTiles <- function(cells, centre = NULL, size, cap = 11, margin = 30, cl
 #' @param x,y Column names.
 #' @return One-row data frame with `x`, `y`, `n`, `dx`, `dy` (offset from the
 #'   field centre).
+#' @examples
+#' set.seed(1)
+#' d <- data.frame(x = c(runif(40, 0, 100), runif(20, 60, 80)),
+#'                 y = c(runif(40, 0, 100), runif(20, 20, 40)),
+#'                 label = rep(c("a", "b"), c(40, 20)))
+#' BestSubWindow(d, centre = c(50, 50), size = 100, sub = 20, filter = list(label = "b"))
 #' @export
 BestSubWindow <- function(cells, centre, size, sub, filter = list(), ranges = list(), step = 10,
                           x = "x", y = "y") {
@@ -366,6 +376,15 @@ BestSubWindow <- function(cells, centre, size, sub, filter = list(), ranges = li
 #' @return A list of class `phenoscapR_images` with `images` (list of RGB
 #'   arrays) and `info` (data frame: `image`, `field`, `view` and the
 #'   columns of each field's row).
+#' @examples
+#' set.seed(1)
+#' field <- list(channels = list(dna = matrix(runif(100, 0, 50), 10),
+#'                               cd3 = matrix(runif(100, 0, 20), 10)))
+#' views <- list(merge = list(list(channel = "dna", colour = "#3366FF", lo = "q0", hi = "q0.99"),
+#'                            list(channel = "cd3", colour = "#FF3300", lo = "q0.5", hi = "q1")))
+#' imgs <- CompositeFields(field, views)
+#' dim(imgs$images[[1]])
+#' imgs$info
 #' @export
 CompositeFields <- function(fields, views, slide = NULL, levels = NULL, source = "source",
                             gamma = 0.8, min_span = 1, style = ManuscriptStyle()) {
@@ -421,6 +440,15 @@ CompositeFields <- function(fields, views, slide = NULL, levels = NULL, source =
 #'   `FALSE` the limits fill the box.
 #' @return A list of class `phenoscapR_shapes` with `shapes`, `xlim`, `ylim`
 #'   and `equal`. Rounded-box radii (`r` of `"roundrect"`) are millimetres.
+#' @examples
+#' s <- SchematicShapes(
+#'   shapes = list(list(type = "roundrect", x = 0.5, y = 0.6, w = 0.6, h = 0.3,
+#'                      fill = "#EEEEEE", colour = "#999999", r = 1),
+#'                 list(type = "text", x = 0.5, y = 0.6, label = "{n} cells")),
+#'   clouds = list(list(n = 20, x = 0.5, y = 0.2, rx = 0.3, ry = 0.1, r = 0.01, fill = "#7B2FBE")),
+#'   values = data.frame(count = c(120, 80)), fill = list(n = list(column = "count", fun = "sum", format = "%.0f"))
+#' )
+#' head(s$shapes)
 #' @export
 SchematicShapes <- function(shapes = list(), clouds = list(), flow = NULL, values = NULL, fill = list(),
                             xlim = c(0, 1), ylim = c(0, 1), seed = 1, equal = TRUE) {
@@ -633,6 +661,11 @@ FieldCentre <- function(cells, centre = NULL, centre_cell = NULL, id = "row", gr
 #'   row.
 #' @param columns Columns copied from the cell tables.
 #' @return `table` with the added columns.
+#' @examples
+#' cells <- list(s1 = data.frame(row = 0:2, x = c(1, 5, 9), y = c(2, 4, 6), label = "a"),
+#'               s2 = data.frame(row = 0:1, x = c(3, 7), y = c(1, 1), label = "b"))
+#' refs <- data.frame(sample_id = c("s2", "s1"), row = c(1, 2))
+#' CellPositionsFor(refs, cells)
 #' @export
 CellPositionsFor <- function(table, cells, labels = NULL, source = "sample_id", row = "row",
                              columns = c("x", "y", "label")) {

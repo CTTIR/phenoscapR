@@ -86,3 +86,15 @@ rules), and draws it at its physical extent with optional scale bar,
 corner text, arrows pointing at cells, crosses on partner cells and
 boxes.
 }
+\examples{
+set.seed(3)
+field <- list(channels = list(cd3 = matrix(runif(400, 0, 100), 20),
+                              foxp3 = matrix(runif(400, 0, 100), 20)),
+              centre = c(10, 10), size = 10)
+g <- PlotFluorescenceField(field,
+  layers = list(list(channel = "cd3", colour = "#00C8FF", lo = "q0.01", hi = "q0.99"),
+                list(channel = "foxp3", colour = "#FF00C8", lo = "q0.5", hi = "q1",
+                     overlay = TRUE)),
+  scale_bar = list(length = 5, label = "5 um"))
+grid::grid.newpage(); grid::grid.draw(g)
+}

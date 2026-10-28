@@ -43,3 +43,10 @@ Scans square sub-windows of width \code{sub} on a grid of spacing \code{step}
 inside a field and returns the one holding the most cells that match
 \code{filter} (first maximum in row-major grid order, x varying fastest).
 }
+\examples{
+set.seed(1)
+d <- data.frame(x = c(runif(40, 0, 100), runif(20, 60, 80)),
+                y = c(runif(40, 0, 100), runif(20, 20, 40)),
+                label = rep(c("a", "b"), c(40, 20)))
+BestSubWindow(d, centre = c(50, 50), size = 100, sub = 20, filter = list(label = "b"))
+}

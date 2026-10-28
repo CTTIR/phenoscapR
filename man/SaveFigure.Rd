@@ -31,3 +31,14 @@ a fresh device name makes the PNG independent of what was drawn before in
 the session. Without 'ragg', PNGs saved at different resolutions in one
 session can place rich text a pixel apart.
 }
+\examples{
+p <- ggplot2::ggplot(data.frame(x = 1:3, y = c(2, 1, 3)), ggplot2::aes(x, y)) +
+  ggplot2::geom_point()
+fig <- ComposeFigure(list(FigurePanel(p, c(10, 8, 50, 30), letter = "a")),
+                     height_mm = 45, width_mm = 70)
+if (capabilities("cairo")) {
+  out <- SaveFigure(fig, pdf = tempfile(fileext = ".pdf"),
+                    png = tempfile(fileext = ".png"), dpi = 72)
+  file.exists(out)
+}
+}

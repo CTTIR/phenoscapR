@@ -46,3 +46,14 @@ declared patient omissions through the same API. An incomplete full hypothesis
 cannot become testable by omitting a missing or ineligible patient. No clinical
 groups, independence, omission set or multiplicity policy is inferred.
 }
+\examples{
+endpoints <- data.frame(endpoint_id = "e", patient_id = letters[1:5],
+                        value = c(1, 2, 4, 6, 7), eligible = TRUE)
+design <- data.frame(contrast_id = "c", patient_id = letters[1:5],
+                     group = c("A", "A", "B", "B", "B"))
+hypotheses <- data.frame(hypothesis_id = "h", endpoint_id = "e",
+                         contrast_id = "c", family_id = "f")
+omissions <- data.frame(hypothesis_id = "h", patient_id = letters[1:5])
+out <- LeaveOnePatientOut(endpoints, design, hypotheses, omissions)
+out$omissions[, c("omitted_patient", "mean_difference", "p_value")]
+}

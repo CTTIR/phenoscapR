@@ -19,3 +19,9 @@ A list of class \code{phenoscapR_grob}.
 \description{
 Place a Grob on a Figure Page
 }
+\examples{
+key <- FigureGrob(grid::textGrob("Legend text", just = c(0, 1)), at = c(5, 5))
+fig <- ComposeFigure(list(FigurePanel(NULL, c(5, 10, 40, 20), letter = "a")),
+                     height_mm = 35, width_mm = 60, texts = list(key))
+grid::grid.newpage(); print(fig)
+}
