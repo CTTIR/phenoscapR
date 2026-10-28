@@ -21,7 +21,11 @@
 #'
 #' Enumerates every allocation with the declared group sizes. The statistic is
 #' the mean in A minus the mean in B; the two-sided p value is the fraction with
-#' absolute statistic at least the observed absolute statistic minus 1e-12.
+#' absolute statistic at least the observed absolute statistic. Observed and
+#' allocated statistics are computed alike from values centred on their mean,
+#' and differences within rounding error (relative to the largest absolute
+#' value) count as ties, so p values do not depend on the scale of the values
+#' or on a shift that keeps their differences representable.
 #' This requires exchangeability under the null. Observational confounding,
 #' paired designs and stratified randomisation are not addressed by this test.
 #' Repeated images must be aggregated to one endpoint per patient beforehand.
@@ -107,11 +111,21 @@ ExactPatientTests <- function(endpoints, design, hypotheses,
     effect <- p <- NA_real_
     if (all(ok)) {
       effect <- mean(value[a]) - mean(value[!a])
-      allocation <- utils::combn(n, na)
-      sums <- colSums(matrix(value[allocation], nrow = na))
-      null <- sums / na - (sum(value) - sums) / (n - na)
+      # One formula for the observed and every allocated statistic, on centred
+      # values, so that the comparison does not depend on location or scale.
+      centred <- value - mean(value)
+      total <- sum(centred)
+      statistic <- function(index) {
+        sums <- colSums(matrix(centred[index], nrow = na))
+        sums / na - (total - sums) / (n - na)
+      }
+      null <- statistic(utils::combn(n, na))
+      observed <- statistic(which(a))
       .exact_assert(is.finite(effect) && all(is.finite(null)), "Numerical overflow")
-      p <- mean(abs(null) >= abs(effect) - 1e-12)
+      # Statistics that differ by no more than the rounding of the stored values
+      # and of the sums count as ties.
+      tolerance <- 8 * n * .Machine$double.eps * max(abs(value))
+      p <- mean(abs(null) >= abs(observed) - tolerance)
     }
     cbind(h, data.frame(n_a_expected = na, n_b_expected = n - na,
       n_a_evaluable = sum(ok & a), n_b_evaluable = sum(ok & !a),

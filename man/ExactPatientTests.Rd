@@ -41,7 +41,11 @@ minimum two-sided p value. Unavailable effects and p values remain NA.
 \description{
 Enumerates every allocation with the declared group sizes. The statistic is
 the mean in A minus the mean in B; the two-sided p value is the fraction with
-absolute statistic at least the observed absolute statistic minus 1e-12.
+absolute statistic at least the observed absolute statistic. Observed and
+allocated statistics are computed alike from values centred on their mean,
+and differences within rounding error (relative to the largest absolute
+value) count as ties, so p values do not depend on the scale of the values
+or on a shift that keeps their differences representable.
 This requires exchangeability under the null. Observational confounding,
 paired designs and stratified randomisation are not addressed by this test.
 Repeated images must be aggregated to one endpoint per patient beforehand.

@@ -110,3 +110,57 @@ test_that("family adjustments preserve declared unavailable hypotheses", {
   expect_error(AdjustPatientFamilies(x, "unknown"), "arg")
   expect_error(AdjustPatientFamilies(x[FALSE, ], "declared"), "At least one")
 })
+
+# Well-conditioned designs: values of order 0.01-1000, 4-12 patients per group,
+# with and without ties. The p values below were recorded with the
+# implementation before centring and the relative tie tolerance; they equal an
+# exact integer enumeration of the same designs.
+exact_designs <- function() {
+  sizes <- list(c(4, 4), c(4, 7), c(5, 5), c(6, 6), c(4, 12), c(7, 9), c(8, 8), c(12, 8), c(10, 10))
+  scales <- c(0.01, 0.1, 1, 10, 100)
+  out <- list()
+  for (s in seq_along(sizes)) for (tie in c(FALSE, TRUE)) for (k in seq_along(scales)) {
+    set.seed(100 * s + 10 * tie + k)
+    na <- sizes[[s]][1]
+    nb <- sizes[[s]][2]
+    base <- if (tie) sample(c(1, 2, 2.5, 4, 7, 9.5), na + nb, TRUE) else round(stats::runif(na + nb, 1, 10), 2)
+    out[[length(out) + 1L]] <- list(value = base * scales[k], group = sample(rep(c("A", "B"), c(na, nb))))
+  }
+  out
+}
+exact_run <- function(value, group) {
+  ids <- sprintf("p%02d", seq_along(value))
+  ExactPatientTests(data.frame(endpoint_id = "e", patient_id = ids, value = value, eligible = TRUE),
+                    data.frame(contrast_id = "c", patient_id = ids, group = group),
+                    data.frame(hypothesis_id = "h", endpoint_id = "e", contrast_id = "c", family_id = "f"))
+}
+
+test_that("exact p values of well-conditioned designs are unchanged", {
+  recorded <- c(58L, 50L, 18L, 44L, 36L, 8L, 6L, 22L, 52L, 46L, 70L, 76L, 120L, 96L, 287L, 292L, 15L, 40L,
+    233L, 107L, 250L, 70L, 186L, 190L, 76L, 174L, 222L, 242L, 192L, 108L, 390L, 712L, 514L, 160L,
+    788L, 636L, 374L, 672L, 844L, 100L, 881L, 244L, 214L, 1346L, 1493L, 453L, 983L, 1001L, 158L,
+    338L, 1769L, 1500L, 4574L, 3065L, 4787L, 4673L, 1606L, 7380L, 3614L, 4470L, 178L, 4066L, 1692L,
+    4918L, 3896L, 2070L, 3292L, 11904L, 2740L, 12870L, 108162L, 94934L, 88130L, 21370L, 3447L,
+    27467L, 14487L, 81260L, 24345L, 125970L, 72644L, 31558L, 95118L, 177210L, 29774L, 15892L, 43066L,
+    184756L, 145174L, 83818L)
+  allocations <- rep(c(70, 330, 252, 924, 1820, 11440, 12870, 125970, 184756), each = 10)
+  p <- vapply(exact_designs(), function(d) exact_run(d$value, d$group)$p_value, numeric(1))
+  expect_identical(p, recorded / allocations)
+})
+
+test_that("exact p values do not depend on the location or scale of the values", {
+  designs <- exact_designs()[c(3, 8, 14, 19, 27, 33, 44, 48, 52, 59)]
+  for (d in designs) {
+    p <- exact_run(d$value, d$group)$p_value
+    for (v in list(d$value + 1e4, d$value + 1e6, d$value * 1e-12, d$value * 1e6, -d$value)) {
+      expect_identical(exact_run(v, d$group)$p_value, p)
+    }
+  }
+  # Large values with fractional differences keep their exact p value.
+  v <- 1e10 + c(0.1, 0.25, 0.3, 0.45, 0.5, 0.65)
+  expect_identical(exact_run(v, rep(c("A", "B"), each = 3))$p_value, 0.1)
+  iv <- c(873, 111, 953, 569, 37)
+  g <- c("B", "A", "A", "B", "A")
+  for (shift in c(0, 1e3, 1e4, 1e5, 1e6)) expect_identical(exact_run(iv / 1000 + shift, g)$p_value, 0.4)
+  expect_identical(exact_run(iv * 1e-15, g)$p_value, 0.4)
+})

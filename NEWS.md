@@ -39,6 +39,11 @@
   and `mode`, `initial_madj` and `max_retries` no longer change the
   construction. Frames that need deldir to enlarge its workspace now succeed
   in every mode; frames of 799,800 or more points are refused.
+* `ExactPatientTests()` (and so `ContrastPatientEndpoints()` and
+  `LeaveOnePatientOut()`) computes the observed and the allocated statistics
+  with one formula on centred values and counts differences within rounding
+  error, relative to the data, as ties. p values no longer change when values
+  are shifted or rescaled; for well-conditioned data they are unchanged.
 
 # phenoscapR 0.1.1
 
