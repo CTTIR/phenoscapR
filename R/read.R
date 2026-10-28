@@ -371,7 +371,8 @@ read_spatial <- function(path, sample_id = NULL, markers = NULL,
   } else {
     na_rows <- is.na(dt$sample_id) | dt$sample_id == ""
     if (any(na_rows)) {
-      dt[na_rows, sample_id := sample_id]
+      # set() takes the argument; `sample_id := sample_id` reads the column.
+      data.table::set(dt, i = which(na_rows), j = "sample_id", value = sample_id)
     }
   }
 

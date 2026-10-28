@@ -114,6 +114,16 @@ test_that("read_spatial reads QuPath full-format CSV", {
   expect_true(all(grepl("FL_01_Scan1", dt$sample_id)))
 })
 
+test_that("read_spatial fills a blank QuPath image with the given sample id", {
+  tmp <- tempfile(fileext = ".csv")
+  on.exit(unlink(tmp))
+  writeLines(c("Image,Object ID,Classification,Centroid X um,Centroid Y um,Cell: CD3 mean",
+               "scan - roi1,a1,T,1,1,5",
+               ",a2,T,2,2,6"), tmp)
+  dt <- read_spatial(tmp, sample_id = "S1")
+  expect_identical(dt$sample_id, c("scan", "S1"))
+})
+
 test_that("read_spatial extracts Nucleus compartment when requested", {
   tmp <- tempfile(fileext = ".csv")
   on.exit(unlink(tmp))

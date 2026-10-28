@@ -46,6 +46,8 @@
   are shifted or rescaled; for well-conditioned data they are unchanged.
 * `DelaunayNetwork()` maps deldir's points back to cell rows when coordinates
   repeat; edges used to point to the wrong cells after a duplicate.
+* `read_spatial()` fills a blank QuPath `Image` value with the sample id;
+  the blank used to stay.
 
 # phenoscapR 0.1.1
 
