@@ -63,6 +63,9 @@
   and the top values on the value axis; their coordinates used to be swapped.
 * `AlterationMatrixData()` puts the genes in `last` last also when they are
   altered in at least `min_count` samples.
+* `PlotDataSummarise()` with groups returns no rows when `filter` selects
+  nothing, instead of one row with a missing group; `PlotDataCount()` without
+  groups returns `n = 0` instead of failing.
 
 # phenoscapR 0.1.1
 

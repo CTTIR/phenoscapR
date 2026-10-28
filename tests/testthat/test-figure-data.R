@@ -242,3 +242,23 @@ test_that("texts are written per row or collapsed from rows", {
   expect_identical(c1$rows, 2L)
   expect_identical(PlotDataCollapse(e[0, ], "{id}")$text, "")
 })
+
+test_that("summaries and counts of an empty selection have no fake groups", {
+  d <- data.frame(type = c("x", "y", "x"), v = 1:3, s = c("a", "a", "b"))
+  s <- PlotDataSummarise(d, columns = "v", by = "type", filter = list(type = "z"))
+  expect_identical(nrow(s), 0L)
+  expect_identical(names(s), c("type", "v"))
+  expect_type(s$v, "double")
+  sl <- PlotDataSummarise(d, columns = "v", by = "type", filter = list(type = "z"), long = TRUE)
+  expect_identical(nrow(sl), 0L)
+  expect_identical(PlotDataSummarise(d, fun = "count", by = "s", filter = list(type = "z"))$n, integer())
+  # Without groups, the overall summary of nothing stays one row.
+  expect_identical(PlotDataSummarise(d, "v", filter = list(type = "z"))$v, 0)
+  n <- PlotDataCount(d, filter = list(type = "z"))
+  expect_identical(n$n, 0L)
+  expect_identical(n$share, NA_real_)
+  expect_identical(nrow(PlotDataCount(d, "type", filter = list(type = "z"))), 0L)
+  # Non-empty selections are unchanged.
+  expect_equal(PlotDataCount(d), data.frame(n = 3L, share = 100))
+  expect_equal(PlotDataSummarise(d, "v", by = "type"), data.frame(type = c("x", "y"), v = c(4, 2)))
+})

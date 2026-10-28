@@ -800,7 +800,6 @@ PlotDataSummarise <- function(data, columns = NULL, fun = "sum", by = NULL, into
   if (!length(columns)) stop("columns are required.", call. = FALSE)
   key <- if (is.null(by)) rep("all", nrow(data)) else .fig_row_key(data, by)
   keys <- if (is.null(by)) "all" else if (sort) unique(key[do.call(order, unname(as.list(data[by])))]) else unique(key)
-  if (!length(keys)) keys <- "all"
   first <- if (is.null(by)) data.frame(row.names = 1L) else data[match(keys, key), by, drop = FALSE]
   if (long) {
     out <- do.call(rbind, lapply(columns, function(cc) {
@@ -820,6 +819,11 @@ PlotDataSummarise <- function(data, columns = NULL, fun = "sum", by = NULL, into
       for (j in seq_along(columns)) r[[into[[j]]]] <- f(data[[columns[[j]]]][sel])
       r
     }))
+    if (!length(keys)) {
+      # No rows selected: no groups.
+      out <- first
+      for (nm in into) out[[nm]] <- if (fun %in% c("count", "n_distinct")) integer() else numeric()
+    }
   }
   rownames(out) <- NULL
   out
@@ -850,10 +854,10 @@ PlotDataCount <- function(data, by = NULL, filter = NULL, distinct = NULL, tally
   .fig_require_columns(data, c(by, distinct))
   d <- data[.fig_filter_rows(data, filter), , drop = FALSE]
   key <- if (length(by)) do.call(paste, c(d[by], sep = "\r")) else rep("all", nrow(d))
-  lev <- unique(key)
+  lev <- if (length(by)) unique(key) else "all"
   out <- if (length(by)) d[match(lev, key), by, drop = FALSE] else data.frame(row.names = 1)
   out$n <- as.integer(vapply(lev, function(k) sum(key == k), numeric(1)))
-  out$share <- scale * out$n / nrow(d)
+  out$share <- if (nrow(d)) scale * out$n / nrow(d) else rep(NA_real_, nrow(out))
   if (!is.null(distinct)) {
     out$n_distinct <- vapply(lev, function(k) length(unique(d[[distinct]][key == k])), integer(1))
     out$n_per_distinct <- out$n %/% out$n_distinct
