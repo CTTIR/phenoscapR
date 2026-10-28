@@ -852,6 +852,7 @@ PlotDataSummarise <- function(data, columns = NULL, fun = "sum", by = NULL, into
 PlotDataCount <- function(data, by = NULL, filter = NULL, distinct = NULL, tally = NULL, scale = 100) {
   by <- as.character(unlist(by))
   .fig_require_columns(data, c(by, distinct))
+  data <- as.data.frame(data, check.names = FALSE)
   d <- data[.fig_filter_rows(data, filter), , drop = FALSE]
   key <- if (length(by)) do.call(paste, c(d[by], sep = "\r")) else rep("all", nrow(d))
   lev <- if (length(by)) unique(key) else "all"
@@ -976,6 +977,7 @@ PlotDataQuantiles <- function(data, by, value, probs = c(0.25, 0.5, 0.75),
 #' @export
 PlotDataRankRows <- function(data, id, columns = NULL, pattern = NULL, decreasing = TRUE, ids = NULL) {
   .fig_require_columns(data, c(id, unlist(columns)))
+  data <- as.data.frame(data, check.names = FALSE)
   cols <- unique(c(unlist(columns), if (!is.null(pattern)) grep(pattern, names(data), value = TRUE, perl = TRUE)))
   if (!length(cols)) stop("No columns selected.", call. = FALSE)
   if (!is.null(ids)) data <- data[as.character(data[[id]]) %in% .figb_levels(ids, NULL), , drop = FALSE]

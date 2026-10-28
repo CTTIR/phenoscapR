@@ -80,6 +80,7 @@
   instead of failing.
 * `RenderFigure()` passes the colour keyword `"group"` (for example
   `label_colour = "group"`) on to the builder instead of rejecting it.
+* `PlotDataCount()` and `PlotDataRankRows()` accept data.table input.
 
 # phenoscapR 0.1.1
 

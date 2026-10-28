@@ -269,3 +269,10 @@ test_that("cross shares of an empty-string level are computed", {
   expect_identical(s$total, c(2, 2, 1, 1))
   expect_equal(s$share, c(50, 50, 100, 0))
 })
+
+test_that("counting and ranking accept data.table input", {
+  d <- data.frame(type = c("x", "y", "x"), v = 1:3)
+  expect_identical(PlotDataCount(data.table::as.data.table(d), by = "type"), PlotDataCount(d, by = "type"))
+  w <- data.frame(id = c("a", "b"), x = 1:2, y = 3:4)
+  expect_identical(PlotDataRankRows(data.table::as.data.table(w), "id", c("x", "y")), PlotDataRankRows(w, "id", c("x", "y")))
+})
