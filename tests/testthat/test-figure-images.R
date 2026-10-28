@@ -226,3 +226,16 @@ test_that("image grammars are registered and draw on a composed page", {
   expect_error(PlotImage("x"), "image array")
 })
 
+
+test_that("rasterising without ragg reads the png() capture and removes it", {
+  skip_without_cairo()
+  offscreen <- getFromNamespace(".fig_c_offscreen", "phenoscapR")
+  context <- new.env(parent = environment(offscreen))
+  context$requireNamespace <- function(package, ...) !identical(package, "ragg")
+  environment(offscreen) <- context
+  before <- list.files(tempdir(), pattern = "\\.png$")
+  img <- offscreen(20L, 10L, 72, function() grid::grid.rect(gp = grid::gpar(fill = "#FF0000", col = NA)))
+  expect_s3_class(img, "nativeRaster")
+  expect_identical(dim(img), c(10L, 20L))
+  expect_identical(list.files(tempdir(), pattern = "\\.png$"), before)
+})

@@ -160,6 +160,7 @@ SaveFigure <- function(figure, pdf = NULL, png = NULL, dpi = NULL) {
     if (requireNamespace("ragg", quietly = TRUE)) {
       ragg::agg_png(png, width = w, height = h, units = "in", res = dpi, background = "white")
     } else {
+      if (!capabilities("cairo")) stop("PNG output needs 'ragg' or R built with Cairo.", call. = FALSE)
       grDevices::png(png, width = w, height = h, units = "in", res = dpi, type = "cairo",
                      bg = "white")
     }

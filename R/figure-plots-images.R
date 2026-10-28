@@ -447,14 +447,15 @@ makeContent.phenoscapR_rasterlayer <- function(x) {
     draw()
     return(cap(native = TRUE))
   }
+  if (!capabilities("cairo")) stop("Rasterising needs 'ragg' or R built with Cairo.", call. = FALSE)
   f <- tempfile(fileext = ".png")
+  on.exit(unlink(f), add = TRUE)
   grDevices::png(f, width = wpx, height = hpx, res = dpi, bg = "transparent", type = "cairo")
   dev <- grDevices::dev.cur()
   tryCatch(draw(), finally = {
     grDevices::dev.off(dev)
     if (cur > 1L) grDevices::dev.set(cur)
   })
-  if (!requireNamespace("png", quietly = TRUE)) stop("Rasterising needs 'ragg' or 'png'.", call. = FALSE)
   png::readPNG(f, native = TRUE)
 }
 
