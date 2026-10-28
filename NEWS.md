@@ -101,6 +101,8 @@
   failing.
 * `as_Seurat()` makes cell IDs that repeat across samples unique for the Seurat
   cell names instead of failing.
+* 'png' moves from Suggests to Imports: image layers rasterise through
+  `png::readPNG()` when 'ragg' is not installed.
 
 # phenoscapR 0.1.1
 
