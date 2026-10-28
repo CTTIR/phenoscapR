@@ -133,7 +133,7 @@
     }
   }
 
-  cols <- if (drop_self) seq.int(2L, kk) else seq_len(kk)
+  cols <- if (drop_self) seq_len(kk)[-1L] else seq_len(kk)  # no other cell: NA
   if (length(cols) == 0L) return(rep(NA_real_, nq))
   rowMeans(d[, cols, drop = FALSE])
 }

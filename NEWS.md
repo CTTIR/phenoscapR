@@ -88,6 +88,8 @@
 * `AssignFixedGrid()` corrects a bin index that the rounded division put one
   bin off, so coordinates on bin edges (for example `x = 10.7` with size 7
   and offset 3.7) are assigned instead of failing.
+* Nearest-neighbour distances of a cell without any other cell in its sample
+  are `NA` instead of an error.
 
 # phenoscapR 0.1.1
 

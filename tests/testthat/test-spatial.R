@@ -182,3 +182,13 @@ test_that("CrossNNDistance within one phenotype measures to the nearest other ce
   expect_equal(as.numeric(CrossNNDistance(o, "A", "A")), c(3, 3))
   expect_equal(as.numeric(CrossNNDistance(o, "A", "B")), c(10, 7))
 })
+
+test_that("a sample with a single cell has no nearest neighbour", {
+  dt <- data.table::data.table(sample_id = c("a", "a", "b"), cell_id = 1:3, x = c(0, 1, 5), y = 0)
+  expect_equal(nearest_neighbours(dt)$nn_distance, c(1, 1, NA))
+  o <- CreateSpatialObject(matrix(1, 3, 1, dimnames = list(NULL, "M")), data.frame(x = c(0, 1, 5), y = 0),
+                           data.frame(cell_id = 1:3, sample_id = c("a", "a", "b"), phenotype = c("A", "B", "A")))
+  expect_equal(FindNeighbours(o)$nn_distance, c(1, 1, NA))
+  one <- o[o@meta_data$sample_id == "b", ]
+  expect_true(is.na(as.numeric(CrossNNDistance(one, "A", "A"))))
+})
