@@ -19,10 +19,18 @@
   [`CompareArrays()`](https://cttir.github.io/phenoscapR/dev/reference/CompareArrays.md)
   and
   [`SummarizeComparisons()`](https://cttir.github.io/phenoscapR/dev/reference/SummarizeComparisons.md).
-- Manuscript figures: a figure style, page composition in millimetres
-  and figures rendered from declarative specifications through
-  registered plot grammars, with plot-data builders for patient-level,
-  matrix, embedding and image panels.
+- Manuscript figures:
+  [`ManuscriptStyle()`](https://cttir.github.io/phenoscapR/dev/reference/ManuscriptStyle.md),
+  page composition in millimetres
+  ([`ComposeFigure()`](https://cttir.github.io/phenoscapR/dev/reference/ComposeFigure.md),
+  [`FigurePanel()`](https://cttir.github.io/phenoscapR/dev/reference/FigurePanel.md),
+  [`SaveFigure()`](https://cttir.github.io/phenoscapR/dev/reference/SaveFigure.md))
+  and figures rendered from declarative specifications
+  ([`ReadFigureSpec()`](https://cttir.github.io/phenoscapR/dev/reference/ReadFigureSpec.md),
+  [`RenderFigure()`](https://cttir.github.io/phenoscapR/dev/reference/RenderFigure.md),
+  [`WriteFigure()`](https://cttir.github.io/phenoscapR/dev/reference/WriteFigure.md))
+  through registered plot grammars, with plot-data builders for
+  patient-level, matrix, embedding and image panels.
 - One set of generic plot-data helpers named `PlotData*()` (select,
   reshape, join, bind, recode, summarise, count, rank, compute and write
   text), with `filter` and `into` as common argument names, and one
@@ -36,10 +44,6 @@
   patch keys; figure texts can sit on their baseline; typesetting can be
   switched off per figure, panel, text or legend, or for single rules;
   straight quotes stay straight.
-- Exact paired tests, contrasts of patient endpoints, bootstrap median
-  intervals, permutation correlations, section summaries, Delaunay
-  neighbour type counts and keyed parity checks of recomputed tables and
-  arrays.
 - [`SaveFigure()`](https://cttir.github.io/phenoscapR/dev/reference/SaveFigure.md)
   and
   [`WriteFigure()`](https://cttir.github.io/phenoscapR/dev/reference/WriteFigure.md)

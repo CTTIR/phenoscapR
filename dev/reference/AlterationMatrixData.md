@@ -81,7 +81,8 @@ the number of items) and `gene_rank`.
 ## Examples
 
 ``` r
-m <- data.frame(gene = c("G1", "G2"), S1 = c("Missense", ""), S2 = c("Nonsense|Missense", "Deletion"))
+m <- data.frame(gene = c("G1", "G2"), S1 = c("Missense", ""),
+                S2 = c("Nonsense|Missense", "Deletion"))
 AlterationMatrixData(m, ids = c("S1", "S2"), min_count = 1)
 #>   gene id    class count percent gene_rank
 #> 1   G1 S1 Missense     2     100         1
