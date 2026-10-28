@@ -27,8 +27,8 @@ bslib, sass, thematic, reactable, bsicons); \code{run_app()} checks for them
 and reports any that are missing.
 }
 \examples{
-\dontrun{
-run_app()
+if (interactive()) {
+  run_app()
 }
 
 }

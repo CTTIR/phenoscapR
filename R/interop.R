@@ -64,8 +64,10 @@ as_Seurat <- function(object) {
 #' @examples
 #' \donttest{
 #' if (requireNamespace("SpatialExperiment", quietly = TRUE)) {
-#'   data(phenoscapR_example)
-#'   spe <- as_SpatialExperiment(phenoscapR_example)
+#'   counts <- matrix(c(5, 0, 3, 1, 2, 7, 0, 4, 6, 1, 2, 3), nrow = 4,
+#'                    dimnames = list(NULL, c("CD3", "CD8", "CD20")))
+#'   obj <- CreateSpatialObject(counts, data.frame(x = c(1, 5, 9, 4), y = c(2, 8, 3, 6)))
+#'   spe <- as_SpatialExperiment(obj)
 #' }
 #' }
 #' @export
@@ -92,8 +94,14 @@ as_SpatialExperiment <- function(object) {
 #' @param ... Unused.
 #' @return A \code{\link{SpatialCellData-class}} object.
 #' @examples
-#' \dontrun{
-#' obj <- as_SpatialCellData(seurat_object)
+#' \donttest{
+#' if (requireNamespace("Seurat", quietly = TRUE)) {
+#'   counts <- matrix(c(5, 0, 3, 1, 2, 7, 0, 4, 6, 1, 2, 3), nrow = 4,
+#'                    dimnames = list(NULL, c("CD3", "CD8", "CD20")))
+#'   obj <- CreateSpatialObject(counts, data.frame(x = c(1, 5, 9, 4), y = c(2, 8, 3, 6)))
+#'   seurat_object <- as_Seurat(obj)
+#'   as_SpatialCellData(seurat_object)
+#' }
 #' }
 #' @export
 as_SpatialCellData <- function(x, ...) {

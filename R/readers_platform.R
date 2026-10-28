@@ -138,9 +138,15 @@ ReadMatrixCoords <- function(expression, metadata, x_col = "x", y_col = "y",
 #' @param sample_id,project Passed to [ReadMatrixCoords()].
 #' @return A \code{\link{SpatialCellData-class}} object.
 #' @examples
-#' \dontrun{
-#' obj <- ReadXenium(expression = counts_matrix, cells = "cells.csv.gz")
-#' }
+#' cells <- tempfile(fileext = ".csv")
+#' write.csv(data.frame(cell_id = c("aaa-1", "aab-1", "aac-1"),
+#'                      x_centroid = c(10.5, 42, 77.25), y_centroid = c(5, 18.5, 33)),
+#'           cells, row.names = FALSE)
+#' counts <- data.frame(cell_id = c("aac-1", "aaa-1", "aab-1"),
+#'                      CD3E = c(0, 4, 1), MS4A1 = c(7, 0, 2))
+#' obj <- ReadXenium(expression = counts, cells = cells)
+#' obj
+#' unlink(cells)
 #' @export
 ReadXenium <- function(expression, cells, sample_id = "sample1",
                        project = "Xenium") {
@@ -162,9 +168,18 @@ ReadXenium <- function(expression, cells, sample_id = "sample1",
 #' @param sample_id,project Passed to [ReadMatrixCoords()].
 #' @return A \code{\link{SpatialCellData-class}} object.
 #' @examples
-#' \dontrun{
-#' obj <- ReadCosMx("sample_exprMat_file.csv", "sample_metadata_file.csv")
-#' }
+#' expr_file <- tempfile(fileext = ".csv")
+#' meta_file <- tempfile(fileext = ".csv")
+#' write.csv(data.frame(fov = c(1, 1, 2, 2), cell_ID = c(1, 2, 1, 2),
+#'                      CD3E = c(3, 0, 1, 5), KRT8 = c(0, 9, 2, 0)),
+#'           expr_file, row.names = FALSE)
+#' write.csv(data.frame(fov = c(1, 1, 2, 2), cell_ID = c(1, 2, 1, 2),
+#'                      CenterX_global_px = c(100, 140, 2100, 2160),
+#'                      CenterY_global_px = c(50, 80, 60, 95)),
+#'           meta_file, row.names = FALSE)
+#' obj <- ReadCosMx(expr_file, meta_file)
+#' obj
+#' unlink(c(expr_file, meta_file))
 #' @export
 ReadCosMx <- function(expr_file, meta_file, sample_id = "sample1",
                       project = "CosMx") {
@@ -185,9 +200,16 @@ ReadCosMx <- function(expr_file, meta_file, sample_id = "sample1",
 #' @param sample_id,project Passed to [ReadMatrixCoords()].
 #' @return A \code{\link{SpatialCellData-class}} object.
 #' @examples
-#' \dontrun{
-#' obj <- ReadMERSCOPE("cell_by_gene.csv", "cell_metadata.csv")
-#' }
+#' matrix_file <- tempfile(fileext = ".csv")
+#' metadata_file <- tempfile(fileext = ".csv")
+#' write.csv(data.frame(cell = c(101, 102, 103), CD3E = c(2, 0, 6), PTPRC = c(5, 1, 8)),
+#'           matrix_file, row.names = FALSE)
+#' write.csv(data.frame(cell = c(103, 101, 102), center_x = c(15, 210, 88),
+#'                      center_y = c(40, 12, 160)),
+#'           metadata_file, row.names = FALSE)
+#' obj <- ReadMERSCOPE(matrix_file, metadata_file)
+#' obj
+#' unlink(c(matrix_file, metadata_file))
 #' @export
 ReadMERSCOPE <- function(matrix_file, metadata_file, sample_id = "sample1",
                          project = "MERSCOPE") {

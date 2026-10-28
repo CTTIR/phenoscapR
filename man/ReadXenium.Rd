@@ -23,7 +23,13 @@ Convenience wrapper for Xenium: a \code{cells} table with
 \pkg{Matrix}, and pass it here).
 }
 \examples{
-\dontrun{
-obj <- ReadXenium(expression = counts_matrix, cells = "cells.csv.gz")
-}
+cells <- tempfile(fileext = ".csv")
+write.csv(data.frame(cell_id = c("aaa-1", "aab-1", "aac-1"),
+                     x_centroid = c(10.5, 42, 77.25), y_centroid = c(5, 18.5, 33)),
+          cells, row.names = FALSE)
+counts <- data.frame(cell_id = c("aac-1", "aaa-1", "aab-1"),
+                     CD3E = c(0, 4, 1), MS4A1 = c(7, 0, 2))
+obj <- ReadXenium(expression = counts, cells = cells)
+obj
+unlink(cells)
 }

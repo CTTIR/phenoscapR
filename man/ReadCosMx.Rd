@@ -24,7 +24,16 @@ within each FOV, so cells are matched on \code{fov} and \code{cell_ID}; the
 \code{cell_ID} becomes \code{cell_id} and \code{fov} is kept.
 }
 \examples{
-\dontrun{
-obj <- ReadCosMx("sample_exprMat_file.csv", "sample_metadata_file.csv")
-}
+expr_file <- tempfile(fileext = ".csv")
+meta_file <- tempfile(fileext = ".csv")
+write.csv(data.frame(fov = c(1, 1, 2, 2), cell_ID = c(1, 2, 1, 2),
+                     CD3E = c(3, 0, 1, 5), KRT8 = c(0, 9, 2, 0)),
+          expr_file, row.names = FALSE)
+write.csv(data.frame(fov = c(1, 1, 2, 2), cell_ID = c(1, 2, 1, 2),
+                     CenterX_global_px = c(100, 140, 2100, 2160),
+                     CenterY_global_px = c(50, 80, 60, 95)),
+          meta_file, row.names = FALSE)
+obj <- ReadCosMx(expr_file, meta_file)
+obj
+unlink(c(expr_file, meta_file))
 }
