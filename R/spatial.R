@@ -417,7 +417,7 @@ interaction_matrix <- function(dt, radius) {
   } else {
     rep("__all__", 1L)
   }
-  sample_vec <- if ("sample_id" %in% names(dt)) dt$sample_id else "__all__"
+  sample_vec <- if ("sample_id" %in% names(dt)) dt$sample_id else rep("__all__", nrow(dt))
 
   obs <- matrix(0, nrow = n_pheno, ncol = n_pheno,
                 dimnames = list(phenotypes, phenotypes))

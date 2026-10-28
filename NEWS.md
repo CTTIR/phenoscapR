@@ -48,6 +48,8 @@
   repeat; edges used to point to the wrong cells after a duplicate.
 * `read_spatial()` fills a blank QuPath `Image` value with the sample id;
   the blank used to stay.
+* `interaction_matrix()` counts neighbours in a table without `sample_id`
+  as one sample; it used to return zeros.
 
 # phenoscapR 0.1.1
 

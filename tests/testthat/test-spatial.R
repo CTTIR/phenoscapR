@@ -68,6 +68,14 @@ test_that("interaction_matrix does not count neighbours across samples", {
   expect_equal(aa, 6)
 })
 
+test_that("interaction_matrix treats a table without sample_id as one sample", {
+  dt <- data.table::data.table(x = c(0, 1, 2, 3), y = 0, phenotype = c("A", "B", "A", "B"))
+  without <- interaction_matrix(dt, radius = 1.5)
+  with <- interaction_matrix(data.table::copy(dt)[, sample_id := "s"], radius = 1.5)
+  expect_equal(without$observed, c(0, 3, 3, 0))
+  expect_identical(without, with)
+})
+
 test_that("DelaunayNetwork builds a planar triangulation, not all pairs", {
   skip_if_not_installed("deldir")
   set.seed(11)
