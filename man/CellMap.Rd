@@ -17,7 +17,8 @@ CellMap(
 \item{object}{An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.}
 
 \item{colour_by}{Character. Column name in \code{meta_data} to colour
-by. Default \code{"phenotype"}.}
+by. Default \code{"phenotype"}. Numeric columns get a continuous
+colour scale.}
 
 \item{colours}{Named character vector or \code{NULL} for automatic
 colours via the global palette.}

@@ -53,3 +53,15 @@ test_that("CellMap errors on missing column", {
 
   expect_error(CellMap(obj, colour_by = "missing"), "not found")
 })
+
+test_that("a numeric colour column gets a continuous scale", {
+  set.seed(1)
+  o <- CreateSpatialObject(matrix(rnorm(20), 10, 2, dimnames = list(NULL, c("CD3", "CD8"))),
+                           data.frame(x = runif(10), y = runif(10)),
+                           data.frame(cell_id = 1:10, sample_id = "s", cell_area = runif(10, 10, 50),
+                                      phenotype = rep(c("A", "B"), 5)))
+  b <- ggplot2::ggplot_build(CellMap(o, colour_by = "cell_area"))
+  expect_true(b$plot$scales$get_scales("colour")$is_discrete() == FALSE)
+  expect_length(unique(b$data[[1]]$colour), 10L)
+  expect_true(ggplot2::ggplot_build(CellMap(o))$plot$scales$get_scales("colour")$is_discrete())
+})

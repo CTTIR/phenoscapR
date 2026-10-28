@@ -94,6 +94,8 @@
   markers instead of failing.
 * `QCFilter()` removes cells with a missing area when an area threshold is set,
   as `qc_filter()` does; it used to fail.
+* `CellMap()`, `plot_cell_map()` and `DimPlot()` colour by a numeric column with a
+  continuous scale instead of failing.
 
 # phenoscapR 0.1.1
 

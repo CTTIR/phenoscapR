@@ -6,7 +6,8 @@
 #'
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @param colour_by Character. Column name in \code{meta_data} to colour
-#'   by. Default \code{"phenotype"}.
+#'   by. Default \code{"phenotype"}. Numeric columns get a continuous
+#'   colour scale.
 #' @param colours Named character vector or \code{NULL} for automatic
 #'   colours via the global palette.
 #' @param pt_size Numeric. Point size. Default \code{0.5}.
@@ -63,6 +64,8 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
 
   if (!is.null(colours)) {
     p <- p + ggplot2::scale_colour_manual(values = colours)
+  } else if (is.numeric(df$colour)) {
+    p <- p + .gg_continuous_scale("colour")
   } else {
     p <- p + .gg_discrete_scale("colour", length(unique(df$colour)))
   }
