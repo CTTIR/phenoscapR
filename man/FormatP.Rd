@@ -15,7 +15,7 @@ Character vector; values below 0.001 use the plain form
 }
 \description{
 Two significant digits from 0.001 upwards, scientific notation below
-(\verb{4.9 × 10⁻⁴} after \code{\link[=TypesetLabel]{TypesetLabel()}}) and \code{"n.e."} (not evaluable) for
+(\eqn{4.9 \times 10^{-4}}{4.9 x 10^-4} after \code{\link[=TypesetLabel]{TypesetLabel()}}) and \code{"n.e."} (not evaluable) for
 missing or non-finite values. This is the C format \verb{\%.2g} / \verb{\%.1e} of
 common figure code.
 }

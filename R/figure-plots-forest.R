@@ -307,7 +307,8 @@ PlotGroupDifferences <- function(data, row = "contrast", estimate = "diff", q = 
 #' @param label_size,bound_label_size Text sizes.
 #' @param x_limits,y_limits Axis limits.
 #' @param x_nbins,y_nbins Tick intervals.
-#' @param x_label Axis title.
+#' @param x_label Axis title; by default "Cliff's \eqn{\delta}{delta}" (drawn with the
+#'   Greek letter). An explicit `NULL` draws no title.
 #' @param y_label Axis title; `NULL` gives a typeset "-log10 exact P".
 #' @param show_y_label Draw the y axis title.
 #' @param box_mm Size of the data area `c(width, height)` in millimetres, passed
@@ -324,7 +325,8 @@ PlotVolcano <- function(data, stats = NULL, effect = "cliffs_delta", p = "p", la
                         bound_colour = "minimum_p", open_size = 8, open_edge = 0.6, open_colour = "open_edge",
                         filled_size = 11, filled_colour = "ink", label_size = 4.3, bound_label_size = 4.4,
                         x_limits = c(-1.08, 1.08), y_limits = c(0, 3.2), x_nbins = 6, y_nbins = 9,
-                        x_label = "Cliff's \u03b4", y_label = NULL, show_y_label = TRUE, box_mm = NULL, style = ManuscriptStyle()) {
+                        x_label = NULL, y_label = NULL, show_y_label = TRUE, box_mm = NULL, style = ManuscriptStyle()) {
+  if (missing(x_label)) x_label <- "Cliff's \u03b4"
   style <- .fig_check_style(style)
   .fig_require_columns(data, c(effect, p, label))
   data <- as.data.frame(data, check.names = FALSE)

@@ -26,7 +26,7 @@ PlotVolcano(
   y_limits = c(0, 3.2),
   x_nbins = 6,
   y_nbins = 9,
-  x_label = "Cliff's δ",
+  x_label = NULL,
   y_label = NULL,
   show_y_label = TRUE,
   box_mm = NULL,
@@ -63,7 +63,8 @@ edge of the same colour as in common figure code).}
 
 \item{x_nbins, y_nbins}{Tick intervals.}
 
-\item{x_label}{Axis title.}
+\item{x_label}{Axis title; by default "Cliff's \eqn{\delta}{delta}" (drawn with the
+Greek letter). An explicit \code{NULL} draws no title.}
 
 \item{y_label}{Axis title; \code{NULL} gives a typeset "-log10 exact P".}
 

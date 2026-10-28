@@ -117,6 +117,9 @@ test_that("interval forests, group differences and volcano plots write their sta
   expect_false("e 3" %in% layer_text(p3))
   pts3 <- Filter(function(z) "shape" %in% names(z) && nrow(z) > 0 && all(z$shape %in% c(16, 21)), b$data)
   expect_true(all(unlist(lapply(pts3, function(z) z$y)) <= 3.2))
+  expect_identical(p3$labels$x, TypesetLabel("Cliff's δ"))
+  expect_null(PlotVolcano(v, effect = "d", x_label = NULL)$labels$x)
+  expect_identical(PlotVolcano(v, effect = "d", x_label = "effect")$labels$x, "effect")
 })
 
 test_that("group strips, grouped scatter and bars build", {

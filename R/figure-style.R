@@ -325,7 +325,7 @@ ThemeManuscript <- function(style = ManuscriptStyle(), grid = c("y", "x", "both"
 #' Format P Values for Figures
 #'
 #' Two significant digits from 0.001 upwards, scientific notation below
-#' (`4.9 × 10⁻⁴` after [TypesetLabel()]) and `"n.e."` (not evaluable) for
+#' (\eqn{4.9 \times 10^{-4}}{4.9 x 10^-4} after [TypesetLabel()]) and `"n.e."` (not evaluable) for
 #' missing or non-finite values. This is the C format `%.2g` / `%.1e` of
 #' common figure code.
 #'
