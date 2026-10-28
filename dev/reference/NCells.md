@@ -1,0 +1,32 @@
+# Get the Number of Cells
+
+Get the Number of Cells
+
+## Usage
+
+``` r
+NCells(object)
+
+# S4 method for class 'SpatialCellData'
+NCells(object)
+```
+
+## Arguments
+
+- object:
+
+  A
+  [`SpatialCellData`](https://cttir.github.io/phenoscapR/dev/reference/SpatialCellData-class.md)
+  object.
+
+## Value
+
+Integer.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+NCells(phenoscapR_example)
+#> [1] 640
+```

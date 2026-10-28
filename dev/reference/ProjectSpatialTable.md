@@ -1,0 +1,55 @@
+# Project Spatial Tables Without Changing Column Metadata
+
+Selects explicit rows and columns from a plain data frame or data.table.
+Row order and repetitions follow `rows`; column order follows `columns`.
+Selection uses a copied data.table inside the package namespace,
+preserving column storage types, classes and attributes according to
+data.table subset semantics. The result is a plain data frame with reset
+row names. No eligibility, missing-value filtering, sorting or numerical
+transformation is inferred. The supplied input is not modified.
+
+## Usage
+
+``` r
+ProjectSpatialTable(data, rows, columns)
+```
+
+## Arguments
+
+- data:
+
+  A plain data.frame or data.table with distinct, nonempty column names.
+  Other data-frame subclasses are not accepted.
+
+- rows:
+
+  A dimensionless, unclassed integer vector of positive row indices no
+  greater than the number of input rows. Missing indices are not
+  allowed. [`integer()`](https://rdrr.io/r/base/integer.html) selects
+  zero rows; repeated and shuffled indices are retained.
+
+- columns:
+
+  A dimensionless, unclassed character vector of distinct, nonempty
+  existing column names, in the requested order.
+
+## Value
+
+A plain data.frame with the requested rows and columns and reset row
+names. A one-column selection remains a data frame; an empty row
+selection retains typed columns and their metadata. Invalid inputs are
+rejected rather than coerced, recycled or partially matched.
+
+## Examples
+
+``` r
+d <- data.frame(id = letters[1:3], weight = c(0.5, 1.5, 2.5))
+ProjectSpatialTable(d, c(3L, 1L, 3L), c("weight", "id"))
+#>   weight id
+#> 1    2.5  c
+#> 2    0.5  a
+#> 3    2.5  c
+ProjectSpatialTable(d, integer(), "weight")
+#> [1] weight
+#> <0 rows> (or 0-length row.names)
+```
