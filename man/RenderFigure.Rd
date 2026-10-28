@@ -45,7 +45,8 @@ names (\code{"ink"}, \code{"muted"}, ...) or palette entries written
 named lists of such values are resolved element by element. Every builder
 argument whose name ends in \code{colour}, \code{color}, \code{fill} or \code{palette} (or
 their plurals) is resolved this way, so arguments that name data columns
-must not end like that.
+must not end like that. The value \code{"group"} is kept as it is, for
+builders that colour by group (\code{label_colour = "group"}).
 
 Builders with a \code{box_mm} argument receive the size of their data area in
 millimetres (used for \code{"auto"} tick intervals, see \code{\link[=NiceBreaks]{NiceBreaks()}}).

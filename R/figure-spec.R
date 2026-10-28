@@ -59,7 +59,8 @@ FigureGrammars <- function() {
 #' named lists of such values are resolved element by element. Every builder
 #' argument whose name ends in `colour`, `color`, `fill` or `palette` (or
 #' their plurals) is resolved this way, so arguments that name data columns
-#' must not end like that.
+#' must not end like that. The value `"group"` is kept as it is, for
+#' builders that colour by group (`label_colour = "group"`).
 #'
 #' Builders with a `box_mm` argument receive the size of their data area in
 #' millimetres (used for `"auto"` tick intervals, see [NiceBreaks()]).
@@ -243,10 +244,13 @@ WriteFigure <- function(spec, data, pdf, png, style = ManuscriptStyle()) {
   })
 }
 
-# Resolve colour references inside builder arguments.
+# Resolve colour references inside builder arguments. The keyword "group"
+# (colour by group, as in `label_colour`) is passed on unchanged.
 .fig_resolve <- function(args, style) {
   colour_args <- grepl("(colour|color|fill|palette)s?$", names(args))
-  args[colour_args] <- lapply(args[colour_args], .fig_colour, style = style)
+  args[colour_args] <- lapply(args[colour_args], function(v) {
+    if (identical(v, "group")) v else .fig_colour(v, style = style)
+  })
   args
 }
 

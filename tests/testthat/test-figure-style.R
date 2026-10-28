@@ -130,3 +130,13 @@ test_that("the style family also draws on the plain pdf device", {
   expect_no_error(print(ggplot2::ggplot(data.frame(x = 1, y = 1), ggplot2::aes(x, y)) +
                           ggplot2::geom_point() + ThemeManuscript()))
 })
+
+test_that("specifications pass the colour keyword group on to the builder", {
+  d <- data.frame(x = 1:3, y = c(2, 4, 3), group = c("g1", "g2", "g1"), id = c("a", "b", "c"))
+  spec <- list(height_mm = 50, panels = list(list(box = c(10, 5, 40, 30), grammar = "scatter_groups", data = "d",
+                                                  args = list(label = "id", label_colour = "group"))))
+  expect_s3_class(RenderFigure(spec, list(d = d)), "phenoscapR_figure")
+  bad <- spec
+  bad$panels[[1]]$args$label_colour <- "groupish"
+  expect_error(RenderFigure(bad, list(d = d)), "Unknown colour")
+})

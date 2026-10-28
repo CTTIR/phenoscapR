@@ -78,6 +78,8 @@
   `difference`, which used to produce duplicated column names.
 * `FormatTemplate()` writes infinite values of plain placeholders as `"n.e."`
   instead of failing.
+* `RenderFigure()` passes the colour keyword `"group"` (for example
+  `label_colour = "group"`) on to the builder instead of rejecting it.
 
 # phenoscapR 0.1.1
 
