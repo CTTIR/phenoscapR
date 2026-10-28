@@ -25,6 +25,10 @@
 * `SaveFigure()` and `WriteFigure()` give the same files whatever was drawn
   before in the session: with 'ragg', every PNG is drawn on a new capture
   device, so rich text is measured afresh for every figure.
+* `ReadCosMx()` matches cells on `fov` and `cell_ID`: CosMx numbers cells
+  within each FOV, and cells of later FOVs used to receive the expression of
+  the first. `ReadMatrixCoords()` takes further id columns in `cell_id_col`
+  and refuses ids that are not unique.
 
 # phenoscapR 0.1.1
 

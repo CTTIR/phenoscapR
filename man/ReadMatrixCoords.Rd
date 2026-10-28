@@ -26,7 +26,10 @@ or CSV path).}
 \item{x_col, y_col}{Character. Coordinate column names in \code{metadata}.}
 
 \item{cell_id_col}{Character or \code{NULL}. Shared cell-id column; if present
-in both tables, rows are matched on it, otherwise row order is assumed.}
+in both tables, rows are matched on it, otherwise row order is assumed.
+Further columns (for example \code{"fov"}) can follow: those present in
+both tables are matched as well, so ids need only be unique within them.
+The first column becomes \code{cell_id}. Matched ids must be unique.}
 
 \item{id_cols}{Character vector. Non-marker id columns to drop from
 \code{expression} (e.g. \code{"fov"}, \code{"cell_ID"}).}

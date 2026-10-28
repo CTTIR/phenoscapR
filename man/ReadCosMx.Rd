@@ -19,7 +19,9 @@ A \code{\link{SpatialCellData-class}} object.
 \description{
 Convenience wrapper for CosMx: the \code{*_exprMat_file.csv} (cell-by-gene,
 with \code{fov}/\code{cell_ID} columns) and \code{*_metadata_file.csv} (with
-\code{CenterX_global_px}/\code{CenterY_global_px}).
+\code{CenterX_global_px}/\code{CenterY_global_px}). CosMx numbers cells
+within each FOV, so cells are matched on \code{fov} and \code{cell_ID}; the
+\code{cell_ID} becomes \code{cell_id} and \code{fov} is kept.
 }
 \examples{
 \dontrun{

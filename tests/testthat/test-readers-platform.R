@@ -112,6 +112,18 @@ test_that("ReadCosMx presets the global-pixel columns and drops fov/cell_ID", {
   expect_setequal(Markers(obj), c("GeneA", "GeneB"))
 })
 
+test_that("ReadCosMx matches cells on fov and cell_ID", {
+  expr <- data.frame(fov = c(1, 1, 2, 2), cell_ID = c(1, 2, 1, 2), GENE = c(10, 20, 30, 40))
+  meta <- data.frame(fov = c(2, 1, 2, 1), cell_ID = c(2, 1, 1, 2),
+                     CenterX_global_px = 1:4, CenterY_global_px = 4:1)
+  obj <- ReadCosMx(expr, meta)
+  expect_identical(as.vector(GetData(obj, "counts")[, "GENE"]), c(40, 10, 30, 20))
+  expect_identical(obj@meta_data$cell_id, c("2", "1", "1", "2"))
+  expect_identical(obj@meta_data$fov, c(2, 1, 2, 1))
+  expect_error(ReadMatrixCoords(expr, meta, x_col = "CenterX_global_px", y_col = "CenterY_global_px",
+                                cell_id_col = "cell_ID", id_cols = "fov"), "not unique")
+})
+
 test_that("ReadMERSCOPE presets the center_x/center_y columns", {
   expr <- data.frame(cell = 1:5, GeneA = as.numeric(1:5),
                      GeneB = as.numeric(5:1))
