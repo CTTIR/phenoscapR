@@ -8,7 +8,8 @@
 #' rather than typed by hand. Placeholders:
 #'
 #' * `{column}`: the value; whole numbers with thousands separators
-#'   (`1,200`), other numbers and text as they are, missing values `"n.e."`.
+#'   (`1,200`), other numbers and text as they are, missing and infinite values
+#'   `"n.e."`.
 #' Negative numbers are written with a true minus sign.
 #'
 #' * `{column|format}`: a named format: `p` ([FormatP()]), `pfixed` (four
@@ -83,7 +84,7 @@ FormatTemplate <- function(template, data = NULL) {
     sprintf = sprintf(ph$format, value),
     format = .fig_format_value(value, ph$format),
     plain = {
-      if (length(value) != 1L || is.na(value)) "n.e."
+      if (length(value) != 1L || is.na(value) || (is.numeric(value) && !is.finite(value))) "n.e."
       else if (is.numeric(value) && abs(value - round(value)) < 1e-9) .fig_minus(formatC(round(value), format = "d", big.mark = ","))
       else if (is.numeric(value)) .fig_minus(as.character(value))
       else as.character(value)

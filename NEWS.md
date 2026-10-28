@@ -76,6 +76,8 @@
   pair used to stop with an unhelpful error.
 * `PairedDifferences()` refuses `id` or `name` columns called `x`, `y` or
   `difference`, which used to produce duplicated column names.
+* `FormatTemplate()` writes infinite values of plain placeholders as `"n.e."`
+  instead of failing.
 
 # phenoscapR 0.1.1
 

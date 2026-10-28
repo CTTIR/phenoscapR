@@ -46,3 +46,8 @@ test_that("whole-number format writes every digit", {
                    c("100000 cells", "2000000 cells", "−200000 cells", "30000000000 cells"))
   expect_identical(FormatTemplate("{n|d}", data.frame(n = -0.2)), "0")
 })
+
+test_that("infinite values in plain placeholders are not evaluable", {
+  expect_identical(FormatTemplate("{r}", data.frame(r = c(Inf, -Inf, NaN, NA, 2))), c("n.e.", "n.e.", "n.e.", "n.e.", "2"))
+  expect_identical(FormatTemplate("{r|f1}", data.frame(r = Inf)), "n.e.")
+})

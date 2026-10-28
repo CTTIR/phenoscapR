@@ -25,7 +25,8 @@ rather than typed by hand. Placeholders:
 \details{
 \itemize{
 \item \code{{column}}: the value; whole numbers with thousands separators
-(\verb{1,200}), other numbers and text as they are, missing values \code{"n.e."}.
+(\verb{1,200}), other numbers and text as they are, missing and infinite values
+\code{"n.e."}.
 Negative numbers are written with a true minus sign.
 \item \code{{column|format}}: a named format: \code{p} (\code{\link[=FormatP]{FormatP()}}), \code{pfixed} (four
 decimals below 0.01, three otherwise), \code{d} (rounded integer), \code{comma}
