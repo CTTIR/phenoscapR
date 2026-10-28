@@ -8,10 +8,11 @@
   within a maximum edge length, GEOS or deldir), `SummarizeNearestDistances()`,
   `SummarizeCellComposition()`, `ReadCellArrays()` and keyed comparisons with
   `CompareTables()`, `CompareArrays()` and `SummarizeComparisons()`.
-* Manuscript figures: a figure style, page composition in millimetres and
-  figures rendered from declarative specifications through registered plot
-  grammars, with plot-data builders for patient-level, matrix, embedding and
-  image panels.
+* Manuscript figures: `ManuscriptStyle()`, page composition in millimetres
+  (`ComposeFigure()`, `FigurePanel()`, `SaveFigure()`) and figures rendered
+  from declarative specifications (`ReadFigureSpec()`, `RenderFigure()`,
+  `WriteFigure()`) through registered plot grammars, with plot-data builders
+  for patient-level, matrix, embedding and image panels.
 * One set of generic plot-data helpers named `PlotData*()` (select, reshape,
   join, bind, recode, summarise, count, rank, compute and write text), with
   `filter` and `into` as common argument names, and one template syntax in
@@ -21,9 +22,6 @@
   spacings, column-major filling and diamond and patch keys; figure texts can
   sit on their baseline; typesetting can be switched off per figure, panel,
   text or legend, or for single rules; straight quotes stay straight.
-* Exact paired tests, contrasts of patient endpoints, bootstrap median
-  intervals, permutation correlations, section summaries, Delaunay neighbour
-  type counts and keyed parity checks of recomputed tables and arrays.
 * `SaveFigure()` and `WriteFigure()` give the same files whatever was saved
   before in the session: rich text is measured afresh for every figure, not
   taken from gridtext's session-wide cache.
