@@ -24,3 +24,16 @@ test_that("annotation tracks and alteration classes", {
   expect_true(all(is.na(a$class[a$gene == "G9"])))
   expect_error(AlterationMatrixData(m, ids = "s9"), "no column")
 })
+
+test_that("genes in last are drawn last even when they are altered often", {
+  m <- data.frame(gene = c("G1", "G2", "G3"), S1 = c("Missense", "Missense", ""),
+                  S2 = c("Nonsense", "Deletion", "Missense"))
+  rank <- function(...) {
+    a <- AlterationMatrixData(m, ids = c("S1", "S2"), ...)
+    unique(a[, c("gene", "gene_rank")])$gene
+  }
+  expect_identical(rank(), c("G1", "G2", "G3"))
+  expect_identical(rank(last = "G1"), c("G2", "G3", "G1"))
+  expect_identical(rank(first = "G3", last = "G1"), c("G3", "G2", "G1"))
+  expect_identical(rank(first = "G1", last = "G1"), c("G1", "G2", "G3"))
+})

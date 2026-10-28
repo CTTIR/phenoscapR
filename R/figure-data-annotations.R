@@ -102,7 +102,7 @@ AlterationMatrixData <- function(matrix, gene = NULL, ids, id_map = NULL, map_fr
   counts <- stats::setNames(rowSums(!is.na(vals)), genes_all)
   cand <- genes_all[counts >= min_count]
   cand <- cand[order(-counts[cand], match(cand, genes_all))]
-  genes <- unique(c(unlist(first), cand, unlist(last)))
+  genes <- unique(c(unlist(first), setdiff(cand, unlist(last)), unlist(last)))
   cls_of <- function(v) {
     if (is.na(v)) return(NA_character_)
     k <- unique(strsplit(v, separator, fixed = TRUE)[[1L]])

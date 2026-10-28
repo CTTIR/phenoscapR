@@ -61,6 +61,8 @@
   take the first colour of the scale instead of missing fills.
 * Horizontal `PlotBars()` and `PlotStackedBars()` place the reference label
   and the top values on the value axis; their coordinates used to be swapped.
+* `AlterationMatrixData()` puts the genes in `last` last also when they are
+  altered in at least `min_count` samples.
 
 # phenoscapR 0.1.1
 
