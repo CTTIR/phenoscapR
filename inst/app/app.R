@@ -16,7 +16,8 @@ coder_theme <- function() {
 }
 
 ui <- bslib::page_navbar(
-  title = "phenoscapR",
+    window_title = "phenoscapR",
+  title = shiny::tagList(utils::getFromNamespace(".cttir_brand_logo", "phenoscapR")(), "phenoscapR"),
   id = "nav",
   theme = coder_theme(),
   fillable = TRUE,

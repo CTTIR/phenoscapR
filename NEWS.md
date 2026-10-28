@@ -1,5 +1,9 @@
 # phenoscapR 0.1.1
 
+* Standardize the named v5 package logo across README, documentation pages
+  and available application headers, with matching light and dark artwork.
+
+
 * Prepare a release with explicit patient-level inference, grouped summaries,
   spatial-table projection, and the existing single-cell spatial analysis APIs.
 * Document GitHub access for the optional cellspecR and songR packages and
