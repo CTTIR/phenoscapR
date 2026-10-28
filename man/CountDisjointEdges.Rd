@@ -26,7 +26,7 @@ including distances, are ignored; filtering is the caller's responsibility.}
 \item{registry}{Data frame with unique group/frame keys, including desired
 empty frames, and character columns \code{geometry_source} and
 \code{geometry_reference}. The source is \code{"frozen_import"} or \code{"supplied_edges"};
-the reference is a nonempty caller-declared artifact or provenance reference.}
+the reference is a nonempty caller-declared artefact or provenance reference.}
 
 \item{groups}{Nonempty character vector naming distinct group columns shared
 by all three tables. Include the independent sample key as appropriate.}
@@ -67,10 +67,10 @@ an endpoint absent from the declared frame raises an error. The function cannot
 detect incorrectly declared frames or establish physical coordinate validity.
 
 Each source-target edge contributes once regardless of orientation. Conditional
-neighbor means divide cross-edge count by the number of distinct interacting
+neighbour means divide cross-edge count by the number of distinct interacting
 source or target nodes. Contact fractions divide interacting nodes by the
 corresponding complete source or target population. Thus isolated nodes enter
-contact-fraction denominators but not conditional-neighbor denominators.
+contact-fraction denominators but not conditional-neighbour denominators.
 
 A population with no contacts has contact fraction zero (\code{DEFINED}) and
 conditional mean \code{NA} (\code{NO_INTERACTING_SOURCE} or \code{NO_INTERACTING_TARGET}).

@@ -11,7 +11,7 @@
 #' @param registry Data frame with unique group/frame keys, including desired
 #'   empty frames, and character columns `geometry_source` and
 #'   `geometry_reference`. The source is `"frozen_import"` or `"supplied_edges"`;
-#'   the reference is a nonempty caller-declared artifact or provenance reference.
+#'   the reference is a nonempty caller-declared artefact or provenance reference.
 #' @param groups Nonempty character vector naming distinct group columns shared
 #'   by all three tables. Include the independent sample key as appropriate.
 #' @param frame Character name of the frame column shared by all three tables.
@@ -31,10 +31,10 @@
 #' detect incorrectly declared frames or establish physical coordinate validity.
 #'
 #' Each source-target edge contributes once regardless of orientation. Conditional
-#' neighbor means divide cross-edge count by the number of distinct interacting
+#' neighbour means divide cross-edge count by the number of distinct interacting
 #' source or target nodes. Contact fractions divide interacting nodes by the
 #' corresponding complete source or target population. Thus isolated nodes enter
-#' contact-fraction denominators but not conditional-neighbor denominators.
+#' contact-fraction denominators but not conditional-neighbour denominators.
 #'
 #' A population with no contacts has contact fraction zero (`DEFINED`) and
 #' conditional mean `NA` (`NO_INTERACTING_SOURCE` or `NO_INTERACTING_TARGET`).

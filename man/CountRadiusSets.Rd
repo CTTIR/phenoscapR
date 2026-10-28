@@ -63,11 +63,11 @@ A list with \code{schema_version = "1.0.0"} and:
 \code{n_nodes}, \code{n_queries}, \code{n_references}, and \code{status} (\code{NO_QUERIES},
 \code{EMPTY_REFERENCE}, or \code{DEFINED}).
 \item \code{query_counts}: every query by requested radius, including zero
-neighbors, with \code{n_reference_neighbors} and \code{status} (\code{EMPTY_REFERENCE}
+neighbours, with \code{n_reference_neighbors} and \code{status} (\code{EMPTY_REFERENCE}
 or \code{DEFINED}). A nonempty reference universe containing only the query
-itself has status \code{DEFINED} and zero eligible neighbors.
+itself has status \code{DEFINED} and zero eligible neighbours.
 \item \code{set_counts}: every query by radius by set, with integer-valued double
-\code{count} and matching status. Overlapping sets need not partition neighbors.
+\code{count} and matching status. Overlapping sets need not partition neighbours.
 \item \code{backend}: installed version, search settings and radius/unit,
 DESCRIPTION, R-wrapper and native-library SHA-256 fingerprints. These
 identify the current runtime and do not authenticate a historical backend.
@@ -76,7 +76,7 @@ Keys and IDs are retained. Tables are sorted by keys, IDs, radii and set names
 as applicable. Empty inputs return typed empty tables; inputs are not modified.
 }
 \description{
-Counts reference neighbors and overlapping reference sets for each query ID
+Counts reference neighbours and overlapping reference sets for each query ID
 within an explicitly declared coordinate frame. Query batching always searches
 the complete reference population of that frame. No population, coordinate
 transformation, graph, tissue area or scientific threshold is inferred.
@@ -92,14 +92,14 @@ ignored; a tile column does not partition a frame unless selected as a key.
 Searches use \code{\link[dbscan:frNN]{dbscan::frNN()}} with explicit query mode, \code{search = "kdtree"},
 \code{approx = 0} and \code{sort = FALSE}, without a fallback. Returned distances are
 filtered inclusively using \code{distance <= radius}. Self exclusion compares IDs
-within the complete frame key. Distinct coincident IDs remain neighbors.
+within the complete frame key. Distinct coincident IDs remain neighbours.
 
 Exact search mode does not imply arbitrary-precision real-number geometry.
 Binary64 boundary decisions can depend on \code{search_radius}: the distance from
 \verb{(0, 0)} to \verb{(3 + 2 * .Machine$double.eps, 4)} is excluded by a native search
 at 5, but a search at 6 returns a distance rounded to 5, which passes the
 output-radius filter at 5. Keep the search envelope fixed when requesting
-different subsets of radii or comparing runs. No padding, recentering,
+different subsets of radii or comparing runs. No padding, recentring,
 coordinate rounding or squared-distance replacement is applied.
 
 Squared output and search radii must be finite and at least
@@ -107,7 +107,7 @@ Squared output and search radii must be finite and at least
 \code{sqrt(.Machine$double.xmax) / 4}; frame spans must support finite squared
 arithmetic. Unsupported extreme inputs and integer indexing/output sizes
 raise errors. These conservative guards do not remove ordinary rounding.
-Chunking bounds each native query batch, not dense-neighborhood memory within
+Chunking bounds each native query batch, not dense-neighbourhood memory within
 a batch or total output size. This function does not authenticate input
 coordinates or historical geometry and does not infer fractions or weights.
 }
