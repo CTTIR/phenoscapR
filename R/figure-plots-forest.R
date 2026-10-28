@@ -317,7 +317,7 @@ PlotGroupDifferences <- function(data, row = "contrast", estimate = "diff", q = 
 #' @examples
 #' t <- data.frame(d = c(-0.9, 0.2, 0.7, -0.1), p = c(0.02, 0.6, 0.04, 0.9),
 #'                 name = c("e1", "e2", "e3", "e4"))
-#' PlotVolcano(t, stats = data.frame(p_bound = 0.0048), effect = "d", label = "name")
+#' p <- PlotVolcano(t, stats = data.frame(p_bound = 0.0048), effect = "d", label = "name")
 #' @export
 PlotVolcano <- function(data, stats = NULL, effect = "cliffs_delta", p = "p", label = NULL, alpha = 0.05, top = 3,
                         bound = "p_bound", bound_label = "Minimum attainable p = {p_bound|p}",

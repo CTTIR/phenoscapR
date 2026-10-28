@@ -39,7 +39,7 @@ test_that("labels are typeset as rich text or plain Unicode", {
 })
 
 test_that("figures are composed on an exact page and written as PDF and PNG", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   d <- data.frame(patient = rep(c("p1", "p2", "p3"), each = 2), group = rep(c("A", "B", "A"), each = 2),
                   condition = rep(c("x", "y"), 3), value = c(3, 5, 2, 6, 4, 4.5),
                   excluded = rep(c(FALSE, FALSE, TRUE), each = 2))
@@ -70,7 +70,7 @@ test_that("figures are composed on an exact page and written as PDF and PNG", {
 })
 
 test_that("specifications resolve grammars, data and colour references", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   d <- data.frame(patient = rep(c("p1", "p2"), each = 2), group = "g1", condition = rep(c("x", "y"), 2),
                   value = c(1, 2, 2, 3))
   spec <- list(
@@ -102,7 +102,7 @@ test_that("specifications resolve grammars, data and colour references", {
 })
 
 test_that("page fractions and split specification files are accepted", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   dir <- withr::local_tempdir()
   d <- data.frame(patient = rep(c("p1", "p2"), each = 2), group = "g1", condition = rep(c("x", "y"), 2),
                   value = c(1, 2, 2, 3))

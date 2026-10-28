@@ -11,6 +11,7 @@ local_cairo <- function(env = parent.frame()) {
 }
 
 built <- function(p) {
+  skip_without_cairo()
   local_cairo()
   expect_s3_class(p, "ggplot")
   g <- ggplot2::ggplotGrob(p)
@@ -154,7 +155,7 @@ test_that("group strips, grouped scatter and bars build", {
 })
 
 test_that("text blocks and text tables are drawn on the device", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   g <- PlotTextBlock(data.frame(k = 11, n = 12, p = 0.0015), template = "{k|d}/{n|d} patients; p = {p|p}")
   expect_s3_class(g, "phenoscapR_text_block")
   expect_identical(g$lines, "11/12 patients; p = 0.0015")
@@ -172,7 +173,7 @@ test_that("text blocks and text tables are drawn on the device", {
 })
 
 test_that("registered grammar names render from a specification", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   d <- data.frame(group = rep(c("A", "B"), each = 3), value = c(1, 2, 3, 2, 3, 5))
   s <- data.frame(k = 3, n = 3, p = 0.25)
   spec <- list(height_mm = 60, width_mm = 90,

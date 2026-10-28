@@ -87,5 +87,5 @@ P = \code{alpha} and a dashed line at the lower bound of the exact P value
 \examples{
 t <- data.frame(d = c(-0.9, 0.2, 0.7, -0.1), p = c(0.02, 0.6, 0.04, 0.9),
                 name = c("e1", "e2", "e3", "e4"))
-PlotVolcano(t, stats = data.frame(p_bound = 0.0048), effect = "d", label = "name")
+p <- PlotVolcano(t, stats = data.frame(p_bound = 0.0048), effect = "d", label = "name")
 }

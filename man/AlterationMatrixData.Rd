@@ -58,6 +58,7 @@ in at least \code{min_count} samples by decreasing count (ties in table
 order), then \code{last}.
 }
 \examples{
-m <- data.frame(gene = c("G1", "G2"), S1 = c("Missense", ""), S2 = c("Nonsense|Missense", "Deletion"))
+m <- data.frame(gene = c("G1", "G2"), S1 = c("Missense", ""),
+                S2 = c("Nonsense|Missense", "Deletion"))
 AlterationMatrixData(m, ids = c("S1", "S2"), min_count = 1)
 }

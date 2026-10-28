@@ -172,7 +172,7 @@ test_that("nearest-neighbour builders create no random state", {
 })
 
 test_that("image grammars are registered and draw on a composed page", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   skip_if_not_installed("ragg")
   g <- FigureGrammars()
   expect_identical(unname(g[c("cell_map", "territories", "fluorescence_field", "image")]),

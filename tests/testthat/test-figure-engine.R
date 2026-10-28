@@ -40,7 +40,7 @@ test_that("typesetting keeps straight quotes and can be switched off by rule or 
 })
 
 test_that("legend keys fill rows or columns, take marker sizes and all key shapes", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   dev <- withr::local_tempfile(fileext = ".png")
   grDevices::png(dev, type = "cairo")
   withr::defer(grDevices::dev.off())
@@ -63,7 +63,7 @@ test_that("legend keys fill rows or columns, take marker sizes and all key shape
 })
 
 test_that("figure texts can sit on their baseline and skip typesetting", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   t <- FigureText("Treg-like cells", c(5, 10), vjust = "baseline", typeset = FALSE)
   expect_identical(t$vjust, "baseline")
   expect_false(t$typeset)
@@ -79,7 +79,7 @@ test_that("figure texts can sit on their baseline and skip typesetting", {
 })
 
 test_that("specifications pass box sizes, typesetting switches and legend layouts", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   d <- data.frame(group = rep(c("A", "B"), each = 4), value = c(1, 3, 7, 82, 2, 4, 6, 9))
   spec <- list(height_mm = 60, width_mm = 90, typeset = list(off = list("treg")),
                panels = list(list(box = c(15, 10, 30, 18), grammar = "group_strip", data = "d", heading = "Treg cells",
@@ -101,7 +101,7 @@ test_that("specifications pass box sizes, typesetting switches and legend layout
 })
 
 test_that("grammar options for references, ties, colours, open markers, bar labels and rule tables", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   k <- data.frame(k = rep(4:8, 2), v = c(5:1, 6:2), a = rep(c("main", "all"), each = 5))
   p <- PlotScatterGroups(k, x = "k", y = "v", group = "a", id = "a", connect = TRUE,
                          group_colours = c(main = "#222222", all = "#8A8A8A"),

@@ -80,7 +80,8 @@ AnnotationTracks <- function(data, id, tracks, style = ManuscriptStyle()) {
 #'   `count` (altered samples of the gene in the table), `percent` (count
 #'   relative to the number of items) and `gene_rank`.
 #' @examples
-#' m <- data.frame(gene = c("G1", "G2"), S1 = c("Missense", ""), S2 = c("Nonsense|Missense", "Deletion"))
+#' m <- data.frame(gene = c("G1", "G2"), S1 = c("Missense", ""),
+#'                 S2 = c("Nonsense|Missense", "Deletion"))
 #' AlterationMatrixData(m, ids = c("S1", "S2"), min_count = 1)
 #' @export
 AlterationMatrixData <- function(matrix, gene = NULL, ids, id_map = NULL, map_from = NULL, map_to = NULL,

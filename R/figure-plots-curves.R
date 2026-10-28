@@ -228,8 +228,10 @@ PlotQuantileCurves <- function(data, x = "x", y = "median", lower = NULL, upper 
 #' @param style A [ManuscriptStyle()] object.
 #' @return A 'ggplot2' object.
 #' @examples
-#' d <- data.frame(patient = rep(c("p1", "p2", "p3"), each = 3), group = rep(c("A", "B", "A"), each = 3),
-#'                 band = rep(c("near", "mid", "far"), 3), value = c(1, 0, -1, 2, -Inf, -2, 0.5, 0.2, -0.5))
+#' d <- data.frame(patient = rep(c("p1", "p2", "p3"), each = 3),
+#'                 group = rep(c("A", "B", "A"), each = 3),
+#'                 band = rep(c("near", "mid", "far"), 3),
+#'                 value = c(1, 0, -1, 2, -Inf, -2, 0.5, 0.2, -0.5))
 #' PlotBandProfiles(d, x_order = c("near", "mid", "far"), floor = -3,
 #'                  group_colours = c(A = "#009E73", B = "#0072B2"), floor_label = "none")
 #' @export

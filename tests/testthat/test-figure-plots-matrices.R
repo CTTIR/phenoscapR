@@ -108,7 +108,7 @@ test_that("alteration matrices fill missing tiles and print row shares", {
 })
 
 test_that("embeddings rasterise points and keep vector files small", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   skip_if_not_installed("ragg")
   set.seed(7)
   n <- 20000
@@ -149,7 +149,7 @@ test_that("density outlines draw one coloured region per group with a key", {
 })
 
 test_that("the matrix, bar and embedding grammars work from figure specifications", {
-  skip_if_not(capabilities("cairo"))
+  skip_without_cairo()
   grammars <- FigureGrammars()
   expect_identical(unname(grammars[c("annotated_heatmap", "dot_matrix", "stacked_bars", "embedding",
                                      "density_outlines", "alteration_matrix")]),
