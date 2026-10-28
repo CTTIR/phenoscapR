@@ -32,6 +32,13 @@
 * `FindNeighbours()`, `CellDensity()`, `nearest_neighbours()` and `cell_density()`
   return cells in input order; with interleaved samples, values used to be
   written to the wrong cells.
+* `BuildExactDelaunayEdges()` and the `"deldir"` engine of
+  `NeighbourTypeCounts()` triangulate through the public `deldir::deldir()`
+  instead of deldir's internal routines, with the same edges. The deldir
+  version pin is gone; `backend_contract` is no longer needed and is ignored,
+  and `mode`, `initial_madj` and `max_retries` no longer change the
+  construction. Frames that need deldir to enlarge its workspace now succeed
+  in every mode; frames of 799,800 or more points are refused.
 
 # phenoscapR 0.1.1
 

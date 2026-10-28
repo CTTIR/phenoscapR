@@ -47,6 +47,23 @@ test_that("GEOS counts equal brute-force counts over deldir edges", {
   expect_identical(sum(out$degree), 2L * attr(out, "edges"))
 })
 
+test_that("the deldir engine needs no backend contract and agrees with GEOS", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("deldir")
+  set.seed(4)
+  cells <- data.frame(x = stats::runif(300, 0, 200), y = stats::runif(300, 0, 200),
+                      type = sample(c("a", "b", "c", "d"), 300, replace = TRUE))
+  groups <- list(A = "a", BC = c("b", "c"), D = "d")
+  geos <- NeighbourTypeCounts(cells, levels = groups, max_edge = 15)
+  dd <- NeighbourTypeCounts(cells, levels = groups, max_edge = 15, engine = "deldir")
+  expect_identical(attr(dd, "engine"), "deldir")
+  old <- NeighbourTypeCounts(cells, levels = groups, max_edge = 15, engine = "deldir",
+                             backend_contract = list(package_version = "2.0-4"))
+  expect_identical(old, dd)
+  attr(dd, "engine") <- attr(geos, "engine") <- NULL
+  expect_identical(dd, geos)
+})
+
 test_that("duplicates and undeclared types are refused or isolated", {
   skip_if_not_installed("sf")
   cells <- data.frame(x = c(0, 10, 0, 10, 5, 0), y = c(0, 0, 10, 10, 4, 0),

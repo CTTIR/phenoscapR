@@ -92,6 +92,7 @@
     geometry_rows[[f]] <- p
     windows[[f]] <- .ed_window(xx, yy)
     plans[[f]] <- PlanExactDelaunayWorkspace(n, mode, initial_madj, max_retries, FALSE)
+    .ed_assert(!plans[[f]]$bounded_required, "Frame exceeds the integer workspace of deldir::deldir()")
     upper_edges[f] <- 3 * as.double(n) - 6
   }
   .ed_assert(sum(upper_edges) <= .Machine$integer.max,
@@ -106,11 +107,11 @@
   )
 }
 
-#' Build Explicitly Ordered Delaunay Graphs with a Pinned Backend
+#' Build Explicitly Ordered Delaunay Graphs
 #'
 #' Constructs each complete declared geometry before selecting edges whose two
-#' endpoints are eligible. Uses a caller-pinned `deldir` engine with no fallback,
-#' coordinate rounding, jitter or population inference.
+#' endpoints are eligible. Uses `deldir::deldir()` with no fallback, coordinate
+#' rounding, jitter or population inference.
 #'
 #' @param nodes Data frame of keys, coordinates, orders and memberships.
 #' @param frames Data frame of unique complete group/frame keys and units.
@@ -134,16 +135,19 @@
 #'   coordinate ranges by `max(1e-6, max(x_span, y_span) * 1e-10)` on each side.
 #' @param cap_policy Required string `"distance_leq"`. Named caps use inclusive
 #'   comparisons with `sqrt(dx^2 + dy^2)`, without a tolerance.
-#' @param backend_contract Named list of exactly the 13 fields described below.
-#'   Pins identify the expected current runtime; their origin is not authenticated.
+#' @param backend_contract Deprecated and ignored. Construction uses the public
+#'   `deldir::deldir()` interface, so there are no private functions or native
+#'   routines to pin. Kept so that existing calls keep working.
 #' @param eps Explicit positive finite scalar tolerance passed to the engine.
-#' @param mode Explicit `"stock"`, `"bounded"` or `"auto"` workspace path.
-#'   `"bounded"` forces the registered-master edge-only path. `"auto"` selects it
-#'   when stock adjacency lacks a complete spare row below the integer limit.
+#' @param mode Explicit `"stock"`, `"bounded"` or `"auto"` workspace mode,
+#'   validated with [PlanExactDelaunayWorkspace()] and recorded in the
+#'   provenance. Every mode runs `deldir::deldir()`, which sizes its own
+#'   workspace and enlarges it when needed; frames whose stock workspace would
+#'   exceed the integer limit (`bounded_required`) are refused.
 #' @param caps Named positive finite numeric thresholds in `coordinate_unit`.
 #'   An empty numeric vector requests no cap columns.
-#' @param initial_madj,max_retries Initial bounded adjacency capacity and retry
-#'   ceiling; see [PlanExactDelaunayWorkspace()].
+#' @param initial_madj,max_retries Validated as in [PlanExactDelaunayWorkspace()];
+#'   they no longer change the construction.
 #'
 #' @details
 #' Supported columns are dimensionless, unclassed base character, integer/double
@@ -167,36 +171,16 @@
 #' coordinate reconciliation, duplicate unordered pairs, connectedness and planar
 #' cardinality bounds before eligibility induction. These necessary invariants
 #' alone are not an independent proof of Delaunay geometry. Co-circular choices
-#' depend on the pinned engine and explicit point order. Numeric orientation ranks
+#' depend on the `deldir` version and explicit point order. Numeric orientation ranks
 #' and UTF-8 output ordering do not infer a historical locale or ordering policy.
 #'
-#' The only supported backend profile is `deldir` version `"2.0-4"`, with
-#' registered Fortran arities 9 (`binsrt`) and 16 (`master`). `deldir` is optional:
-#' missing or unsupported installations fail clearly for nonempty construction.
-#' The contract fields are:
-#' \itemize{
-#'   \item `package_version`, `binsrt_num_parameters`, `master_num_parameters`;
-#'   \item `description_sha256`, `native_library_sha256`;
-#'   \item `binsrtR_body_serialized_sha256`, `binsrtR_body_deparse_sha256`;
-#'   \item `wrapper_body_serialized_sha256`, `wrapper_body_deparse_sha256`;
-#'   \item `digOutxy_body_serialized_sha256`, `digOutxy_body_deparse_sha256`;
-#'   \item `digOutz_body_serialized_sha256`, `digOutz_body_deparse_sha256`.
-#' }
-#' Digests use `digest::digest(..., algo = "sha256")`; file/text digests set
-#' `serialize = FALSE`. Body text is `paste(deparse(body(f), width.cutoff = 500L),
-#' collapse = "\n")`. Builds, operating systems and R serialization may produce
-#' different pins: approve each intended runtime explicitly. No local digest is
-#' embedded here. Matching supplied pins does not authenticate their source,
-#' historical results or the entire R process.
-#'
-#' Registered symbols are freshly looked up and validated. Detached wrapper,
-#' sorter and lexical-helper closures preserve original functions while routing
-#' native calls through registered symbols. Warnings, unexpected messages,
-#' invalid native lengths/flags and exhausted workspaces fail closed. Segment
-#' exhaustion is not silently retried with an incomplete result. No incomplete
-#' tessellation is returned. The bounded path changes workspace allocation, not
-#' the selected triangulation engine; large-input qualification is separate from
-#' small-fixture parity.
+#' `deldir` is optional: a missing installation fails clearly for nonempty
+#' construction. Each frame calls `deldir::deldir(x, y, rw, eps, sort = TRUE,
+#' round = FALSE)` on the geometry points in `point_order`. Warnings and
+#' unexpected messages fail closed; messages announcing that `deldir` enlarged
+#' its workspace are counted in the frame provenance (`workspace_growth`). No
+#' incomplete tessellation is returned. The frame provenance records the
+#' `deldir` version.
 #'
 #' @return A list with `schema_version = "0.1.0"`, `nodes` (including input
 #'   `source_row` and ordered `geometry_index`), `full_edges`,
@@ -209,65 +193,27 @@
 #'
 #' @examples
 #' PlanExactDelaunayWorkspace(100, mode = "stock")$native_buffer_bytes
-#' \dontrun{
-#' # Observe this runtime for an explicit local experiment. Observation is not
-#' # historical authentication; independently approve pins for reproducible use.
-#' stopifnot(requireNamespace("deldir", quietly = TRUE))
-#' ns <- asNamespace("deldir")
-#' dll <- getLoadedDLLs()[["deldir"]]
-#' wrapper <- get("deldir", ns)
-#' functions <- list(
-#'   binsrtR = get("binsrtR", ns), wrapper = wrapper,
-#'   digOutxy = get("digOutxy", environment(wrapper)),
-#'   digOutz = get("digOutz", environment(wrapper))
-#' )
-#' hash_file <- function(path) {
-#'   digest::digest(
-#'     file = path, algo = "sha256",
-#'     serialize = FALSE
+#' if (requireNamespace("deldir", quietly = TRUE)) {
+#'   nodes <- data.frame(
+#'     sample = "one", frame = "image", id = c("a", "b", "c", "d"),
+#'     x = c(0, 4, 0, 3), y = c(0, 0, 3, 4), input = 1:4, orientation = 1:4,
+#'     geometry = TRUE, eligible = c(TRUE, TRUE, TRUE, FALSE)
 #'   )
-#' }
-#' contract <- list(
-#'   package_version = read.dcf(
-#'     file.path(getNamespaceInfo(ns, "path"), "DESCRIPTION"),
-#'     fields = "Version"
-#'   )[[1L]],
-#'   description_sha256 = hash_file(file.path(
-#'     getNamespaceInfo(ns, "path"),
-#'     "DESCRIPTION"
-#'   )), native_library_sha256 = hash_file(dll[["path"]]),
-#'   binsrt_num_parameters = 9L, master_num_parameters = 16L
-#' )
-#' for (name in names(functions)) {
-#'   f <- functions[[name]]
-#'   contract[[paste0(name, "_body_serialized_sha256")]] <-
-#'     digest::digest(body(f), algo = "sha256")
-#'   contract[[paste0(name, "_body_deparse_sha256")]] <- digest::digest(
-#'     paste(deparse(body(f), width.cutoff = 500L), collapse = "\n"),
-#'     algo = "sha256", serialize = FALSE
+#'   frames <- data.frame(sample = "one", frame = "image", unit = "um")
+#'   graph <- BuildExactDelaunayEdges(nodes, frames, "sample", "frame", "id",
+#'     "x", "y", "input", "orientation", "geometry", "eligible", "unit", "um",
+#'     "orientation_rank", "span_padding_v1", "distance_leq",
+#'     eps = 1e-9, mode = "stock", caps = c(short = 3, long = 5)
 #'   )
-#' }
-#' nodes <- data.frame(
-#'   sample = "one", frame = "image", id = c("a", "b", "c"),
-#'   x = c(0, 4, 0), y = c(0, 0, 3), input = 1:3, orientation = 1:3,
-#'   geometry = TRUE, eligible = TRUE
-#' )
-#' frames <- data.frame(sample = "one", frame = "image", unit = "um")
-#' graph <- BuildExactDelaunayEdges(nodes, frames, "sample", "frame", "id",
-#'   "x", "y", "input", "orientation", "geometry", "eligible", "unit", "um",
-#'   "orientation_rank", "span_padding_v1", "distance_leq", contract,
-#'   eps = 1e-9, mode = "stock", caps = c(short = 3, long = 5)
-#' )
-#' graph$full_edges
+#'   graph$full_edges
 #' }
 #' @export
 BuildExactDelaunayEdges <- function(
   nodes, frames, groups, frame, id, x, y,
   point_order, orientation_rank, geometry, eligible, unit_column, coordinate_unit,
-  edge_order, window_policy, cap_policy, backend_contract, eps, mode, caps = numeric(),
+  edge_order, window_policy, cap_policy, backend_contract = NULL, eps, mode, caps = numeric(),
     initial_madj = 64L, max_retries = 32L
 ) {
-  .ed_contract(backend_contract)
   prepared <- .ed_prepare_registry(
     nodes, frames, groups, frame, id, x, y, point_order,
     orientation_rank, geometry, eligible, unit_column, coordinate_unit, edge_order,
@@ -305,13 +251,12 @@ BuildExactDelaunayEdges <- function(
     orientation_rank, geometry, eligible, unit_column, coordinate_unit, edge_order, caps
   )
   answer$provenance <- list(
-    geometry_source = "CALLER_PINNED_DELDIR_CONSTRUCTION",
+    geometry_source = "DELDIR_CONSTRUCTION",
     construction_performed = nrow(frames) > 0L, native_execution = nrow(frames) > 0L,
     coordinate_unit = coordinate_unit, point_order = "EXPLICIT_NUMERIC_ORDER",
     orientation = "EXPLICIT_NUMERIC_RANK", edge_order = edge_order,
     frame_order = "UTF8_RADIX_GROUP_FRAME_KEYS", window_policy = window_policy,
       cap_policy = cap_policy,
-    pin_trust = "MATCHES_CALLER_PINS_ORIGIN_NOT_AUTHENTICATED",
     historical_parity = "NOT_ESTABLISHED",
     empty_registry = if (nrow(frames) == 0L) "NO_BACKEND_LOADED_OR_EXECUTED" else "NOT_EMPTY"
   )

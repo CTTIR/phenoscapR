@@ -55,6 +55,11 @@
 #'   spare adjacency row. The byte estimate includes native buffers only, not R
 #'   objects, copies or runtime overhead, and is not an available-memory check.
 #'   Successful arithmetic preflight does not qualify a large native execution.
+#'
+#'   [BuildExactDelaunayEdges()] constructs every frame with `deldir::deldir()`,
+#'   which allocates the stock workspace and enlarges it itself when needed. It
+#'   refuses frames for which `bounded_required` is `TRUE`; the bounded figures
+#'   are arithmetic only.
 #' @return A list containing requested/selected route, stock and selected
 #'   adjacency capacity, segment capacity, named native lengths, integer headroom,
 #'   retry ceiling and `native_buffer_bytes`. `native_execution` is always `FALSE`.
@@ -118,35 +123,6 @@ PlanExactDelaunayWorkspace <- function(n_points, mode = c("auto", "stock", "boun
   )
 }
 
-.ed_next_workspace <- function(n_points, madj, retries, max_retries,
-                               inc_adj, inc_seg) {
-  .ed_assert(
-    .ed_whole(madj, 20) && .ed_whole(retries) &&
-      .ed_whole(max_retries) && retries <= max_retries,
-    "Invalid current workspace or retry state"
-  )
-  .ed_assert(
-    .ed_whole(inc_adj, 0, 1) && .ed_whole(inc_seg, 0, 1),
-    "Invalid native retry flags"
-  )
-  plan <- PlanExactDelaunayWorkspace(n_points, "bounded", madj, max_retries)
-  .ed_assert(madj <= plan$max_madj, "Current adjacency capacity exceeds safe maximum")
-  .ed_assert(inc_seg == 0, "Segment capacity exhausted; incomplete graph refused")
-  if (inc_adj == 0) {
-    return(list(
-      status = "NO_GROWTH_REQUESTED",
-      madj = as.double(madj), retries = as.double(retries), native_execution = FALSE
-    ))
-  }
-  .ed_assert(retries < max_retries, "Adjacency retry ceiling reached")
-  next_madj <- min(plan$max_madj, max(as.double(madj) + 1, ceiling(1.2 * madj)))
-  .ed_assert(next_madj > madj, "No larger safe adjacency capacity remains")
-  next_plan <- PlanExactDelaunayWorkspace(n_points, "bounded", next_madj, max_retries)
-  list(
-    status = "GROWTH_PLANNED", madj = next_madj, retries = as.double(retries) + 1,
-    workspace = next_plan, native_execution = FALSE
-  )
-}
 
 .ed_validate_supplied_edges <- function(nodes, raw_edges, frames, groups, frame,
                                         id, x, y, point_order, orientation_rank,

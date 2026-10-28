@@ -34,8 +34,10 @@ to exactly one group. The order defines the count columns.}
 
 \item{duplicates}{\code{"error"} or \code{"isolate"}.}
 
-\item{backend_contract, eps}{Passed to the \code{"deldir"} engine (see
+\item{backend_contract}{Deprecated and ignored (see
 \code{\link[=BuildExactDelaunayEdges]{BuildExactDelaunayEdges()}}).}
+
+\item{eps}{Tolerance passed to the \code{"deldir"} engine.}
 
 \item{index_base}{Base of the integer \code{type_index} column (\code{1} or \code{0}).}
 }
@@ -63,10 +65,9 @@ first occurrence as the graph vertex and gives later copies no neighbours
 
 Engines: \code{"geos"} (default) uses GEOS through \pkg{sf}
 (\code{st_triangulate(..., bOnlyEdges = TRUE)}); input coordinates are mapped
-back to cells exactly. \code{"deldir"} uses the pinned, registered-routine
-\pkg{deldir} backend of \code{\link[=BuildExactDelaunayEdges]{BuildExactDelaunayEdges()}} and needs its
-\code{backend_contract}; its run time grows roughly quadratically with the
-number of cells, so it is meant for cross-checks on small sections.
+back to cells exactly. \code{"deldir"} uses \code{deldir::deldir()} as
+\code{\link[=BuildExactDelaunayEdges]{BuildExactDelaunayEdges()}} does; its run time grows roughly quadratically
+with the number of cells, so it is meant for cross-checks on small sections.
 }
 \examples{
 if (requireNamespace("sf", quietly = TRUE)) {

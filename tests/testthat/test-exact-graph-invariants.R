@@ -1,4 +1,3 @@
-.ed_next_workspace <- getFromNamespace(".ed_next_workspace", "phenoscapR")
 .ed_validate_supplied_edges <- getFromNamespace(".ed_validate_supplied_edges", "phenoscapR")
 .ed_window <- getFromNamespace(".ed_window", "phenoscapR")
 fixture <- function() {
@@ -26,13 +25,6 @@ test_that('workspace preflight matches independent arbitrary-integer calculation
  expect_error(PlanExactDelaunayWorkspace(matrix(3)),'point');expect_error(PlanExactDelaunayWorkspace(2),'point')
  expect_error(PlanExactDelaunayWorkspace(3,initial_madj=20.5),'capacity')
  expect_error(PlanExactDelaunayWorkspace(3,max_retries=NA_real_),'retry')
- n<-.ed_next_workspace(100,64,0,32,1,0);expect_equal(n$madj,77);expect_equal(n$retries,1)
- expect_identical(.ed_next_workspace(100,64,0,0,0,0)$status,'NO_GROWTH_REQUESTED')
- expect_error(.ed_next_workspace(100,64,0,0,1,0),'ceiling')
- expect_error(.ed_next_workspace(100,64,0,32,0,1),'incomplete')
- expect_error(.ed_next_workspace(100,64,0,32,2,0),'flags')
- p<-PlanExactDelaunayWorkspace(799800,'bounded')
- expect_error(.ed_next_workspace(799800,p$max_madj,0,32,1,0),'No larger')
 })
 
 test_that('literal triangle validates coordinate identity and independent orientation rank', {

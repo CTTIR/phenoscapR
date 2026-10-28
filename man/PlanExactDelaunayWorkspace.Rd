@@ -40,6 +40,11 @@ argument length is checked against signed integer capacity, with one complete
 spare adjacency row. The byte estimate includes native buffers only, not R
 objects, copies or runtime overhead, and is not an available-memory check.
 Successful arithmetic preflight does not qualify a large native execution.
+
+\code{\link[=BuildExactDelaunayEdges]{BuildExactDelaunayEdges()}} constructs every frame with \code{deldir::deldir()},
+which allocates the stock workspace and enlarges it itself when needed. It
+refuses frames for which \code{bounded_required} is \code{TRUE}; the bounded figures
+are arithmetic only.
 }
 \examples{
 PlanExactDelaunayWorkspace(100)
