@@ -125,7 +125,7 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
       mn <- min(x, na.rm = TRUE)
       mx <- max(x, na.rm = TRUE)
       rng <- mx - mn
-      if (rng == 0) return(rep(0, length(x)))
+      if (rng == 0) return(x - mn)  # zeros, keeping missing values
       (x - mn) / rng
     },
     quantile = {

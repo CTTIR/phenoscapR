@@ -54,6 +54,8 @@
   cell; every cell used to find itself at distance 0.
 * `PhenotypeCells()` and `phenotype_cells()` treat a missing intensity as not
   positive; such cells used to get labels such as `"CD3+/NA+"`.
+* Min-max scaling of a constant marker (`NormaliseData()`,
+  `normalise_markers()`) keeps missing values instead of setting them to 0.
 
 # phenoscapR 0.1.1
 

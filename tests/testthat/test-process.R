@@ -107,3 +107,10 @@ test_that("a missing intensity is not a positive call", {
   dt <- data.table::data.table(CD3 = c(5, NA), CD8 = c(NA, 0))
   expect_identical(phenotype_cells(dt, list(CD3 = 1, CD8 = 1))$phenotype, c("CD3+", "Negative"))
 })
+
+test_that("minmax scaling of a constant marker keeps missing values", {
+  o <- CreateSpatialObject(matrix(c(5, NA, 5), 3, 1, dimnames = list(NULL, "M")), data.frame(x = 1:3, y = 0))
+  expect_identical(as.vector(GetData(NormaliseData(o, "minmax"))), c(0, NA, 0))
+  dt <- data.table::data.table(M = c(5, NA, 5))
+  expect_identical(normalise_markers(dt, method = "minmax")$M, c(0, NA, 0))
+})
