@@ -5,7 +5,7 @@
 #'
 #' @param dt A `data.table` as returned by [read_spatial()].
 #' @param min_area Numeric or `NULL`. Minimum cell area. Cells below this
-#'   threshold are removed.
+#'   threshold, or with a missing area, are removed.
 #' @param max_area Numeric or `NULL`. Maximum cell area. Cells above this
 #'   threshold are removed.
 #' @param min_intensity Numeric. Minimum total marker intensity. Cells with
@@ -61,7 +61,8 @@ qc_filter <- function(dt, min_area = NULL, max_area = NULL,
     keep <- keep & total >= min_intensity
     if (!is.null(max_intensity)) keep <- keep & total <= max_intensity
   }
-  keep
+  # A missing area cannot pass an area threshold (data.table drops such rows too).
+  keep %in% TRUE
 }
 
 #' Normalise Marker Intensities
@@ -262,7 +263,8 @@ summarise_phenotypes <- function(dt) {
 #' and/or total marker intensity.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param min_area Numeric or \code{NULL}. Minimum cell area.
+#' @param min_area Numeric or \code{NULL}. Minimum cell area; cells with a
+#'   missing area fail area thresholds.
 #' @param max_area Numeric or \code{NULL}. Maximum cell area.
 #' @param min_intensity Numeric. Minimum total marker intensity. Default \code{0}.
 #' @param max_intensity Numeric or \code{NULL}. Maximum total marker intensity.

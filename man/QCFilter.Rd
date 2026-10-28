@@ -15,7 +15,8 @@ QCFilter(
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{min_area}{Numeric or \code{NULL}. Minimum cell area.}
+\item{min_area}{Numeric or \code{NULL}. Minimum cell area; cells with a
+missing area fail area thresholds.}
 
 \item{max_area}{Numeric or \code{NULL}. Maximum cell area.}
 

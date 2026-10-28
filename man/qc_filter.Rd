@@ -16,7 +16,7 @@ qc_filter(
 \item{dt}{A \code{data.table} as returned by \code{\link[=read_spatial]{read_spatial()}}.}
 
 \item{min_area}{Numeric or \code{NULL}. Minimum cell area. Cells below this
-threshold are removed.}
+threshold, or with a missing area, are removed.}
 
 \item{max_area}{Numeric or \code{NULL}. Maximum cell area. Cells above this
 threshold are removed.}

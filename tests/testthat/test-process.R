@@ -121,3 +121,12 @@ test_that("a single cell is phenotyped on several markers", {
   dt <- data.table::data.table(CD3 = 5, CD8 = 2)
   expect_identical(phenotype_cells(dt, list(CD3 = 1, CD8 = 1))$phenotype, "CD3+/CD8+")
 })
+
+test_that("cells with a missing area fail area thresholds", {
+  o <- CreateSpatialObject(matrix(1:3, 3, 1, dimnames = list(NULL, "M")), data.frame(x = 1:3, y = 0),
+                           data.frame(cell_id = 1:3, sample_id = "s", cell_area = c(10, NA, 30)))
+  expect_identical(QCFilter(o, min_area = 5)@meta_data$cell_id, c(1L, 3L))
+  expect_identical(NCells(QCFilter(o)), 3L)
+  dt <- data.table::data.table(cell_id = 1:3, cell_area = c(10, NA, 30), M = 1:3)
+  expect_identical(qc_filter(dt, min_area = 5)$cell_id, c(1L, 3L))
+})
