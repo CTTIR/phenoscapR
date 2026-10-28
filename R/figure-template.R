@@ -99,7 +99,7 @@ FormatTemplate <- function(template, data = NULL) {
   if (format == "p") return(FormatP(value))
   if (!is.finite(value)) return("n.e.")
   if (format == "pfixed") return(sprintf(if (value < 0.01) "%.4f" else "%.3f", value))
-  if (format == "d") return(.fig_minus(as.character(round(value))))
+  if (format == "d") return(.fig_minus(formatC(round(value) + 0, format = "f", digits = 0)))
   if (format == "comma") return(.fig_minus(formatC(round(value), format = "d", big.mark = ",")))
   if (grepl("^f[0-9]$", format)) return(.fig_minus(formatC(value, format = "f", digits = as.integer(substring(format, 2)))))
   if (grepl("^sf[0-9]$", format)) {

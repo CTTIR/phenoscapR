@@ -36,3 +36,13 @@ test_that("grammar texts take the single distinct value of each referenced colum
   expect_error(.fig_template_unique("{zz}", list(a = 1)), "No value")
   expect_error(.fig_template_unique("{a}", list(a = 1:2)), "one distinct")
 })
+
+test_that("whole-number format writes every digit", {
+  # Outputs for these values are unchanged.
+  v <- c(0, 7, -3, 12.4, 99999, 123456, -98765.4, 2.5)
+  expect_identical(FormatTemplate("{n|d}", data.frame(n = v)),
+                   c("0", "7", "−3", "12", "99999", "123456", "−98765", "2"))
+  expect_identical(FormatTemplate("{n|d} cells", data.frame(n = c(1e5, 2e6, -2e5, 3e10))),
+                   c("100000 cells", "2000000 cells", "−200000 cells", "30000000000 cells"))
+  expect_identical(FormatTemplate("{n|d}", data.frame(n = -0.2)), "0")
+})

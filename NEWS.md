@@ -56,6 +56,7 @@
   positive; such cells used to get labels such as `"CD3+/NA+"`.
 * Min-max scaling of a constant marker (`NormaliseData()`,
   `normalise_markers()`) keeps missing values instead of setting them to 0.
+* The template format `{n|d}` writes every digit (`100000`, not `1e+05`).
 
 # phenoscapR 0.1.1
 
