@@ -89,3 +89,15 @@ test_that("as_SpatialExperiment() round-trips when the package is present", {
   expect_s4_class(back, "SpatialCellData")
   expect_equal(NCells(back), NCells(one))
 })
+
+test_that("as_Seurat() accepts cell IDs repeated across samples", {
+  skip_if_not_installed("Seurat")
+  skip_if_not_installed("SeuratObject")
+  counts <- matrix(c(5, 0, 3, 1, 2, 7, 0, 4), nrow = 4, dimnames = list(NULL, c("CD3", "CD8")))
+  o <- CreateSpatialObject(counts, data.frame(x = c(1, 5, 9, 4), y = c(2, 8, 3, 6)),
+                           data.frame(cell_id = c(1, 2, 1, 2), sample_id = c("a", "a", "b", "b")))
+  se <- as_Seurat(o)
+  expect_equal(ncol(se), 4)
+  expect_false(anyDuplicated(colnames(se)) > 0)
+  expect_equal(se[[]]$cell_id, c(1, 2, 1, 2))
+})

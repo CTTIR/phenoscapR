@@ -10,7 +10,9 @@
 #'
 #' Builds a \pkg{Seurat} object with raw counts, normalised data, cell metadata,
 #' and the spatial coordinates stored both in metadata (\code{x}, \code{y}) and
-#' as a \code{"spatial"} dimensional reduction.
+#' as a \code{"spatial"} dimensional reduction. Cell IDs repeated across
+#' samples are made unique with [make.unique()] for the Seurat cell names; the
+#' metadata keep the original \code{cell_id}.
 #'
 #' @param object A \code{\link{SpatialCellData-class}} object.
 #' @return A \code{Seurat} object.
@@ -27,7 +29,8 @@ as_Seurat <- function(object) {
     stop("as_Seurat() requires the 'Seurat' package. Install it with ",
          "install.packages(\"Seurat\").", call. = FALSE)
   }
-  cells <- as.character(object@meta_data$cell_id)
+  # Cell IDs need only be unique within a sample; Seurat needs unique names.
+  cells <- make.unique(as.character(object@meta_data$cell_id))
   counts <- t(object@counts)
   colnames(counts) <- cells
   rownames(counts) <- Markers(object)
