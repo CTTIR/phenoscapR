@@ -159,6 +159,18 @@ test_that("schematic clouds leave the caller's random state as it was", {
   set.seed(11)
 })
 
+test_that("nearest-neighbour builders create no random state", {
+  cells <- synthetic_cells()
+  if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) rm(".Random.seed", envir = globalenv())
+  d <- NearestLabelDistance(cells, "tum", "dtum", self = NULL)
+  m <- CellMapData(d, centre = c(100, 100), size = 80, interface = list(labels = "tum", radius = 6, step = 2))
+  expect_false(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+  set.seed(5)
+  before <- .Random.seed
+  NearestLabelDistance(cells, "tum", "dtum")
+  expect_identical(.Random.seed, before)
+})
+
 test_that("image grammars are registered and draw on a composed page", {
   skip_if_not(capabilities("cairo"))
   skip_if_not_installed("ragg")

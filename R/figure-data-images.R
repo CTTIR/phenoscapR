@@ -31,7 +31,7 @@ NearestLabelDistance <- function(cells, labels, column = "distance", x = "x", y 
   if (any(target)) {
     if (is.null(self)) {
       if (any(!target)) d[!target] <- .fig_c_nearest(xy[target, , drop = FALSE], xy[!target, , drop = FALSE])
-      if (sum(target) > 1L) d[target] <- dbscan::kNN(xy[target, , drop = FALSE], k = 1L)$dist[, 1L]
+      if (sum(target) > 1L) d[target] <- .fig_c_knn(xy[target, , drop = FALSE], k = 1L)$dist[, 1L]
     } else {
       if (any(!target)) d[!target] <- .fig_c_nearest(xy[target, , drop = FALSE], xy[!target, , drop = FALSE])
       d[target] <- self
@@ -115,7 +115,7 @@ CellMapData <- function(cells, centre = NULL, size = NULL, centre_cell = NULL, i
     pts <- expand.grid(gx = centre[1] + g, gy = centre[2] + g)
     ref <- cells$label %in% unlist(interface$labels)
     if (any(ref)) {
-      d <- dbscan::kNN(cbind(cells$x[ref], cells$y[ref]), k = 1L, query = cbind(pts$gx, pts$gy))$dist[, 1L]
+      d <- .fig_c_knn(cbind(cells$x[ref], cells$y[ref]), k = 1L, query = cbind(pts$gx, pts$gy))$dist[, 1L]
       zone <- data.frame(x = pts$gx[d <= radius], y = pts$gy[d <= radius])
     } else {
       zone <- data.frame(x = numeric(0), y = numeric(0))
@@ -180,7 +180,7 @@ NearestPartnerPairs <- function(cells, ids, partner, id = "row", x = "x", y = "y
   p <- which(as.character(cells[[label]]) %in% unlist(partner))
   if (!length(p)) stop("No partner cells.", call. = FALSE)
   xy <- cbind(as.numeric(cells[[x]]), as.numeric(cells[[y]]))
-  nn <- dbscan::kNN(xy[p, , drop = FALSE], k = 1L, query = xy[i, , drop = FALSE])
+  nn <- .fig_c_knn(xy[p, , drop = FALSE], k = 1L, query = xy[i, , drop = FALSE])
   j <- p[nn$id[, 1L]]
   data.frame(id = cells[[id]][i], x = xy[i, 1], y = xy[i, 2], partner_id = cells[[id]][j],
              partner_x = xy[j, 1], partner_y = xy[j, 2], distance = nn$dist[, 1L],
@@ -659,5 +659,19 @@ CellPositionsFor <- function(table, cells, labels = NULL, source = "sample_id", 
 # k-d tree search; a single reference point is measured directly).
 .fig_c_nearest <- function(ref, query) {
   if (nrow(ref) == 1L) return(sqrt((query[, 1L] - ref[1L, 1L])^2 + (query[, 2L] - ref[1L, 2L])^2))
-  dbscan::kNN(ref, k = 1L, query = query)$dist[, 1L]
+  .fig_c_knn(ref, k = 1L, query = query)$dist[, 1L]
+}
+
+# dbscan::kNN() opens R's random number scope in compiled code, which creates
+# a global seed when none exists although the search draws no numbers. The
+# caller's random state is restored so that building plot data has no side
+# effects.
+.fig_c_knn <- function(...) {
+  had <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+  old <- if (had) get(".Random.seed", envir = globalenv(), inherits = FALSE) else NULL
+  on.exit({
+    if (had) assign(".Random.seed", old, envir = globalenv()) else
+      if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) rm(".Random.seed", envir = globalenv())
+  }, add = TRUE)
+  dbscan::kNN(...)
 }
