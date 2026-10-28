@@ -43,7 +43,6 @@ Suggests:
     brand.yml,
     bsicons,
     bslib (>= 0.6.0),
-    covr,
     cellspecR (>= 1.0.0),
     chromote,
     deldir,
@@ -73,7 +72,7 @@ Suggests:
     uwot,
     withr
 Config/Needs/check: CTTIR/cellspecR, CTTIR/songR
-Config/Needs/coverage: CTTIR/cellspecR, CTTIR/songR
+Config/Needs/coverage: covr, CTTIR/cellspecR, CTTIR/songR
 Config/Needs/lint: CTTIR/cellspecR, CTTIR/songR
 Config/testthat/edition: 3
 Config/Needs/website: CTTIR/themakR, pkgdown, CTTIR/cellspecR, CTTIR/songR
