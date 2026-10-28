@@ -288,12 +288,12 @@ nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
   k <- as.integer(k)
 
   samples <- unique(dt$sample_id)
-  result_list <- lapply(samples, function(sid) {
-    sub <- dt[dt$sample_id == sid, ]
-    .nn_for_sample(sub, target_phenotype, k)
-  })
+  rows <- lapply(samples, function(sid) which(dt$sample_id == sid))
+  result_list <- lapply(rows, function(i) .nn_for_sample(dt[i, ], target_phenotype, k))
 
-  data.table::rbindlist(result_list)
+  # Back in input row order, also when samples are interleaved.
+  input_order <- order(unlist(rows))
+  data.table::rbindlist(result_list)[input_order]
 }
 
 #' Nearest neighbour computation for a single sample
@@ -347,12 +347,12 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
   dt <- data.table::copy(dt)
 
   samples <- unique(dt$sample_id)
-  result_list <- lapply(samples, function(sid) {
-    sub <- dt[dt$sample_id == sid, ]
-    .density_for_sample(sub, radius, target_phenotype)
-  })
+  rows <- lapply(samples, function(sid) which(dt$sample_id == sid))
+  result_list <- lapply(rows, function(i) .density_for_sample(dt[i, ], radius, target_phenotype))
 
-  data.table::rbindlist(result_list)
+  # Back in input row order, also when samples are interleaved.
+  input_order <- order(unlist(rows))
+  data.table::rbindlist(result_list)[input_order]
 }
 
 #' Cell density for a single sample

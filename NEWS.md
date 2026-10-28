@@ -29,6 +29,9 @@
   within each FOV, and cells of later FOVs used to receive the expression of
   the first. `ReadMatrixCoords()` takes further id columns in `cell_id_col`
   and refuses ids that are not unique.
+* `FindNeighbours()`, `CellDensity()`, `nearest_neighbours()` and `cell_density()`
+  return cells in input order; with interleaved samples, values used to be
+  written to the wrong cells.
 
 # phenoscapR 0.1.1
 

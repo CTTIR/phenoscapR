@@ -140,3 +140,18 @@ test_that("single-sample spatial statistics reject multi-sample objects", {
                "single sample")
   expect_error(CrossNNDistance(obj, from = "A", to = "B"), "single sample")
 })
+
+test_that("neighbour distances and densities stay with their cells when samples interleave", {
+  counts <- matrix(1, 4, 1, dimnames = list(NULL, "M"))
+  coords <- data.frame(x = c(0, 100, 1, 300), y = 0)
+  meta <- data.frame(cell_id = 1:4, sample_id = c("a", "b", "a", "b"))
+  o <- CreateSpatialObject(counts, coords, meta)
+  expect_equal(FindNeighbours(o)$nn_distance, c(1, 200, 1, 200))
+  expect_equal(CellDensity(o, radius = 5)$density, c(1, 0, 1, 0))
+  dt <- data.table::data.table(sample_id = c("a", "b", "a", "b"), cell_id = 1:4, x = c(0, 100, 1, 300), y = 0)
+  expect_identical(nearest_neighbours(dt)$cell_id, 1:4)
+  expect_identical(cell_density(dt, radius = 5)$cell_id, 1:4)
+  # Contiguous samples keep their former result.
+  grouped <- data.table::data.table(sample_id = c("a", "a", "b", "b"), cell_id = 1:4, x = c(0, 1, 100, 300), y = 0)
+  expect_equal(nearest_neighbours(grouped)$nn_distance, c(1, 1, 200, 200))
+})
