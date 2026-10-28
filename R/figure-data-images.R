@@ -599,6 +599,7 @@ SchematicShapes <- function(shapes = list(), clouds = list(), flow = NULL, value
 #'
 #' @inheritParams CellMapData
 #' @param size Optional field width stored in a `size` column.
+#' @param x,y Coordinate columns of `cells`.
 #' @return A data frame with `x`, `y` and, when given, `size`.
 #' @examples
 #' d <- data.frame(row = 0:2, x = c(1, 5, 9), y = c(2, 6, 10), label = "a")

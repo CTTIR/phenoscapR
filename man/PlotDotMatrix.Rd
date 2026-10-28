@@ -41,6 +41,8 @@ PlotDotMatrix(
 \arguments{
 \item{data}{Long data: one row per matrix cell.}
 
+\item{row, column}{Columns with the row and column keys.}
+
 \item{size, signal}{Columns with the size and colour measures.}
 
 \item{rows, columns}{Row order (top to bottom) and column order (left to
@@ -70,6 +72,9 @@ measured from the centre of the first column.}
 
 \item{column_angle, column_size, column_pad}{Column label rotation (degrees),
 size and distance from the matrix (points).}
+
+\item{row_size, row_pad}{Row label size (points) and distance from the
+matrix (points).}
 
 \item{colourbar}{Optional list: \code{box} (\code{c(left, bottom, width, height)} in
 panel fractions), \code{title}, \code{breaks}, \code{labels}, \code{tick_size}, \code{title_size}.}

@@ -31,6 +31,8 @@ to the nearest \code{min(coordinate) + offset + k * step}.}
 \item{offset}{Optional shift \code{c(dx, dy)} added to the centre.}
 
 \item{size}{Optional field width stored in a \code{size} column.}
+
+\item{x, y}{Coordinate columns of \code{cells}.}
 }
 \value{
 A data frame with \code{x}, \code{y} and, when given, \code{size}.

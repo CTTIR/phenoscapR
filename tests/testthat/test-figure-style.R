@@ -118,3 +118,15 @@ test_that("page fractions and split specification files are accepted", {
   expect_equal(fig$texts[[1]]$at, c(50, 50))
   expect_error(RenderFigure(file.path(dir, "absent.json")), "not found")
 })
+
+test_that("the style family also draws on the plain pdf device", {
+  ManuscriptStyle()
+  expect_true("DejaVu Sans" %in% names(grDevices::pdfFonts()))
+  expect_true("DejaVu Sans" %in% names(grDevices::postscriptFonts()))
+  f <- withr::local_tempfile(fileext = ".pdf")
+  grDevices::pdf(f)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  expect_no_error(grid::grid.draw(LegendKeys(c("A", "B"), c("#009E73", "#0072B2"))))
+  expect_no_error(print(ggplot2::ggplot(data.frame(x = 1, y = 1), ggplot2::aes(x, y)) +
+                          ggplot2::geom_point() + ThemeManuscript()))
+})

@@ -223,7 +223,10 @@ PlotAnnotatedHeatmap <- function(data, row = "row", column = "column", value = "
 #' key can be added outside it.
 #'
 #' @inheritParams PlotAnnotatedHeatmap
+#' @param row,column Columns with the row and column keys.
 #' @param size,signal Columns with the size and colour measures.
+#' @param row_size,row_pad Row label size (points) and distance from the
+#'   matrix (points).
 #' @param area Scatter area `c(intercept, slope)` in squared points.
 #' @param limits Colour limits; values are clipped to them.
 #' @param edge_colour,edge_width Dot outline colour and width (points).
@@ -349,6 +352,7 @@ PlotDotMatrix <- function(data, row = "row", column = "column", size = "size", s
 #' italics (gene symbols).
 #'
 #' @inheritParams PlotAnnotatedHeatmap
+#' @param row,column Columns with the row and column keys.
 #' @param value Column with the category of each tile.
 #' @param fill_column Optional column with explicit tile colours (overrides
 #'   `colours`).

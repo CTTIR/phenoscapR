@@ -7,6 +7,11 @@
 #' builder and [ComposeFigure()] reads its settings from this object, so one
 #' change here restyles all figures.
 #'
+#' The family is used as named by devices that read system fonts (`cairo_pdf()`,
+#' 'ragg', Cairo PNG). For R's plain `pdf()` and `postscript()` devices an
+#' unknown family is registered with Helvetica metrics, so plots still draw
+#' there (in Helvetica).
+#'
 #' Sizes are in points, line widths in points (converted for 'ggplot2' with
 #' [PtLinewidth()]) and page dimensions in millimetres. Palettes hold generic
 #' names; map study labels to them in study configuration, not in code.
@@ -58,7 +63,25 @@ ManuscriptStyle <- function(...) {
       }
     }
   }
+  .fig_register_family(style$family)
   structure(style, class = "phenoscapR_style")
+}
+
+# Cairo and ragg devices find the family through the system font library.
+# The plain pdf() and postscript() devices only know registered Type 1 fonts
+# and stop with "invalid font type" otherwise, so an unknown family is
+# registered there with Helvetica metrics (drawn as Helvetica).
+.fig_register_family <- function(family) {
+  if (!is.character(family) || length(family) != 1L || is.na(family) || !nzchar(family)) {
+    return(invisible(FALSE))
+  }
+  for (fonts in list(grDevices::pdfFonts, grDevices::postscriptFonts)) {
+    if (!family %in% names(fonts())) {
+      args <- stats::setNames(list(fonts()$Helvetica), family)
+      do.call(fonts, args)
+    }
+  }
+  invisible(TRUE)
 }
 
 #' Manuscript Palettes

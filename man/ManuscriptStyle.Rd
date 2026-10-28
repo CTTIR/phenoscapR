@@ -23,6 +23,11 @@ builder and \code{\link[=ComposeFigure]{ComposeFigure()}} reads its settings fro
 change here restyles all figures.
 }
 \details{
+The family is used as named by devices that read system fonts (\code{cairo_pdf()},
+'ragg', Cairo PNG). For R's plain \code{pdf()} and \code{postscript()} devices an
+unknown family is registered with Helvetica metrics, so plots still draw
+there (in Helvetica).
+
 Sizes are in points, line widths in points (converted for 'ggplot2' with
 \code{\link[=PtLinewidth]{PtLinewidth()}}) and page dimensions in millimetres. Palettes hold generic
 names; map study labels to them in study configuration, not in code.

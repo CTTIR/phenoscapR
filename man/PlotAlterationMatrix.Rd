@@ -44,6 +44,8 @@ PlotAlterationMatrix(
 \arguments{
 \item{data}{Long data: one row per matrix cell.}
 
+\item{row, column}{Columns with the row and column keys.}
+
 \item{value}{Column with the category of each tile.}
 
 \item{fill_column}{Optional column with explicit tile colours (overrides
