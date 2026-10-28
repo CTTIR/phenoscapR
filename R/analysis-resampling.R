@@ -155,7 +155,7 @@ BootstrapMedianInterval <- function(data, value, groups = NULL, n_boot = 10000L,
 #' @param n_perm Number of Monte Carlo permutations.
 #' @param seed Optional whole-number seed for Monte Carlo draws; every group
 #'   starts from it. The caller's random stream is restored.
-#' @param min_n Smallest number of complete pairs tested.
+#' @param min_n Smallest number of complete pairs tested (at least 2).
 #' @param max_exact_n Largest `n` accepted for exact enumeration.
 #' @param tolerance Absolute tolerance in the comparison with the observed
 #'   correlation.
@@ -178,6 +178,9 @@ PermutationCorrelation <- function(data, x, y, groups = NULL,
   .an_require(data, c(x, y, groups))
   .an_assert(is.numeric(n_perm) && length(n_perm) == 1L && n_perm >= 1 &&
                n_perm == floor(n_perm), "n_perm must be a positive whole number")
+  # A correlation needs at least two pairs.
+  .an_assert(is.numeric(min_n) && length(min_n) == 1L && is.finite(min_n) && min_n >= 2 &&
+               min_n == floor(min_n), "min_n must be a whole number of at least 2")
   data <- as.data.frame(data, stringsAsFactors = FALSE)
   parts <- .an_split(data, groups)
   one <- function(ii) {

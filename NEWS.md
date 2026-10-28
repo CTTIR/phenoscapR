@@ -72,6 +72,8 @@
   `ExactPairedTests()`, `BootstrapMedianInterval()`,
   `PermutationCorrelation()`, `CompareTables()` and `SummarizeComparisons()`;
   without group columns they give one unavailable overall row.
+* `PermutationCorrelation()` refuses `min_n` below 2; a group with a single
+  pair used to stop with an unhelpful error.
 
 # phenoscapR 0.1.1
 

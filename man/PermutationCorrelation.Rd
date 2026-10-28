@@ -34,7 +34,7 @@ PermutationCorrelation(
 \item{seed}{Optional whole-number seed for Monte Carlo draws; every group
 starts from it. The caller's random stream is restored.}
 
-\item{min_n}{Smallest number of complete pairs tested.}
+\item{min_n}{Smallest number of complete pairs tested (at least 2).}
 
 \item{max_exact_n}{Largest \code{n} accepted for exact enumeration.}
 

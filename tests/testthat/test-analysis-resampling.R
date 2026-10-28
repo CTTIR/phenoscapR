@@ -82,3 +82,11 @@ test_that("zero-row inputs give typed results without phantom groups", {
   p1 <- PermutationCorrelation(e, "x", "y")
   expect_identical(p1$status, "UNAVAILABLE")
 })
+
+test_that("min_n below two is refused instead of failing on a single pair", {
+  d <- data.frame(g = c("a", "b", "b", "b"), x = c(1, 1, 2, 3), y = c(2, 3, 1, 2))
+  expect_error(PermutationCorrelation(d, "x", "y", groups = "g", min_n = 1), "at least 2")
+  expect_error(PermutationCorrelation(d, "x", "y", min_n = 2.5), "at least 2")
+  r <- PermutationCorrelation(d, "x", "y", groups = "g", min_n = 2, permutations = "exact")
+  expect_identical(r$status, c("UNAVAILABLE", "TESTED"))
+})
