@@ -25,8 +25,9 @@
 #'   those keys, frame ID, integer grid indices, physical bounds and grid size.
 #'   Bins are keyed by `(setting_id, sample_id, grid_x, grid_y)`, never coordinates
 #'   alone. Unrepresentable bounds and indices outside the R integer range fail.
-#'   Floating-point cancellation that produces bounds excluding an assigned cell
-#'   also fails; no tolerance or silent coordinate correction is introduced.
+#'   When the rounded division puts a coordinate outside its bin, the index is
+#'   corrected against the computed bounds; bounds that still exclude an
+#'   assigned cell fail. No tolerance or coordinate correction is introduced.
 #'   Extra input columns are ignored; inputs are not modified.
 #' @examples
 #' cells <- data.frame(cell_id = c("a", "b"), sample_id = "s",
@@ -85,8 +86,15 @@ AssignFixedGrid <- function(cells, settings, frames) {
     size <- setting$size_um
     ox <- setting$offset_x_um
     oy <- setting$offset_y_um
-    gx <- floor((cells$x - ox) / size)
-    gy <- floor((cells$y - oy) / size)
+    # The division can round across a bin edge; the index is corrected against
+    # the bounds computed below, so a coordinate on an edge belongs to the bin
+    # on its positive side.
+    bin <- function(v, o) {
+      g <- floor((v - o) / size)
+      g + (v >= o + (g + 1) * size) - (v < o + g * size)
+    }
+    gx <- bin(cells$x, ox)
+    gy <- bin(cells$y, oy)
     index_ok <- function(x) all(is.finite(x) & abs(x) <= .Machine$integer.max)
     .exact_assert(index_ok(gx) && index_ok(gy), "Grid index range exceeded")
     xmin <- ox + gx * size

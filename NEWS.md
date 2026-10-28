@@ -85,6 +85,9 @@
   category instead of failing.
 * `SummarizeGroupedValues()` accepts integer value and weight columns, which
   used to fail when groups gave different column types.
+* `AssignFixedGrid()` corrects a bin index that the rounded division put one
+  bin off, so coordinates on bin edges (for example `x = 10.7` with size 7
+  and offset 3.7) are assigned instead of failing.
 
 # phenoscapR 0.1.1
 

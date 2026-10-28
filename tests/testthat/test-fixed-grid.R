@@ -83,19 +83,48 @@ test_that("catastrophic cancellation cannot produce a non-containing bin", {
   x <- grid_fixture()
   x$cells <- x$cells[1, ]
   x$settings <- x$settings[1, ]
+  contains <- function(r) {
+    r$xmin_um <= x$cells$x && x$cells$x < r$xmax_um && r$ymin_um <= x$cells$y && x$cells$y < r$ymax_um
+  }
+  # The rounded division would put these cells one bin too far; the index is
+  # corrected against the reported bounds.
   x$cells$x <- -2^-54
   x$cells$y <- 0
   x$settings$size_um <- 1
   x$settings$offset_x_um <- -1
-  expect_error(do.call(AssignFixedGrid, x), "contain")
+  r <- do.call(AssignFixedGrid, x)
+  expect_identical(r$grid_x, 0L)
+  expect_true(contains(r))
   x$cells$x <- -1
   x$settings$size_um <- 1e9
   x$settings$offset_x_um <- -1e16
-  expect_error(do.call(AssignFixedGrid, x), "contain")
+  expect_true(contains(do.call(AssignFixedGrid, x)))
   x$cells$x <- 0
   x$cells$y <- -2^-54
   x$settings$size_um <- 1
   x$settings$offset_x_um <- 0
   x$settings$offset_y_um <- -1
-  expect_error(do.call(AssignFixedGrid, x), "contain")
+  r <- do.call(AssignFixedGrid, x)
+  expect_identical(r$grid_y, 0L)
+  expect_true(contains(r))
+})
+
+test_that("coordinates on rounded bin edges join the bin on their positive side", {
+  frames <- data.frame(sample_id = "s", frame_id = "f", unit = "um")
+  one <- function(x, size, offset) {
+    cells <- data.frame(cell_id = sprintf("c%03d", seq_along(x)), sample_id = "s", frame_id = "f", x = x, y = 0)
+    AssignFixedGrid(cells, data.frame(setting_id = "g", size_um = size, offset_x_um = offset, offset_y_um = 0), frames)
+  }
+  r <- one(10.7, 7, 3.7)
+  expect_identical(r$grid_x, 1L)
+  expect_equal(c(r$xmin_um, r$xmax_um), c(10.7, 17.7))
+  expect_identical(one(128.7, 12.5, 3.7)$grid_x, 10L)
+  for (size in c(0.3, 7, 12.5, 33.3)) for (offset in c(0, 3.7, -5.3)) {
+    x <- offset + (-40:40) * size
+    r <- one(x, size, offset)
+    expect_true(all(r$xmin_um <= x & x < r$xmax_um))
+  }
+  # Coordinates away from edges keep their bins.
+  r <- one(c(-1, 0, 9.99, 10, 25), 10, 0)
+  expect_identical(r$grid_x, c(-1L, 0L, 0L, 1L, 2L))
 })

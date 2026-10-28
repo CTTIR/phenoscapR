@@ -24,8 +24,9 @@ Data frame ordered by setting, sample and cell ID (radix order), with
 those keys, frame ID, integer grid indices, physical bounds and grid size.
 Bins are keyed by \verb{(setting_id, sample_id, grid_x, grid_y)}, never coordinates
 alone. Unrepresentable bounds and indices outside the R integer range fail.
-Floating-point cancellation that produces bounds excluding an assigned cell
-also fails; no tolerance or silent coordinate correction is introduced.
+When the rounded division puts a coordinate outside its bin, the index is
+corrected against the computed bounds; bounds that still exclude an
+assigned cell fail. No tolerance or coordinate correction is introduced.
 Extra input columns are ignored; inputs are not modified.
 }
 \description{
