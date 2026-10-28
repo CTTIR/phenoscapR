@@ -25,6 +25,17 @@ test_that("colour ramps map values like 256-entry lookup tables", {
   expect_error(.figb_ramp("rainbowish"), "Unknown colour scale")
 })
 
+test_that("a constant heatmap takes the first colour instead of missing fills", {
+  lut <- .figb_ramp("blues")
+  expect_identical(.figb_map_colours(c(5, 5, NA), c(5, 5), lut), c(lut[1], lut[1], "#EEEEEE"))
+  expect_identical(.figb_map_colours(c(NA, NA), c(NA_real_, NA_real_), lut), c("#EEEEEE", "#EEEEEE"))
+  d <- expand.grid(row = c("a", "b"), column = c("x", "y"), stringsAsFactors = FALSE)
+  d$value <- 0
+  fills <- ggplot2::layer_data(PlotAnnotatedHeatmap(d), 1)$fill
+  expect_false(anyNA(fills))
+  expect_length(unique(fills), 1L)
+})
+
 test_that("annotated heatmaps draw values, boxes, labels and a colour bar", {
   d <- expand.grid(row = c("r1", "r2", "r3"), column = c("c1", "c2", "c3", "c4"), stringsAsFactors = FALSE)
   d$value <- c(85, 9, 9, 0.5, 15, 2, 1, 1, 0, 1, 1, 67)

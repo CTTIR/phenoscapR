@@ -34,10 +34,11 @@
 
 # Map values to the lookup table: the fraction of the limits selects entry
 # floor(fraction * n), clipped to the table (values at the upper limit take
-# the last entry).
+# the last entry). Zero-width limits map every value to the first entry, as
+# matplotlib's normalisation does.
 .figb_map_colours <- function(values, limits, lut, missing = "#EEEEEE") {
   n <- length(lut)
-  f <- (values - limits[1]) / (limits[2] - limits[1])
+  f <- if (isTRUE(limits[2] == limits[1])) 0 * values else (values - limits[1]) / (limits[2] - limits[1])
   i <- floor(f * n) + 1L
   i <- pmin(pmax(i, 1L), n)
   out <- lut[i]

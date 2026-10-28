@@ -57,6 +57,8 @@
 * Min-max scaling of a constant marker (`NormaliseData()`,
   `normalise_markers()`) keeps missing values instead of setting them to 0.
 * The template format `{n|d}` writes every digit (`100000`, not `1e+05`).
+* Heatmaps and dot matrices with zero-width colour limits (a constant matrix)
+  take the first colour of the scale instead of missing fills.
 
 # phenoscapR 0.1.1
 
