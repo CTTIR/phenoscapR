@@ -42,5 +42,21 @@ concatenated in file order.
 Colours in \code{args}, \code{texts} and \code{legends} may be hex values, style colour
 names (\code{"ink"}, \code{"muted"}, ...) or palette entries written
 \code{"palette/name"} (for example \code{"groups/group1"}); character vectors and
-named lists of such values are resolved element by element.
+named lists of such values are resolved element by element. Every builder
+argument whose name ends in \code{colour}, \code{color}, \code{fill} or \code{palette} (or
+their plurals) is resolved this way, so arguments that name data columns
+must not end like that.
+
+Builders with a \code{box_mm} argument receive the size of their data area in
+millimetres (used for \code{"auto"} tick intervals, see \code{\link[=NiceBreaks]{NiceBreaks()}}).
+
+Typesetting (\code{\link[=TypesetLabel]{TypesetLabel()}}) can be switched off with \code{"typeset": false} for the whole specification, for one panel (its heading, note and
+plot), for one text or for one legend; \verb{"typeset": \{"off": ["treg"]\}}
+switches off single rules only (see \code{\link[=TypesetLabel]{TypesetLabel()}}).
+
+Legends take \code{labels}, \code{colours}, \code{shape}, \code{ncol}, \code{size} and the layout
+options of \code{\link[=LegendKeys]{LegendKeys()}} (\code{key_mm}, \code{marker_size}, \code{row_mm},
+\code{text_gap_mm}, \code{column_gap_mm}, \code{byrow}). Texts take \code{label}, \code{xy} or
+\code{at}, \code{size}, \code{colour}, \code{bold}, \code{hjust}, \code{vjust} (a number or
+\code{"baseline"}) and \code{angle}.
 }

@@ -56,7 +56,24 @@ FigureGrammars <- function() {
 #' Colours in `args`, `texts` and `legends` may be hex values, style colour
 #' names (`"ink"`, `"muted"`, ...) or palette entries written
 #' `"palette/name"` (for example `"groups/group1"`); character vectors and
-#' named lists of such values are resolved element by element.
+#' named lists of such values are resolved element by element. Every builder
+#' argument whose name ends in `colour`, `color`, `fill` or `palette` (or
+#' their plurals) is resolved this way, so arguments that name data columns
+#' must not end like that.
+#'
+#' Builders with a `box_mm` argument receive the size of their data area in
+#' millimetres (used for `"auto"` tick intervals, see [NiceBreaks()]).
+#'
+#' Typesetting ([TypesetLabel()]) can be switched off with `"typeset":
+#' false` for the whole specification, for one panel (its heading, note and
+#' plot), for one text or for one legend; `"typeset": {"off": ["treg"]}`
+#' switches off single rules only (see [TypesetLabel()]).
+#'
+#' Legends take `labels`, `colours`, `shape`, `ncol`, `size` and the layout
+#' options of [LegendKeys()] (`key_mm`, `marker_size`, `row_mm`,
+#' `text_gap_mm`, `column_gap_mm`, `byrow`). Texts take `label`, `xy` or
+#' `at`, `size`, `colour`, `bold`, `hjust`, `vjust` (a number or
+#' `"baseline"`) and `angle`.
 #'
 #' @param spec A specification list, a JSON path, several JSON paths or a
 #'   directory of JSON files.
@@ -79,33 +96,45 @@ RenderFigure <- function(spec, data = list(), style = ManuscriptStyle()) {
   H <- spec$height_mm
   frac_box <- function(a) c(a[1] * W, (1 - a[2] - a[4]) * H, a[3] * W, a[4] * H)
   frac_at <- function(a) c(a[1] * W, (1 - a[2]) * H)
+  typeset_page <- .fig_typeset_value(spec$typeset, TRUE)
+  flag <- function(x) .fig_typeset_value(x, typeset_page)
   panels <- lapply(seq_along(spec$panels), function(i) {
     p <- spec$panels[[i]]
     plot <- NULL
+    box <- if (!is.null(p$axes)) frac_box(unlist(p$axes)) else unlist(p$box)
+    typeset <- flag(p$typeset)
     if (!is.null(p$grammar)) {
       if (!p$grammar %in% names(grammars)) stop("Unknown grammar '", p$grammar, "' in panel ", i, ".", call. = FALSE)
       fun <- get(grammars[[p$grammar]], envir = asNamespace("phenoscapR"), mode = "function")
       args <- .fig_resolve(if (is.null(p$args)) list() else p$args, style)
       inputs <- .fig_panel_data(p$data, data, i)
-      plot <- do.call(fun, c(inputs, args, list(style = style)))
+      if ("box_mm" %in% names(formals(fun)) && is.null(args$box_mm)) args$box_mm <- box[3:4]
+      plot <- .fig_with_typeset(typeset, do.call(fun, c(inputs, args, list(style = style))))
     }
-    box <- if (!is.null(p$axes)) frac_box(unlist(p$axes)) else unlist(p$box)
     letter_at <- if (!is.null(p$letter_xy)) frac_at(unlist(p$letter_xy)) else unlist(p$letter_at)
     FigurePanel(plot, box = box, letter = p$letter, letter_at = letter_at,
-                heading = p$heading, note = p$note, fill_box = isTRUE(p$fill_box))
+                heading = p$heading, note = p$note, fill_box = isTRUE(p$fill_box), typeset = typeset)
   })
   texts <- lapply(spec$texts, function(t) {
     FigureText(t$label, if (!is.null(t$xy)) frac_at(unlist(t$xy)) else unlist(t$at), size = t$size,
                colour = if (is.null(t$colour)) NULL else .fig_colour(t$colour, style),
                bold = isTRUE(t$bold), hjust = if (is.null(t$hjust)) 0 else t$hjust,
-               vjust = if (is.null(t$vjust)) 1 else t$vjust, angle = if (is.null(t$angle)) 0 else t$angle)
+               vjust = if (is.null(t$vjust)) 1 else t$vjust, angle = if (is.null(t$angle)) 0 else t$angle,
+               typeset = flag(t$typeset))
   })
   legends <- lapply(spec$legends, function(l) {
+    if (!is.null(l$mpl)) l <- .fig_mpl_legend(l, style)
+    opt <- function(name, default = NULL) if (is.null(l[[name]])) default else l[[name]]
+    at <- if (!is.null(l$xy)) frac_at(unlist(l$xy)) else unlist(l$at)
+    if (!is.null(l$offset_mm)) at <- at + as.numeric(unlist(l$offset_mm))
     FigureGrob(LegendKeys(unlist(l$labels), .fig_colour(unlist(l$colours), style),
                           shape = if (is.null(l$shape)) "point" else unlist(l$shape),
                           ncol = if (is.null(l$ncol)) length(l$labels) else l$ncol,
-                          size = l$size, style = style),
-               if (!is.null(l$xy)) frac_at(unlist(l$xy)) else unlist(l$at))
+                          size = l$size, key_mm = opt("key_mm", 2.2), marker_size = l$marker_size,
+                          row_mm = l$row_mm, text_gap_mm = opt("text_gap_mm", 0.8),
+                          column_gap_mm = opt("column_gap_mm", 0.8), byrow = opt("byrow", TRUE), linewidth = l$linewidth,
+                          typeset = flag(l$typeset), style = style),
+               at, hjust = opt("hjust", 0))
   })
   ComposeFigure(panels, height_mm = spec$height_mm, width_mm = spec$width_mm,
                 texts = c(texts, legends), style = style)
@@ -236,4 +265,30 @@ ReadPlotTable <- function(path) {
     stop("path must be an existing file.", call. = FALSE)
   }
   .fig_read_input(path)
+}
+
+# Translate the legend parameters of common plotting code (font size,
+# marker size, handle length, paddings and spacings in font-size units,
+# upper-left anchor at `xy`) into LegendKeys() layout options and an
+# offset of the anchor in millimetres.
+.fig_mpl_legend <- function(l, style) {
+  m <- l$mpl
+  get <- function(name, default) if (is.null(m[[name]])) default else as.numeric(m[[name]])
+  fs <- if (is.null(l$size)) style$size$legend else l$size
+  mm <- 25.4 / 72
+  pad <- (get("borderaxespad", 0.5) + get("borderpad", 0.4)) * fs * mm
+  row <- (1 + get("labelspacing", 0.5)) * fs * mm
+  l$size <- fs
+  l$key_mm <- get("handlelength", 2) * fs * mm
+  l$text_gap_mm <- get("handletextpad", 0.8) * fs * mm
+  l$column_gap_mm <- get("columnspacing", 2) * fs * mm
+  l$row_mm <- row
+  if (is.null(l$marker_size)) l$marker_size <- get("markersize", 6) + get("markeredgewidth", 1)
+  if (is.null(l$byrow)) l$byrow <- FALSE
+  # the first row centre lies half a font size below the padded top; a legend
+  # anchored at its upper right corner ends at its last label
+  right <- identical(m$loc, "upper right")
+  l$hjust <- if (right) 1 else 0
+  l$offset_mm <- c(if (right) -pad + l$column_gap_mm else pad, pad - (row - fs * mm) / 2)
+  l
 }

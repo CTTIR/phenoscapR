@@ -2,15 +2,18 @@
 % Please edit documentation in R/figure-data.R
 \name{PlotDataLonger}
 \alias{PlotDataLonger}
-\title{Reshape Wide Summary Columns into Long Plot Data}
+\title{Reshape Wide Columns into Long Plot Data}
 \usage{
 PlotDataLonger(
   data,
   id,
-  values,
-  conditions = values,
+  values = NULL,
+  conditions = NULL,
+  pattern = NULL,
+  exclude = NULL,
   names_to = "condition",
-  values_to = "value"
+  values_to = "value",
+  drop_na = FALSE
 )
 }
 \arguments{
@@ -20,20 +23,62 @@ PlotDataLonger(
 
 \item{values}{Value columns to stack, in condition order.}
 
-\item{conditions}{Condition names for \code{values}; default the column names.}
+\item{conditions}{Condition names for the stacked columns; default the
+column names (or the pattern groups).}
+
+\item{pattern}{Regular expression selecting the value columns when
+\code{values} is \code{NULL}.}
+
+\item{exclude}{Columns never stacked when \code{values} is \code{NULL}.}
 
 \item{names_to, values_to}{Names of the new condition and value columns.}
+
+\item{drop_na}{Drop rows whose value is missing.}
 }
 \value{
-A data frame with \code{id} columns, \code{names_to} (character, in the
-order of \code{values}) and \code{values_to} (numeric).
+A data frame with \code{id} columns, \code{names_to} (character, in column
+order) and \code{values_to} (numeric).
 }
 \description{
-Stacks selected value columns of a summary table (one row per patient,
-say) into one row per identifier and column, the form used by
-\code{\link[=PlotPairedPatients]{PlotPairedPatients()}} and similar builders.
+Stacks value columns of a summary table (one row per patient, say) into
+one row per identifier and column, the form used by the plot builders.
+The columns are given by name (\code{values}), by a regular expression
+(\code{pattern}), or default to all columns other than \code{id} and \code{exclude}.
+}
+\details{
+With \code{pattern}, the first capture group of the pattern becomes the
+condition name (\code{"^log2\\\\|(.*)$"} turns \code{log2|p1} into \code{p1}); a pattern
+without a group keeps the column names.
 }
 \examples{
 d <- data.frame(patient = c("p1", "p2"), a = 1:2, b = 3:4)
 PlotDataLonger(d, "patient", c("a", "b"), conditions = c("A", "B"))
+w <- data.frame(type = c("a", "b"), `v|p1` = 1:2, `v|p2` = c(3, NA), check.names = FALSE)
+PlotDataLonger(w, "type", pattern = "^v\\\\|(.*)$", names_to = "patient", drop_na = TRUE)
 }
+\seealso{
+Other plot-data builders:
+\code{\link[=PlotDataBindRows]{PlotDataBindRows()}},
+\code{\link[=PlotDataConstant]{PlotDataConstant()}},
+\code{\link[=PlotDataCount]{PlotDataCount()}},
+\code{\link[=PlotDataCrossShares]{PlotDataCrossShares()}},
+\code{\link[=PlotDataDirection]{PlotDataDirection()}},
+\code{\link[=PlotDataDominant]{PlotDataDominant()}},
+\code{\link[=PlotDataFromArrays]{PlotDataFromArrays()}},
+\code{\link[=PlotDataJoin]{PlotDataJoin()}},
+\code{\link[=PlotDataKeyColours]{PlotDataKeyColours()}},
+\code{\link[=PlotDataLabels]{PlotDataLabels()}},
+\code{\link[=PlotDataMembership]{PlotDataMembership()}},
+\code{\link[=PlotDataPairRatio]{PlotDataPairRatio()}},
+\code{\link[=PlotDataProduct]{PlotDataProduct()}},
+\code{\link[=PlotDataQuantiles]{PlotDataQuantiles()}},
+\code{\link[=PlotDataRankRows]{PlotDataRankRows()}},
+\code{\link[=PlotDataRatio]{PlotDataRatio()}},
+\code{\link[=PlotDataRecode]{PlotDataRecode()}},
+\code{\link[=PlotDataRelative]{PlotDataRelative()}},
+\code{\link[=PlotDataSelect]{PlotDataSelect()}},
+\code{\link[=PlotDataShares]{PlotDataShares()}},
+\code{\link[=PlotDataSummarise]{PlotDataSummarise()}},
+\code{\link[=PlotDataUnite]{PlotDataUnite()}}
+}
+\concept{plot-data builders}

@@ -11,7 +11,8 @@ FigurePanel(
   letter_at = NULL,
   heading = NULL,
   note = NULL,
-  fill_box = FALSE
+  fill_box = FALSE,
+  typeset = TRUE
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ above the box (below the heading).}
 
 \item{fill_box}{If \code{TRUE}, the whole plot (including axes) is fitted into
 the box instead of aligning the data area.}
+
+\item{typeset}{If \code{FALSE}, heading, note and the text drawn by the plot
+are not typeset (see \code{\link[=TypesetLabel]{TypesetLabel()}}).}
 }
 \value{
 A list of class \code{phenoscapR_panel}.

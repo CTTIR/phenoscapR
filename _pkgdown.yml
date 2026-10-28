@@ -180,15 +180,12 @@ reference:
       distances, composition, densities, Delaunay neighbour types) and compare
       recomputed tables or arrays with reference results by key and tolerance.
     contents:
-      - ReadCellArrays
       - SummarizeNearestDistances
       - SummarizeCellComposition
       - NeighbourTypeCounts
       - CompareTables
       - CompareArrays
       - SummarizeComparisons
-      - StackTables
-      - RecodeValues
 
   - title: "Platform Readers"
     desc: >
@@ -252,6 +249,87 @@ reference:
       - plot_density
       - plot_heatmap
       - plot_interactions
+
+  - title: "Manuscript Figures: Style and Composition"
+    desc: >
+      A compact journal figure style (typography, colours, line widths, tick
+      placement and typesetting), page composition in millimetres with panel
+      letters, headings, texts and legends, and figures rendered from
+      declarative specifications.
+    contents:
+      - ManuscriptStyle
+      - ManuscriptPalettes
+      - ThemeManuscript
+      - PtLinewidth
+      - NiceBreaks
+      - FormatP
+      - FormatStatistic
+      - TypesetLabel
+      - FormatTemplate
+      - ComposeFigure
+      - FigurePanel
+      - FigureText
+      - FigureGrob
+      - LegendKeys
+      - SaveFigure
+      - FigureGrammars
+      - RenderFigure
+      - ReadFigureSpec
+      - WriteFigure
+      - ReadPlotTable
+
+  - title: "Manuscript Figures: Plot Grammars"
+    desc: >
+      Panel builders registered in FigureGrammars(): patient-level displays,
+      matrices, bars, embeddings, cell maps, territories and image fields.
+    contents:
+      - PlotPairedPatients
+      - PlotQuantileCurves
+      - PlotBandProfiles
+      - PlotIntervalForest
+      - PlotGroupDifferences
+      - PlotVolcano
+      - PlotGroupStrip
+      - PlotScatterGroups
+      - PlotBars
+      - PlotTextBlock
+      - PlotStackedBars
+      - PlotAnnotatedHeatmap
+      - PlotDotMatrix
+      - PlotAlterationMatrix
+      - PlotEmbedding
+      - PlotDensityOutlines
+      - PlotCellMap
+      - PlotTerritories
+      - PlotFluorescenceField
+      - PlotImage
+
+  - title: "Manuscript Figures: Plot Data"
+    desc: >
+      Generic table helpers (PlotData*) that select, reshape, join, recode,
+      count and summarise tables for the grammars, and builders for
+      embeddings, annotated matrices, families of tests and image panels.
+    contents:
+      - starts_with("PlotData")
+      - ExactPermutationBound
+      - EmbeddingLimits
+      - EmbeddingLayers
+      - ClusterLabelPositions
+      - DensityLevelContour
+      - LookupNestedRows
+      - AnnotationTracks
+      - AlterationMatrixData
+      - NearestLabelDistance
+      - CellMapData
+      - FieldCentre
+      - DensestGridWindow
+      - NearestPartnerPairs
+      - FieldCellsRanked
+      - TerritoryTiles
+      - BestSubWindow
+      - CompositeFields
+      - SchematicShapes
+      - CellPositionsFor
 
   - title: "Colour Palettes"
     desc: >

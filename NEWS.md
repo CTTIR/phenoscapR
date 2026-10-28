@@ -1,3 +1,22 @@
+# phenoscapR (development version)
+
+* Manuscript figures: a figure style, page composition in millimetres and
+  figures rendered from declarative specifications through registered plot
+  grammars, with plot-data builders for patient-level, matrix, embedding and
+  image panels.
+* One set of generic plot-data helpers named `PlotData*()` (select, reshape,
+  join, bind, recode, summarise, count, rank, compute and write text), with
+  `filter` and `into` as common argument names, and one template syntax in
+  `FormatTemplate()`.
+* Tick placement of common plotting code as `NiceBreaks()` (also with
+  intervals that follow the axis length); `LegendKeys()` gains marker sizes,
+  spacings, column-major filling and diamond and patch keys; figure texts can
+  sit on their baseline; typesetting can be switched off per figure, panel,
+  text or legend, or for single rules; straight quotes stay straight.
+* Exact paired tests, contrasts of patient endpoints, bootstrap median
+  intervals, permutation correlations, section summaries, Delaunay neighbour
+  type counts and keyed parity checks of recomputed tables and arrays.
+
 # phenoscapR 0.1.1
 
 * Prepare a release with explicit patient-level inference, grouped summaries,

@@ -38,6 +38,10 @@
 #' @param log_y Logarithmic y axis.
 #' @param y_label,x_label Axis titles.
 #' @param y_limits Optional y limits.
+#' @param y_nbins Maximum number of y intervals of the tick locator (see
+#'   [NiceBreaks()]); `"auto"` follows the axis length.
+#' @param box_mm Size of the data area `c(width, height)` in millimetres, passed
+#'   by [RenderFigure()].
 #' @param style A [ManuscriptStyle()] object.
 #' @return A 'ggplot2' object.
 #' @examples
@@ -50,7 +54,8 @@ PlotPairedPatients <- function(data, patient = "patient", group = "group",
                                condition = "condition", value = "value",
                                conditions = NULL, labels = NULL, excluded = NULL,
                                group_colours = NULL, log_y = FALSE, y_label = NULL,
-                               x_label = NULL, y_limits = NULL, style = ManuscriptStyle()) {
+                               x_label = NULL, y_limits = NULL, y_nbins = "auto", box_mm = NULL,
+                               style = ManuscriptStyle()) {
   style <- .fig_check_style(style)
   .fig_require_columns(data, c(patient, group, condition, value, excluded))
   if (is.null(conditions)) conditions <- unique(as.character(data[[condition]]))
@@ -77,7 +82,10 @@ PlotPairedPatients <- function(data, patient = "patient", group = "group",
                           inherit.aes = FALSE, colour = k$ink, linewidth = PtLinewidth(1.3)) +
     ggplot2::scale_x_continuous(breaks = seq_along(conditions), labels = .fig_labels(labels),
                                 limits = c(0.6, length(conditions) + 0.4), expand = c(0, 0)) +
-    (if (log_y) .fig_scale_log10("y", y_limits, d$value) else ggplot2::scale_y_continuous(limits = y_limits)) +
+    (if (log_y) .fig_scale_log10("y", y_limits, d$value) else ggplot2::scale_y_continuous(limits = y_limits, breaks = function(l) {
+      NiceBreaks(l, y_nbins, length_pt = if (is.null(box_mm)) NULL else box_mm[2] * 72 / 25.4,
+                 tick_size = style$size$tick)
+    })) +
     .fig_group_scale(group_colours) +
     ggplot2::labs(x = if (is.null(x_label)) NULL else TypesetLabel(x_label),
                   y = if (is.null(y_label)) NULL else TypesetLabel(y_label)) +

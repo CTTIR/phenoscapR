@@ -31,7 +31,16 @@ Applies manuscript typesetting to plain labels and returns rich text for
 'gridtext'/'ggtext': italic \emph{P}, \emph{q} and \emph{n} before \code{=} or \code{<}; powers of
 ten for \code{4.9e-04}; superscript plus signs on markers (\verb{CD8+}, \verb{FOXP3+},
 \verb{CD4 T}, \verb{CD8 T}); \code{Treg}/\code{Tregs} with subscript \emph{reg}; \code{log2}; \code{mm2};
-micrometres; italic gene symbols; and line breaks.
+micrometres; italic gene symbols; and line breaks. Straight quotes stay
+straight (no typographic apostrophes).
+}
+\details{
+Typesetting can be switched off with \code{options(phenoscapR.typeset = FALSE)}; labels are then only escaped for rich text. Single rules are
+switched off by naming them instead, for example
+\code{options(phenoscapR.typeset = "treg")}: \code{"exponent"}, \code{"p"}, \code{"q"}, \code{"n"},
+\code{"markers"}, \code{"treg"}, \code{"log2"}, \code{"mm2"}, \code{"um"} and \code{"genes"}. Figure
+specifications do this per figure, panel, text or legend (\code{"typeset"}, see
+\code{\link[=RenderFigure]{RenderFigure()}}).
 }
 \examples{
 TypesetLabel(c("p = 4.9e-04", "Tregs near CD8+ cells", "log2 ratio (mm2)"),

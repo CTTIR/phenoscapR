@@ -1,54 +1,5 @@
 # Cell tables from NumPy archives and per-section summaries of them.
 
-#' Read a Cell Table from a NumPy Archive
-#'
-#' Reads selected one-dimensional arrays of an `.npz` archive with
-#' `cellspecR::cs_read_npz()` (pure R, no Python) into a data frame, keeping
-#' the rows selected by an optional logical mask array.
-#'
-#' @param path Path to the `.npz` archive.
-#' @param arrays Character vector of array names; names of the vector, when
-#'   given, become the output column names.
-#' @param keep Optional name of a logical array selecting the rows to keep.
-#' @param row_id Name of the output column holding the 1-based row of each
-#'   kept cell in the archive (before masking); `NULL` omits it.
-#' @return A data frame with `row_id` and the selected arrays (32-bit floats
-#'   become doubles, strings character, booleans logical).
-#' @examples
-#' if (requireNamespace("cellspecR", quietly = TRUE)) {
-#'   f <- tempfile(fileext = ".npz")
-#'   cellspecR::cs_write_npz(list(x_um = c(1, 2, 3), label = c("a", "b", "a"),
-#'                                kept = c(TRUE, FALSE, TRUE)), f)
-#'   ReadCellArrays(f, c(x = "x_um", type = "label"), keep = "kept")
-#' }
-#' @export
-ReadCellArrays <- function(path, arrays, keep = NULL, row_id = "source_row") {
-  .an_assert(requireNamespace("cellspecR", quietly = TRUE),
-             "ReadCellArrays requires the cellspecR package")
-  .an_assert(.an_name(path) && file.exists(path), "path must be an existing file")
-  if (is.list(arrays)) arrays <- unlist(arrays)
-  .an_assert(.an_names(unname(arrays), FALSE), "arrays must be distinct array names")
-  .an_assert(is.null(keep) || .an_name(keep), "keep must be one array name")
-  .an_assert(is.null(row_id) || .an_name(row_id), "Invalid row_id")
-  out_names <- if (is.null(names(arrays))) arrays else ifelse(nzchar(names(arrays)), names(arrays), arrays)
-  .an_assert(!anyDuplicated(c(out_names, row_id)), "Duplicate output column names")
-  z <- cellspecR::cs_read_npz(path, arrays = unique(c(unname(arrays), keep)))
-  .an_assert(all(c(arrays, keep) %in% names(z)), "Archive lacks requested arrays")
-  n <- unique(vapply(z, length, integer(1)))
-  .an_assert(length(n) == 1L && all(vapply(z, function(a) is.null(dim(a)), logical(1))),
-             "Selected arrays must be one-dimensional with one length")
-  mask <- rep(TRUE, n)
-  if (!is.null(keep)) {
-    mask <- z[[keep]]
-    .an_assert(is.logical(mask) && !anyNA(mask), "keep must be a logical array without NA")
-  }
-  out <- lapply(unname(arrays), function(a) z[[a]][mask])
-  names(out) <- out_names
-  out <- as.data.frame(out, stringsAsFactors = FALSE, optional = TRUE)
-  if (!is.null(row_id)) out <- cbind(stats::setNames(data.frame(which(mask)), row_id), out)
-  out
-}
-
 .an_sets <- function(x, what) {
   if (is.null(names(x))) {
     x <- as.list(x)

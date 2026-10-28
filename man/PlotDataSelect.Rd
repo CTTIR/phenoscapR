@@ -7,6 +7,7 @@
 PlotDataSelect(
   data,
   filter = list(),
+  where = list(),
   columns = NULL,
   rename = NULL,
   order_by = NULL,
@@ -16,7 +17,14 @@ PlotDataSelect(
 \arguments{
 \item{data}{A data frame.}
 
-\item{filter}{Named list: column name to the values to keep.}
+\item{filter}{Named list: column name to the values to keep. Logical
+values are compared as logical, all others as text.}
+
+\item{where}{Conditions, each a list with \code{column}, \code{op} and (except for
+\code{is_na}, \code{not_na}) \code{value}. Operators: \code{<}, \code{<=}, \code{>}, \code{>=}, \code{==}, \code{!=},
+\verb{in}, \code{not_in}, \code{is_na}, \code{not_na}, \code{matches}, \code{not_matches} (regular
+expression). Conditions are combined with AND; comparisons with missing
+values are false.}
 
 \item{columns}{Columns to keep (all if \code{NULL}).}
 
@@ -31,10 +39,38 @@ dropped.}
 A data frame.
 }
 \description{
-Keeps rows whose columns take given values, optionally reorders rows by
-a given order of one column, and keeps or renames columns.
+Keeps rows whose columns take given values (\code{filter}) and that meet
+comparison conditions (\code{where}), optionally orders rows by a given order
+of one column, and keeps or renames columns.
 }
 \examples{
-d <- data.frame(type = c("x", "y", "x"), v = 1:3)
+d <- data.frame(type = c("x", "y", "x"), v = 1:3, n = c(1, 12, NA))
 PlotDataSelect(d, filter = list(type = "x"), rename = c(value = "v"))
+PlotDataSelect(d, where = list(list(column = "n", op = ">=", value = 10)))
 }
+\seealso{
+Other plot-data builders:
+\code{\link[=PlotDataBindRows]{PlotDataBindRows()}},
+\code{\link[=PlotDataConstant]{PlotDataConstant()}},
+\code{\link[=PlotDataCount]{PlotDataCount()}},
+\code{\link[=PlotDataCrossShares]{PlotDataCrossShares()}},
+\code{\link[=PlotDataDirection]{PlotDataDirection()}},
+\code{\link[=PlotDataDominant]{PlotDataDominant()}},
+\code{\link[=PlotDataFromArrays]{PlotDataFromArrays()}},
+\code{\link[=PlotDataJoin]{PlotDataJoin()}},
+\code{\link[=PlotDataKeyColours]{PlotDataKeyColours()}},
+\code{\link[=PlotDataLabels]{PlotDataLabels()}},
+\code{\link[=PlotDataLonger]{PlotDataLonger()}},
+\code{\link[=PlotDataMembership]{PlotDataMembership()}},
+\code{\link[=PlotDataPairRatio]{PlotDataPairRatio()}},
+\code{\link[=PlotDataProduct]{PlotDataProduct()}},
+\code{\link[=PlotDataQuantiles]{PlotDataQuantiles()}},
+\code{\link[=PlotDataRankRows]{PlotDataRankRows()}},
+\code{\link[=PlotDataRatio]{PlotDataRatio()}},
+\code{\link[=PlotDataRecode]{PlotDataRecode()}},
+\code{\link[=PlotDataRelative]{PlotDataRelative()}},
+\code{\link[=PlotDataShares]{PlotDataShares()}},
+\code{\link[=PlotDataSummarise]{PlotDataSummarise()}},
+\code{\link[=PlotDataUnite]{PlotDataUnite()}}
+}
+\concept{plot-data builders}

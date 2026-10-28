@@ -141,6 +141,78 @@ ManuscriptPalettes <- function() {
 #' @export
 PtLinewidth <- function(pt) pt / (0.75 * ggplot2::.pt)
 
+#' Tick Breaks of Common Plotting Code
+#'
+#' Tick positions as placed by the automatic tick locator of common
+#' plotting libraries (a "maximum number of intervals" locator): the
+#' smallest "nice" step from `steps` (times a power of ten) that divides the
+#' axis range into at most `nbins` intervals, with ticks restricted to the
+#' limits. For example limits 0 to 7 give 0, 2, 4, 6 rather than 0, 3, 6.
+#'
+#' With `nbins = "auto"` the number of intervals follows the axis length as
+#' in those libraries: the axis length divided by twice (y axis) or three
+#' times (x axis) the tick label size, between 1 and 9.
+#'
+#' @param limits Axis limits (as drawn, including any margins).
+#' @param nbins Maximum number of intervals, or `"auto"`.
+#' @param steps Nice step multipliers between 1 and 10.
+#' @param min_n Minimum number of ticks inside the limits.
+#' @param length_pt Axis length in points (for `nbins = "auto"`).
+#' @param tick_size Tick label size in points (for `nbins = "auto"`).
+#' @param axis `"y"` or `"x"` (for `nbins = "auto"`).
+#' @return Numeric vector of tick positions.
+#' @examples
+#' NiceBreaks(c(0, 7))
+#' NiceBreaks(c(-3.9, 82), nbins = "auto", length_pt = 51, tick_size = 5.5)
+#' @family figure style
+#' @export
+NiceBreaks <- function(limits, nbins = 9, steps = c(1, 2, 2.5, 5, 10), min_n = 2, length_pt = NULL,
+                       tick_size = 5.5, axis = c("y", "x")) {
+  axis <- match.arg(axis)
+  if (identical(nbins, "auto")) {
+    nbins <- if (is.null(length_pt) || !is.finite(length_pt)) 9 else
+      floor(length_pt / (tick_size * if (axis == "x") 3 else 2))
+    nbins <- min(max(nbins, max(1, min_n - 1)), 9)
+  }
+  nbins <- as.numeric(nbins)
+  lo <- limits[1]
+  hi <- limits[2]
+  if (!is.finite(lo) || !is.finite(hi) || hi <= lo) return(pretty(limits))
+  nbins <- max(1, floor(nbins))
+  ext <- c(0.1 * steps[-length(steps)], steps, 10 * steps[2])
+  dv <- hi - lo
+  meanv <- (hi + lo) / 2
+  offset <- if (abs(meanv) / dv < 100) 0 else sign(meanv) * 10^floor(log10(abs(meanv)))
+  scale <- 10^floor(log10(dv / nbins))
+  vmin <- lo - offset
+  vmax <- hi - offset
+  st <- ext * scale
+  raw <- dv / nbins
+  istep <- which(st >= raw)[1]
+  if (is.na(istep)) istep <- length(st)
+  ticks <- numeric()
+  for (step in rev(st[seq_len(istep)])) {
+    best <- floor(vmin / step) * step
+    le <- function(x) {
+      d <- floor(x / step)
+      m <- x - d * step
+      if (abs(m / step - 1) < 1e-10) d + 1 else d
+    }
+    ge <- function(x) {
+      d <- floor(x / step)
+      m <- x - d * step
+      if (abs(m / step) < 1e-10) d else d + 1
+    }
+    ticks <- (le(vmin - best):ge(vmax - best)) * step + best
+    if (sum(ticks <= vmax & ticks >= vmin) >= min_n) break
+  }
+  ticks <- ticks + offset
+  tol <- 1e-9 * dv
+  ticks <- ticks[ticks >= lo - tol & ticks <= hi + tol]
+  ticks[abs(ticks) < tol] <- 0
+  ticks
+}
+
 .fig_check_style <- function(style) {
   if (!inherits(style, "phenoscapR_style")) {
     stop("style must come from ManuscriptStyle().", call. = FALSE)
@@ -256,7 +328,16 @@ FormatP <- function(p) {
 #' 'gridtext'/'ggtext': italic *P*, *q* and *n* before `=` or `<`; powers of
 #' ten for `4.9e-04`; superscript plus signs on markers (`CD8+`, `FOXP3+`,
 #' `CD4 T`, `CD8 T`); `Treg`/`Tregs` with subscript *reg*; `log2`; `mm2`;
-#' micrometres; italic gene symbols; and line breaks.
+#' micrometres; italic gene symbols; and line breaks. Straight quotes stay
+#' straight (no typographic apostrophes).
+#'
+#' Typesetting can be switched off with `options(phenoscapR.typeset =
+#' FALSE)`; labels are then only escaped for rich text. Single rules are
+#' switched off by naming them instead, for example
+#' `options(phenoscapR.typeset = "treg")`: `"exponent"`, `"p"`, `"q"`, `"n"`,
+#' `"markers"`, `"treg"`, `"log2"`, `"mm2"`, `"um"` and `"genes"`. Figure
+#' specifications do this per figure, panel, text or legend (`"typeset"`, see
+#' [RenderFigure()]).
 #'
 #' @param x Character vector of labels.
 #' @param genes Gene symbols to set in italics.
@@ -276,29 +357,37 @@ TypesetLabel <- function(x, genes = c("TP53", "RB1"),
   if (!is.character(x)) stop("x must be character.", call. = FALSE)
   na <- is.na(x)
   x[na] <- ""
+  opt <- getOption("phenoscapR.typeset", TRUE)
+  off <- if (is.character(opt)) opt else character()
+  on <- function(rule) !rule %in% off
+  if (isFALSE(opt)) {
+    if (rich) x <- gsub("\n", "<br>", .fig_rich_escape(x), fixed = TRUE)
+    x[na] <- NA_character_
+    return(x)
+  }
   marker_rx <- paste0("\\b(", paste(markers, collapse = "|"), ")\\+")
   gene_rx <- if (length(genes)) paste0("\\b(", paste(genes, collapse = "|"), ")\\b") else NULL
   if (rich) {
-    x <- gsub("&", "&amp;", x, fixed = TRUE)
-    x <- gsub("<", "&lt;", x, fixed = TRUE)
-    x <- gsub(">", "&gt;", x, fixed = TRUE)
-    x <- gsub("(\\d(?:\\.\\d+)?)e-0*(\\d+)", "\\1 \u00d7 10<sup>\u2212\\2</sup>", x, perl = TRUE)
-    x <- gsub("(?<![A-Za-z])p\\s?(=|&lt;)\\s?", "<i>P</i> \\1 ", x, perl = TRUE)
-    x <- gsub("(?<![A-Za-z])q\\s?(=|&lt;)\\s?", "<i>q</i> \\1 ", x, perl = TRUE)
-    x <- gsub("(?<![A-Za-z])n\\s?=\\s?", "<i>n</i> = ", x, perl = TRUE)
-    x <- gsub(marker_rx, "\\1<sup>+</sup>", x, perl = TRUE)
-    x <- gsub("\\b(CD4|CD8)( T\\b)", "\\1<sup>+</sup>\\2", x, perl = TRUE)
-    x <- gsub("\\bTregs\\b", "T<sub>reg</sub> cells", x, perl = TRUE)
-    x <- gsub("\\bTreg\\b", "T<sub>reg</sub>", x, perl = TRUE)
-    x <- gsub("\\blog2\\b", "log<sub>2</sub>", x, perl = TRUE)
-    x <- gsub("mm2\\b", "mm<sup>2</sup>", x, perl = TRUE)
-    x <- gsub("(\\d)[ -]um\\b", "\\1 \u00b5m", x, perl = TRUE)
-    if (!is.null(gene_rx)) x <- gsub(gene_rx, "<i>\\1</i>", x, perl = TRUE)
+    x <- .fig_rich_escape(x)
+    if (on("exponent")) x <- gsub("(\\d(?:\\.\\d+)?)e-0*(\\d+)", "\\1 \u00d7 10<sup>\u2212\\2</sup>", x, perl = TRUE)
+    if (on("p")) x <- gsub("(?<![A-Za-z])p\\s?(=|&lt;|&gt;|\u2264|\u2265)\\s?", "<i>P</i> \\1 ", x, perl = TRUE)
+    if (on("p")) x <- sub("^\\s*[pP]\\s*$", "<i>P</i>", x, perl = TRUE)
+    if (on("q")) x <- gsub("(?<![A-Za-z])q\\s?(=|&lt;)\\s?", "<i>q</i> \\1 ", x, perl = TRUE)
+    if (on("n")) x <- gsub("(?<![A-Za-z])n\\s?=\\s?", "<i>n</i> = ", x, perl = TRUE)
+    if (on("markers")) x <- gsub(marker_rx, "\\1<sup>+</sup>", x, perl = TRUE)
+    if (on("markers")) x <- gsub("\\b(CD4|CD8)( T\\b)", "\\1<sup>+</sup>\\2", x, perl = TRUE)
+    if (on("treg")) x <- gsub("\\bTregs\\b", "T<sub>reg</sub> cells", x, perl = TRUE)
+    if (on("treg")) x <- gsub("\\bTreg\\b", "T<sub>reg</sub>", x, perl = TRUE)
+    if (on("log2")) x <- gsub("\\blog2\\b", "log<sub>2</sub>", x, perl = TRUE)
+    if (on("mm2")) x <- gsub("mm2\\b", "mm<sup>2</sup>", x, perl = TRUE)
+    if (on("um")) x <- gsub("(\\d)[ -]um\\b", "\\1 \u00b5m", x, perl = TRUE)
+    if (on("genes") && !is.null(gene_rx)) x <- gsub(gene_rx, "<i>\\1</i>", x, perl = TRUE)
     x <- gsub("\n", "<br>", x, fixed = TRUE)
   } else {
     sup <- c("0" = "\u2070", "1" = "\u00b9", "2" = "\u00b2", "3" = "\u00b3", "4" = "\u2074",
              "5" = "\u2075", "6" = "\u2076", "7" = "\u2077", "8" = "\u2078", "9" = "\u2079")
     m <- regmatches(x, gregexpr("(\\d(?:\\.\\d+)?)e-0*(\\d+)", x, perl = TRUE))
+    if (!on("exponent")) m <- lapply(m, function(v) character())
     for (i in seq_along(x)) {
       for (hit in m[[i]]) {
         parts <- regmatches(hit, regexec("^(\\d(?:\\.\\d+)?)e-0*(\\d+)$", hit))[[1L]]
@@ -306,16 +395,30 @@ TypesetLabel <- function(x, genes = c("TP53", "RB1"),
         x[i] <- sub(hit, paste0(parts[[2L]], " \u00d7 10\u207b", exponent), x[i], fixed = TRUE)
       }
     }
-    x <- gsub("(?<![A-Za-z])p\\s?(=|<)\\s?", "P \\1 ", x, perl = TRUE)
-    x <- gsub(marker_rx, "\\1\u207a", x, perl = TRUE)
-    x <- gsub("\\b(CD4|CD8)( T\\b)", "\\1\u207a\\2", x, perl = TRUE)
-    x <- gsub("\\bTregs\\b", "Treg cells", x, perl = TRUE)
-    x <- gsub("\\blog2\\b", "log\u2082", x, perl = TRUE)
-    x <- gsub("mm2\\b", "mm\u00b2", x, perl = TRUE)
-    x <- gsub("(\\d)[ -]um\\b", "\\1 \u00b5m", x, perl = TRUE)
+    if (on("p")) x <- gsub("(?<![A-Za-z])p\\s?(=|<|>|\u2264|\u2265)\\s?", "P \\1 ", x, perl = TRUE)
+    if (on("p")) x <- sub("^\\s*[pP]\\s*$", "P", x, perl = TRUE)
+    if (on("markers")) x <- gsub(marker_rx, "\\1\u207a", x, perl = TRUE)
+    if (on("markers")) x <- gsub("\\b(CD4|CD8)( T\\b)", "\\1\u207a\\2", x, perl = TRUE)
+    if (on("treg")) x <- gsub("\\bTregs\\b", "Treg cells", x, perl = TRUE)
+    if (on("log2")) x <- gsub("\\blog2\\b", "log\u2082", x, perl = TRUE)
+    if (on("mm2")) x <- gsub("mm2\\b", "mm\u00b2", x, perl = TRUE)
+    if (on("um")) x <- gsub("(\\d)[ -]um\\b", "\\1 \u00b5m", x, perl = TRUE)
   }
   x[na] <- NA_character_
   x
+}
+
+# Escape text for rich-text rendering: markup characters, and straight quotes,
+# double hyphens and dots as entities so that markdown does not turn them
+# into typographic quotes, dashes or ellipses.
+.fig_rich_escape <- function(x) {
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  x <- gsub(">", "&gt;", x, fixed = TRUE)
+  x <- gsub("'", "&#39;", x, fixed = TRUE)
+  x <- gsub("\"", "&quot;", x, fixed = TRUE)
+  x <- gsub("--", "-&#45;", x, fixed = TRUE)
+  gsub("...", "&#46;&#46;&#46;", x, fixed = TRUE)
 }
 
 #' Format a Patient-Level Statistic Line

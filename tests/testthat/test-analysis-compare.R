@@ -55,18 +55,3 @@ test_that("comparison summaries pass only complete matching checks", {
   expect_identical(t$status, "PASS")
 })
 
-test_that("stacking adds key columns and recoding maps values", {
-  s <- StackTables(list(a = data.frame(v = 1), b = data.frame(v = 2:3, w = "x")),
-                   keys = list(a = list(batch = "one"), b = list(batch = "two")), name = "source")
-  expect_identical(names(s), c("source", "batch", "v", "w"))
-  expect_identical(s$batch, c("one", "two", "two"))
-  expect_identical(s$w, c(NA, "x", "x"))
-  one <- StackTables(data.frame(v = 1:2), keys = list(tag = "t"))
-  expect_identical(one$tag, c("t", "t"))
-  expect_error(StackTables(list(a = data.frame(batch = 1)), keys = list(a = list(batch = 2))),
-               "collide")
-  r <- RecodeValues(data.frame(g = c("low", "<1", "n.a.", NA)), "g",
-                    list(low = 1, "<1" = 0.5), to = "score")
-  expect_identical(r$score, c(1, 0.5, NA, NA))
-  expect_identical(RecodeValues(r, "g", list(low = "L"), default = "-")$g, c("L", "-", "-", "-"))
-})

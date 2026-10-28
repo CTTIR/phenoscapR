@@ -12,7 +12,8 @@ FigureText(
   bold = FALSE,
   hjust = 0,
   vjust = 1,
-  angle = 0
+  angle = 0,
+  typeset = TRUE
 )
 }
 \arguments{
@@ -27,9 +28,14 @@ FigureText(
 \item{bold}{Bold face.}
 
 \item{hjust, vjust}{Justification relative to \code{at}; by default the text
-hangs below and to the right of the point.}
+hangs below and to the right of the point. \code{vjust = "baseline"} puts the
+baseline of the last line at \code{at}, as figure text placed without
+vertical alignment in common plotting code.}
 
 \item{angle}{Rotation in degrees.}
+
+\item{typeset}{If \code{FALSE}, the label is drawn as written (see
+\code{\link[=TypesetLabel]{TypesetLabel()}}).}
 }
 \value{
 A list of class \code{phenoscapR_text}.
@@ -39,4 +45,5 @@ Place Text on a Figure Page
 }
 \examples{
 FigureText("Median and IQR\nn = 12 patients", c(20, 50))
+FigureText("Treg-like cells", c(20, 60), vjust = "baseline", typeset = FALSE)
 }

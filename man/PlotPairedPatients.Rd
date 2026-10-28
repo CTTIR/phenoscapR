@@ -18,6 +18,8 @@ PlotPairedPatients(
   y_label = NULL,
   x_label = NULL,
   y_limits = NULL,
+  y_nbins = "auto",
+  box_mm = NULL,
   style = ManuscriptStyle()
 )
 }
@@ -39,6 +41,12 @@ PlotPairedPatients(
 \item{y_label, x_label}{Axis titles.}
 
 \item{y_limits}{Optional y limits.}
+
+\item{y_nbins}{Maximum number of y intervals of the tick locator (see
+\code{\link[=NiceBreaks]{NiceBreaks()}}); \code{"auto"} follows the axis length.}
+
+\item{box_mm}{Size of the data area \code{c(width, height)} in millimetres, passed
+by \code{\link[=RenderFigure]{RenderFigure()}}.}
 
 \item{style}{A \code{\link[=ManuscriptStyle]{ManuscriptStyle()}} object.}
 }

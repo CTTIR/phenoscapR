@@ -1,20 +1,3 @@
-test_that("cell arrays are read from an archive with a keep mask", {
-  skip_if_not(requireNamespace("cellspecR", quietly = TRUE))
-  f <- withr::local_tempfile(fileext = ".npz")
-  cellspecR::cs_write_npz(list(x_um = c(1.5, 2.5, 3.5), y_um = c(0, 1, 2),
-                               label = c("a", "b", "a"), kept = c(TRUE, FALSE, TRUE),
-                               grid = matrix(1:6, 3)), f)
-  out <- ReadCellArrays(f, c(x = "x_um", y = "y_um", type = "label"), keep = "kept")
-  expect_identical(names(out), c("source_row", "x", "y", "type"))
-  expect_identical(out$source_row, c(1L, 3L))
-  expect_identical(out$x, c(1.5, 3.5))
-  expect_identical(out$type, c("a", "a"))
-  same <- ReadCellArrays(f, list(x = "x_um"), row_id = NULL)
-  expect_identical(names(same), "x")
-  expect_error(ReadCellArrays(f, c("x_um", "grid")), "one-dimensional")
-  expect_error(ReadCellArrays(f, "x_um", keep = "label"), "logical")
-})
-
 test_that("nearest-target distance summaries equal brute force", {
   set.seed(2)
   cells <- data.frame(x = stats::runif(120, 0, 50), y = stats::runif(120, 0, 50),
