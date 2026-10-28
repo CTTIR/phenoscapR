@@ -105,3 +105,15 @@ test_that("zero-row inputs give typed results without phantom groups", {
   expect_identical(nrow(each), 0L)
   expect_true("omitted" %in% names(each))
 })
+
+test_that("paired differences refuse subject columns named like output columns", {
+  for (id in c("x", "y", "difference")) {
+    d <- data.frame(s = c("s1", "s2"), a = 1:2, b = 2:3)
+    names(d)[1] <- id
+    expect_error(PairedDifferences(d, id, list(list(name = "d", x = "a", y = "b"))), "output columns")
+  }
+  d <- data.frame(s = c("s1", "s2"), a = 1:2, b = 2:3)
+  expect_error(PairedDifferences(d, "s", list(list(name = "d", x = "a", y = "b")), name = "y"), "output columns")
+  expect_identical(names(PairedDifferences(d, "s", list(list(name = "d", x = "a", y = "b")))),
+                   c("endpoint", "s", "x", "y", "difference"))
+})

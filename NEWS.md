@@ -74,6 +74,8 @@
   without group columns they give one unavailable overall row.
 * `PermutationCorrelation()` refuses `min_n` below 2; a group with a single
   pair used to stop with an unhelpful error.
+* `PairedDifferences()` refuses `id` or `name` columns called `x`, `y` or
+  `difference`, which used to produce duplicated column names.
 
 # phenoscapR 0.1.1
 

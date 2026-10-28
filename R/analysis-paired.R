@@ -233,7 +233,8 @@ ExactPairedTests <- function(data, value, groups = NULL, id = NULL, expected = N
 #'
 #' @param data A data frame, or a named list of data frames (for example
 #'   several summary tables of the same subjects).
-#' @param id Subject column, unique within each table.
+#' @param id Subject column, unique within each table; not named `x`, `y` or
+#'   `difference`.
 #' @param pairs List of pair specifications, each a list with `name` (label
 #'   of the difference), `x` and `y` (column names; `y = NULL` keeps `x`
 #'   unchanged) and, when `data` is a list, `table` (element name). Further
@@ -249,6 +250,8 @@ ExactPairedTests <- function(data, value, groups = NULL, id = NULL, expected = N
 #' @export
 PairedDifferences <- function(data, id, pairs, name = "endpoint") {
   .an_assert(.an_name(id) && .an_name(name) && id != name, "Invalid id or name")
+  .an_assert(!any(c(id, name) %in% c("x", "y", "difference")),
+             "id and name must differ from the output columns x, y and difference")
   .an_assert(is.list(pairs) && length(pairs) > 0L, "pairs must be a nonempty list")
   tables <- if (is.data.frame(data)) list(data) else data
   .an_assert(is.list(tables) && length(tables) > 0L &&

@@ -10,7 +10,8 @@ PairedDifferences(data, id, pairs, name = "endpoint")
 \item{data}{A data frame, or a named list of data frames (for example
 several summary tables of the same subjects).}
 
-\item{id}{Subject column, unique within each table.}
+\item{id}{Subject column, unique within each table; not named \code{x}, \code{y} or
+\code{difference}.}
 
 \item{pairs}{List of pair specifications, each a list with \code{name} (label
 of the difference), \code{x} and \code{y} (column names; \code{y = NULL} keeps \code{x}
