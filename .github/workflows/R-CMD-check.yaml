@@ -19,3 +19,5 @@ jobs:
       bioc-repository: true
       # Cairo graphics devices on macOS need the X11 libraries.
       macos-xquartz: true
+    secrets:
+      CTTIR_PRIVATE_TERMS: ${{ secrets.CTTIR_PRIVATE_TERMS }}
