@@ -277,6 +277,14 @@ test_that("counting and ranking accept data.table input", {
   expect_identical(PlotDataRankRows(data.table::as.data.table(w), "id", c("x", "y")), PlotDataRankRows(w, "id", c("x", "y")))
 })
 
+test_that("counting keeps the class of data frame subclasses", {
+  d <- structure(data.frame(type = c("x", "y", "x"), v = 1:3), class = c("test_df", "data.frame"))
+  out <- PlotDataCount(d, by = "type")
+  expect_identical(class(out), c("test_df", "data.frame"))
+  expect_identical(unclass(out), unclass(PlotDataCount(as.data.frame(d), by = "type")))
+  expect_identical(class(PlotDataRankRows(d, "type", "v")), "data.frame")
+})
+
 test_that("a group without shares has no dominant category", {
   dd <- data.frame(g = c("1", "1", "2", "2"), col = c("A", "B", "A", "B"), share = c(0.2, 0.8, NA, NA))
   out <- PlotDataDominant(dd, "g", "col")

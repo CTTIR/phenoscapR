@@ -852,7 +852,8 @@ PlotDataSummarise <- function(data, columns = NULL, fun = "sum", by = NULL, into
 PlotDataCount <- function(data, by = NULL, filter = NULL, distinct = NULL, tally = NULL, scale = 100) {
   by <- as.character(unlist(by))
   .fig_require_columns(data, c(by, distinct))
-  data <- as.data.frame(data, check.names = FALSE)
+  # data.table subsetting differs; other data frames (tibbles) keep their class.
+  if (data.table::is.data.table(data)) data <- as.data.frame(data, check.names = FALSE)
   d <- data[.fig_filter_rows(data, filter), , drop = FALSE]
   key <- if (length(by)) do.call(paste, c(d[by], sep = "\r")) else rep("all", nrow(d))
   lev <- if (length(by)) unique(key) else "all"
