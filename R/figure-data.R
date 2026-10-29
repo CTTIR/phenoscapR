@@ -341,6 +341,7 @@ PlotDataFromArrays <- function(arrays, columns = NULL, matrices = NULL, masked =
   masked <- if (is.null(masked)) list() else as.list(masked)
   if (is.character(arrays) && length(arrays) == 1L) {
     if (!requireNamespace("cellspecR", quietly = TRUE)) stop("Reading an archive needs 'cellspecR'.", call. = FALSE)
+    .require_cellspec_npz()
     if (!file.exists(arrays)) stop("Archive not found: ", arrays, call. = FALSE)
     need <- if (is.null(columns)) NULL else {
       from <- unlist(lapply(matrices, function(s) if (is.list(s)) s$names_from))

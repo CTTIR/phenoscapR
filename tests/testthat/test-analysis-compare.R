@@ -34,9 +34,17 @@ test_that("array comparison checks shape and values", {
   expect_equal(out$n_different[2], 1)
   expect_identical(out$max_difference[2], 0.25)
   skip_if_not(requireNamespace("cellspecR", quietly = TRUE))
+  skip_if_not("cs_write_npz" %in% getNamespaceExports("cellspecR"))
   f <- withr::local_tempfile(fileext = ".npz")
   cellspecR::cs_write_npz(list(counts = cbind(1:3, c(0L, 1L, 0L)), z = c(0.5, 1.5, 2.5)), f)
   expect_true(all(CompareArrays(obs, f, list(counts = c("a", "b"), z = "z"))$matches))
+})
+
+test_that("array comparison refuses a cellspecR that cannot read archives", {
+  skip_if_not_installed("cellspecR")
+  local_mocked_bindings(.cellspec_exports = function() "cs_example")
+  obs <- data.frame(z = c(0.5, 1.5, 2.5))
+  expect_error(CompareArrays(obs, "missing.npz", list(z = "z")), "version with cs_read_npz()", fixed = TRUE)
 })
 
 test_that("comparison summaries pass only complete matching checks", {

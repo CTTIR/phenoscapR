@@ -78,3 +78,22 @@ FromCellspec <- function(x, features = NULL, project = "SpatialProject") {
                coords = meta[, c("x", "y"), drop = FALSE],
                meta_data = meta, project = project, spatial = list())
 }
+
+#' Exports of the installed cellspecR (a separate function so tests can
+#' replace it)
+#' @noRd
+.cellspec_exports <- function() getNamespaceExports("cellspecR")
+
+#' Stop unless the installed cellspecR can read NumPy archives
+#'
+#' `cs_read_npz()` arrived after cellspecR 1.0.0; older versions load but
+#' cannot read archives.
+#' @noRd
+.require_cellspec_npz <- function() {
+  if (!"cs_read_npz" %in% .cellspec_exports()) {
+    stop("Reading an archive needs a 'cellspecR' version with cs_read_npz() ",
+         "(installed: ", utils::packageVersion("cellspecR"), "); ",
+         "update 'cellspecR'.", call. = FALSE)
+  }
+  invisible(TRUE)
+}

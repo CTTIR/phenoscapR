@@ -172,6 +172,7 @@ CompareArrays <- function(observed, reference, arrays, tolerance = 0, check = "a
   if (is.character(reference) && length(reference) == 1L) {
     .an_assert(requireNamespace("cellspecR", quietly = TRUE),
                "Reading archives requires the cellspecR package")
+    .require_cellspec_npz()
     reference <- cellspecR::cs_read_npz(reference, arrays = names(arrays))
   }
   .an_assert(is.list(reference) && all(names(arrays) %in% names(reference)),

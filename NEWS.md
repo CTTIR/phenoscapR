@@ -125,6 +125,10 @@
   search path; the clusters are the same.
 * `RunUMAP(densmap = TRUE)` uses the densMAP approximation of `uwot::umap()`
   (`dens_scale = 1`); it used to fail because 'uwot' has no `densmap()`.
+* Reading `.npz` archives in `CompareArrays()` and `PlotDataFromArrays()`
+  needs a 'cellspecR' newer than 1.0.0 (with `cs_read_npz()`); with
+  'cellspecR' 1.0.0 both functions now say so instead of failing on a missing
+  function.
 
 # phenoscapR 0.1.1
 

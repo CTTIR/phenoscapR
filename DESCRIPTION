@@ -43,7 +43,7 @@ Suggests:
     brand.yml,
     bsicons,
     bslib (>= 0.6.0),
-    cellspecR (>= 1.0.0),
+    cellspecR (>= 1.0.0.9000),
     chromote,
     deldir,
     ggtext,

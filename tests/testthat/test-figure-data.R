@@ -117,6 +117,12 @@ test_that("array lists become tables with matrices, masked columns, kept rows an
   expect_identical(z, data.frame(source_row = c(1L, 3L), x = c(1.5, 3.5), type = c("a", "a")))
 })
 
+test_that("plot data from an archive refuses a cellspecR that cannot read it", {
+  skip_if_not_installed("cellspecR")
+  local_mocked_bindings(.cellspec_exports = function() "cs_example")
+  expect_error(PlotDataFromArrays("missing.npz", "x_um"), "version with cs_read_npz()", fixed = TRUE)
+})
+
 test_that("values are recoded by map, patterns, index, extraction and substitution", {
   d <- data.frame(id = c("p1", "p2", "p3"), grp = c("TME-A x", "TME-B y", "other"), code = c(0, 2, -1))
   expect_identical(PlotDataRecode(d, "grp", map = c(other = "O"), patterns = c("^TME-A" = "1"), default = "2",
