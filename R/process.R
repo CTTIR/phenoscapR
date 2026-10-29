@@ -139,8 +139,8 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
 #' Phenotype Cells by Marker Thresholds
 #'
 #' Assigns phenotype labels to cells based on marker intensity thresholds.
-#' A cell is considered positive for a marker if its intensity exceeds the
-#' given threshold.
+#' A cell is considered positive for a marker if its intensity meets or
+#' exceeds the given threshold.
 #'
 #' @param dt A `data.table` as returned by [read_spatial()] or
 #'   [normalise_markers()].
