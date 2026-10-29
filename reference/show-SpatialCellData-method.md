@@ -16,3 +16,7 @@ show(object)
   A
   [`SpatialCellData`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
   object.
+
+## Value
+
+Invisibly `NULL`; called for printing a summary of the object.
