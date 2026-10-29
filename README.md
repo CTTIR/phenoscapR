@@ -61,14 +61,11 @@ statistics, and publication-ready visualisation — using an efficient
 
 ## Installation
 
+phenoscapR is not on CRAN yet. Install it from GitHub:
+
 ```r
-# Install the development version from GitHub
 # install.packages("pak")
 pak::pak("CTTIR/phenoscapR")
-
-# Or with remotes
-# install.packages("remotes")
-remotes::install_github("CTTIR/phenoscapR")
 ```
 
 Optional canonical cell-table imports and SONG embeddings require packages
