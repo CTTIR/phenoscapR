@@ -41,7 +41,7 @@ neighbourhood composition input of cellular-neighbourhood analyses."><meta prope
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -50,7 +50,7 @@ neighbourhood composition input of cellular-neighbourhood analyses."><meta prope
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Count Neighbour Types over a Delaunay Graph with an Edge-Length Cut</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/analysis-graph.R" class="external-link"><code>R/analysis-graph.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/analysis-graph.R" class="external-link"><code>R/analysis-graph.R</code></a></small>
       <div class="d-none name"><code>NeighbourTypeCounts.Rd</code></div>
     </div>
 
@@ -109,9 +109,13 @@ to exactly one group. The order defines the count columns.</p></dd>
 <dd><p><code>"error"</code> or <code>"isolate"</code>.</p></dd>
 
 
-<dt id="arg-backend-contract-eps">backend_contract, eps<a class="anchor" aria-label="anchor" href="#arg-backend-contract-eps"></a></dt>
-<dd><p>Passed to the <code>"deldir"</code> engine (see
+<dt id="arg-backend-contract">backend_contract<a class="anchor" aria-label="anchor" href="#arg-backend-contract"></a></dt>
+<dd><p>Deprecated and ignored (see
 <code><a href="BuildExactDelaunayEdges.html">BuildExactDelaunayEdges()</a></code>).</p></dd>
+
+
+<dt id="arg-eps">eps<a class="anchor" aria-label="anchor" href="#arg-eps"></a></dt>
+<dd><p>Tolerance passed to the <code>"deldir"</code> engine.</p></dd>
 
 
 <dt id="arg-index-base">index_base<a class="anchor" aria-label="anchor" href="#arg-index-base"></a></dt>
@@ -137,10 +141,9 @@ first occurrence as the graph vertex and gives later copies no neighbours
 (as Qhull's coplanar-point handling does).</p>
 <p>Engines: <code>"geos"</code> (default) uses GEOS through <span class="pkg">sf</span>
 (<code>st_triangulate(..., bOnlyEdges = TRUE)</code>); input coordinates are mapped
-back to cells exactly. <code>"deldir"</code> uses the pinned, registered-routine
-<span class="pkg">deldir</span> backend of <code><a href="BuildExactDelaunayEdges.html">BuildExactDelaunayEdges()</a></code> and needs its
-<code>backend_contract</code>; its run time grows roughly quadratically with the
-number of cells, so it is meant for cross-checks on small sections.</p>
+back to cells exactly. <code>"deldir"</code> uses <code><a href="https://rdrr.io/pkg/deldir/man/deldir.html" class="external-link">deldir::deldir()</a></code> as
+<code><a href="BuildExactDelaunayEdges.html">BuildExactDelaunayEdges()</a></code> does; its run time grows roughly quadratically
+with the number of cells, so it is meant for cross-checks on small sections.</p>
     </div>
 
     <div class="section level2">

@@ -5,7 +5,9 @@ For each row group of a share table (from
 finds the category with the largest share (ties go to the earlier
 category in `columns`) and orders the groups by the position of that
 category in `priority`, then by the group value. Categories missing from
-`priority` take position zero, before all listed ones.
+`priority` take position zero, before all listed ones. A group without
+any share among `columns` has a missing `dominant` category and also
+takes position zero.
 
 ## Usage
 

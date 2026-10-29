@@ -41,7 +41,7 @@ or a data frame."><meta property="og:image" content="https://cttir.github.io/phe
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -50,7 +50,7 @@ or a data frame."><meta property="og:image" content="https://cttir.github.io/phe
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Read an Expression Matrix and a Coordinate/Metadata Table</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/readers_platform.R" class="external-link"><code>R/readers_platform.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/readers_platform.R" class="external-link"><code>R/readers_platform.R</code></a></small>
       <div class="d-none name"><code>ReadMatrixCoords.Rd</code></div>
     </div>
 
@@ -96,7 +96,10 @@ or CSV path).</p></dd>
 
 <dt id="arg-cell-id-col">cell_id_col<a class="anchor" aria-label="anchor" href="#arg-cell-id-col"></a></dt>
 <dd><p>Character or <code>NULL</code>. Shared cell-id column; if present
-in both tables, rows are matched on it, otherwise row order is assumed.</p></dd>
+in both tables, rows are matched on it, otherwise row order is assumed.
+Further columns (for example <code>"fov"</code>) can follow: those present in
+both tables are matched as well, so ids need only be unique within them.
+The first column becomes <code>cell_id</code>. Matched ids must be unique.</p></dd>
 
 
 <dt id="arg-id-cols">id_cols<a class="anchor" aria-label="anchor" href="#arg-id-cols"></a></dt>

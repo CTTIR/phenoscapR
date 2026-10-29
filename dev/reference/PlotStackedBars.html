@@ -47,7 +47,7 @@ added. A single stack level gives plain bars."><meta property="og:image" content
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -56,7 +56,7 @@ added. A single stack level gives plain bars."><meta property="og:image" content
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Stacked Bars</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/figure-plots-bars.R" class="external-link"><code>R/figure-plots-bars.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/figure-plots-bars.R" class="external-link"><code>R/figure-plots-bars.R</code></a></small>
       <div class="d-none name"><code>PlotStackedBars.Rd</code></div>
     </div>
 
@@ -215,7 +215,8 @@ not, display mapping and named text colours.</p></dd>
 
 <dt id="arg-top-text">top_text<a class="anchor" aria-label="anchor" href="#arg-top-text"></a></dt>
 <dd><p>Optional column with one value per category, printed
-above the bar with <code>top_format</code> at <code>top_at</code> (value units).</p></dd>
+above the bar (right of it for horizontal bars) with <code>top_format</code> at
+<code>top_at</code> (value units).</p></dd>
 
 
 <dt id="arg-top-format-top-at-top-size-top-colour">top_format, top_at, top_size, top_colour<a class="anchor" aria-label="anchor" href="#arg-top-format-top-at-top-size-top-colour"></a></dt>
@@ -238,7 +239,8 @@ breaks then follow <code><a href="NiceBreaks.html">NiceBreaks()</a></code> inste
 
 <dt id="arg-top-title">top_title<a class="anchor" aria-label="anchor" href="#arg-top-title"></a></dt>
 <dd><p>Optional text left (or right) of the top values, at
-<code>top_title_at</code> category units from the first bar centre.</p></dd>
+<code>top_title_at</code> category units from the first bar centre (above or below
+them for horizontal bars).</p></dd>
 
 
 <dt id="arg-top-title-at-top-title-hjust">top_title_at, top_title_hjust<a class="anchor" aria-label="anchor" href="#arg-top-title-at-top-title-hjust"></a></dt>

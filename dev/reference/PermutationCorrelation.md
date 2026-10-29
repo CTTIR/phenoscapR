@@ -57,7 +57,7 @@ PermutationCorrelation(
 
 - min_n:
 
-  Smallest number of complete pairs tested.
+  Smallest number of complete pairs tested (at least 2).
 
 - max_exact_n:
 

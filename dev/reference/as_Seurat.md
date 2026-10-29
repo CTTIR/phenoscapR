@@ -2,7 +2,10 @@
 
 Builds a Seurat object with raw counts, normalised data, cell metadata,
 and the spatial coordinates stored both in metadata (`x`, `y`) and as a
-`"spatial"` dimensional reduction.
+`"spatial"` dimensional reduction. Cell IDs repeated across samples are
+made unique with
+[`make.unique()`](https://rdrr.io/r/base/make.unique.html) for the
+Seurat cell names; the metadata keep the original `cell_id`.
 
 ## Usage
 

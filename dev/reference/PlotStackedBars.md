@@ -151,7 +151,8 @@ PlotStackedBars(
 - top_text:
 
   Optional column with one value per category, printed above the bar
-  with `top_format` at `top_at` (value units).
+  (right of it for horizontal bars) with `top_format` at `top_at` (value
+  units).
 
 - top_format, top_at, top_size, top_colour:
 
@@ -176,7 +177,8 @@ PlotStackedBars(
 - top_title:
 
   Optional text left (or right) of the top values, at `top_title_at`
-  category units from the first bar centre.
+  category units from the first bar centre (above or below them for
+  horizontal bars).
 
 - top_title_at, top_title_hjust:
 

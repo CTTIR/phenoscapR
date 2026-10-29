@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/cttir/phenoscapR/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/CTTIR/phenoscapR/blob/main/inst/CITATION)
 
 Heller, R. & Witte, H. (2026). phenoscapR: Read, Analyse, and Visualise
 Single-Cell Spatial Biology Data. R package version 0.1.1.9000.

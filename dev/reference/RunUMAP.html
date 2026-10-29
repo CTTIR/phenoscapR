@@ -39,7 +39,7 @@ components (see use_pca)."><meta property="og:image" content="https://cttir.gith
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -48,7 +48,7 @@ components (see use_pca)."><meta property="og:image" content="https://cttir.gith
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>UMAP Embedding</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/reductions.R" class="external-link"><code>R/reductions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/reductions.R" class="external-link"><code>R/reductions.R</code></a></small>
       <div class="d-none name"><code>RunUMAP.Rd</code></div>
     </div>
 
@@ -95,8 +95,10 @@ on the marker matrix.</p></dd>
 
 
 <dt id="arg-densmap">densmap<a class="anchor" aria-label="anchor" href="#arg-densmap"></a></dt>
-<dd><p>Logical. Use density-preserving densMAP instead of UMAP.
-Default <code>FALSE</code>. Requires a recent <span class="pkg">uwot</span>.</p></dd>
+<dd><p>Logical. Preserve local densities with the approximation of
+densMAP in <span class="pkg">uwot</span> (<code>dens_scale = 1</code> in <code><a href="https://jlmelville.github.io/uwot/reference/umap.html" class="external-link">uwot::umap()</a></code>)
+instead of plain UMAP. Default <code>FALSE</code>. For partial density
+preservation, pass <code>dens_scale</code> through <code>...</code> instead.</p></dd>
 
 
 <dt id="arg-slot">slot<a class="anchor" aria-label="anchor" href="#arg-slot"></a></dt>
@@ -108,11 +110,12 @@ Default <code>FALSE</code>. Requires a recent <span class="pkg">uwot</span>.</p>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Random seed for reproducibility.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Random seed for reproducibility. The
+random number stream of the caller is restored afterwards.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Passed to <code><a href="https://jlmelville.github.io/uwot/reference/umap.html" class="external-link">uwot::umap()</a></code> / <code>uwot::densmap()</code>.</p></dd>
+<dd><p>Passed to <code><a href="https://jlmelville.github.io/uwot/reference/umap.html" class="external-link">uwot::umap()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

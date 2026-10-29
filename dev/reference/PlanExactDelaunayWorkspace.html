@@ -37,7 +37,7 @@ a graph or allocating the planned native vectors."><meta property="og:image" con
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -46,7 +46,7 @@ a graph or allocating the planned native vectors."><meta property="og:image" con
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Preflight Integer Workspace Bounds for Exact Delaunay Construction</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/exact-graph-guards.R" class="external-link"><code>R/exact-graph-guards.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/exact-graph-guards.R" class="external-link"><code>R/exact-graph-guards.R</code></a></small>
       <div class="d-none name"><code>PlanExactDelaunayWorkspace.Rd</code></div>
     </div>
 
@@ -105,6 +105,10 @@ argument length is checked against signed integer capacity, with one complete
 spare adjacency row. The byte estimate includes native buffers only, not R
 objects, copies or runtime overhead, and is not an available-memory check.
 Successful arithmetic preflight does not qualify a large native execution.</p>
+<p><code><a href="BuildExactDelaunayEdges.html">BuildExactDelaunayEdges()</a></code> constructs every frame with <code><a href="https://rdrr.io/pkg/deldir/man/deldir.html" class="external-link">deldir::deldir()</a></code>,
+which allocates the stock workspace and enlarges it itself when needed. It
+refuses frames for which <code>bounded_required</code> is <code>TRUE</code>; the bounded figures
+are arithmetic only.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

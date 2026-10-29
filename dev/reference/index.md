@@ -142,7 +142,7 @@ and expression-based clustering.
 - [`CountRadiusSets()`](https://cttir.github.io/phenoscapR/dev/reference/CountRadiusSets.md)
   : Count Reference Sets Within Explicit Euclidean Radii
 - [`BuildExactDelaunayEdges()`](https://cttir.github.io/phenoscapR/dev/reference/BuildExactDelaunayEdges.md)
-  : Build Explicitly Ordered Delaunay Graphs with a Pinned Backend
+  : Build Explicitly Ordered Delaunay Graphs
 - [`PlanExactDelaunayWorkspace()`](https://cttir.github.io/phenoscapR/dev/reference/PlanExactDelaunayWorkspace.md)
   : Preflight Integer Workspace Bounds for Exact Delaunay Construction
 - [`ContrastGroupedOverlap()`](https://cttir.github.io/phenoscapR/dev/reference/ContrastGroupedOverlap.md)

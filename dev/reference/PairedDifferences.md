@@ -19,7 +19,8 @@ PairedDifferences(data, id, pairs, name = "endpoint")
 
 - id:
 
-  Subject column, unique within each table.
+  Subject column, unique within each table; not named `x`, `y` or
+  `difference`.
 
 - pairs:
 

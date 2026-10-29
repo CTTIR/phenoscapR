@@ -47,7 +47,7 @@ is inferred. The supplied input is not modified."><meta property="og:image" cont
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -56,7 +56,7 @@ is inferred. The supplied input is not modified."><meta property="og:image" cont
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Project Spatial Tables Without Changing Column Metadata</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/project-spatial-table.R" class="external-link"><code>R/project-spatial-table.R</code></a></small>
       <div class="d-none name"><code>ProjectSpatialTable.Rd</code></div>
     </div>
 
@@ -83,10 +83,12 @@ is inferred. The supplied input is not modified.</p>
 <dd><p>A plain data.frame or data.table with distinct, nonempty column
 names. Other data-frame subclasses are not accepted.</p></dd>
 
+
 <dt id="arg-rows">rows<a class="anchor" aria-label="anchor" href="#arg-rows"></a></dt>
 <dd><p>A dimensionless, unclassed integer vector of positive row indices
 no greater than the number of input rows. Missing indices are not allowed.
 <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer()</a></code> selects zero rows; repeated and shuffled indices are retained.</p></dd>
+
 
 <dt id="arg-columns">columns<a class="anchor" aria-label="anchor" href="#arg-columns"></a></dt>
 <dd><p>A dimensionless, unclassed character vector of distinct,

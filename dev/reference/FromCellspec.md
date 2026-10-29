@@ -50,9 +50,9 @@ adjacency and support in this snapshot are not current subset results or
 active graphs. No reviewed tissue window or observation area is inferred
 from cell centroids.
 
-The optional cellspecR package is available from
-<https://github.com/CTTIR/cellspecR>. After installing remotes, use
-`remotes::install_github("CTTIR/cellspecR")`.
+The optional cellspecR package (<https://github.com/CTTIR/cellspecR>) is
+available from the CTTIR R-universe; install it with
+`install.packages("cellspecR", repos = c("https://cttir.r-universe.dev", getOption("repos")))`.
 
 ## Examples
 

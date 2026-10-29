@@ -35,7 +35,7 @@
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -44,7 +44,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/cttir/phenoscapR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
@@ -54,7 +54,76 @@
 <li>One set of generic plot-data helpers named <code>PlotData*()</code> (select, reshape, join, bind, recode, summarise, count, rank, compute and write text), with <code>filter</code> and <code>into</code> as common argument names, and one template syntax in <code><a href="../reference/FormatTemplate.html">FormatTemplate()</a></code>.</li>
 <li>Tick placement of common plotting code as <code><a href="../reference/NiceBreaks.html">NiceBreaks()</a></code> (also with intervals that follow the axis length); <code><a href="../reference/LegendKeys.html">LegendKeys()</a></code> gains marker sizes, spacings, column-major filling and diamond and patch keys; figure texts can sit on their baseline; typesetting can be switched off per figure, panel, text or legend, or for single rules; straight quotes stay straight.</li>
 <li>
-<code><a href="../reference/SaveFigure.html">SaveFigure()</a></code> and <code><a href="../reference/WriteFigure.html">WriteFigure()</a></code> give the same files whatever was saved before in the session: rich text is measured afresh for every figure, not taken from gridtext’s session-wide cache.</li>
+<code><a href="../reference/SaveFigure.html">SaveFigure()</a></code> and <code><a href="../reference/WriteFigure.html">WriteFigure()</a></code> give the same files whatever was drawn before in the session: with ‘ragg’, every PNG is drawn on a new capture device, so rich text is measured afresh for every figure.</li>
+<li>
+<code><a href="../reference/ReadCosMx.html">ReadCosMx()</a></code> matches cells on <code>fov</code> and <code>cell_ID</code>: CosMx numbers cells within each FOV, and cells of later FOVs used to receive the expression of the first. <code><a href="../reference/ReadMatrixCoords.html">ReadMatrixCoords()</a></code> takes further id columns in <code>cell_id_col</code> and refuses ids that are not unique.</li>
+<li>
+<code><a href="../reference/FindNeighbours.html">FindNeighbours()</a></code>, <code><a href="../reference/CellDensity.html">CellDensity()</a></code>, <code><a href="../reference/nearest_neighbours.html">nearest_neighbours()</a></code> and <code><a href="../reference/cell_density.html">cell_density()</a></code> return cells in input order; with interleaved samples, values used to be written to the wrong cells.</li>
+<li>
+<code><a href="../reference/BuildExactDelaunayEdges.html">BuildExactDelaunayEdges()</a></code> and the <code>"deldir"</code> engine of <code><a href="../reference/NeighbourTypeCounts.html">NeighbourTypeCounts()</a></code> triangulate through the public <code><a href="https://rdrr.io/pkg/deldir/man/deldir.html" class="external-link">deldir::deldir()</a></code> instead of deldir’s internal routines, with the same edges. The deldir version pin is gone; <code>backend_contract</code> is no longer needed and is ignored, and <code>mode</code>, <code>initial_madj</code> and <code>max_retries</code> no longer change the construction. Frames that need deldir to enlarge its workspace now succeed in every mode; frames of 799,800 or more points are refused. Some degenerate frames that the bounded mode used to triangulate now fail with deldir’s own error (“Bailing out of adjchk.”), for example a centre with 40 points on a circle around it, a regular 150-gon, or 50 collinear points with two points off the line.</li>
+<li>
+<code><a href="../reference/ExactPatientTests.html">ExactPatientTests()</a></code> (and so <code><a href="../reference/ContrastPatientEndpoints.html">ContrastPatientEndpoints()</a></code> and <code><a href="../reference/LeaveOnePatientOut.html">LeaveOnePatientOut()</a></code>) computes the observed and the allocated statistics with one formula on centred values and counts differences within the rounding of that arithmetic and of the stored values as ties. p values no longer change when values are rescaled, or shifted while the rounding of the shifted values stays below the spacing of distinct statistics (whole numbers keep their exact p values up to shifts of 1e13). Before, the observed statistic used a different formula and a fixed tolerance, so for values of about 10^3 and above with decimals the observed allocation or its mirror could be missed and p came out too small by 1/allocations, down to 0; such p values now equal exact enumeration. Results for other inputs are unchanged.</li>
+<li>
+<code><a href="../reference/DelaunayNetwork.html">DelaunayNetwork()</a></code> maps deldir’s points back to cell rows when coordinates repeat; edges used to point to the wrong cells after a duplicate.</li>
+<li>
+<code><a href="../reference/read_spatial.html">read_spatial()</a></code> fills a blank QuPath <code>Image</code> value with the sample id; the blank used to stay.</li>
+<li>
+<code><a href="../reference/interaction_matrix.html">interaction_matrix()</a></code> counts neighbours in a table without <code>sample_id</code> as one sample; it used to return zeros.</li>
+<li>
+<code><a href="../reference/CrossNNDistance.html">CrossNNDistance()</a></code> with <code>from</code> equal to <code>to</code> measures to the nearest other cell; every cell used to find itself at distance 0.</li>
+<li>
+<code><a href="../reference/PhenotypeCells.html">PhenotypeCells()</a></code> and <code><a href="../reference/phenotype_cells.html">phenotype_cells()</a></code> treat a missing intensity as not positive; such cells used to get labels such as <code>"CD3+/NA+"</code>.</li>
+<li>Min-max scaling of a constant marker (<code><a href="../reference/NormaliseData.html">NormaliseData()</a></code>, <code><a href="../reference/normalise_markers.html">normalise_markers()</a></code>) keeps missing values instead of setting them to 0.</li>
+<li>The template format <code>{n|d}</code> writes every digit (<code>100000</code>, not <code>1e+05</code>). Plain placeholders and the <code>comma</code> format write whole numbers of magnitude 2^31 or more with every digit instead of <code>"NA"</code> and a warning.</li>
+<li>Heatmaps and dot matrices with zero-width colour limits (a constant matrix) take the first colour of the scale instead of missing fills.</li>
+<li>Horizontal <code><a href="../reference/PlotBars.html">PlotBars()</a></code> and <code><a href="../reference/PlotStackedBars.html">PlotStackedBars()</a></code> place the reference label and the top values on the value axis; their coordinates used to be swapped.</li>
+<li>
+<code><a href="../reference/AlterationMatrixData.html">AlterationMatrixData()</a></code> puts the genes in <code>last</code> last also when they are altered in at least <code>min_count</code> samples.</li>
+<li>
+<code><a href="../reference/PlotDataSummarise.html">PlotDataSummarise()</a></code> with groups returns no rows when <code>filter</code> selects nothing, instead of one row with a missing group; <code><a href="../reference/PlotDataCount.html">PlotDataCount()</a></code> without groups returns <code>n = 0</code> instead of failing.</li>
+<li>
+<code><a href="../reference/PlotDataCrossShares.html">PlotDataCrossShares()</a></code> computes totals and shares for an empty-string level, which used to get missing values.</li>
+<li>Zero-row inputs give typed results without a phantom group in <code><a href="../reference/ExactPairedTests.html">ExactPairedTests()</a></code>, <code><a href="../reference/BootstrapMedianInterval.html">BootstrapMedianInterval()</a></code>, <code><a href="../reference/PermutationCorrelation.html">PermutationCorrelation()</a></code>, <code><a href="../reference/CompareTables.html">CompareTables()</a></code> and <code><a href="../reference/SummarizeComparisons.html">SummarizeComparisons()</a></code>; without group columns they give one unavailable overall row.</li>
+<li>
+<code><a href="../reference/CellPositionsFor.html">CellPositionsFor()</a></code> with zero references, <code><a href="../reference/SchematicShapes.html">SchematicShapes()</a></code> without shapes and <code><a href="../reference/PlotDataQuantiles.html">PlotDataQuantiles()</a></code> with zero rows give typed empty tables; they used to fail, warn or return <code>NULL</code>.</li>
+<li>
+<code><a href="../reference/PermutationCorrelation.html">PermutationCorrelation()</a></code> refuses <code>min_n</code> below 2; a group with a single pair used to stop with an unhelpful error.</li>
+<li>
+<code><a href="../reference/PairedDifferences.html">PairedDifferences()</a></code> refuses <code>id</code> or <code>name</code> columns called <code>x</code>, <code>y</code> or <code>difference</code>, which used to produce duplicated column names.</li>
+<li>
+<code><a href="../reference/PairedDifferences.html">PairedDifferences()</a></code> gives zero rows for a zero-row table also for pairs without <code>y</code>, which used to fail.</li>
+<li>
+<code><a href="../reference/FormatTemplate.html">FormatTemplate()</a></code> writes infinite values of plain placeholders as <code>"n.e."</code> instead of failing.</li>
+<li>
+<code><a href="../reference/RenderFigure.html">RenderFigure()</a></code> passes the colour keyword <code>"group"</code> (for example <code>label_colour = "group"</code>) on to the builder instead of rejecting it.</li>
+<li>
+<code><a href="../reference/PlotDataCount.html">PlotDataCount()</a></code> and <code><a href="../reference/PlotDataRankRows.html">PlotDataRankRows()</a></code> accept data.table input.</li>
+<li>
+<code><a href="../reference/PlotDataDominant.html">PlotDataDominant()</a></code> gives a group without any share a missing dominant category instead of failing.</li>
+<li>
+<code><a href="../reference/SummarizeGroupedValues.html">SummarizeGroupedValues()</a></code> accepts integer value and weight columns, which used to fail when groups gave different column types.</li>
+<li>
+<code><a href="../reference/AssignFixedGrid.html">AssignFixedGrid()</a></code> corrects a bin index that the rounded division put one bin off, so coordinates on bin edges (for example <code>x = 10.7</code> with size 7 and offset 3.7) are assigned instead of failing.</li>
+<li>Nearest-neighbour distances of a cell without any other cell in its sample are <code>NA</code> instead of an error.</li>
+<li>
+<code><a href="../reference/PhenotypeCells.html">PhenotypeCells()</a></code> and <code><a href="../reference/phenotype_cells.html">phenotype_cells()</a></code> phenotype a single cell on several markers instead of failing.</li>
+<li>
+<code><a href="../reference/QCFilter.html">QCFilter()</a></code> removes cells with a missing area when an area threshold is set, as <code><a href="../reference/qc_filter.html">qc_filter()</a></code> does; it used to fail.</li>
+<li>
+<code><a href="../reference/CellMap.html">CellMap()</a></code>, <code><a href="../reference/plot_cell_map.html">plot_cell_map()</a></code> and <code><a href="../reference/EmbeddingPlot.html">DimPlot()</a></code> colour by a numeric column with a continuous scale instead of failing.</li>
+<li>Moran’s I and quadrat results without a defined statistic (no neighbours within the radius, a single quadrat) print as not evaluable instead of failing.</li>
+<li>
+<code><a href="../reference/as_Seurat.html">as_Seurat()</a></code> makes cell IDs that repeat across samples unique for the Seurat cell names instead of failing.</li>
+<li>‘png’ moves from Suggests to Imports: image layers rasterise through <code><a href="https://rdrr.io/pkg/png/man/readPNG.html" class="external-link">png::readPNG()</a></code> when ‘ragg’ is not installed.</li>
+<li>
+<code>ExpressionClusters(method = "gmm")</code> no longer attaches ‘mclust’ to the search path; the clusters are the same.</li>
+<li>
+<code>RunUMAP(densmap = TRUE)</code> uses the densMAP approximation of <code><a href="https://jlmelville.github.io/uwot/reference/umap.html" class="external-link">uwot::umap()</a></code> (<code>dens_scale = 1</code>); it used to fail because ‘uwot’ has no <code>densmap()</code>.</li>
+<li>Reading <code>.npz</code> archives in <code><a href="../reference/CompareArrays.html">CompareArrays()</a></code> and <code><a href="../reference/PlotDataFromArrays.html">PlotDataFromArrays()</a></code> needs a ‘cellspecR’ newer than 1.0.0 (with <code>cs_read_npz()</code>); with ‘cellspecR’ 1.0.0 both functions now say so instead of failing on a missing function.</li>
+<li>
+<code><a href="../reference/RunUMAP.html">RunUMAP()</a></code>, <code><a href="../reference/RunTSNE.html">RunTSNE()</a></code> and <code><a href="../reference/RunSONG.html">RunSONG()</a></code> with <code>seed</code> restore the caller’s random number stream on exit instead of leaving it reseeded; the embeddings for a given seed are unchanged.</li>
+<li>The help pages, the README and the <code><a href="../reference/RunSONG.html">RunSONG()</a></code> error install ‘cellspecR’ and ‘songR’ from the CTTIR R-universe with <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>.</li>
+<li>The Shiny app takes its fonts (Inter, JetBrains Mono), the light border grey and the dark heading and border colours from the CTTIR design tokens.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="phenoscapr-011">phenoscapR 0.1.1<a class="anchor" aria-label="anchor" href="#phenoscapr-011"></a></h2>

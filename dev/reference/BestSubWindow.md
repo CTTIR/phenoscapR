@@ -59,3 +59,15 @@ BestSubWindow(
 
 One-row data frame with `x`, `y`, `n`, `dx`, `dy` (offset from the field
 centre).
+
+## Examples
+
+``` r
+set.seed(1)
+d <- data.frame(x = c(runif(40, 0, 100), runif(20, 60, 80)),
+                y = c(runif(40, 0, 100), runif(20, 20, 40)),
+                label = rep(c("a", "b"), c(40, 20)))
+BestSubWindow(d, centre = c(50, 50), size = 100, sub = 20, filter = list(label = "b"))
+#>    x  y  n dx  dy
+#> 1 70 30 20 20 -20
+```

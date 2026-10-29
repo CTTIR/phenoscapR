@@ -26,3 +26,12 @@ FigureGrob(grob, at, hjust = 0, vjust = 1)
 ## Value
 
 A list of class `phenoscapR_grob`.
+
+## Examples
+
+``` r
+key <- FigureGrob(grid::textGrob("Legend text", just = c(0, 1)), at = c(5, 5))
+fig <- ComposeFigure(list(FigurePanel(NULL, c(5, 10, 40, 20), letter = "a")),
+                     height_mm = 35, width_mm = 60, texts = list(key))
+grid::grid.newpage(); print(fig)
+```

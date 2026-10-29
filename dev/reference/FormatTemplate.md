@@ -30,8 +30,8 @@ Character vector, one element per template or per row.
 ## Details
 
 - `{column}`: the value; whole numbers with thousands separators
-  (`1,200`), other numbers and text as they are, missing values
-  `"n.e."`. Negative numbers are written with a true minus sign.
+  (`1,200`), other numbers and text as they are, missing and infinite
+  values `"n.e."`. Negative numbers are written with a true minus sign.
 
 - `{column|format}`: a named format: `p`
   ([`FormatP()`](https://cttir.github.io/phenoscapR/dev/reference/FormatP.md)),

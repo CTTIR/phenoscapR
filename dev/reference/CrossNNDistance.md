@@ -1,7 +1,8 @@
 # Cross Nearest Neighbour Distance
 
 Computes the nearest neighbour distance from each cell of one phenotype
-to cells of another phenotype.
+to cells of another phenotype. With `from` equal to `to`, the distance
+is to the nearest other cell of that phenotype.
 
 ## Usage
 
@@ -47,5 +48,5 @@ obj <- CreateSpatialObject(counts, coords, meta)
 CrossNNDistance(obj, from = "A", to = "B")
 #> <phenoscapR> Cross nearest-neighbour distances
 #>   A -> B : 10 cells
-#>   median 11.3, mean 13, range [6.36, 28]
+#>   median 18, mean 20.3, range [1.42, 39.6]
 ```

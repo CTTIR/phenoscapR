@@ -54,3 +54,14 @@ FieldCellsRanked(
 ## Value
 
 The selected rows of `cells`.
+
+## Examples
+
+``` r
+d <- data.frame(x = c(1, 2, 3, 9), y = c(1, 1, 2, 9), label = c("a", "a", "b", "a"),
+                dist = c(4, 2, 1, 3))
+FieldCellsRanked(d, centre = c(2, 2), half = 3, labels = "a", order_by = "dist")
+#>   x y label dist
+#> 1 2 1     a    2
+#> 2 1 1     a    4
+```

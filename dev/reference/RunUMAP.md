@@ -43,8 +43,11 @@ RunUMAP(
 
 - densmap:
 
-  Logical. Use density-preserving densMAP instead of UMAP. Default
-  `FALSE`. Requires a recent uwot.
+  Logical. Preserve local densities with the approximation of densMAP in
+  uwot (`dens_scale = 1` in
+  [`uwot::umap()`](https://jlmelville.github.io/uwot/reference/umap.html))
+  instead of plain UMAP. Default `FALSE`. For partial density
+  preservation, pass `dens_scale` through `...` instead.
 
 - slot:
 
@@ -56,13 +59,13 @@ RunUMAP(
 
 - seed:
 
-  Integer or `NULL`. Random seed for reproducibility.
+  Integer or `NULL`. Random seed for reproducibility. The random number
+  stream of the caller is restored afterwards.
 
 - ...:
 
   Passed to
-  [`uwot::umap()`](https://jlmelville.github.io/uwot/reference/umap.html)
-  / `uwot::densmap()`.
+  [`uwot::umap()`](https://jlmelville.github.io/uwot/reference/umap.html).
 
 ## Value
 

@@ -3,11 +3,15 @@
 the category with the largest share (ties go to the earlier category in
 columns) and orders the groups by the position of that category in
 priority, then by the group value. Categories missing from priority
-take position zero, before all listed ones."><meta property="og:description" content="For each row group of a share table (from PlotDataCrossShares()), finds
+take position zero, before all listed ones. A group without any share
+among columns has a missing dominant category and also takes position
+zero."><meta property="og:description" content="For each row group of a share table (from PlotDataCrossShares()), finds
 the category with the largest share (ties go to the earlier category in
 columns) and orders the groups by the position of that category in
 priority, then by the group value. Categories missing from priority
-take position zero, before all listed ones."><meta property="og:image" content="https://cttir.github.io/phenoscapR/logo.svg"><meta name="robots" content="noindex"><meta name="theme-color" content="#1565c0"><!-- Package browser icons -->
+take position zero, before all listed ones. A group without any share
+among columns has a missing dominant category and also takes position
+zero."><meta property="og:image" content="https://cttir.github.io/phenoscapR/logo.svg"><meta name="robots" content="noindex"><meta name="theme-color" content="#1565c0"><!-- Package browser icons -->
 <link rel="icon" type="image/x-icon" href="../favicon.ico?v=b46ff4b1148d">
 <link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png?v=b46ff4b1148d">
 <link rel="icon" type="image/svg+xml" sizes="any" href="../favicon.svg?v=b46ff4b1148d">
@@ -43,7 +47,7 @@ take position zero, before all listed ones."><meta property="og:image" content="
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -52,7 +56,7 @@ take position zero, before all listed ones."><meta property="og:image" content="
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Order Groups by Their Dominant Category</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/figure-data.R" class="external-link"><code>R/figure-data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/figure-data.R" class="external-link"><code>R/figure-data.R</code></a></small>
       <div class="d-none name"><code>PlotDataDominant.Rd</code></div>
     </div>
 
@@ -61,7 +65,9 @@ take position zero, before all listed ones."><meta property="og:image" content="
 the category with the largest share (ties go to the earlier category in
 <code>columns</code>) and orders the groups by the position of that category in
 <code>priority</code>, then by the group value. Categories missing from <code>priority</code>
-take position zero, before all listed ones.</p>
+take position zero, before all listed ones. A group without any share
+among <code>columns</code> has a missing <code>dominant</code> category and also takes position
+zero.</p>
     </div>
 
     <div class="section level2">

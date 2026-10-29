@@ -41,7 +41,7 @@ and no scientific population, radius or eligibility policy is inferred."><meta p
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -50,7 +50,7 @@ and no scientific population, radius or eligibility policy is inferred."><meta p
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Count Undirected Edges Between Disjoint Node Sets</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/disjoint-edges.R" class="external-link"><code>R/disjoint-edges.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/disjoint-edges.R" class="external-link"><code>R/disjoint-edges.R</code></a></small>
       <div class="d-none name"><code>CountDisjointEdges.Rd</code></div>
     </div>
 
@@ -94,7 +94,7 @@ including distances, are ignored; filtering is the caller's responsibility.</p><
 <dd><p>Data frame with unique group/frame keys, including desired
 empty frames, and character columns <code>geometry_source</code> and
 <code>geometry_reference</code>. The source is <code>"frozen_import"</code> or <code>"supplied_edges"</code>;
-the reference is a nonempty caller-declared artifact or provenance reference.</p></dd>
+the reference is a nonempty caller-declared artefact or provenance reference.</p></dd>
 
 
 <dt id="arg-groups">groups<a class="anchor" aria-label="anchor" href="#arg-groups"></a></dt>
@@ -141,10 +141,10 @@ declares one shared frame, so a cross-frame relationship cannot be represented;
 an endpoint absent from the declared frame raises an error. The function cannot
 detect incorrectly declared frames or establish physical coordinate validity.</p>
 <p>Each source-target edge contributes once regardless of orientation. Conditional
-neighbor means divide cross-edge count by the number of distinct interacting
+neighbour means divide cross-edge count by the number of distinct interacting
 source or target nodes. Contact fractions divide interacting nodes by the
 corresponding complete source or target population. Thus isolated nodes enter
-contact-fraction denominators but not conditional-neighbor denominators.</p>
+contact-fraction denominators but not conditional-neighbour denominators.</p>
 <p>A population with no contacts has contact fraction zero (<code>DEFINED</code>) and
 conditional mean <code>NA</code> (<code>NO_INTERACTING_SOURCE</code> or <code>NO_INTERACTING_TARGET</code>).
 An absent population has contact fraction <code>NA</code> (<code>NO_SOURCE</code> or <code>NO_TARGET</code>).

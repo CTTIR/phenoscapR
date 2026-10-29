@@ -1,7 +1,8 @@
-# Build Explicitly Ordered Delaunay Graphs with a Pinned Backend
+# Build Explicitly Ordered Delaunay Graphs
 
 Constructs each complete declared geometry before selecting edges whose
-two endpoints are eligible. Uses a caller-pinned `deldir` engine with no
+two endpoints are eligible. Uses
+[`deldir::deldir()`](https://rdrr.io/pkg/deldir/man/deldir.html) with no
 fallback, coordinate rounding, jitter or population inference.
 
 ## Usage
@@ -24,7 +25,7 @@ BuildExactDelaunayEdges(
   edge_order,
   window_policy,
   cap_policy,
-  backend_contract,
+  backend_contract = NULL,
   eps,
   mode,
   caps = numeric(),
@@ -101,8 +102,10 @@ BuildExactDelaunayEdges(
 
 - backend_contract:
 
-  Named list of exactly the 13 fields described below. Pins identify the
-  expected current runtime; their origin is not authenticated.
+  Deprecated and ignored. Construction uses the public
+  [`deldir::deldir()`](https://rdrr.io/pkg/deldir/man/deldir.html)
+  interface, so there are no private functions or native routines to
+  pin. Kept so that existing calls keep working.
 
 - eps:
 
@@ -110,10 +113,14 @@ BuildExactDelaunayEdges(
 
 - mode:
 
-  Explicit `"stock"`, `"bounded"` or `"auto"` workspace path.
-  `"bounded"` forces the registered-master edge-only path. `"auto"`
-  selects it when stock adjacency lacks a complete spare row below the
-  integer limit.
+  Explicit `"stock"`, `"bounded"` or `"auto"` workspace mode, validated
+  with
+  [`PlanExactDelaunayWorkspace()`](https://cttir.github.io/phenoscapR/dev/reference/PlanExactDelaunayWorkspace.md)
+  and recorded in the provenance. Every mode runs
+  [`deldir::deldir()`](https://rdrr.io/pkg/deldir/man/deldir.html),
+  which sizes its own workspace and enlarges it when needed; frames
+  whose stock workspace would exceed the integer limit
+  (`bounded_required`) are refused.
 
 - caps:
 
@@ -122,8 +129,9 @@ BuildExactDelaunayEdges(
 
 - initial_madj, max_retries:
 
-  Initial bounded adjacency capacity and retry ceiling; see
-  [`PlanExactDelaunayWorkspace()`](https://cttir.github.io/phenoscapR/dev/reference/PlanExactDelaunayWorkspace.md).
+  Validated as in
+  [`PlanExactDelaunayWorkspace()`](https://cttir.github.io/phenoscapR/dev/reference/PlanExactDelaunayWorkspace.md);
+  they no longer change the construction.
 
 ## Value
 
@@ -162,99 +170,54 @@ Complete edges are checked for whole in-range nonself indices, exact
 endpoint coordinate reconciliation, duplicate unordered pairs,
 connectedness and planar cardinality bounds before eligibility
 induction. These necessary invariants alone are not an independent proof
-of Delaunay geometry. Co-circular choices depend on the pinned engine
+of Delaunay geometry. Co-circular choices depend on the `deldir` version
 and explicit point order. Numeric orientation ranks and UTF-8 output
 ordering do not infer a historical locale or ordering policy.
 
-The only supported backend profile is `deldir` version `"2.0-4"`, with
-registered Fortran arities 9 (`binsrt`) and 16 (`master`). `deldir` is
-optional: missing or unsupported installations fail clearly for nonempty
-construction. The contract fields are:
-
-- `package_version`, `binsrt_num_parameters`, `master_num_parameters`;
-
-- `description_sha256`, `native_library_sha256`;
-
-- `binsrtR_body_serialized_sha256`, `binsrtR_body_deparse_sha256`;
-
-- `wrapper_body_serialized_sha256`, `wrapper_body_deparse_sha256`;
-
-- `digOutxy_body_serialized_sha256`, `digOutxy_body_deparse_sha256`;
-
-- `digOutz_body_serialized_sha256`, `digOutz_body_deparse_sha256`.
-
-Digests use `digest::digest(..., algo = "sha256")`; file/text digests
-set `serialize = FALSE`. Body text is
-`paste(deparse(body(f), width.cutoff = 500L), collapse = "\n")`. Builds,
-operating systems and R serialization may produce different pins:
-approve each intended runtime explicitly. No local digest is embedded
-here. Matching supplied pins does not authenticate their source,
-historical results or the entire R process.
-
-Registered symbols are freshly looked up and validated. Detached
-wrapper, sorter and lexical-helper closures preserve original functions
-while routing native calls through registered symbols. Warnings,
-unexpected messages, invalid native lengths/flags and exhausted
-workspaces fail closed. Segment exhaustion is not silently retried with
-an incomplete result. No incomplete tessellation is returned. The
-bounded path changes workspace allocation, not the selected
-triangulation engine; large-input qualification is separate from
-small-fixture parity.
+`deldir` is optional: a missing installation fails clearly for nonempty
+construction. Each frame calls
+`deldir::deldir(x, y, rw, eps, sort = TRUE, round = FALSE)` on the
+geometry points in `point_order`. Warnings and unexpected messages fail
+closed; messages announcing that `deldir` enlarged its workspace are
+counted in the frame provenance (`workspace_growth`). No incomplete
+tessellation is returned. The frame provenance records the `deldir`
+version.
 
 ## Examples
 
 ``` r
 PlanExactDelaunayWorkspace(100, mode = "stock")$native_buffer_bytes
 #> [1] 84708
-if (FALSE) { # \dontrun{
-# Observe this runtime for an explicit local experiment. Observation is not
-# historical authentication; independently approve pins for reproducible use.
-stopifnot(requireNamespace("deldir", quietly = TRUE))
-ns <- asNamespace("deldir")
-dll <- getLoadedDLLs()[["deldir"]]
-wrapper <- get("deldir", ns)
-functions <- list(
-  binsrtR = get("binsrtR", ns), wrapper = wrapper,
-  digOutxy = get("digOutxy", environment(wrapper)),
-  digOutz = get("digOutz", environment(wrapper))
-)
-hash_file <- function(path) {
-  digest::digest(
-    file = path, algo = "sha256",
-    serialize = FALSE
+if (requireNamespace("deldir", quietly = TRUE)) {
+  nodes <- data.frame(
+    sample = "one", frame = "image", id = c("a", "b", "c", "d"),
+    x = c(0, 4, 0, 3), y = c(0, 0, 3, 4), input = 1:4, orientation = 1:4,
+    geometry = TRUE, eligible = c(TRUE, TRUE, TRUE, FALSE)
   )
-}
-contract <- list(
-  package_version = read.dcf(
-    file.path(getNamespaceInfo(ns, "path"), "DESCRIPTION"),
-    fields = "Version"
-  )[[1L]],
-  description_sha256 = hash_file(file.path(
-    getNamespaceInfo(ns, "path"),
-    "DESCRIPTION"
-  )), native_library_sha256 = hash_file(dll[["path"]]),
-  binsrt_num_parameters = 9L, master_num_parameters = 16L
-)
-for (name in names(functions)) {
-  f <- functions[[name]]
-  contract[[paste0(name, "_body_serialized_sha256")]] <-
-    digest::digest(body(f), algo = "sha256")
-  contract[[paste0(name, "_body_deparse_sha256")]] <- digest::digest(
-    paste(deparse(body(f), width.cutoff = 500L), collapse = "\n"),
-    algo = "sha256", serialize = FALSE
+  frames <- data.frame(sample = "one", frame = "image", unit = "um")
+  graph <- BuildExactDelaunayEdges(nodes, frames, "sample", "frame", "id",
+    "x", "y", "input", "orientation", "geometry", "eligible", "unit", "um",
+    "orientation_rank", "span_padding_v1", "distance_leq",
+    eps = 1e-9, mode = "stock", caps = c(short = 3, long = 5)
   )
+  graph$full_edges
 }
-nodes <- data.frame(
-  sample = "one", frame = "image", id = c("a", "b", "c"),
-  x = c(0, 4, 0), y = c(0, 0, 3), input = 1:3, orientation = 1:3,
-  geometry = TRUE, eligible = TRUE
-)
-frames <- data.frame(sample = "one", frame = "image", unit = "um")
-graph <- BuildExactDelaunayEdges(nodes, frames, "sample", "frame", "id",
-  "x", "y", "input", "orientation", "geometry", "eligible", "unit", "um",
-  "orientation_rank", "span_padding_v1", "distance_leq", contract,
-  eps = 1e-9, mode = "stock", caps = c(short = 3, long = 5)
-)
-graph$full_edges
-} # }
+#>   sample frame from_id to_id from_geometry_index to_geometry_index
+#> 1    one image       a     b                   1                 2
+#> 2    one image       a     c                   1                 3
+#> 3    one image       b     c                   2                 3
+#> 4    one image       b     d                   2                 4
+#> 5    one image       c     d                   3                 4
+#>   from_orientation_rank to_orientation_rank x1 y1 x2 y2 distance analysis_edge
+#> 1                     1                   2  0  0  4  0 4.000000          TRUE
+#> 2                     1                   3  0  0  0  3 3.000000          TRUE
+#> 3                     2                   3  4  0  0  3 5.000000          TRUE
+#> 4                     2                   4  4  0  3  4 4.123106         FALSE
+#> 5                     3                   4  0  3  3  4 3.162278         FALSE
+#>   edge_row
+#> 1        1
+#> 2        2
+#> 3        3
+#> 4        4
+#> 5        5
 ```

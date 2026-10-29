@@ -1,10 +1,10 @@
 # Count Reference Sets Within Explicit Euclidean Radii
 
-Counts reference neighbors and overlapping reference sets for each query
-ID within an explicitly declared coordinate frame. Query batching always
-searches the complete reference population of that frame. No population,
-coordinate transformation, graph, tissue area or scientific threshold is
-inferred.
+Counts reference neighbours and overlapping reference sets for each
+query ID within an explicitly declared coordinate frame. Query batching
+always searches the complete reference population of that frame. No
+population, coordinate transformation, graph, tissue area or scientific
+threshold is inferred.
 
 ## Usage
 
@@ -98,14 +98,14 @@ A list with `schema_version = "1.0.0"` and:
   `EMPTY_REFERENCE`, or `DEFINED`).
 
 - `query_counts`: every query by requested radius, including zero
-  neighbors, with `n_reference_neighbors` and `status`
+  neighbours, with `n_reference_neighbors` and `status`
   (`EMPTY_REFERENCE` or `DEFINED`). A nonempty reference universe
   containing only the query itself has status `DEFINED` and zero
-  eligible neighbors.
+  eligible neighbours.
 
 - `set_counts`: every query by radius by set, with integer-valued double
   `count` and matching status. Overlapping sets need not partition
-  neighbors.
+  neighbours.
 
 - `backend`: installed version, search settings and radius/unit,
   DESCRIPTION, R-wrapper and native-library SHA-256 fingerprints. These
@@ -131,7 +131,8 @@ Searches use
 with explicit query mode, `search = "kdtree"`, `approx = 0` and
 `sort = FALSE`, without a fallback. Returned distances are filtered
 inclusively using `distance <= radius`. Self exclusion compares IDs
-within the complete frame key. Distinct coincident IDs remain neighbors.
+within the complete frame key. Distinct coincident IDs remain
+neighbours.
 
 Exact search mode does not imply arbitrary-precision real-number
 geometry. Binary64 boundary decisions can depend on `search_radius`: the
@@ -139,8 +140,8 @@ distance from `(0, 0)` to `(3 + 2 * .Machine$double.eps, 4)` is excluded
 by a native search at 5, but a search at 6 returns a distance rounded to
 5, which passes the output-radius filter at 5. Keep the search envelope
 fixed when requesting different subsets of radii or comparing runs. No
-padding, recentering, coordinate rounding or squared-distance
-replacement is applied.
+padding, recentring, coordinate rounding or squared-distance replacement
+is applied.
 
 Squared output and search radii must be finite and at least
 `.Machine$double.xmin`. Absolute coordinates must not exceed
@@ -148,7 +149,7 @@ Squared output and search radii must be finite and at least
 squared arithmetic. Unsupported extreme inputs and integer
 indexing/output sizes raise errors. These conservative guards do not
 remove ordinary rounding. Chunking bounds each native query batch, not
-dense-neighborhood memory within a batch or total output size. This
+dense-neighbourhood memory within a batch or total output size. This
 function does not authenticate input coordinates or historical geometry
 and does not infer fractions or weights.
 

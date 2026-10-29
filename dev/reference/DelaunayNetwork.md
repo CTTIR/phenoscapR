@@ -4,7 +4,8 @@ Computes a Delaunay triangulation of cell positions and stores edges in
 the `spatial` slot. Each `sample_id` is triangulated separately; it must
 identify one independent spatial coordinate frame. Every sample must
 contain at least three cells. Edge endpoints refer to cell rows in the
-complete object, never rows local to a sample.
+complete object, never rows local to a sample. Of cells with identical
+coordinates, only the first is a vertex; the others get no edges.
 
 ## Usage
 

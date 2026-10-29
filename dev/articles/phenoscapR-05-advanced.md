@@ -5,14 +5,8 @@ logo](figures/logo-dark.svg)
 
 [![R-CMD-check](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/CTTIR/phenoscapR/actions/workflows/pkgdown.yaml/badge.svg)](https://cttir.github.io/phenoscapR/)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/phenoscapR)](https://CRAN.R-project.org/package=phenoscapR)
 [![Codecov test
 coverage](https://codecov.io/gh/CTTIR/phenoscapR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/CTTIR/phenoscapR?branch=main)
-[![CRAN
-downloads](https://cranlogs.r-pkg.org/badges/phenoscapR)](https://cran.r-project.org/package=phenoscapR)
-[![CRAN downloads
-total](https://cranlogs.r-pkg.org/badges/grand-total/phenoscapR)](https://cran.r-project.org/package=phenoscapR)
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Lifecycle:
@@ -188,8 +182,6 @@ names clusters by their top markers.
 ``` r
 
 obj <- ExpressionClusters(obj, k = 6, method = "gmm")
-#> Package 'mclust' version 6.1.3
-#> Type 'citation("mclust")' for citing this R package in publications.
 AnnotateClusters(obj, add_column = FALSE)
 #>            1            2            3            4            5            6 
 #>  "CD20Ki67+"    "CD8CD3+" "PanCKKi67+"      "CD68+"    "CD4CD3+"  "FoxP3CD4+"

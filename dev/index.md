@@ -82,21 +82,22 @@ backend and a clean S4 object model (`SpatialCellData`).
 
 # Install the development version from GitHub
 # install.packages("pak")
-pak::pak("cttir/phenoscapR")
+pak::pak("CTTIR/phenoscapR")
 
 # Or with remotes
 # install.packages("remotes")
-remotes::install_github("cttir/phenoscapR")
+remotes::install_github("CTTIR/phenoscapR")
 ```
 
 Optional canonical cell-table imports and SONG embeddings require
-packages available from their public GitHub repositories:
+packages available from the CTTIR R-universe:
 
 ``` r
 
-# install.packages("remotes")
-remotes::install_github("CTTIR/cellspecR")  # For FromCellspec()
-remotes::install_github("CTTIR/songR")      # For RunSONG()
+# For FromCellspec()
+install.packages("cellspecR", repos = c("https://cttir.r-universe.dev", getOption("repos")))
+# For RunSONG()
+install.packages("songR", repos = c("https://cttir.r-universe.dev", getOption("repos")))
 ```
 
 These packages are optional. Calling the corresponding function without
@@ -206,7 +207,7 @@ Full documentation and vignettes are available at
 ## Contributing
 
 Bug reports and feature requests are welcome at
-<https://github.com/cttir/phenoscapR/issues>.
+<https://github.com/CTTIR/phenoscapR/issues>.
 
 ## Authors
 

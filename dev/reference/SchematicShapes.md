@@ -72,3 +72,31 @@ SchematicShapes(
 
 A list of class `phenoscapR_shapes` with `shapes`, `xlim`, `ylim` and
 `equal`. Rounded-box radii (`r` of `"roundrect"`) are millimetres.
+
+## Examples
+
+``` r
+s <- SchematicShapes(
+  shapes = list(list(type = "roundrect", x = 0.5, y = 0.6, w = 0.6, h = 0.3,
+                     fill = "#EEEEEE", colour = "#999999", r = 1),
+                list(type = "text", x = 0.5, y = 0.6, label = "{n} cells")),
+  clouds = list(list(n = 20, x = 0.5, y = 0.2, rx = 0.3, ry = 0.1, r = 0.01, fill = "#7B2FBE")),
+  values = data.frame(count = c(120, 80)),
+  fill = list(n = list(column = "count", fun = "sum", format = "%.0f"))
+)
+head(s$shapes)
+#>        type         x         y   w   h    r xend yend angle    fill  colour
+#> 1 roundrect 0.5000000 0.6000000 0.6 0.3 1.00   NA   NA     0 #EEEEEE #999999
+#> 2      text 0.5000000 0.6000000  NA  NA   NA   NA   NA     0    <NA>    <NA>
+#> 3    circle 0.4717821 0.2962215  NA  NA 0.01   NA   NA     0 #7B2FBE    <NA>
+#> 4    circle 0.4040758 0.2331518  NA  NA 0.01   NA   NA     0 #7B2FBE    <NA>
+#> 5    circle 0.2827537 0.1643245  NA  NA 0.01   NA   NA     0 #7B2FBE    <NA>
+#> 6    circle 0.5891060 0.1806780  NA  NA 0.01   NA   NA     0 #7B2FBE    <NA>
+#>   linewidth     label size hjust vjust head lineheight z
+#> 1       0.5      <NA>    5   0.5   0.5    6       1.15 1
+#> 2       0.5 200 cells    5   0.5   0.5    6       1.15 1
+#> 3       0.5      <NA>    5   0.5   0.5    6       1.15 1
+#> 4       0.5      <NA>    5   0.5   0.5    6       1.15 1
+#> 5       0.5      <NA>    5   0.5   0.5    6       1.15 1
+#> 6       0.5      <NA>    5   0.5   0.5    6       1.15 1
+```

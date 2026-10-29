@@ -49,6 +49,6 @@ coords <- data.frame(x = runif(50, 0, 100), y = runif(50, 0, 100))
 obj <- CreateSpatialObject(counts, coords)
 QuadratAnalysis(obj, nx = 3, ny = 3)
 #> <phenoscapR> Quadrat analysis (chi-squared test of CSR)
-#>   grid 3 x 3; chi-sq = 3.3, p = 0.916; VMR = 0.41
+#>   grid 3 x 3; chi-sq = 2.6, p = 0.959; VMR = 0.32
 #>   regular (VMR < 1)
 ```

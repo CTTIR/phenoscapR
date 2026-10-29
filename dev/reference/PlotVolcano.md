@@ -32,7 +32,7 @@ PlotVolcano(
   y_limits = c(0, 3.2),
   x_nbins = 6,
   y_nbins = 9,
-  x_label = "Cliff's δ",
+  x_label = NULL,
   y_label = NULL,
   show_y_label = TRUE,
   box_mm = NULL,
@@ -101,7 +101,8 @@ PlotVolcano(
 
 - x_label:
 
-  Axis title.
+  Axis title; by default "Cliff's \\\delta\\" (drawn with the Greek
+  letter). An explicit `NULL` draws no title.
 
 - y_label:
 

@@ -133,3 +133,17 @@ A 'grid' grob.
 - A
   [`SchematicShapes()`](https://cttir.github.io/phenoscapR/dev/reference/SchematicShapes.md)
   result is drawn in its own coordinates with equal aspect.
+
+## Examples
+
+``` r
+shapes <- SchematicShapes(shapes = list(
+  list(type = "roundrect", x = 0.5, y = 0.5, w = 0.8, h = 0.5, fill = "#EEEEEE",
+       colour = "#999999", r = 1),
+  list(type = "text", x = 0.5, y = 0.5, label = "Box"),
+  list(type = "arrow", x = 0.1, y = 0.1, xend = 0.9, yend = 0.1, colour = "#000000")))
+grid::grid.newpage(); grid::grid.draw(PlotImage(shapes))
+
+set.seed(4)
+grid::grid.newpage(); grid::grid.draw(PlotImage(array(runif(300), c(10, 10, 3))))
+```

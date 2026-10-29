@@ -51,7 +51,8 @@ RunTSNE(
 
 - seed:
 
-  Integer or `NULL`. Random seed for reproducibility.
+  Integer or `NULL`. Random seed for reproducibility. The random number
+  stream of the caller is restored afterwards.
 
 - ...:
 

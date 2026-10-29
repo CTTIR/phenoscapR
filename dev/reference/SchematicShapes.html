@@ -41,7 +41,7 @@ text) and, optionally, clouds of dots placed at random inside ellipses
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -50,7 +50,7 @@ text) and, optionally, clouds of dots placed at random inside ellipses
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Schematic Shapes from a Specification</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/figure-data-images.R" class="external-link"><code>R/figure-data-images.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/figure-data-images.R" class="external-link"><code>R/figure-data-images.R</code></a></small>
       <div class="d-none name"><code>SchematicShapes.Rd</code></div>
     </div>
 
@@ -130,6 +130,33 @@ an optional <code>filter</code> (named list of column to values).</p></dd>
 and <code>equal</code>. Rounded-box radii (<code>r</code> of <code>"roundrect"</code>) are millimetres.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">SchematicShapes</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  shapes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"roundrect"</span>, x <span class="op">=</span> <span class="fl">0.5</span>, y <span class="op">=</span> <span class="fl">0.6</span>, w <span class="op">=</span> <span class="fl">0.6</span>, h <span class="op">=</span> <span class="fl">0.3</span>,</span></span>
+<span class="r-in"><span>                     fill <span class="op">=</span> <span class="st">"#EEEEEE"</span>, colour <span class="op">=</span> <span class="st">"#999999"</span>, r <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">0.5</span>, y <span class="op">=</span> <span class="fl">0.6</span>, label <span class="op">=</span> <span class="st">"{n} cells"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  clouds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span>, x <span class="op">=</span> <span class="fl">0.5</span>, y <span class="op">=</span> <span class="fl">0.2</span>, rx <span class="op">=</span> <span class="fl">0.3</span>, ry <span class="op">=</span> <span class="fl">0.1</span>, r <span class="op">=</span> <span class="fl">0.01</span>, fill <span class="op">=</span> <span class="st">"#7B2FBE"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">120</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>column <span class="op">=</span> <span class="st">"count"</span>, fun <span class="op">=</span> <span class="st">"sum"</span>, format <span class="op">=</span> <span class="st">"%.0f"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">shapes</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        type         x         y   w   h    r xend yend angle    fill  colour</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 roundrect 0.5000000 0.6000000 0.6 0.3 1.00   NA   NA     0 #EEEEEE #999999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      text 0.5000000 0.6000000  NA  NA   NA   NA   NA     0    &lt;NA&gt;    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    circle 0.4717821 0.2962215  NA  NA 0.01   NA   NA     0 #7B2FBE    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    circle 0.4040758 0.2331518  NA  NA 0.01   NA   NA     0 #7B2FBE    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    circle 0.2827537 0.1643245  NA  NA 0.01   NA   NA     0 #7B2FBE    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    circle 0.5891060 0.1806780  NA  NA 0.01   NA   NA     0 #7B2FBE    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   linewidth     label size hjust vjust head lineheight z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       0.5      &lt;NA&gt;    5   0.5   0.5    6       1.15 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       0.5 200 cells    5   0.5   0.5    6       1.15 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       0.5      &lt;NA&gt;    5   0.5   0.5    6       1.15 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       0.5      &lt;NA&gt;    5   0.5   0.5    6       1.15 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       0.5      &lt;NA&gt;    5   0.5   0.5    6       1.15 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       0.5      &lt;NA&gt;    5   0.5   0.5    6       1.15 1</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

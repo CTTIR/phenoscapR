@@ -56,7 +56,8 @@ names (`"ink"`, `"muted"`, ...) or palette entries written
 named lists of such values are resolved element by element. Every
 builder argument whose name ends in `colour`, `color`, `fill` or
 `palette` (or their plurals) is resolved this way, so arguments that
-name data columns must not end like that.
+name data columns must not end like that. The value `"group"` is kept as
+it is, for builders that colour by group (`label_colour = "group"`).
 
 Builders with a `box_mm` argument receive the size of their data area in
 millimetres (used for `"auto"` tick intervals, see
@@ -76,3 +77,15 @@ options of
 (`key_mm`, `marker_size`, `row_mm`, `text_gap_mm`, `column_gap_mm`,
 `byrow`). Texts take `label`, `xy` or `at`, `size`, `colour`, `bold`,
 `hjust`, `vjust` (a number or `"baseline"`) and `angle`.
+
+## Examples
+
+``` r
+d <- data.frame(group = rep(c("A", "B"), each = 3), value = c(1, 2, 3, 2, 3, 5))
+spec <- list(height_mm = 50, width_mm = 70, panels = list(
+  list(box = c(15, 10, 45, 30), letter = "a", heading = "Values", grammar = "group_strip",
+       data = "values",
+       args = list(group_colours = list(A = "groups/group1", B = "groups/group2")))))
+fig <- RenderFigure(spec, list(values = d))
+grid::grid.newpage(); print(fig)
+```

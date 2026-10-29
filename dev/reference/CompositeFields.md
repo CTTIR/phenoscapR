@@ -71,3 +71,19 @@ quantile of the field's own values); `hi` is one or several terms, each
 a table name, a table name with a factor (`"slide*0.9"`) or a quantile
 (`"q0.995"`); the largest term is used, and never less than
 `lo + min_span`.
+
+## Examples
+
+``` r
+set.seed(1)
+field <- list(channels = list(dna = matrix(runif(100, 0, 50), 10),
+                              cd3 = matrix(runif(100, 0, 20), 10)))
+views <- list(merge = list(list(channel = "dna", colour = "#3366FF", lo = "q0", hi = "q0.99"),
+                           list(channel = "cd3", colour = "#FF3300", lo = "q0.5", hi = "q1")))
+imgs <- CompositeFields(field, views)
+dim(imgs$images[[1]])
+#> [1] 10 10  3
+imgs$info
+#>   image field  view field_name
+#> 1     1     1 merge          1
+```

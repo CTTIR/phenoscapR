@@ -55,6 +55,13 @@ only, not R objects, copies or runtime overhead, and is not an
 available-memory check. Successful arithmetic preflight does not qualify
 a large native execution.
 
+[`BuildExactDelaunayEdges()`](https://cttir.github.io/phenoscapR/dev/reference/BuildExactDelaunayEdges.md)
+constructs every frame with
+[`deldir::deldir()`](https://rdrr.io/pkg/deldir/man/deldir.html), which
+allocates the stock workspace and enlarges it itself when needed. It
+refuses frames for which `bounded_required` is `TRUE`; the bounded
+figures are arithmetic only.
+
 ## See also
 
 [`BuildExactDelaunayEdges()`](https://cttir.github.io/phenoscapR/dev/reference/BuildExactDelaunayEdges.md)

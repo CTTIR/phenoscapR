@@ -53,10 +53,14 @@ NeighbourTypeCounts(
 
   `"error"` or `"isolate"`.
 
-- backend_contract, eps:
+- backend_contract:
 
-  Passed to the `"deldir"` engine (see
+  Deprecated and ignored (see
   [`BuildExactDelaunayEdges()`](https://cttir.github.io/phenoscapR/dev/reference/BuildExactDelaunayEdges.md)).
+
+- eps:
+
+  Tolerance passed to the `"deldir"` engine.
 
 - index_base:
 
@@ -83,12 +87,11 @@ coplanar-point handling does).
 
 Engines: `"geos"` (default) uses GEOS through sf
 (`st_triangulate(..., bOnlyEdges = TRUE)`); input coordinates are mapped
-back to cells exactly. `"deldir"` uses the pinned, registered-routine
-deldir backend of
+back to cells exactly. `"deldir"` uses
+[`deldir::deldir()`](https://rdrr.io/pkg/deldir/man/deldir.html) as
 [`BuildExactDelaunayEdges()`](https://cttir.github.io/phenoscapR/dev/reference/BuildExactDelaunayEdges.md)
-and needs its `backend_contract`; its run time grows roughly
-quadratically with the number of cells, so it is meant for cross-checks
-on small sections.
+does; its run time grows roughly quadratically with the number of cells,
+so it is meant for cross-checks on small sections.
 
 ## Examples
 
