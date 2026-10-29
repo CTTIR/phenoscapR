@@ -49,8 +49,12 @@
   rounding of that arithmetic and of the stored values as ties. p values no
   longer change when values are rescaled, or shifted while the rounding of the
   shifted values stays below the spacing of distinct statistics (whole numbers
-  keep their exact p values up to shifts of 1e13); for well-conditioned data
-  they are unchanged.
+  keep their exact p values up to shifts of 1e13). Before, the observed
+  statistic used a different formula and a fixed tolerance, so for values of
+  about 10^3 and above with decimals the observed allocation or its mirror
+  could be missed and p came out too small by 1/allocations, down to 0; such
+  p values now equal exact enumeration. Results for other inputs are
+  unchanged.
 * `DelaunayNetwork()` maps deldir's points back to cell rows when coordinates
   repeat; edges used to point to the wrong cells after a duplicate.
 * `read_spatial()` fills a blank QuPath `Image` value with the sample id;
