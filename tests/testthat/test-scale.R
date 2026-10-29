@@ -3,6 +3,8 @@
 # exercise that regime to ensure the maths stays in double precision.
 
 test_that("MoransI stays finite above the integer-overflow threshold", {
+  # Without RANN the neighbour search is quadratic and takes minutes here.
+  skip_if_not_installed("RANN")
   set.seed(1)
   n <- 50000L   # n * n = 2.5e9 > .Machine$integer.max
   counts <- matrix(rnorm(n), ncol = 1, dimnames = list(NULL, "CD31"))
