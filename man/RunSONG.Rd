@@ -47,13 +47,13 @@ The optional \pkg{songR} package is available from
 missing dependency without installing software or changing the input object.
 }
 \examples{
-\donttest{
+\dontrun{
 if (requireNamespace("songR", quietly = TRUE)) {
   counts <- matrix(rnorm(500), nrow = 50,
                    dimnames = list(NULL, paste0("M", 1:10)))
   coords <- data.frame(x = runif(50), y = runif(50))
   obj <- CreateSpatialObject(counts, coords)
-  obj <- RunSONG(obj, seed = 1)
+  obj <- RunSONG(obj, seed = 1, verbose = FALSE)
 }
 }
 
