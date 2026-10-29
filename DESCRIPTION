@@ -1,6 +1,6 @@
 Package: phenoscapR
 Title: Read, Analyse, and Visualise Single-Cell Spatial Biology Data
-Version: 0.1.1.9000
+Version: 0.2.0
 Authors@R: c(
     person("R.", "Heller", email = "raban.heller@uni-ulm.de",
            role = c("aut", "cre", "cph"),
@@ -43,7 +43,7 @@ Suggests:
     brand.yml,
     bsicons,
     bslib (>= 0.6.0),
-    cellspecR (>= 1.0.0.9000),
+    cellspecR (>= 1.1.0),
     chromote,
     deldir,
     ggtext,

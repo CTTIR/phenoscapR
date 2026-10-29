@@ -1,4 +1,4 @@
-# phenoscapR (development version)
+# phenoscapR 0.2.0
 
 * Patient-level and cell-level analysis exports: `ExactPairedTests()` (exact
   signed-rank test over all sign flips with midranks, exact sign test,

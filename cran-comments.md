@@ -9,8 +9,7 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a new submission. The development version number 0.1.1.9000 will
-  be replaced by a release version before submission.
+* This is a new submission.
 
 * The suggested packages 'cellspecR' and 'songR' are not on CRAN or
   Bioconductor. They are declared in `Additional_repositories`
