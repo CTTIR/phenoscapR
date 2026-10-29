@@ -42,7 +42,7 @@
   .radius_neighbours_bruteforce(coords, radius)
 }
 
-#' Exact, memory-bounded fallback for [.radius_neighbours]
+#' Exact, memory-bounded fallback for `.radius_neighbours()`
 #' @noRd
 .radius_neighbours_bruteforce <- function(coords, radius) {
   n <- nrow(coords)
@@ -513,14 +513,6 @@ spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
 # S4-style wrappers operating on SpatialCellData objects
 # ---------------------------------------------------------------------------
 
-#' Assert an object holds a single sample
-#'
-#' Several spatial statistics (Ripley's K, Moran's I, quadrat analysis, the
-#' pair correlation function, neighbourhood enrichment, cross nearest-neighbour
-#' distance) are defined for a single point pattern in one observation window.
-#' Pooling cells from several tissues would compute distances across samples and
-#' produce meaningless results, so we refuse multi-sample objects.
-#' @noRd
 #' Apply a single-sample statistic across every sample
 #'
 #' Maps `fn` over each sample's subset and returns a named, classed list. Used
@@ -536,6 +528,13 @@ spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
   res
 }
 
+#' Assert an object holds a single sample
+#'
+#' Several spatial statistics (Ripley's K, Moran's I, quadrat analysis, the
+#' pair correlation function, neighbourhood enrichment, cross nearest-neighbour
+#' distance) are defined for a single point pattern in one observation window.
+#' Pooling cells from several tissues would compute distances across samples and
+#' produce meaningless results, so we refuse multi-sample objects.
 #' @noRd
 .assert_single_sample <- function(object, what = "This analysis") {
   samples <- unique(object@meta_data$sample_id)
