@@ -65,7 +65,8 @@ options of \code{\link[=LegendKeys]{LegendKeys()}} (\code{key_mm}, \code{marker_
 d <- data.frame(group = rep(c("A", "B"), each = 3), value = c(1, 2, 3, 2, 3, 5))
 spec <- list(height_mm = 50, width_mm = 70, panels = list(
   list(box = c(15, 10, 45, 30), letter = "a", heading = "Values", grammar = "group_strip",
-       data = "values", args = list(group_colours = list(A = "groups/group1", B = "groups/group2")))))
+       data = "values",
+       args = list(group_colours = list(A = "groups/group1", B = "groups/group2")))))
 fig <- RenderFigure(spec, list(values = d))
 grid::grid.newpage(); print(fig)
 }

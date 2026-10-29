@@ -446,7 +446,8 @@ CompositeFields <- function(fields, views, slide = NULL, levels = NULL, source =
 #'                      fill = "#EEEEEE", colour = "#999999", r = 1),
 #'                 list(type = "text", x = 0.5, y = 0.6, label = "{n} cells")),
 #'   clouds = list(list(n = 20, x = 0.5, y = 0.2, rx = 0.3, ry = 0.1, r = 0.01, fill = "#7B2FBE")),
-#'   values = data.frame(count = c(120, 80)), fill = list(n = list(column = "count", fun = "sum", format = "%.0f"))
+#'   values = data.frame(count = c(120, 80)),
+#'   fill = list(n = list(column = "count", fun = "sum", format = "%.0f"))
 #' )
 #' head(s$shapes)
 #' @export
