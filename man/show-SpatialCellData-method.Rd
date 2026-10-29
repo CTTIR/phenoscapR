@@ -9,6 +9,9 @@
 \arguments{
 \item{object}{A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.}
 }
+\value{
+Invisibly \code{NULL}; called for printing a summary of the object.
+}
 \description{
 Show a SpatialCellData Object
 }

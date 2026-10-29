@@ -2,6 +2,8 @@
 #'
 #' @param object A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #'
+#' @return Invisibly \code{NULL}; called for printing a summary of the object.
+#'
 #' @export
 #' @importFrom methods setMethod show
 setMethod("show", "SpatialCellData", function(object) {
