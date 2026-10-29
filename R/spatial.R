@@ -1387,12 +1387,9 @@ ExpressionClusters <- function(object, k,
         stop("method = \"gmm\" requires the 'mclust' package. Install it with ",
              "install.packages(\"mclust\").", call. = FALSE)
       }
-      # mclust resolves its model functions by name on the search path, so it
-      # must be attached (not merely loaded). Attach for the duration only.
-      if (!"package:mclust" %in% search()) {
-        attachNamespace("mclust")
-        on.exit(try(detach("package:mclust"), silent = TRUE), add = TRUE)
-      }
+      # Mclust() calls mclustBIC() by name in the frame it is called from;
+      # binding it here avoids attaching mclust to the search path.
+      mclustBIC <- mclust::mclustBIC
       mclust::Mclust(mat, G = k, verbose = FALSE)$classification
     }
   )

@@ -114,6 +114,8 @@
   cell names instead of failing.
 * 'png' moves from Suggests to Imports: image layers rasterise through
   `png::readPNG()` when 'ragg' is not installed.
+* `ExpressionClusters(method = "gmm")` no longer attaches 'mclust' to the
+  search path; the clusters are the same.
 
 # phenoscapR 0.1.1
 

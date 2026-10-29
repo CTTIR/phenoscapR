@@ -38,6 +38,17 @@ test_that("ExpressionClusters GMM and AnnotateClusters work", {
   expect_true("expr_cluster_label" %in% names(Meta(o2)))
 })
 
+test_that("GMM clustering uses mclust without the search path", {
+  skip_if_not_installed("mclust")
+  before <- search()
+  # An unrelated mclustBIC visible from the global environment is not used.
+  assign("mclustBIC", function(...) stop("not mclust"), envir = globalenv())
+  withr::defer(rm("mclustBIC", envir = globalenv()))
+  o <- ExpressionClusters(obj, k = 3, method = "gmm")
+  expect_identical(search(), before)
+  expect_setequal(unique(o$expr_cluster), c("1", "2", "3"))
+})
+
 test_that("DifferentialAbundance compares phenotype proportions", {
   o <- obj
   o@meta_data$arm <- ifelse(o$sample_id == "tonsil_A", "ctrl", "treat")
