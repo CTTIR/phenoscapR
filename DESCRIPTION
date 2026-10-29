@@ -23,7 +23,7 @@ Description: Tools for importing, processing, analysing, and visualising
     <https://github.com/CTTIR/songR>. Both optional packages are available
     from <https://cttir.r-universe.dev>.
 License: MIT + file LICENSE
-URL: https://cttir.github.io/phenoscapR/, https://github.com/CTTIR/phenoscapR
+URL: https://github.com/CTTIR/phenoscapR, https://cttir.github.io/phenoscapR/
 BugReports: https://github.com/CTTIR/phenoscapR/issues
 Additional_repositories: https://cttir.r-universe.dev
 Depends:

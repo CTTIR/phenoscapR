@@ -53,7 +53,7 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/R-CMD-check.yaml)
 [![test-coverage](https://github.com/CTTIR/phenoscapR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/test-coverage.yaml)
 [![lint](https://github.com/CTTIR/phenoscapR/actions/workflows/lint.yaml/badge.svg)](https://github.com/CTTIR/phenoscapR/actions/workflows/lint.yaml)
-[![Codecov test coverage](https://codecov.io/gh/cttir/phenoscapR/graph/badge.svg)](https://app.codecov.io/gh/cttir/phenoscapR)
+[![Codecov test coverage](https://codecov.io/gh/CTTIR/phenoscapR/graph/badge.svg)](https://app.codecov.io/gh/CTTIR/phenoscapR)
 
 ## Overview
 
