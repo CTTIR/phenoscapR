@@ -38,7 +38,11 @@
   version pin is gone; `backend_contract` is no longer needed and is ignored,
   and `mode`, `initial_madj` and `max_retries` no longer change the
   construction. Frames that need deldir to enlarge its workspace now succeed
-  in every mode; frames of 799,800 or more points are refused.
+  in every mode; frames of 799,800 or more points are refused. Some degenerate
+  frames that the bounded mode used to triangulate now fail with deldir's own
+  error ("Bailing out of adjchk."), for example a centre with 40 points on a
+  circle around it, a regular 150-gon, or 50 collinear points with two points
+  off the line.
 * `ExactPatientTests()` (and so `ContrastPatientEndpoints()` and
   `LeaveOnePatientOut()`) computes the observed and the allocated statistics
   with one formula on centred values and counts differences within the
