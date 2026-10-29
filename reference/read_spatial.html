@@ -4,11 +4,11 @@ image analysis software. The function auto-detects the column naming
 convention, delimiter, and BOM encoding."><meta property="og:description" content="Reads cell segmentation CSV files from spatial biology imaging platforms or
 image analysis software. The function auto-detects the column naming
 convention, delimiter, and BOM encoding."><meta property="og:image" content="https://cttir.github.io/phenoscapR/logo.svg"><meta name="theme-color" content="#1565c0"><!-- Package browser icons -->
-<link rel="icon" type="image/x-icon" href="../favicon.ico?v=b46ff4b1148d">
-<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png?v=b46ff4b1148d">
-<link rel="icon" type="image/svg+xml" sizes="any" href="../favicon.svg?v=b46ff4b1148d">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png?v=b46ff4b1148d">
-<link rel="manifest" href="../site.webmanifest?v=b46ff4b1148d">
+<link rel="icon" type="image/x-icon" href="../favicon.ico?v=d8b0da3b7941">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png?v=d8b0da3b7941">
+<link rel="icon" type="image/svg+xml" sizes="any" href="../favicon.svg?v=d8b0da3b7941">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png?v=d8b0da3b7941">
+<link rel="manifest" href="../site.webmanifest?v=d8b0da3b7941">
 <!-- /Package browser icons -->
 </head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -19,7 +19,7 @@ convention, delimiter, and BOM encoding."><meta property="og:image" content="htt
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,7 @@ convention, delimiter, and BOM encoding."><meta property="og:image" content="htt
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Functions</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/cttir/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/CTTIR/phenoscapR" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -48,7 +48,7 @@ convention, delimiter, and BOM encoding."><meta property="og:image" content="htt
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Read Single-Cell Spatial Biology Data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cttir/phenoscapR/blob/main/R/read.R" class="external-link"><code>R/read.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CTTIR/phenoscapR/blob/main/R/read.R" class="external-link"><code>R/read.R</code></a></small>
       <div class="d-none name"><code>read_spatial.Rd</code></div>
     </div>
 
@@ -167,11 +167,11 @@ Marker: Cell: Mean columns.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           sample_id cell_id         x        y cell_area     DAPI      CD3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              &lt;char&gt;   &lt;int&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;    &lt;num&gt;    &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: file1cce7d580004       1 547.88770  31.0337  174.3390 583.8669 380.0891</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: file1cce7d580004       2 304.46452 652.2918  141.1577 434.5385 359.7962</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3: file1cce7d580004       3 402.30483 596.8411   70.7169 595.3961 249.8740</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4: file1cce7d580004       4  27.59579 312.6110  180.6391 535.2951 331.6179</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5: file1cce7d580004       5 848.99369 986.9101  136.5632 520.6599 228.6266</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1: file20d6727eb8a3       1 547.88770  31.0337  174.3390 583.8669 380.0891</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2: file20d6727eb8a3       2 304.46452 652.2918  141.1577 434.5385 359.7962</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3: file20d6727eb8a3       3 402.30483 596.8411   70.7169 595.3961 249.8740</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4: file20d6727eb8a3       4  27.59579 312.6110  180.6391 535.2951 331.6179</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5: file20d6727eb8a3       5 848.99369 986.9101  136.5632 520.6599 228.6266</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

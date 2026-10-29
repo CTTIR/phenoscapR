@@ -25,7 +25,8 @@ QCFilter(
 
 - min_area:
 
-  Numeric or `NULL`. Minimum cell area.
+  Numeric or `NULL`. Minimum cell area; cells with a missing area fail
+  area thresholds.
 
 - max_area:
 

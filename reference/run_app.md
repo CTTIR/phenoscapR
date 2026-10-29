@@ -35,7 +35,7 @@ and reports any that are missing.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-run_app()
-} # }
+if (interactive()) {
+  run_app()
+}
 ```

@@ -1,0 +1,56 @@
+# Attach Cell Positions to a Table of Cell References
+
+Looks up cells referenced by image and row (as in review ledgers and
+example lists) in per-image cell tables and adds their positions and
+further columns.
+
+## Usage
+
+``` r
+CellPositionsFor(
+  table,
+  cells,
+  labels = NULL,
+  source = "sample_id",
+  row = "row",
+  columns = c("x", "y", "label")
+)
+```
+
+## Arguments
+
+- table:
+
+  Data frame with an image key column and a row column.
+
+- cells:
+
+  List of cell tables (with column `row`), one per image.
+
+- labels:
+
+  Image keys of `cells`, in list order (default the list names).
+
+- source, row:
+
+  Columns of `table` holding the image key and the cell row.
+
+- columns:
+
+  Columns copied from the cell tables.
+
+## Value
+
+`table` with the added columns.
+
+## Examples
+
+``` r
+cells <- list(s1 = data.frame(row = 0:2, x = c(1, 5, 9), y = c(2, 4, 6), label = "a"),
+              s2 = data.frame(row = 0:1, x = c(3, 7), y = c(1, 1), label = "b"))
+refs <- data.frame(sample_id = c("s2", "s1"), row = c(1, 2))
+CellPositionsFor(refs, cells)
+#>   sample_id row x y label
+#> 1        s2   1 7 1     b
+#> 2        s1   2 9 6     a
+```

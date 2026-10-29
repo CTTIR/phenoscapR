@@ -24,8 +24,8 @@ qc_filter(
 
 - min_area:
 
-  Numeric or `NULL`. Minimum cell area. Cells below this threshold are
-  removed.
+  Numeric or `NULL`. Minimum cell area. Cells below this threshold, or
+  with a missing area, are removed.
 
 - max_area:
 

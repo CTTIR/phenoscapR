@@ -40,10 +40,10 @@ result <- cell_density(dt, radius = 20)
 head(result[, .(cell_id, density)])
 #>    cell_id density
 #>      <int>   <int>
-#> 1:       1       4
-#> 2:       2       1
-#> 3:       3       8
+#> 1:       1       6
+#> 2:       2       5
+#> 3:       3       7
 #> 4:       4       6
-#> 5:       5       4
-#> 6:       6       4
+#> 5:       5       3
+#> 6:       6       3
 ```

@@ -27,7 +27,7 @@ CellMap(
 - colour_by:
 
   Character. Column name in `meta_data` to colour by. Default
-  `"phenotype"`.
+  `"phenotype"`. Numeric columns get a continuous colour scale.
 
 - colours:
 

@@ -142,7 +142,7 @@ and expression-based clustering.
 - [`CountRadiusSets()`](https://cttir.github.io/phenoscapR/reference/CountRadiusSets.md)
   : Count Reference Sets Within Explicit Euclidean Radii
 - [`BuildExactDelaunayEdges()`](https://cttir.github.io/phenoscapR/reference/BuildExactDelaunayEdges.md)
-  : Build Explicitly Ordered Delaunay Graphs with a Pinned Backend
+  : Build Explicitly Ordered Delaunay Graphs
 - [`PlanExactDelaunayWorkspace()`](https://cttir.github.io/phenoscapR/reference/PlanExactDelaunayWorkspace.md)
   : Preflight Integer Workspace Bounds for Exact Delaunay Construction
 - [`ContrastGroupedOverlap()`](https://cttir.github.io/phenoscapR/reference/ContrastGroupedOverlap.md)
@@ -181,6 +181,36 @@ sample as the unit of replication.
   : Exact Patient Omission Diagnostics for Declared Hypotheses
 - [`AdjustPatientFamilies()`](https://cttir.github.io/phenoscapR/reference/AdjustPatientFamilies.md)
   : Adjust Explicitly Declared Patient-Test Families
+- [`ContrastPatientEndpoints()`](https://cttir.github.io/phenoscapR/reference/ContrastPatientEndpoints.md)
+  : Exact Two-Group Contrasts for a Registry of Patient Endpoints
+- [`ExactPairedTests()`](https://cttir.github.io/phenoscapR/reference/ExactPairedTests.md)
+  : Exact Paired Sign-Flip Tests of Within-Subject Differences
+- [`PairedDifferences()`](https://cttir.github.io/phenoscapR/reference/PairedDifferences.md)
+  : Build Paired Differences from Wide Subject Tables
+- [`BootstrapMedianInterval()`](https://cttir.github.io/phenoscapR/reference/BootstrapMedianInterval.md)
+  : Bootstrap Percentile Interval of a Median
+- [`PermutationCorrelation()`](https://cttir.github.io/phenoscapR/reference/PermutationCorrelation.md)
+  : Permutation Test of a Rank or Linear Correlation
+
+## Section Summaries and Parity Checks
+
+Read cell tables from NumPy archives, summarise sections (nearest-target
+distances, composition, densities, Delaunay neighbour types) and compare
+recomputed tables or arrays with reference results by key and tolerance.
+
+- [`SummarizeNearestDistances()`](https://cttir.github.io/phenoscapR/reference/SummarizeNearestDistances.md)
+  : Nearest-Target Distances Summarised per Cell Set
+- [`SummarizeCellComposition()`](https://cttir.github.io/phenoscapR/reference/SummarizeCellComposition.md)
+  : Cell-Type Composition, Densities and Declared State Fractions of a
+  Section
+- [`NeighbourTypeCounts()`](https://cttir.github.io/phenoscapR/reference/NeighbourTypeCounts.md)
+  : Count Neighbour Types over a Delaunay Graph with an Edge-Length Cut
+- [`CompareTables()`](https://cttir.github.io/phenoscapR/reference/CompareTables.md)
+  : Compare a Recomputed Table with a Reference Table by Key
+- [`CompareArrays()`](https://cttir.github.io/phenoscapR/reference/CompareArrays.md)
+  : Compare Table Columns or Arrays with Arrays of a NumPy Archive
+- [`SummarizeComparisons()`](https://cttir.github.io/phenoscapR/reference/SummarizeComparisons.md)
+  : Summarise Comparison Results into Pass/Fail Checks
 
 ## Platform Readers
 
@@ -277,6 +307,197 @@ object; lower-level helpers accept data.tables.
   : Plot Marker Heatmap
 - [`plot_interactions()`](https://cttir.github.io/phenoscapR/reference/plot_interactions.md)
   : Plot Interaction Heatmap
+
+## Manuscript Figures: Style and Composition
+
+A compact journal figure style (typography, colours, line widths, tick
+placement and typesetting), page composition in millimetres with panel
+letters, headings, texts and legends, and figures rendered from
+declarative specifications.
+
+- [`ManuscriptStyle()`](https://cttir.github.io/phenoscapR/reference/ManuscriptStyle.md)
+  : Manuscript Figure Style
+- [`ManuscriptPalettes()`](https://cttir.github.io/phenoscapR/reference/ManuscriptPalettes.md)
+  : Manuscript Palettes
+- [`ThemeManuscript()`](https://cttir.github.io/phenoscapR/reference/ThemeManuscript.md)
+  : Manuscript 'ggplot2' Theme
+- [`PtLinewidth()`](https://cttir.github.io/phenoscapR/reference/PtLinewidth.md)
+  : Convert Points to a 'ggplot2' Line Width
+- [`NiceBreaks()`](https://cttir.github.io/phenoscapR/reference/NiceBreaks.md)
+  : Tick Breaks of Common Plotting Code
+- [`FormatP()`](https://cttir.github.io/phenoscapR/reference/FormatP.md)
+  : Format P Values for Figures
+- [`FormatStatistic()`](https://cttir.github.io/phenoscapR/reference/FormatStatistic.md)
+  : Format a Patient-Level Statistic Line
+- [`TypesetLabel()`](https://cttir.github.io/phenoscapR/reference/TypesetLabel.md)
+  : Typeset Figure Text
+- [`FormatTemplate()`](https://cttir.github.io/phenoscapR/reference/FormatTemplate.md)
+  : Fill Text Templates from Table Rows
+- [`ComposeFigure()`](https://cttir.github.io/phenoscapR/reference/ComposeFigure.md)
+  : Compose a Multi-Panel Figure
+- [`FigurePanel()`](https://cttir.github.io/phenoscapR/reference/FigurePanel.md)
+  : Describe One Figure Panel
+- [`FigureText()`](https://cttir.github.io/phenoscapR/reference/FigureText.md)
+  : Place Text on a Figure Page
+- [`FigureGrob()`](https://cttir.github.io/phenoscapR/reference/FigureGrob.md)
+  : Place a Grob on a Figure Page
+- [`LegendKeys()`](https://cttir.github.io/phenoscapR/reference/LegendKeys.md)
+  : Legend Keys as a Grob
+- [`SaveFigure()`](https://cttir.github.io/phenoscapR/reference/SaveFigure.md)
+  : Save a Composed Figure as PDF and PNG
+- [`FigureGrammars()`](https://cttir.github.io/phenoscapR/reference/FigureGrammars.md)
+  : Figure Plot Builders Available to Figure Specifications
+- [`RenderFigure()`](https://cttir.github.io/phenoscapR/reference/RenderFigure.md)
+  : Render a Figure from a Specification
+- [`ReadFigureSpec()`](https://cttir.github.io/phenoscapR/reference/ReadFigureSpec.md)
+  : Read a Figure Specification
+- [`WriteFigure()`](https://cttir.github.io/phenoscapR/reference/WriteFigure.md)
+  : Write a Figure from a Specification
+- [`ReadPlotTable()`](https://cttir.github.io/phenoscapR/reference/ReadPlotTable.md)
+  : Read a Plot Data Table
+
+## Manuscript Figures: Plot Grammars
+
+Panel builders registered in FigureGrammars(): patient-level displays,
+matrices, bars, embeddings, cell maps, territories and image fields.
+
+- [`PlotPairedPatients()`](https://cttir.github.io/phenoscapR/reference/PlotPairedPatients.md)
+  : Paired Patient Lines
+- [`PlotQuantileCurves()`](https://cttir.github.io/phenoscapR/reference/PlotQuantileCurves.md)
+  : Summary Curves with Quantile Bands
+- [`PlotBandProfiles()`](https://cttir.github.io/phenoscapR/reference/PlotBandProfiles.md)
+  : Profiles over Ordered Categories
+- [`PlotIntervalForest()`](https://cttir.github.io/phenoscapR/reference/PlotIntervalForest.md)
+  : Interval Forest with Unit Values
+- [`PlotGroupDifferences()`](https://cttir.github.io/phenoscapR/reference/PlotGroupDifferences.md)
+  : Differences Between Groups as Segments
+- [`PlotVolcano()`](https://cttir.github.io/phenoscapR/reference/PlotVolcano.md)
+  : Volcano Plot of Exact Group Tests
+- [`PlotGroupStrip()`](https://cttir.github.io/phenoscapR/reference/PlotGroupStrip.md)
+  : Unit Values by Group
+- [`PlotScatterGroups()`](https://cttir.github.io/phenoscapR/reference/PlotScatterGroups.md)
+  : Scatter or Dot Rows Coloured by Group
+- [`PlotBars()`](https://cttir.github.io/phenoscapR/reference/PlotBars.md)
+  : Bars per Unit
+- [`PlotTextBlock()`](https://cttir.github.io/phenoscapR/reference/PlotTextBlock.md)
+  : Text Block or Text Table
+- [`PlotStackedBars()`](https://cttir.github.io/phenoscapR/reference/PlotStackedBars.md)
+  : Stacked Bars
+- [`PlotAnnotatedHeatmap()`](https://cttir.github.io/phenoscapR/reference/PlotAnnotatedHeatmap.md)
+  : Annotated Heatmap
+- [`PlotDotMatrix()`](https://cttir.github.io/phenoscapR/reference/PlotDotMatrix.md)
+  : Dot Matrix
+- [`PlotAlterationMatrix()`](https://cttir.github.io/phenoscapR/reference/PlotAlterationMatrix.md)
+  : Alteration Matrix
+- [`PlotEmbedding()`](https://cttir.github.io/phenoscapR/reference/PlotEmbedding.md)
+  : Embedding Scatter
+- [`PlotDensityOutlines()`](https://cttir.github.io/phenoscapR/reference/PlotDensityOutlines.md)
+  : Density Outlines on an Embedding
+- [`PlotCellMap()`](https://cttir.github.io/phenoscapR/reference/PlotCellMap.md)
+  : Cell Map
+- [`PlotTerritories()`](https://cttir.github.io/phenoscapR/reference/PlotTerritories.md)
+  : Cell Territory Map
+- [`PlotFluorescenceField()`](https://cttir.github.io/phenoscapR/reference/PlotFluorescenceField.md)
+  : Multichannel Fluorescence Field
+- [`PlotImage()`](https://cttir.github.io/phenoscapR/reference/PlotImage.md)
+  : Image, Image Gallery or Schematic
+
+## Manuscript Figures: Plot Data
+
+Generic table helpers (PlotData\*) that select, reshape, join, recode,
+count and summarise tables for the grammars, and builders for
+embeddings, annotated matrices, families of tests and image panels.
+
+- [`PlotDataBindRows()`](https://cttir.github.io/phenoscapR/reference/PlotDataBindRows.md)
+  [`PlotDataBindColumns()`](https://cttir.github.io/phenoscapR/reference/PlotDataBindRows.md)
+  : Bind Plot Data Tables
+- [`PlotDataConstant()`](https://cttir.github.io/phenoscapR/reference/PlotDataConstant.md)
+  : Add a Constant Column
+- [`PlotDataContrastSummary()`](https://cttir.github.io/phenoscapR/reference/PlotDataContrastSummary.md)
+  : Summary of a Family of Two-Group Tests
+- [`PlotDataCount()`](https://cttir.github.io/phenoscapR/reference/PlotDataCount.md)
+  : Counts and Shares by Group
+- [`PlotDataCrossShares()`](https://cttir.github.io/phenoscapR/reference/PlotDataCrossShares.md)
+  : Shares of One Category within Another
+- [`PlotDataDirection()`](https://cttir.github.io/phenoscapR/reference/PlotDataDirection.md)
+  : Count of Units in the Direction of an Estimate
+- [`PlotDataDominant()`](https://cttir.github.io/phenoscapR/reference/PlotDataDominant.md)
+  : Order Groups by Their Dominant Category
+- [`PlotDataFromArrays()`](https://cttir.github.io/phenoscapR/reference/PlotDataFromArrays.md)
+  : Table from a List of Arrays
+- [`PlotDataJoin()`](https://cttir.github.io/phenoscapR/reference/PlotDataJoin.md)
+  : Join Columns of Another Table
+- [`PlotDataKeyColours()`](https://cttir.github.io/phenoscapR/reference/PlotDataKeyColours.md)
+  : Key Colours from a Categorical Palette
+- [`PlotDataLabels()`](https://cttir.github.io/phenoscapR/reference/PlotDataLabels.md)
+  [`PlotDataCollapse()`](https://cttir.github.io/phenoscapR/reference/PlotDataLabels.md)
+  : Text Labels from Table Rows
+- [`PlotDataLonger()`](https://cttir.github.io/phenoscapR/reference/PlotDataLonger.md)
+  : Reshape Wide Columns into Long Plot Data
+- [`PlotDataMembership()`](https://cttir.github.io/phenoscapR/reference/PlotDataMembership.md)
+  : Flag Rows Whose Key Occurs in Another Table
+- [`PlotDataPairRatio()`](https://cttir.github.io/phenoscapR/reference/PlotDataPairRatio.md)
+  : Ratios Between Two Levels of a Key Column
+- [`PlotDataProduct()`](https://cttir.github.io/phenoscapR/reference/PlotDataProduct.md)
+  : Product of Columns
+- [`PlotDataQuantiles()`](https://cttir.github.io/phenoscapR/reference/PlotDataQuantiles.md)
+  : Quantile Summaries of Plot Data
+- [`PlotDataRankRows()`](https://cttir.github.io/phenoscapR/reference/PlotDataRankRows.md)
+  : Rank Rows by the Sum of Selected Columns
+- [`PlotDataRatio()`](https://cttir.github.io/phenoscapR/reference/PlotDataRatio.md)
+  : Ratios Between Columns
+- [`PlotDataRecode()`](https://cttir.github.io/phenoscapR/reference/PlotDataRecode.md)
+  : Recode the Values of a Column
+- [`PlotDataRelative()`](https://cttir.github.io/phenoscapR/reference/PlotDataRelative.md)
+  : Scale a Column to a Reference Row
+- [`PlotDataSelect()`](https://cttir.github.io/phenoscapR/reference/PlotDataSelect.md)
+  : Select Rows and Columns of Plot Data
+- [`PlotDataShares()`](https://cttir.github.io/phenoscapR/reference/PlotDataShares.md)
+  : Shares of a Total in Several Columns
+- [`PlotDataSummarise()`](https://cttir.github.io/phenoscapR/reference/PlotDataSummarise.md)
+  : Summarise Columns by Group
+- [`PlotDataTableCells()`](https://cttir.github.io/phenoscapR/reference/PlotDataTableCells.md)
+  : Text-Table Cells from a Per-Unit Table
+- [`PlotDataUnite()`](https://cttir.github.io/phenoscapR/reference/PlotDataUnite.md)
+  : Paste Columns into a Key Column
+- [`ExactPermutationBound()`](https://cttir.github.io/phenoscapR/reference/ExactPermutationBound.md)
+  : Lower Bound of an Exact Two-Sided Permutation P Value
+- [`EmbeddingLimits()`](https://cttir.github.io/phenoscapR/reference/EmbeddingLimits.md)
+  : Display Limits of an Embedding
+- [`EmbeddingLayers()`](https://cttir.github.io/phenoscapR/reference/EmbeddingLayers.md)
+  : Layered Point Data for an Embedding
+- [`ClusterLabelPositions()`](https://cttir.github.io/phenoscapR/reference/ClusterLabelPositions.md)
+  : Label Positions of Clusters on an Embedding
+- [`DensityLevelContour()`](https://cttir.github.io/phenoscapR/reference/DensityLevelContour.md)
+  : Density Level Region of Each Group on an Embedding
+- [`LookupNestedRows()`](https://cttir.github.io/phenoscapR/reference/LookupNestedRows.md)
+  : Look Up Values Stored on Nested Row Subsets
+- [`AnnotationTracks()`](https://cttir.github.io/phenoscapR/reference/AnnotationTracks.md)
+  : Coloured Annotation Tracks
+- [`AlterationMatrixData()`](https://cttir.github.io/phenoscapR/reference/AlterationMatrixData.md)
+  : Alteration Classes for an Alteration Matrix
+- [`NearestLabelDistance()`](https://cttir.github.io/phenoscapR/reference/NearestLabelDistance.md)
+  : Distance to the Nearest Cell of Given Labels
+- [`CellMapData()`](https://cttir.github.io/phenoscapR/reference/CellMapData.md)
+  : Cells of a Map Field or Whole Section
+- [`FieldCentre()`](https://cttir.github.io/phenoscapR/reference/FieldCentre.md)
+  : Field Centre as Plot Data
+- [`DensestGridWindow()`](https://cttir.github.io/phenoscapR/reference/DensestGridWindow.md)
+  : Centre of the Densest Grid Window
+- [`NearestPartnerPairs()`](https://cttir.github.io/phenoscapR/reference/NearestPartnerPairs.md)
+  : Cells Paired with Their Nearest Partner Cell
+- [`FieldCellsRanked()`](https://cttir.github.io/phenoscapR/reference/FieldCellsRanked.md)
+  : Cells of One Type inside a Field, Ranked
+- [`TerritoryTiles()`](https://cttir.github.io/phenoscapR/reference/TerritoryTiles.md)
+  : Voronoi Territory Tiles of the Cells in a Field
+- [`BestSubWindow()`](https://cttir.github.io/phenoscapR/reference/BestSubWindow.md)
+  : Sub-Window with the Most Cells of a Kind
+- [`CompositeFields()`](https://cttir.github.io/phenoscapR/reference/CompositeFields.md)
+  : Composite Fluorescence Images from Channel Fields
+- [`SchematicShapes()`](https://cttir.github.io/phenoscapR/reference/SchematicShapes.md)
+  : Schematic Shapes from a Specification
+- [`CellPositionsFor()`](https://cttir.github.io/phenoscapR/reference/CellPositionsFor.md)
+  : Attach Cell Positions to a Table of Cell References
 
 ## Colour Palettes
 

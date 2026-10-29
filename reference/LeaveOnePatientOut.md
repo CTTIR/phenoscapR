@@ -57,3 +57,23 @@ Full-incomplete omissions do not execute reduced tests. Zero effects
 have direction ZERO; direction preservation is NA when either effect is
 missing. Arithmetic overflow in an effect change fails rather than
 returning Inf.
+
+## Examples
+
+``` r
+endpoints <- data.frame(endpoint_id = "e", patient_id = letters[1:5],
+                        value = c(1, 2, 4, 6, 7), eligible = TRUE)
+design <- data.frame(contrast_id = "c", patient_id = letters[1:5],
+                     group = c("A", "A", "B", "B", "B"))
+hypotheses <- data.frame(hypothesis_id = "h", endpoint_id = "e",
+                         contrast_id = "c", family_id = "f")
+omissions <- data.frame(hypothesis_id = "h", patient_id = letters[1:5])
+out <- LeaveOnePatientOut(endpoints, design, hypotheses, omissions)
+out$omissions[, c("omitted_patient", "mean_difference", "p_value")]
+#>   omitted_patient mean_difference   p_value
+#> 1               a       -3.666667 0.2500000
+#> 2               b       -4.666667 0.2500000
+#> 3               c       -5.000000 0.3333333
+#> 4               d       -4.000000 0.3333333
+#> 5               e       -3.500000 0.3333333
+```

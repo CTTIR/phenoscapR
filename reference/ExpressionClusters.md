@@ -55,5 +55,5 @@ obj <- ExpressionClusters(obj, k = 2)
 table(Meta(obj)$expr_cluster)
 #> 
 #>  1  2 
-#> 34 16 
+#> 31 19 
 ```

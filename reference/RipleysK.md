@@ -56,11 +56,11 @@ coords <- data.frame(x = runif(50, 0, 200), y = runif(50, 0, 200))
 obj <- CreateSpatialObject(counts, coords)
 RipleysK(obj)
 #> <phenoscapR> Ripley's K / none correction
-#>   50 radii from 0 to 48.1
-#>   L(r) range: [-8.53, 0.188]  (>0 clustered, <0 dispersed)
-#>           r        K          L  expected
-#> 1 0.0000000  0.00000  0.0000000  0.000000
-#> 2 0.9826464  0.00000 -0.9826464  3.033503
-#> 3 1.9652927  0.00000 -1.9652927 12.134010
-#> 4 2.9479391 30.43591  0.1646242 27.301523
+#>   50 radii from 0 to 48.7
+#>   L(r) range: [-5.58, 2.12]  (>0 clustered, <0 dispersed)
+#>           r        K         L  expected
+#> 1 0.0000000  0.00000 0.0000000  0.000000
+#> 2 0.9940645 30.44157 2.1187884  3.104409
+#> 3 1.9881290 30.44157 1.1247239 12.417638
+#> 4 2.9821935 30.44157 0.1306594 27.939685
 ```

@@ -74,12 +74,12 @@ coords <- data.frame(x = runif(50, 0, 100), y = runif(50, 0, 100))
 obj <- CreateSpatialObject(counts, coords)
 MoransI(obj, feature = "CD3", radius = 30)
 #> <phenoscapR> Moran's I spatial autocorrelation
-#>   I = -0.0460   (expected -0.0204 under no autocorrelation)
-#>   z = -0.514, p = 0.607
+#>   I = 0.0097   (expected -0.0204 under no autocorrelation)
+#>   z = 0.613, p = 0.54
 #>   no significant spatial autocorrelation
 MoransI(obj, feature = "CD3", radius = 30, weights = "idw", n_perm = 199)
 #> <phenoscapR> Moran's I spatial autocorrelation
-#>   I = -0.0699   (expected -0.0204 under no autocorrelation)
-#>   z = -0.721, p = 0.46
+#>   I = 0.0339   (expected -0.0204 under no autocorrelation)
+#>   z = 0.678, p = 0.435
 #>   no significant spatial autocorrelation
 ```
