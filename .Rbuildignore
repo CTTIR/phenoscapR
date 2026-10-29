@@ -1,7 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-^README\.md$
 ^\.github$
 ^\.git$
 ^\.gitignore$
@@ -26,5 +25,5 @@
 ^\.zenodo\.json$
 ^CITATION\.cff$
 ^tools/branding$
-^man/figures/(icon-[0-9]+\.png|logo-.*\.(pdf|png|svg)|logo\.(pdf|png))$
+^man/figures/(icon-[0-9]+\.png|logo-(dark|light|mono|symbol)\.(pdf|png|svg)|logo-with-name(-dark|-mono)?\.(pdf|svg)|logo-with-name-mono\.png|logo\.(pdf|png))$
 ^tests/testthat/_snaps/app$
