@@ -18,5 +18,8 @@
   tests and vignettes check for them with `requireNamespace()` or
   `skip_if_not_installed()`, and the package works without them.
 
+The example of `RunSONG()` is in `\dontrun{}`: it needs the optional 'songR'
+package, whose compiled code does not run on every platform.
+
 A check with `_R_CHECK_DEPENDS_ONLY_=true` (no suggested packages available)
-also passes.
+gives the same result.
