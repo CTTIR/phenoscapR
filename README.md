@@ -72,12 +72,13 @@ remotes::install_github("cttir/phenoscapR")
 ```
 
 Optional canonical cell-table imports and SONG embeddings require packages
-available from their public GitHub repositories:
+available from the CTTIR R-universe:
 
 ```r
-# install.packages("remotes")
-remotes::install_github("CTTIR/cellspecR")  # For FromCellspec()
-remotes::install_github("CTTIR/songR")      # For RunSONG()
+# For FromCellspec()
+install.packages("cellspecR", repos = c("https://cttir.r-universe.dev", getOption("repos")))
+# For RunSONG()
+install.packages("songR", repos = c("https://cttir.r-universe.dev", getOption("repos")))
 ```
 
 These packages are optional. Calling the corresponding function without its

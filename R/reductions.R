@@ -12,7 +12,8 @@
 .require_pkg <- function(pkg, fn) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     hint <- if (pkg == "songR") {
-      "remotes::install_github(\"CTTIR/songR\")"
+      paste0("install.packages(\"songR\", repos = c(\"https://cttir.r-universe.dev\", ",
+             "getOption(\"repos\")))")
     } else {
       paste0("install.packages(\"", pkg, "\")")
     }
@@ -307,10 +308,11 @@ RunTSNE <- function(object, dims = 30L, use_pca = TRUE, perplexity = 30,
 #' noise-robust, and preserves global structure. By default the embedding is
 #' computed on the top principal components (see \code{use_pca}).
 #'
-#' The optional \pkg{songR} package is available from
-#' \url{https://github.com/CTTIR/songR}. After installing \pkg{remotes}, use
-#' \code{remotes::install_github("CTTIR/songR")}. This function reports a
-#' missing dependency without installing software or changing the input object.
+#' The optional \pkg{songR} package (\url{https://github.com/CTTIR/songR}) is
+#' available from the CTTIR R-universe; install it with
+#' \code{install.packages("songR", repos = c("https://cttir.r-universe.dev", getOption("repos")))}.
+#' This function reports a missing dependency without installing software or
+#' changing the input object.
 #'
 #' @param object A \code{\link{SpatialCellData-class}} object.
 #' @param dims Integer. Number of PCs (or markers) to embed. Default \code{30}.

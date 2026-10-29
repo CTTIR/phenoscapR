@@ -132,6 +132,8 @@
 * `RunUMAP()`, `RunTSNE()` and `RunSONG()` with `seed` restore the caller's
   random number stream on exit instead of leaving it reseeded; the embeddings
   for a given seed are unchanged.
+* The help pages, the README and the `RunSONG()` error install 'cellspecR' and
+  'songR' from the CTTIR R-universe with `install.packages()`.
 
 # phenoscapR 0.1.1
 
