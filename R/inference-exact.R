@@ -22,10 +22,15 @@
 #' Enumerates every allocation with the declared group sizes. The statistic is
 #' the mean in A minus the mean in B; the two-sided p value is the fraction with
 #' absolute statistic at least the observed absolute statistic. Observed and
-#' allocated statistics are computed alike from values centred on their mean,
-#' and differences within rounding error (relative to the largest absolute
-#' value) count as ties, so p values do not depend on the scale of the values
-#' or on a shift that keeps their differences representable.
+#' allocated statistics are computed alike from values centred on their mean.
+#' Two statistics count as tied when they differ by no more than the rounding
+#' of this arithmetic (relative to the largest centred value) plus the rounding
+#' of the stored values (half a unit in the last place of the largest absolute
+#' value), so p values do not depend on the scale of the values. A shift leaves
+#' them unchanged while the rounding of the shifted values stays below the
+#' spacing of distinct statistics; for example, whole numbers from 0 to 20 for
+#' up to 12 patients keep their exact p values up to a shift of 1e13, while
+#' larger shifts can merge distinct statistics into ties.
 #' This requires exchangeability under the null. Observational confounding,
 #' paired designs and stratified randomisation are not addressed by this test.
 #' Repeated images must be aggregated to one endpoint per patient beforehand.
@@ -122,9 +127,11 @@ ExactPatientTests <- function(endpoints, design, hypotheses,
       null <- statistic(utils::combn(n, na))
       observed <- statistic(which(a))
       .exact_assert(is.finite(effect) && all(is.finite(null)), "Numerical overflow")
-      # Statistics that differ by no more than the rounding of the stored values
-      # and of the sums count as ties.
-      tolerance <- 8 * n * .Machine$double.eps * max(abs(value))
+      # Statistics that differ by no more than the rounding of the arithmetic on
+      # the centred values, plus half a unit in the last place of every stored
+      # value (at most eps * max |value| per statistic, twice for a pair),
+      # count as ties.
+      tolerance <- .Machine$double.eps * (8 * n * max(abs(centred)) + 2 * max(abs(value)))
       p <- mean(abs(null) >= abs(observed) - tolerance)
     }
     cbind(h, data.frame(n_a_expected = na, n_b_expected = n - na,

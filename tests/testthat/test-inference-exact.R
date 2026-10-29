@@ -164,3 +164,18 @@ test_that("exact p values do not depend on the location or scale of the values",
   for (shift in c(0, 1e3, 1e4, 1e5, 1e6)) expect_identical(exact_run(iv / 1000 + shift, g)$p_value, 0.4)
   expect_identical(exact_run(iv * 1e-15, g)$p_value, 0.4)
 })
+
+test_that("shifted whole numbers keep their exact p value", {
+  # The tie allowance follows the centred values and the rounding of the
+  # stored values, not a multiple of the largest absolute value.
+  iv <- c(2, 4, 19, 10, 17, 7, 4, 18)
+  g <- c("B", "B", "A", "B", "A", "B", "A", "B")
+  a <- g == "A"
+  sums <- colSums(matrix(iv[utils::combn(8, 3)], nrow = 3))
+  exact <- mean(abs(5 * sums - 3 * (sum(iv) - sums)) >= abs(5 * sum(iv[a]) - 3 * sum(iv[!a])))
+  for (shift in c(0, 1e9, 1e12, 1e13)) expect_identical(exact_run(iv + shift, g)$p_value, exact)
+  # Decimal values near 100 keep the ties of the same values near 0.
+  for (d in exact_designs()[c(16, 46)]) {
+    expect_identical(exact_run(d$value + 100, d$group)$p_value, exact_run(d$value, d$group)$p_value)
+  }
+})

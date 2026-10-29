@@ -41,9 +41,12 @@
   in every mode; frames of 799,800 or more points are refused.
 * `ExactPatientTests()` (and so `ContrastPatientEndpoints()` and
   `LeaveOnePatientOut()`) computes the observed and the allocated statistics
-  with one formula on centred values and counts differences within rounding
-  error, relative to the data, as ties. p values no longer change when values
-  are shifted or rescaled; for well-conditioned data they are unchanged.
+  with one formula on centred values and counts differences within the
+  rounding of that arithmetic and of the stored values as ties. p values no
+  longer change when values are rescaled, or shifted while the rounding of the
+  shifted values stays below the spacing of distinct statistics (whole numbers
+  keep their exact p values up to shifts of 1e13); for well-conditioned data
+  they are unchanged.
 * `DelaunayNetwork()` maps deldir's points back to cell rows when coordinates
   repeat; edges used to point to the wrong cells after a duplicate.
 * `read_spatial()` fills a blank QuPath `Image` value with the sample id;
