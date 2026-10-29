@@ -134,6 +134,8 @@
   for a given seed are unchanged.
 * The help pages, the README and the `RunSONG()` error install 'cellspecR' and
   'songR' from the CTTIR R-universe with `install.packages()`.
+* The Shiny app takes its fonts (Inter, JetBrains Mono), the light border grey
+  and the dark heading and border colours from the CTTIR design tokens.
 
 # phenoscapR 0.1.1
 
