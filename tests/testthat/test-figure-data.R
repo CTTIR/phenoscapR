@@ -285,6 +285,14 @@ test_that("counting keeps the class of data frame subclasses", {
   expect_identical(class(PlotDataRankRows(d, "type", "v")), "data.frame")
 })
 
+test_that("quantiles of zero rows are typed columns without groups", {
+  q <- PlotDataQuantiles(data.frame(type = character(), x = numeric(), v = numeric()), c("type", "x"), "v")
+  expect_identical(nrow(q), 0L)
+  expect_identical(names(q), c("type", "x", "lower", "median", "upper", "n"))
+  expect_type(q$median, "double")
+  expect_type(q$n, "integer")
+})
+
 test_that("a group without shares has no dominant category", {
   dd <- data.frame(g = c("1", "1", "2", "2"), col = c("A", "B", "A", "B"), share = c(0.2, 0.8, NA, NA))
   out <- PlotDataDominant(dd, "g", "col")

@@ -128,6 +128,21 @@ test_that("cells referenced by image and row are looked up", {
   expect_error(CellPositionsFor(data.frame(img = "i9", row = 0), cells, labels = c("i1", "i2"), source = "img"), "No cell table")
 })
 
+test_that("an empty schematic gives a typed empty shape table", {
+  expect_silent(s <- SchematicShapes())
+  one <- SchematicShapes(shapes = list(list(type = "text", x = 0, y = 0, label = "a")))$shapes
+  expect_identical(s$shapes, one[0L, , drop = FALSE])
+})
+
+test_that("zero cell references give typed empty columns", {
+  cells <- list(s1 = data.frame(row = 0:2, x = c(1, 5, 9), y = c(2, 4, 6), label = "a"))
+  pos <- CellPositionsFor(data.frame(sample_id = character(), row = integer()), cells)
+  expect_identical(nrow(pos), 0L)
+  expect_identical(names(pos), c("sample_id", "row", "x", "y", "label"))
+  expect_type(pos$x, "double")
+  expect_type(pos$label, "character")
+})
+
 test_that("schematics fill placeholders from data and lay out flows", {
   v <- data.frame(id = c("a", "b", "c"), grp = c("x", "y", "x"), n = c(1e6, 2e6, 3e5))
   s <- SchematicShapes(flow = list(labels = c("{k} items ({kx} x)", "{tot} M"), x0 = 0, width = 1, gap = 0.5, y = 0.5,

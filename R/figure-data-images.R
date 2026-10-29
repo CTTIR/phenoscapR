@@ -493,6 +493,8 @@ SchematicShapes <- function(shapes = list(), clouds = list(), flow = NULL, value
     }
   }
   tab <- do.call(rbind, rows)
+  # No shapes: the typed columns without rows.
+  if (is.null(tab)) tab <- .fig_c_shape_row(list(type = NA_character_))[0L, , drop = FALSE]
   if (length(fill) && !is.null(values)) {
     for (nm in names(fill)) {
       f <- fill[[nm]]
@@ -674,7 +676,11 @@ CellPositionsFor <- function(table, cells, labels = NULL, source = "sample_id", 
   keys <- if (!is.null(labels)) as.character(unlist(labels)) else names(cells)
   if (length(keys) != length(cells)) stop("labels must name every cell table.", call. = FALSE)
   out <- table
-  for (cl in columns) out[[cl]] <- NA
+  for (cl in columns) {
+    # Without rows, the columns take the type of the first cell table.
+    proto <- if (length(cells)) cells[[1L]][[cl]] else NULL
+    out[[cl]] <- if (nrow(out) || is.null(proto)) rep(NA, nrow(out)) else vector(typeof(proto), 0L)
+  }
   for (k in seq_along(cells)) {
     sel <- which(as.character(table[[source]]) == keys[k])
     if (!length(sel)) next

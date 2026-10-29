@@ -81,6 +81,9 @@
   `ExactPairedTests()`, `BootstrapMedianInterval()`,
   `PermutationCorrelation()`, `CompareTables()` and `SummarizeComparisons()`;
   without group columns they give one unavailable overall row.
+* `CellPositionsFor()` with zero references, `SchematicShapes()` without shapes
+  and `PlotDataQuantiles()` with zero rows give typed empty tables; they used
+  to fail, warn or return `NULL`.
 * `PermutationCorrelation()` refuses `min_n` below 2; a group with a single
   pair used to stop with an unhelpful error.
 * `PairedDifferences()` refuses `id` or `name` columns called `x`, `y` or

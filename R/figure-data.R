@@ -954,6 +954,12 @@ PlotDataQuantiles <- function(data, by, value, probs = c(0.25, 0.5, 0.75),
     out
   })
   out <- do.call(rbind, rows)
+  if (!length(keys)) {
+    # No rows: the typed columns without groups.
+    out <- data[0L, by, drop = FALSE]
+    out[names] <- rep(list(numeric()), length(names))
+    out[[n_name]] <- integer()
+  }
   rownames(out) <- NULL
   out
 }
