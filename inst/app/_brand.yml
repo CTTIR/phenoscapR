@@ -7,6 +7,7 @@ color:
     black:   "#212121"
     white:   "#fafafa"
     grey:    "#d8d8d8"
+    muted:   "#575757"
     blue:    "#1565c0"
     blue-lt: "#42a5f5"
     info:    "#1e88e5"
@@ -18,7 +19,7 @@ color:
   foreground: black
   background: white
   primary:    blue
-  secondary:  grey
+  secondary:  muted
   info:       info
   success:    teal
   warning:    amber
