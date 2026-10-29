@@ -79,6 +79,8 @@
   pair used to stop with an unhelpful error.
 * `PairedDifferences()` refuses `id` or `name` columns called `x`, `y` or
   `difference`, which used to produce duplicated column names.
+* `PairedDifferences()` gives zero rows for a zero-row table also for pairs
+  without `y`, which used to fail.
 * `FormatTemplate()` writes infinite values of plain placeholders as `"n.e."`
   instead of failing.
 * `RenderFigure()` passes the colour keyword `"group"` (for example

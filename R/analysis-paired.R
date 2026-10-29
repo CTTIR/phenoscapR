@@ -273,7 +273,7 @@ PairedDifferences <- function(data, id, pairs, name = "endpoint") {
     xv <- as.numeric(tab[[p$x]])
     yv <- if (is.null(p$y)) rep(0, nrow(tab)) else as.numeric(tab[[p$y]])
     out <- data.frame(label = rep(p$name, nrow(tab)), subject = tab[[id]], x = xv,
-                      y = if (is.null(p$y)) NA_real_ else yv,
+                      y = if (is.null(p$y)) rep(NA_real_, nrow(tab)) else yv,
                       difference = if (is.null(p$y)) xv else xv - yv,
                       stringsAsFactors = FALSE)
     names(out)[1:2] <- c(name, id)

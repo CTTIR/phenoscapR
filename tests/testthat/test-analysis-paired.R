@@ -90,6 +90,16 @@ test_that("paired differences from one or several tables", {
                "Unknown table")
 })
 
+test_that("paired differences of zero-row tables keep their columns", {
+  t0 <- data.frame(unit = character(), x1 = numeric(), x2 = numeric())
+  for (p in list(list(name = "x1", x = "x1"), list(name = "d", x = "x1", y = "x2"))) {
+    out <- PairedDifferences(t0, "unit", list(p))
+    expect_identical(nrow(out), 0L)
+    expect_identical(names(out), c("endpoint", "unit", "x", "y", "difference"))
+    expect_type(out$y, "double")
+  }
+})
+
 test_that("zero-row inputs give typed results without phantom groups", {
   e <- data.frame(id = character(), g = character(), d = numeric())
   expect_identical(.an_key(e, "g"), character())
