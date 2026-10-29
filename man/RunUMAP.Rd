@@ -26,8 +26,10 @@ on the marker matrix.}
 
 \item{n_neighbors}{Integer. UMAP neighbourhood size. Default \code{15}.}
 
-\item{densmap}{Logical. Use density-preserving densMAP instead of UMAP.
-Default \code{FALSE}. Requires a recent \pkg{uwot}.}
+\item{densmap}{Logical. Preserve local densities with the approximation of
+densMAP in \pkg{uwot} (\code{dens_scale = 1} in \code{uwot::umap()})
+instead of plain UMAP. Default \code{FALSE}. For partial density
+preservation, pass \code{dens_scale} through \code{...} instead.}
 
 \item{slot}{Character. \code{"data"} (default) or \code{"counts"}.}
 
@@ -35,7 +37,7 @@ Default \code{FALSE}. Requires a recent \pkg{uwot}.}
 
 \item{seed}{Integer or \code{NULL}. Random seed for reproducibility.}
 
-\item{...}{Passed to \code{uwot::umap()} / \code{uwot::densmap()}.}
+\item{...}{Passed to \code{uwot::umap()}.}
 }
 \value{
 The object with a \code{"umap"} entry in its \code{reductions} slot.

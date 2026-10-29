@@ -34,9 +34,11 @@ test_that("RunUMAP stores a 2D embedding", {
 
 test_that("RunUMAP densmap option works", {
   skip_if_not_installed("uwot")
-  skip_if(!exists("densmap", where = asNamespace("uwot")))
-  obj <- RunUMAP(make_obj(), densmap = TRUE, seed = 1L)
-  expect_equal(dim(Embeddings(obj, "umap")), c(60L, 2L))
+  emb <- Embeddings(RunUMAP(make_obj(), densmap = TRUE, seed = 1L), "umap")
+  expect_equal(dim(emb), c(60L, 2L))
+  # densMAP is uwot's density-preserving umap() with dens_scale = 1.
+  expect_identical(emb, Embeddings(RunUMAP(make_obj(), seed = 1L, dens_scale = 1), "umap"))
+  expect_false(isTRUE(all.equal(emb, Embeddings(RunUMAP(make_obj(), seed = 1L), "umap"))))
 })
 
 test_that("RunTSNE stores a 2D embedding and caps perplexity", {

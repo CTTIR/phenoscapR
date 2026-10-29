@@ -116,6 +116,8 @@
   `png::readPNG()` when 'ragg' is not installed.
 * `ExpressionClusters(method = "gmm")` no longer attaches 'mclust' to the
   search path; the clusters are the same.
+* `RunUMAP(densmap = TRUE)` uses the densMAP approximation of `uwot::umap()`
+  (`dens_scale = 1`); it used to fail because 'uwot' has no `densmap()`.
 
 # phenoscapR 0.1.1
 

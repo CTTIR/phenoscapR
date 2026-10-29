@@ -166,12 +166,14 @@ ScreePlot <- function(object, n_pcs = NULL) {
 #' @param use_pca Logical. Embed on PCA space (default \code{TRUE}) or directly
 #'   on the marker matrix.
 #' @param n_neighbors Integer. UMAP neighbourhood size. Default \code{15}.
-#' @param densmap Logical. Use density-preserving densMAP instead of UMAP.
-#'   Default \code{FALSE}. Requires a recent \pkg{uwot}.
+#' @param densmap Logical. Preserve local densities with the approximation of
+#'   densMAP in \pkg{uwot} (\code{dens_scale = 1} in \code{uwot::umap()})
+#'   instead of plain UMAP. Default \code{FALSE}. For partial density
+#'   preservation, pass \code{dens_scale} through \code{...} instead.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
 #' @param markers Character vector or \code{NULL}.
 #' @param seed Integer or \code{NULL}. Random seed for reproducibility.
-#' @param ... Passed to \code{uwot::umap()} / \code{uwot::densmap()}.
+#' @param ... Passed to \code{uwot::umap()}.
 #'
 #' @return The object with a \code{"umap"} entry in its \code{reductions} slot.
 #'
@@ -197,14 +199,13 @@ RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
   nn <- min(as.integer(n_neighbors), nrow(input) - 1L)
 
   emb <- if (densmap) {
-    if (!exists("densmap", where = asNamespace("uwot"))) {
-      stop("densmap = TRUE requires a newer version of 'uwot'.", call. = FALSE)
+    # uwot has no densmap(); umap() approximates densMAP through dens_scale.
+    if (!"dens_scale" %in% names(formals(uwot::umap))) {
+      stop("densmap = TRUE requires a version of 'uwot' whose umap() has ",
+           "dens_scale.", call. = FALSE)
     }
-    # Looked up dynamically: older 'uwot' releases do not export densmap(),
-    # and a static uwot::densmap reference would fail R CMD check against them.
-    densmap_fn <- get("densmap", envir = asNamespace("uwot"))
-    densmap_fn(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
-               ...)
+    uwot::umap(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
+               dens_scale = 1, ...)
   } else {
     uwot::umap(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
                ...)
