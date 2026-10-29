@@ -85,7 +85,7 @@ FormatTemplate <- function(template, data = NULL) {
     format = .fig_format_value(value, ph$format),
     plain = {
       if (length(value) != 1L || is.na(value) || (is.numeric(value) && !is.finite(value))) "n.e."
-      else if (is.numeric(value) && abs(value - round(value)) < 1e-9) .fig_minus(formatC(round(value), format = "d", big.mark = ","))
+      else if (is.numeric(value) && abs(value - round(value)) < 1e-9) .fig_minus(formatC(round(value) + 0, format = "f", digits = 0, big.mark = ","))
       else if (is.numeric(value)) .fig_minus(as.character(value))
       else as.character(value)
     })
@@ -101,7 +101,7 @@ FormatTemplate <- function(template, data = NULL) {
   if (!is.finite(value)) return("n.e.")
   if (format == "pfixed") return(sprintf(if (value < 0.01) "%.4f" else "%.3f", value))
   if (format == "d") return(.fig_minus(formatC(round(value) + 0, format = "f", digits = 0)))
-  if (format == "comma") return(.fig_minus(formatC(round(value), format = "d", big.mark = ",")))
+  if (format == "comma") return(.fig_minus(formatC(round(value) + 0, format = "f", digits = 0, big.mark = ",")))
   if (grepl("^f[0-9]$", format)) return(.fig_minus(formatC(value, format = "f", digits = as.integer(substring(format, 2)))))
   if (grepl("^sf[0-9]$", format)) {
     body <- formatC(abs(value), format = "f", digits = as.integer(substring(format, 3)))

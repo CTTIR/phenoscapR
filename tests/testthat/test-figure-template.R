@@ -47,6 +47,18 @@ test_that("whole-number format writes every digit", {
   expect_identical(FormatTemplate("{n|d}", data.frame(n = -0.2)), "0")
 })
 
+test_that("plain and comma formats write whole numbers beyond the integer range", {
+  big <- c(2^31, -2^31, 3e9, -1234567890123)
+  expected <- c("2,147,483,648", "−2,147,483,648", "3,000,000,000", "−1,234,567,890,123")
+  expect_silent(plain <- FormatTemplate("{n}", data.frame(n = big)))
+  expect_identical(plain, expected)
+  expect_silent(comma <- FormatTemplate("{n|comma}", data.frame(n = big + 0.2)))
+  expect_identical(comma, expected)
+  # Outputs inside the integer range are unchanged.
+  expect_identical(FormatTemplate("{n} / {n|comma}", data.frame(n = c(0, -0.3, 1234, -2147483647))),
+                   c("0 / 0", "−0.3 / 0", "1,234 / 1,234", "−2,147,483,647 / −2,147,483,647"))
+})
+
 test_that("infinite values in plain placeholders are not evaluable", {
   expect_identical(FormatTemplate("{r}", data.frame(r = c(Inf, -Inf, NaN, NA, 2))), c("n.e.", "n.e.", "n.e.", "n.e.", "2"))
   expect_identical(FormatTemplate("{r|f1}", data.frame(r = Inf)), "n.e.")
