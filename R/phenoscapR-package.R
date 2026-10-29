@@ -17,3 +17,8 @@ utils::globalVariables(c(
   "feature", "interaction_score", "mean_intensity", "nn_distance",
   "observed", "phenotype", "proportion", "sample_id"
 ))
+
+# Bindings for testthat::local_mocked_bindings(): base functions can only be
+# mocked through a binding in this namespace. Calls skip these NULL values and
+# reach base R as usual.
+requireNamespace <- NULL

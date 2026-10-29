@@ -11,8 +11,7 @@ one <- local({
 
 test_that("as_Seurat() errors when Seurat is unavailable", {
   local_mocked_bindings(
-    requireNamespace = function(package, ...) !identical(package, "Seurat"),
-    .package = "base"
+    requireNamespace = function(package, ...) !identical(package, "Seurat")
   )
   expect_error(as_Seurat(one), "requires the 'Seurat' package")
 })
@@ -20,8 +19,7 @@ test_that("as_Seurat() errors when Seurat is unavailable", {
 test_that("as_SpatialExperiment() errors when the package is unavailable", {
   local_mocked_bindings(
     requireNamespace = function(package, ...)
-      !identical(package, "SpatialExperiment"),
-    .package = "base"
+      !identical(package, "SpatialExperiment")
   )
   expect_error(as_SpatialExperiment(one),
                "requires the 'SpatialExperiment' package")

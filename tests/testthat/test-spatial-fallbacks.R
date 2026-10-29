@@ -18,14 +18,14 @@ mock_no <- function(pkg) function(package, ...) !identical(package, pkg)
 test_that("CellDensity matches between RANN and the pure-R fallback", {
   obj <- make_obj()
   fast <- CellDensity(obj, radius = 30)
-  local_mocked_bindings(requireNamespace = mock_no("RANN"), .package = "base")
+  local_mocked_bindings(requireNamespace = mock_no("RANN"))
   slow <- CellDensity(obj, radius = 30)
   expect_equal(slow, fast)
 })
 
 test_that("FindNeighbours falls back to the exact kNN search", {
   obj <- make_obj()
-  local_mocked_bindings(requireNamespace = mock_no("RANN"), .package = "base")
+  local_mocked_bindings(requireNamespace = mock_no("RANN"))
   slow <- FindNeighbours(obj, k = 3L)
   expect_equal(NCells(slow), NCells(obj))
 })
@@ -33,7 +33,7 @@ test_that("FindNeighbours falls back to the exact kNN search", {
 test_that("CrossNNDistance fallback agrees with the kd-tree result", {
   obj <- make_obj()
   fast <- CrossNNDistance(obj, from = "A", to = "B")
-  local_mocked_bindings(requireNamespace = mock_no("RANN"), .package = "base")
+  local_mocked_bindings(requireNamespace = mock_no("RANN"))
   slow <- CrossNNDistance(obj, from = "A", to = "B")
   expect_equal(as.numeric(slow), as.numeric(fast), tolerance = 1e-8)
 })
@@ -42,14 +42,14 @@ test_that("RipleysK fallback sweep agrees with the kd-tree sweep", {
   obj <- make_obj(n = 60L)
   r_seq <- seq(0, 40, length.out = 15)
   fast <- RipleysK(obj, r_seq = r_seq)
-  local_mocked_bindings(requireNamespace = mock_no("RANN"), .package = "base")
+  local_mocked_bindings(requireNamespace = mock_no("RANN"))
   slow <- RipleysK(obj, r_seq = r_seq)
   expect_equal(slow$K, fast$K, tolerance = 1e-8)
 })
 
 test_that("DelaunayNetwork warns and falls back without deldir", {
   obj <- make_obj(n = 20L)
-  local_mocked_bindings(requireNamespace = mock_no("deldir"), .package = "base")
+  local_mocked_bindings(requireNamespace = mock_no("deldir"))
   expect_warning(net <- DelaunayNetwork(obj), "deldir")
   edges <- net@spatial$delaunay_edges
   expect_true(all(c("from", "to", "distance") %in% names(edges)))

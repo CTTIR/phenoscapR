@@ -25,8 +25,8 @@
 run_app <- function(...) {
   needed <- c("shiny", "bslib", "sass", "thematic", "reactable", "bsicons",
               "brand.yml")
-  missing <- needed[!vapply(needed, requireNamespace, logical(1L),
-                            quietly = TRUE)]
+  missing <- needed[!vapply(needed, function(pkg)
+    requireNamespace(pkg, quietly = TRUE), logical(1L))]
   if (length(missing) > 0L) {
     stop("run_app() needs these packages: ", paste(missing, collapse = ", "),
          ".\nInstall them with install.packages(c(",
@@ -37,5 +37,8 @@ run_app <- function(...) {
     stop("Could not locate the app directory; try reinstalling phenoscapR.",
          call. = FALSE)
   }
-  shiny::runApp(app_dir, ...)
+  .run_shiny_app(app_dir, ...)
 }
+
+# shiny::runApp() behind a package function so tests can replace the launch.
+.run_shiny_app <- function(app_dir, ...) shiny::runApp(app_dir, ...)

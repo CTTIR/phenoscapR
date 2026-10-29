@@ -98,15 +98,13 @@ test_that("RunSONG reports its optional GitHub dependency without changing input
 })
 
 test_that("RunSONG stores a 2D embedding with a mocked backend", {
-  skip_if_not_installed("songR")
   obj <- make_obj(n = 30L)
   local_mocked_bindings(
-    requireNamespace = function(...) TRUE,
-    .package = "base"
+    requireNamespace = function(...) TRUE
   )
   fake_song <- function(x, ...) list(embedding = matrix(seq_len(nrow(x) * 2L),
                                                         ncol = 2L))
-  local_mocked_bindings(song = fake_song, .package = "songR")
+  local_mocked_bindings(.song_backend = function() fake_song)
   res <- RunSONG(obj, seed = 1L)
   emb <- Embeddings(res, "song")
   expect_equal(dim(emb), c(30L, 2L))

@@ -22,6 +22,10 @@
   invisible(TRUE)
 }
 
+#' The songR embedding function (a separate function so tests can replace it)
+#' @noRd
+.song_backend <- function() getExportedValue("songR", "song")
+
 #' Build the input matrix for a non-linear embedding
 #'
 #' By convention UMAP/t-SNE/SONG are run on the top principal components rather
@@ -309,7 +313,7 @@ RunSONG <- function(object, dims = 30L, use_pca = TRUE, slot = "data",
   args <- list(input, ...)
   if (!is.null(seed)) args$seed <- seed
 
-  fit <- do.call(getExportedValue("songR", "song"), args)
+  fit <- do.call(.song_backend(), args)
   emb <- fit$embedding
   if (is.null(emb)) {
     stop("songR::song() did not return an 'embedding' element.", call. = FALSE)
