@@ -183,7 +183,7 @@ Full documentation and vignettes are available at
 ## Contributing
 
 Bug reports and feature requests are welcome at
-<https://github.com/cttir/phenoscapR/issues>.
+<https://github.com/CTTIR/phenoscapR/issues>.
 
 ## Authors
 

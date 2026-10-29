@@ -33,7 +33,7 @@ ui <- bslib::page_navbar(
   bslib::nav_spacer(),
   bslib::nav_item(
     shiny::tags$a(bsicons::bs_icon("github"), class = "nav-link",
-                  href = "https://github.com/cttir/phenoscapR", target = "_blank")
+                  href = "https://github.com/CTTIR/phenoscapR", target = "_blank")
   ),
   bslib::nav_item(bslib::input_dark_mode(id = "color_mode"))
 )

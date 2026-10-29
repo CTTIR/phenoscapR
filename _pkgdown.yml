@@ -42,7 +42,7 @@ navbar:
       href: news/index.html
   right:
     - icon: fa-github
-      href: https://github.com/cttir/phenoscapR
+      href: https://github.com/CTTIR/phenoscapR
       aria-label: GitHub
 
 articles:

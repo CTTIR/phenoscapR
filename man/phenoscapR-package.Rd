@@ -14,8 +14,8 @@ Tools for importing, processing, analysing, and visualising single-cell spatial 
 Useful links:
 \itemize{
   \item \url{https://cttir.github.io/phenoscapR/}
-  \item \url{https://github.com/cttir/phenoscapR}
-  \item Report bugs at \url{https://github.com/cttir/phenoscapR/issues}
+  \item \url{https://github.com/CTTIR/phenoscapR}
+  \item Report bugs at \url{https://github.com/CTTIR/phenoscapR/issues}
 }
 
 }
