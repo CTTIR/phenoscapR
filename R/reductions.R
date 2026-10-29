@@ -22,6 +22,26 @@
   invisible(TRUE)
 }
 
+#' Snapshot the caller's random stream
+#'
+#' Returns a function that puts `.Random.seed` back as it was, or removes it
+#' when it did not exist, so a `seed` argument does not change the stream the
+#' caller continues with.
+#' @noRd
+.rng_restorer <- function() {
+  env <- globalenv()
+  if (exists(".Random.seed", envir = env, inherits = FALSE)) {
+    state <- get(".Random.seed", envir = env, inherits = FALSE)
+    function() assign(".Random.seed", state, envir = env)
+  } else {
+    function() {
+      if (exists(".Random.seed", envir = env, inherits = FALSE)) {
+        rm(".Random.seed", envir = env)
+      }
+    }
+  }
+}
+
 #' The songR embedding function (a separate function so tests can replace it)
 #' @noRd
 .song_backend <- function() getExportedValue("songR", "song")
@@ -176,7 +196,8 @@ ScreePlot <- function(object, n_pcs = NULL) {
 #'   preservation, pass \code{dens_scale} through \code{...} instead.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
 #' @param markers Character vector or \code{NULL}.
-#' @param seed Integer or \code{NULL}. Random seed for reproducibility.
+#' @param seed Integer or \code{NULL}. Random seed for reproducibility. The
+#'   random number stream of the caller is restored afterwards.
 #' @param ... Passed to \code{uwot::umap()}.
 #'
 #' @return The object with a \code{"umap"} entry in its \code{reductions} slot.
@@ -197,7 +218,11 @@ RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
                     densmap = FALSE, slot = "data", markers = NULL,
                     seed = NULL, ...) {
   .require_pkg("uwot", "RunUMAP")
-  if (!is.null(seed)) set.seed(seed)
+  if (!is.null(seed)) {
+    restore_rng <- .rng_restorer()
+    on.exit(restore_rng(), add = TRUE)
+    set.seed(seed)
+  }
 
   input <- .embedding_input(object, use_pca, dims, slot, markers)
   nn <- min(as.integer(n_neighbors), nrow(input) - 1L)
@@ -235,7 +260,8 @@ RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
 #'   \code{(n - 1) / 3}. Default \code{30}.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
 #' @param markers Character vector or \code{NULL}.
-#' @param seed Integer or \code{NULL}. Random seed for reproducibility.
+#' @param seed Integer or \code{NULL}. Random seed for reproducibility. The
+#'   random number stream of the caller is restored afterwards.
 #' @param ... Passed to \code{Rtsne::Rtsne()}.
 #'
 #' @return The object with a \code{"tsne"} entry in its \code{reductions} slot.
@@ -255,7 +281,11 @@ RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
 RunTSNE <- function(object, dims = 30L, use_pca = TRUE, perplexity = 30,
                     slot = "data", markers = NULL, seed = NULL, ...) {
   .require_pkg("Rtsne", "RunTSNE")
-  if (!is.null(seed)) set.seed(seed)
+  if (!is.null(seed)) {
+    restore_rng <- .rng_restorer()
+    on.exit(restore_rng(), add = TRUE)
+    set.seed(seed)
+  }
 
   input <- .embedding_input(object, use_pca, dims, slot, markers)
   perp <- min(perplexity, floor((nrow(input) - 1L) / 3))
@@ -288,7 +318,8 @@ RunTSNE <- function(object, dims = 30L, use_pca = TRUE, perplexity = 30,
 #'   on the marker matrix.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
 #' @param markers Character vector or \code{NULL}.
-#' @param seed Integer or \code{NULL}. Random seed for reproducibility.
+#' @param seed Integer or \code{NULL}. Random seed for reproducibility. The
+#'   random number stream of the caller is restored afterwards.
 #' @param ... Passed to \code{songR::song()}.
 #'
 #' @return The object with a \code{"song"} entry in its \code{reductions} slot.
@@ -311,7 +342,12 @@ RunSONG <- function(object, dims = 30L, use_pca = TRUE, slot = "data",
 
   input <- .embedding_input(object, use_pca, dims, slot, markers)
   args <- list(input, ...)
-  if (!is.null(seed)) args$seed <- seed
+  if (!is.null(seed)) {
+    # songR::song() calls set.seed(seed) itself.
+    restore_rng <- .rng_restorer()
+    on.exit(restore_rng(), add = TRUE)
+    args$seed <- seed
+  }
 
   fit <- do.call(.song_backend(), args)
   emb <- fit$embedding

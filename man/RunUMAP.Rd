@@ -35,7 +35,8 @@ preservation, pass \code{dens_scale} through \code{...} instead.}
 
 \item{markers}{Character vector or \code{NULL}.}
 
-\item{seed}{Integer or \code{NULL}. Random seed for reproducibility.}
+\item{seed}{Integer or \code{NULL}. Random seed for reproducibility. The
+random number stream of the caller is restored afterwards.}
 
 \item{...}{Passed to \code{uwot::umap()}.}
 }

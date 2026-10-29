@@ -129,6 +129,9 @@
   needs a 'cellspecR' newer than 1.0.0 (with `cs_read_npz()`); with
   'cellspecR' 1.0.0 both functions now say so instead of failing on a missing
   function.
+* `RunUMAP()`, `RunTSNE()` and `RunSONG()` with `seed` restore the caller's
+  random number stream on exit instead of leaving it reseeded; the embeddings
+  for a given seed are unchanged.
 
 # phenoscapR 0.1.1
 
