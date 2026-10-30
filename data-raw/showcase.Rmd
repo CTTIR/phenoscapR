@@ -1,7 +1,7 @@
 ---
 title: "phenoscapR — Function Showcase"
 subtitle: "Single-cell spatial biology, end to end, on the bundled example data"
-author: "R. Heller"
+author: "R. Heller, E. Chteinberg, H. Witte"
 date: "`r format(Sys.Date())`"
 output:
   pdf_document:

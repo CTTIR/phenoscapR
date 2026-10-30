@@ -1,5 +1,9 @@
 # phenoscapR 0.2.0
 
+* E. Chteinberg added as an author alongside R. Heller (author and maintainer)
+  and H. Witte (author). All three authors are affiliated with Ulm University.
+  Author names use initials throughout the package metadata, citation, and
+  documentation.
 * Patient-level and cell-level analysis exports: `ExactPairedTests()` (exact
   signed-rank test over all sign flips with midranks, exact sign test,
   direction interval and leave-one-out rows), `PairedDifferences()`,
@@ -238,7 +242,7 @@ package version for this release is 0.1.1.
   core package stays lightweight; `run_app()` reports any missing app packages.
 * The app ships in `inst/app` as composable Shiny modules over the package's
   exported functions, with a `shinytest2` smoke test (light and dark).
-* Hanno Witte is credited as co-author throughout (README, citation, site).
+* H. Witte is credited as co-author throughout (README, citation, site).
 
 ### Original development label: phenoscapR 2.0.0
 
@@ -294,7 +298,7 @@ API coherence.
   analysed per section and returned as a named list (`phenoscapR_by_sample`).
 * Added a project `.lintr` configuration (the package is lint-clean) and a
   `lint` GitHub Actions workflow running lintr and goodpractice.
-* Hanno Witte added as a package author.
+* H. Witte added as a package author.
 
 ### Original development label: phenoscapR 1.0.1
 

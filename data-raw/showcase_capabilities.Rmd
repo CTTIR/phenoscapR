@@ -1,7 +1,7 @@
 ---
 title: "phenoscapR --- Full Capabilities Report"
 subtitle: "From cell tables to niches, domains, and differential abundance"
-author: "R. Heller and H. Witte"
+author: "R. Heller, E. Chteinberg, H. Witte"
 date: "`r format(Sys.Date())`"
 output:
   pdf_document:

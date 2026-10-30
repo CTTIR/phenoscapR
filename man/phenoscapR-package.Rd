@@ -20,12 +20,13 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID}) [copyright holder]
+\strong{Maintainer}: R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID}) (affiliation: Ulm University) [copyright holder]
 
 Authors:
 \itemize{
-  \item R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID}) [copyright holder]
-  \item Hanno Witte [copyright holder]
+  \item R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID}) (affiliation: Ulm University) [copyright holder]
+  \item E. Chteinberg (affiliation: Ulm University)
+  \item H. Witte (affiliation: Ulm University) [copyright holder]
 }
 
 }

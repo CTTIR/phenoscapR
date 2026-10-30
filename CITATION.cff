@@ -6,8 +6,14 @@ authors:
 - family-names: Heller
   given-names: R.
   orcid: https://orcid.org/0000-0001-8006-9742
+  affiliation: Ulm University
+- family-names: Chteinberg
+  given-names: E.
+  affiliation: Ulm University
 - family-names: Witte
-  given-names: Hanno
+  given-names: H.
+  affiliation: Ulm University
+version: 0.2.0
 repository-code: https://github.com/CTTIR/phenoscapR
 url: https://cttir.github.io/phenoscapR/
 license: MIT

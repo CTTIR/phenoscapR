@@ -185,8 +185,9 @@ Bug reports and feature requests are welcome at
 
 ## Authors
 
-- **R. Heller** (maintainer, author) — [ORCID 0000-0001-8006-9742](https://orcid.org/0000-0001-8006-9742)
-- **Hanno Witte** (author)
+- **R. Heller** (author, maintainer; Ulm University) — [ORCID 0000-0001-8006-9742](https://orcid.org/0000-0001-8006-9742)
+- **E. Chteinberg** (author; Ulm University)
+- **H. Witte** (author; Ulm University)
 
 ## Citation
 
@@ -194,13 +195,23 @@ Bug reports and feature requests are welcome at
 citation("phenoscapR")
 ```
 
-> Heller, R. & Witte, H. (2026). phenoscapR: Read, Analyse, and Visualise
-> Single-Cell Spatial Biology Data. R package version 0.1.1.
+> R. Heller, E. Chteinberg, H. Witte (2026). phenoscapR: Read, Analyse, and Visualise
+> Single-Cell Spatial Biology Data. R package version 0.2.0.
 > <https://cttir.github.io/phenoscapR/>
+
+```bibtex
+@Manual{,
+  title = {phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data},
+  author = {R. Heller and E. Chteinberg and H. Witte},
+  year = {2026},
+  note = {R package version 0.2.0},
+  url = {https://cttir.github.io/phenoscapR/},
+}
+```
 
 ## License
 
-MIT © R. Heller and Hanno Witte
+MIT © R. Heller and H. Witte
 
 ## Branding
 
