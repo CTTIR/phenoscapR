@@ -44,7 +44,7 @@ Authors:
   University) \[copyright holder\]
 
 - E. Chteinberg ([ORCID](https://orcid.org/0000-0002-9231-9291))
-  (affiliation: Ulm University)
+  (affiliation: Ulm University) \[copyright holder\]
 
 - H. Witte ([ORCID](https://orcid.org/0000-0001-5767-7125))
   (affiliation: Ulm University) \[copyright holder\]
