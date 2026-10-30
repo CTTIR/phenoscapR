@@ -43,6 +43,8 @@ Authors:
   ([ORCID](https://orcid.org/0000-0001-8006-9742)) (affiliation: Ulm
   University) \[copyright holder\]
 
-- E. Chteinberg (affiliation: Ulm University)
+- E. Chteinberg ([ORCID](https://orcid.org/0000-0002-9231-9291))
+  (affiliation: Ulm University)
 
-- H. Witte (affiliation: Ulm University) \[copyright holder\]
+- H. Witte ([ORCID](https://orcid.org/0000-0001-5767-7125))
+  (affiliation: Ulm University) \[copyright holder\]

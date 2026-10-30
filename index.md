@@ -210,8 +210,10 @@ Bug reports and feature requests are welcome at
 
 - **R. Heller** (author, maintainer; Ulm University) — [ORCID
   0000-0001-8006-9742](https://orcid.org/0000-0001-8006-9742)
-- **E. Chteinberg** (author; Ulm University)
-- **H. Witte** (author; Ulm University)
+- **E. Chteinberg** (author; Ulm University) — [ORCID
+  0000-0002-9231-9291](https://orcid.org/0000-0002-9231-9291)
+- **H. Witte** (author; Ulm University) — [ORCID
+  0000-0001-5767-7125](https://orcid.org/0000-0001-5767-7125)
 
 ## Citation
 

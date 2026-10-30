@@ -8,10 +8,11 @@
 
 - **[E.
   Chteinberg](https://www.uniklinik-ulm.de/en/pathologie/ueber-uns/team.html)**.
-  Author.  
+  Author. [](https://orcid.org/0000-0002-9231-9291)  
   Ulm University
 
-- **[H. Witte](https://github.com/cttir)**. Author, copyright holder.  
+- **[H. Witte](https://github.com/cttir)**. Author, copyright holder.
+  [](https://orcid.org/0000-0001-5767-7125)  
   Ulm University
 
 ## Citation
