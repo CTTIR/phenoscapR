@@ -32,6 +32,5 @@ if (requireNamespace("SpatialExperiment", quietly = TRUE)) {
   obj <- CreateSpatialObject(counts, data.frame(x = c(1, 5, 9, 4), y = c(2, 8, 3, 6)))
   spe <- as_SpatialExperiment(obj)
 }
-#> Warning: replacing previous import ‘S4Arrays::makeNindexFromArrayViewport’ by ‘DelayedArray::makeNindexFromArrayViewport’ when loading ‘SummarizedExperiment’
 # }
 ```
