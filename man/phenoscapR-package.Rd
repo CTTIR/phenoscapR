@@ -25,7 +25,7 @@ Useful links:
 Authors:
 \itemize{
   \item R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID}) (affiliation: Ulm University) [copyright holder]
-  \item E. Chteinberg (\href{https://orcid.org/0000-0002-9231-9291}{ORCID}) (affiliation: Ulm University)
+  \item E. Chteinberg (\href{https://orcid.org/0000-0002-9231-9291}{ORCID}) (affiliation: Ulm University) [copyright holder]
   \item H. Witte (\href{https://orcid.org/0000-0001-5767-7125}{ORCID}) (affiliation: Ulm University) [copyright holder]
 }
 

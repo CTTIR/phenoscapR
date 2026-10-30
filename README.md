@@ -211,7 +211,7 @@ citation("phenoscapR")
 
 ## License
 
-MIT © R. Heller and H. Witte
+MIT © R. Heller, E. Chteinberg and H. Witte
 
 ## Branding
 
