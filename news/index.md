@@ -13,10 +13,11 @@
   and infinite permutation loops. Pearson permutation correlations are
   stable for finite observations at very large or small numeric scales.
 - [`RunUMAP()`](https://cttir.github.io/phenoscapR/reference/RunUMAP.md)
-  uses one worker thread by default; `n_threads` can be increased
-  explicitly. The visualisation vignette uses a fixed seed and base SVD
-  for PCA initialisation of disconnected groups, avoiding an older-R
-  failure in the optional truncated-SVD solver.
+  uses one worker thread and base SVD by default; `n_threads` and
+  `pca_method` can be changed explicitly. Base SVD avoids an older-R
+  failure in the optional truncated solver during PCA initialisation of
+  disconnected groups. The visualisation vignette also uses a fixed
+  seed.
 - E. Chteinberg added as an author alongside R. Heller (author and
   maintainer) and H. Witte (author). All three authors are affiliated
   with Ulm University. Author names use initials throughout the package

@@ -17,6 +17,7 @@ RunUMAP(
   markers = NULL,
   seed = NULL,
   n_threads = 1L,
+  pca_method = "svd",
   ...
 )
 ```
@@ -67,6 +68,13 @@ RunUMAP(
 
   Integer. Number of worker threads for UMAP neighbour search. Defaults
   to `1`; increase explicitly for larger analyses.
+
+- pca_method:
+
+  Character. PCA solver used by uwot for initialisation or optional
+  dimensionality reduction. Defaults to `"svd"`, using base R for the
+  small marker/PC panels typical of spatial data. Pass `"auto"` or
+  `"irlba"` to use an optional truncated solver for larger panels.
 
 - ...:
 
