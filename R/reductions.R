@@ -201,6 +201,11 @@ ScreePlot <- function(object, n_pcs = NULL) {
 #'   random number stream of the caller is restored afterwards.
 #' @param n_threads Integer. Number of worker threads for UMAP neighbour
 #'   search. Defaults to \code{1}; increase explicitly for larger analyses.
+#' @param pca_method Character. PCA solver used by \pkg{uwot} for
+#'   initialisation or optional dimensionality reduction. Defaults to
+#'   \code{"svd"}, using base R for the small marker/PC panels typical of
+#'   spatial data. Pass \code{"auto"} or \code{"irlba"} to use an optional
+#'   truncated solver for larger panels.
 #' @param ... Passed to \code{uwot::umap()}.
 #'
 #' @return The object with a \code{"umap"} entry in its \code{reductions} slot.
@@ -219,7 +224,7 @@ ScreePlot <- function(object, n_pcs = NULL) {
 #' @export
 RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
                     densmap = FALSE, slot = "data", markers = NULL,
-                    seed = NULL, n_threads = 1L, ...) {
+                    seed = NULL, n_threads = 1L, pca_method = "svd", ...) {
   .require_pkg("uwot", "RunUMAP")
   if (!is.null(seed)) {
     restore_rng <- .rng_restorer()
@@ -237,10 +242,10 @@ RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
            "dens_scale.", call. = FALSE)
     }
     uwot::umap(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
-               dens_scale = 1, n_threads = n_threads, ...)
+               dens_scale = 1, n_threads = n_threads, pca_method = pca_method, ...)
   } else {
     uwot::umap(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
-               n_threads = n_threads, ...)
+               n_threads = n_threads, pca_method = pca_method, ...)
   }
   emb <- as.matrix(emb)
   colnames(emb) <- c("UMAP_1", "UMAP_2")

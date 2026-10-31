@@ -14,6 +14,7 @@ RunUMAP(
   markers = NULL,
   seed = NULL,
   n_threads = 1L,
+  pca_method = "svd",
   ...
 )
 }
@@ -41,6 +42,12 @@ random number stream of the caller is restored afterwards.}
 
 \item{n_threads}{Integer. Number of worker threads for UMAP neighbour
 search. Defaults to \code{1}; increase explicitly for larger analyses.}
+
+\item{pca_method}{Character. PCA solver used by \pkg{uwot} for
+initialisation or optional dimensionality reduction. Defaults to
+\code{"svd"}, using base R for the small marker/PC panels typical of
+spatial data. Pass \code{"auto"} or \code{"irlba"} to use an optional
+truncated solver for larger panels.}
 
 \item{...}{Passed to \code{uwot::umap()}.}
 }

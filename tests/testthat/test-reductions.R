@@ -52,6 +52,16 @@ test_that("RunUMAP densmap option works", {
   expect_false(isTRUE(all.equal(emb, Embeddings(RunUMAP(make_obj(), seed = 1L), "umap"))))
 })
 
+test_that("RunUMAP uses base SVD for PCA initialisation and permits solver overrides", {
+  skip_if_not_installed("uwot")
+  obj <- make_obj()
+  default <- RunUMAP(obj, seed = 1L, init = "pca")
+  svd <- RunUMAP(obj, seed = 1L, init = "pca", pca_method = "svd")
+  expect_identical(Embeddings(default, "umap"), Embeddings(svd, "umap"))
+  expect_true(all(is.finite(Embeddings(default, "umap"))))
+  expect_error(RunUMAP(obj, seed = 1L, pca_method = "unknown"), "should be one of")
+})
+
 test_that("RunTSNE stores a 2D embedding and caps perplexity", {
   skip_if_not_installed("Rtsne")
   obj <- RunTSNE(make_obj(n = 40L), seed = 1L)  # perplexity must auto-cap
