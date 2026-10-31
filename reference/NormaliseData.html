@@ -74,7 +74,9 @@ Raw counts remain unchanged.</p>
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>Character. <code>"zscore"</code> (default), <code>"minmax"</code>, or
-<code>"quantile"</code>.</p></dd>
+<code>"quantile"</code>. Missing values are preserved. Quantile normalisation
+scales average ranks to <code>[0, 1]</code>; a sole observed value is assigned 0.5,
+as for a constant marker with several observations.</p></dd>
 
 
 <dt id="arg-markers">markers<a class="anchor" aria-label="anchor" href="#arg-markers"></a></dt>

@@ -23,7 +23,10 @@ NormaliseData(
 
 - method:
 
-  Character. `"zscore"` (default), `"minmax"`, or `"quantile"`.
+  Character. `"zscore"` (default), `"minmax"`, or `"quantile"`. Missing
+  values are preserved. Quantile normalisation scales average ranks to
+  `[0, 1]`; a sole observed value is assigned 0.5, as for a constant
+  marker with several observations.
 
 - markers:
 

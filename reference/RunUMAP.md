@@ -16,6 +16,7 @@ RunUMAP(
   slot = "data",
   markers = NULL,
   seed = NULL,
+  n_threads = 1L,
   ...
 )
 ```
@@ -61,6 +62,11 @@ RunUMAP(
 
   Integer or `NULL`. Random seed for reproducibility. The random number
   stream of the caller is restored afterwards.
+
+- n_threads:
+
+  Integer. Number of worker threads for UMAP neighbour search. Defaults
+  to `1`; increase explicitly for larger analyses.
 
 - ...:
 

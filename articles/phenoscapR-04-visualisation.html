@@ -244,7 +244,10 @@ data.</p>
 <span><span class="fu"><a href="../reference/EmbeddingPlot.html">DimPlot</a></span><span class="op">(</span><span class="va">obj</span>, reduction <span class="op">=</span> <span class="st">"pca"</span>, colour_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="phenoscapR-04-visualisation_files/figure-html/pca-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunUMAP.html">RunUMAP</a></span><span class="op">(</span><span class="va">obj</span>, dims <span class="op">=</span> <span class="fl">10</span>, n_neighbors <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Base SVD is sufficient for this small marker panel and avoids dependence</span></span>
+<span><span class="co"># on an optional truncated-SVD solver when disconnected groups need PCA init.</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunUMAP.html">RunUMAP</a></span><span class="op">(</span><span class="va">obj</span>, dims <span class="op">=</span> <span class="fl">10</span>, n_neighbors <span class="op">=</span> <span class="fl">15</span>, seed <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>               pca_method <span class="op">=</span> <span class="st">"svd"</span>, n_threads <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/EmbeddingPlot.html">EmbeddingPlot</a></span><span class="op">(</span><span class="va">obj</span>, reduction <span class="op">=</span> <span class="st">"umap"</span>, colour_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="phenoscapR-04-visualisation_files/figure-html/umap-1.png" class="r-plt" alt="" width="672"></p>
 </div>
