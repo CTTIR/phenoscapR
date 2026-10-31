@@ -1,8 +1,12 @@
 ## Test environments
 
-* Local: R 4.6.1 on Ubuntu 26.04 LTS (x86_64-pc-linux-gnu), with the PDF
-  manual built by LaTeX.
-* GitHub Actions: ubuntu-latest (R release, devel, oldrel-1), macOS-latest
+Checked on 2026-10-31:
+
+* Local: R 4.6.1 on macOS 27.0.1 (aarch64-apple-darwin27.0.0), with all
+  suggested packages available, vignettes rebuilt, and PDF and HTML manuals
+  checked.
+* Local: the same environment with `_R_CHECK_DEPENDS_ONLY_=true`.
+* GitHub Actions: ubuntu-latest (R devel, oldrel-1, oldrel-3), macOS-latest
   and windows-latest (R release).
 
 ## R CMD check results
@@ -20,5 +24,5 @@
 The example of `RunSONG()` is in `\dontrun{}`: it needs the optional 'songR'
 package, whose compiled code does not run on every platform.
 
-A check with `_R_CHECK_DEPENDS_ONLY_=true` (no suggested packages available)
-gives the same result.
+Both local `R CMD check --as-cran` runs give the result above. Tests that need
+unavailable optional packages are skipped in the dependencies-only run.

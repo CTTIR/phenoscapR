@@ -1,10 +1,15 @@
-# Draw a ggplot (or a composed page) on a throw-away raster device.
+# Draw a ggplot (or a composed page) on a throw-away device.
 draw_off_screen <- function(p, w = 4, h = 3) {
   f <- withr::local_tempfile(fileext = ".png")
   if (requireNamespace("ragg", quietly = TRUE)) {
     ragg::agg_png(f, width = w, height = h, units = "in", res = 100)
+  } else if (capabilities("cairo")) {
+    grDevices::png(f, width = w, height = h, units = "in", res = 100,
+                  type = "cairo")
   } else {
-    grDevices::png(f, width = w, height = h, units = "in", res = 100)
+    # Base PDF uses the font fallback registered by ManuscriptStyle().
+    f <- withr::local_tempfile(fileext = ".pdf")
+    grDevices::pdf(f, width = w, height = h)
   }
   on.exit(grDevices::dev.off(), add = TRUE)
   if (inherits(p, "ggplot")) grid::grid.draw(ggplot2::ggplotGrob(p)) else print(p)
