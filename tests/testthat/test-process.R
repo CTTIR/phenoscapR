@@ -115,6 +115,32 @@ test_that("minmax scaling of a constant marker keeps missing values", {
   expect_identical(normalise_markers(dt, method = "minmax")$M, c(0, NA, 0))
 })
 
+test_that("normalisation preserves empty and all-missing markers without warnings", {
+  for (method in c("zscore", "minmax", "quantile")) {
+    expect_no_warning(empty <- .normalise_vector(numeric(), method))
+    expect_identical(empty, numeric())
+    dt <- data.table::data.table(M = rep(NA_real_, 3))
+    expect_no_warning(result <- normalise_markers(dt, method, markers = "M"))
+    expect_identical(result$M, dt$M)
+    obj <- CreateSpatialObject(matrix(1:3, ncol = 1, dimnames = list(NULL, "M")),
+                                data.frame(x = 1:3, y = 0))
+    obj@counts[,] <- NA_real_
+    expect_no_warning(result <- NormaliseData(obj, method))
+    expect_identical(as.vector(GetData(result)), dt$M)
+  }
+})
+
+test_that("quantile normalisation gives a sole observation the constant-marker midpoint", {
+  dt <- data.table::data.table(M = c(NA_real_, 7, NA_real_))
+  result <- normalise_markers(dt, "quantile", markers = "M")
+  expect_identical(result$M, c(NA_real_, 0.5, NA_real_))
+  expect_identical(dt$M, c(NA_real_, 7, NA_real_))
+  obj <- CreateSpatialObject(as.matrix(dt), data.frame(x = 1:3, y = 0))
+  result <- NormaliseData(obj, "quantile")
+  expect_identical(as.vector(GetData(result)), c(NA_real_, 0.5, NA_real_))
+  expect_identical(.normalise_vector(rep(7, 3), "quantile"), rep(0.5, 3))
+})
+
 test_that("a single cell is phenotyped on several markers", {
   o <- CreateSpatialObject(matrix(c(5, 0), 1, 2, dimnames = list(NULL, c("CD3", "CD8"))), data.frame(x = 0, y = 0))
   expect_identical(PhenotypeCells(o, c(CD3 = 1, CD8 = 1))$phenotype, "CD3+")

@@ -32,6 +32,17 @@ test_that("RunUMAP stores a 2D embedding", {
   expect_equal(colnames(emb), c("UMAP_1", "UMAP_2"))
 })
 
+test_that("RunUMAP defaults to reproducible single-worker execution", {
+  skip_if_not_installed("uwot")
+  obj <- make_obj()
+  default <- RunUMAP(obj, seed = 1L)
+  serial <- RunUMAP(obj, seed = 1L, n_threads = 1L)
+  expect_identical(Embeddings(default, "umap"), Embeddings(serial, "umap"))
+  parallel <- RunUMAP(obj, seed = 1L, n_threads = 2L)
+  expect_equal(dim(Embeddings(parallel, "umap")), c(60L, 2L))
+  expect_true(all(is.finite(Embeddings(parallel, "umap"))))
+})
+
 test_that("RunUMAP densmap option works", {
   skip_if_not_installed("uwot")
   emb <- Embeddings(RunUMAP(make_obj(), densmap = TRUE, seed = 1L), "umap")

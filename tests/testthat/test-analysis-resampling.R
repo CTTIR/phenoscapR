@@ -90,3 +90,60 @@ test_that("min_n below two is refused instead of failing on a single pair", {
   r <- PermutationCorrelation(d, "x", "y", groups = "g", min_n = 2, permutations = "exact")
   expect_identical(r$status, c("UNAVAILABLE", "TESTED"))
 })
+
+test_that("resampling refuses non-numeric observations instead of using factor codes", {
+  for (values in list(factor(c("low", "medium", "high", "low")),
+                      as.character(1:4), as.Date("2026-01-01") + 0:3)) {
+    d <- data.frame(x = values, y = 1:4)
+    expect_error(BootstrapMedianInterval(d, "x", n_boot = 10), "numeric column")
+    expect_error(PermutationCorrelation(d, "x", "y", permutations = "exact"),
+                 "numeric columns")
+    expect_error(PermutationCorrelation(d, "y", "x", permutations = "exact"),
+                 "numeric columns")
+  }
+})
+
+test_that("resampling counts and correlation tolerance are finite and valid", {
+  d <- data.frame(x = 1:4, y = 1:4)
+  for (count in c(Inf, -Inf, NA_real_, NaN, 0, 1.5)) {
+    expect_error(BootstrapMedianInterval(d, "x", n_boot = count), "n_boot")
+    expect_error(PermutationCorrelation(d, "x", "y", n_perm = count), "n_perm")
+  }
+  for (count in c(Inf, NA_real_, 1, 2.5)) {
+    expect_error(PermutationCorrelation(d, "x", "y", max_exact_n = count), "max_exact_n")
+  }
+  for (tolerance in list(-0.01, Inf, NA_real_, numeric(), c(0, 0.01))) {
+    expect_error(PermutationCorrelation(d, "x", "y", permutations = "exact",
+                                        tolerance = tolerance), "tolerance")
+  }
+  exact <- PermutationCorrelation(d, "x", "y", permutations = "exact")
+  expect_equal(exact$p_value, 2 / factorial(4))
+})
+
+test_that("resampling accepts data.table columns without changing results", {
+  d <- data.frame(x = 1:4, y = c(2, 1, 4, 3))
+  dt <- data.table::as.data.table(d)
+  expect_identical(BootstrapMedianInterval(dt, "x", n_boot = 20, seed = 1),
+                   BootstrapMedianInterval(d, "x", n_boot = 20, seed = 1))
+  expect_identical(PermutationCorrelation(dt, "x", "y", permutations = "exact"),
+                   PermutationCorrelation(d, "x", "y", permutations = "exact"))
+})
+
+test_that("Pearson permutation tests are stable across finite numeric scales", {
+  d <- data.frame(x = 1:6, y = c(2, 1, 4, 3, 6, 5))
+  for (mode in c("exact", "monte_carlo")) {
+    baseline <- PermutationCorrelation(d, "x", "y", method = "pearson",
+                                        permutations = mode, n_perm = 199, seed = 1)
+    expect_equal(baseline$estimate, stats::cor(d$x, d$y))
+    for (scale in c(1e-200, 1e200)) {
+      scaled <- PermutationCorrelation(d * scale, "x", "y", method = "pearson",
+                                        permutations = mode, n_perm = 199, seed = 1)
+      expect_equal(scaled, baseline)
+    }
+  }
+  for (constant in c(0, 1e-200, 1e200)) {
+    d$x <- constant
+    expect_identical(PermutationCorrelation(d, "x", "y", method = "pearson")$status,
+                     "UNAVAILABLE")
+  }
+})

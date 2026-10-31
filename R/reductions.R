@@ -199,6 +199,8 @@ ScreePlot <- function(object, n_pcs = NULL) {
 #' @param markers Character vector or \code{NULL}.
 #' @param seed Integer or \code{NULL}. Random seed for reproducibility. The
 #'   random number stream of the caller is restored afterwards.
+#' @param n_threads Integer. Number of worker threads for UMAP neighbour
+#'   search. Defaults to \code{1}; increase explicitly for larger analyses.
 #' @param ... Passed to \code{uwot::umap()}.
 #'
 #' @return The object with a \code{"umap"} entry in its \code{reductions} slot.
@@ -217,7 +219,7 @@ ScreePlot <- function(object, n_pcs = NULL) {
 #' @export
 RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
                     densmap = FALSE, slot = "data", markers = NULL,
-                    seed = NULL, ...) {
+                    seed = NULL, n_threads = 1L, ...) {
   .require_pkg("uwot", "RunUMAP")
   if (!is.null(seed)) {
     restore_rng <- .rng_restorer()
@@ -235,10 +237,10 @@ RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
            "dens_scale.", call. = FALSE)
     }
     uwot::umap(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
-               dens_scale = 1, ...)
+               dens_scale = 1, n_threads = n_threads, ...)
   } else {
     uwot::umap(input, n_components = 2L, n_neighbors = nn, verbose = FALSE,
-               ...)
+               n_threads = n_threads, ...)
   }
   emb <- as.matrix(emb)
   colnames(emb) <- c("UMAP_1", "UMAP_2")

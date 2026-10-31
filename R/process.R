@@ -71,7 +71,9 @@ qc_filter <- function(dt, min_area = NULL, max_area = NULL,
 #'
 #' @param dt A `data.table` as returned by [read_spatial()].
 #' @param method Character string. Normalisation method: `"zscore"` (default),
-#'   `"minmax"`, or `"quantile"`.
+#'   `"minmax"`, or `"quantile"`. Missing values are preserved. Quantile
+#'   normalisation scales average ranks to `[0, 1]`; a sole observed value is
+#'   assigned 0.5, as for a constant marker with several observations.
 #' @param markers Character vector or `NULL`. Marker columns to normalise.
 #'   If `NULL`, all detected marker columns are normalised.
 #'
@@ -115,6 +117,8 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
 #' Normalise a numeric vector
 #' @noRd
 .normalise_vector <- function(x, method) {
+  observed <- !is.na(x)
+  if (!any(observed)) return(x)
   switch(method,
     zscore = {
       mu <- mean(x, na.rm = TRUE)
@@ -130,8 +134,12 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
       (x - mn) / rng
     },
     quantile = {
+      if (sum(observed) == 1L) {
+        x[observed] <- 0.5
+        return(x)
+      }
       ranks <- rank(x, na.last = "keep", ties.method = "average")
-      (ranks - 1) / (sum(!is.na(x)) - 1)
+      (ranks - 1) / (sum(observed) - 1)
     }
   )
 }
@@ -300,7 +308,9 @@ QCFilter <- function(object, min_area = NULL, max_area = NULL,
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param method Character. \code{"zscore"} (default), \code{"minmax"}, or
-#'   \code{"quantile"}.
+#'   \code{"quantile"}. Missing values are preserved. Quantile normalisation
+#'   scales average ranks to `[0, 1]`; a sole observed value is assigned 0.5,
+#'   as for a constant marker with several observations.
 #' @param markers Character vector or \code{NULL}. Markers to normalise.
 #'   If \code{NULL}, all markers are normalised.
 #'

@@ -14,7 +14,9 @@ normalise_markers(
 \item{dt}{A \code{data.table} as returned by \code{\link[=read_spatial]{read_spatial()}}.}
 
 \item{method}{Character string. Normalisation method: \code{"zscore"} (default),
-\code{"minmax"}, or \code{"quantile"}.}
+\code{"minmax"}, or \code{"quantile"}. Missing values are preserved. Quantile
+normalisation scales average ranks to \verb{[0, 1]}; a sole observed value is
+assigned 0.5, as for a constant marker with several observations.}
 
 \item{markers}{Character vector or \code{NULL}. Marker columns to normalise.
 If \code{NULL}, all detected marker columns are normalised.}

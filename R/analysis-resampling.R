@@ -64,7 +64,9 @@ BootstrapMedianInterval <- function(data, value, groups = NULL, n_boot = 10000L,
                                     indices = NULL, index_base = 1L) {
   .an_assert(.an_name(value) && .an_names(groups), "Invalid value or group columns")
   .an_require(data, c(value, groups))
-  .an_assert(is.numeric(n_boot) && length(n_boot) == 1L && n_boot >= 1 &&
+  .an_assert(is.numeric(data[[value]]) && !is.object(data[[value]]),
+             "value must be a numeric column")
+  .an_assert(is.numeric(n_boot) && length(n_boot) == 1L && is.finite(n_boot) && n_boot >= 1 &&
                n_boot == floor(n_boot), "n_boot must be a positive whole number")
   .an_assert(is.numeric(conf_level) && length(conf_level) == 1L && conf_level > 0 &&
                conf_level < 1, "conf_level must lie in (0, 1)")
@@ -176,8 +178,18 @@ PermutationCorrelation <- function(data, x, y, groups = NULL,
   permutations <- match.arg(permutations)
   .an_assert(.an_name(x) && .an_name(y) && .an_names(groups), "Invalid columns")
   .an_require(data, c(x, y, groups))
-  .an_assert(is.numeric(n_perm) && length(n_perm) == 1L && n_perm >= 1 &&
+  .an_assert(all(vapply(c(x, y), function(column) {
+    z <- data[[column]]
+    is.numeric(z) && !is.object(z)
+  }, logical(1))),
+             "x and y must be numeric columns")
+  .an_assert(is.numeric(n_perm) && length(n_perm) == 1L && is.finite(n_perm) && n_perm >= 1 &&
                n_perm == floor(n_perm), "n_perm must be a positive whole number")
+  .an_assert(is.numeric(max_exact_n) && length(max_exact_n) == 1L && is.finite(max_exact_n) &&
+               max_exact_n >= 2 && max_exact_n == floor(max_exact_n),
+             "max_exact_n must be a whole number of at least 2")
+  .an_assert(is.numeric(tolerance) && length(tolerance) == 1L && is.finite(tolerance) &&
+               tolerance >= 0, "tolerance must be a finite nonnegative number")
   # A correlation needs at least two pairs.
   .an_assert(is.numeric(min_n) && length(min_n) == 1L && is.finite(min_n) && min_n >= 2 &&
                min_n == floor(min_n), "min_n must be a whole number of at least 2")
@@ -196,10 +208,22 @@ PermutationCorrelation <- function(data, x, y, groups = NULL,
       a <- rank(a, ties.method = "average")
       b <- rank(b, ties.method = "average")
     }
-    if (n < min_n || stats::sd(a) == 0 || stats::sd(b) == 0) return(res)
-    za <- (a - mean(a)) / sqrt(sum((a - mean(a))^2))
-    zb <- (b - mean(b)) / sqrt(sum((b - mean(b))^2))
-    est <- stats::cor(a, b)
+    if (n < min_n) return(res)
+    # Scale before centring to keep finite inputs from overflowing or
+    # underflowing when their squared deviations are summed.
+    scale_a <- max(abs(a))
+    scale_b <- max(abs(b))
+    if (scale_a == 0 || scale_b == 0) return(res)
+    za <- a / scale_a
+    zb <- b / scale_b
+    za <- za - mean(za)
+    zb <- zb - mean(zb)
+    norm_a <- sqrt(sum(za^2))
+    norm_b <- sqrt(sum(zb^2))
+    if (norm_a == 0 || norm_b == 0) return(res)
+    za <- za / norm_a
+    zb <- zb / norm_b
+    est <- max(-1, min(1, sum(za * zb)))
     if (permutations == "exact") {
       .an_assert(n <= max_exact_n, paste("Exact enumeration limited to n <=", max_exact_n))
       perm <- .an_permutations(n)

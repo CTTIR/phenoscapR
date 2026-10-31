@@ -1,5 +1,18 @@
 # phenoscapR 0.2.0
 
+* Normalisation preserves empty and all-missing markers without warnings.
+  Quantile normalisation assigns a sole observed value 0.5, consistently
+  with a constant marker, instead of producing `NaN`.
+* Resampling functions reject non-numeric observation columns and non-finite
+  draw counts. `PermutationCorrelation()` also validates its tolerance and
+  exact-enumeration limit, preventing factor-code analyses, invalid exact
+  p values from negative tolerances, and infinite permutation loops.
+  Pearson permutation correlations are stable for finite observations at
+  very large or small numeric scales.
+* `RunUMAP()` uses one worker thread by default; `n_threads` can be increased
+  explicitly. The visualisation vignette uses a fixed seed and base SVD for
+  PCA initialisation of disconnected groups, avoiding an older-R failure in
+  the optional truncated-SVD solver.
 * E. Chteinberg added as an author alongside R. Heller (author and maintainer)
   and H. Witte (author). All three authors are affiliated with Ulm University.
   Author names use initials throughout the package metadata, citation, and

@@ -13,6 +13,7 @@ RunUMAP(
   slot = "data",
   markers = NULL,
   seed = NULL,
+  n_threads = 1L,
   ...
 )
 }
@@ -37,6 +38,9 @@ preservation, pass \code{dens_scale} through \code{...} instead.}
 
 \item{seed}{Integer or \code{NULL}. Random seed for reproducibility. The
 random number stream of the caller is restored afterwards.}
+
+\item{n_threads}{Integer. Number of worker threads for UMAP neighbour
+search. Defaults to \code{1}; increase explicitly for larger analyses.}
 
 \item{...}{Passed to \code{uwot::umap()}.}
 }

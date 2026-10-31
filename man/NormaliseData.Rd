@@ -14,7 +14,9 @@ NormaliseData(
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
 \item{method}{Character. \code{"zscore"} (default), \code{"minmax"}, or
-\code{"quantile"}.}
+\code{"quantile"}. Missing values are preserved. Quantile normalisation
+scales average ranks to \verb{[0, 1]}; a sole observed value is assigned 0.5,
+as for a constant marker with several observations.}
 
 \item{markers}{Character vector or \code{NULL}. Markers to normalise.
 If \code{NULL}, all markers are normalised.}

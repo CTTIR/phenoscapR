@@ -166,7 +166,10 @@ DimPlot(obj, reduction = "pca", colour_by = "phenotype")
 ```
 
 ```{r umap, eval = has_uwot}
-obj <- RunUMAP(obj, dims = 10, n_neighbors = 15)
+# Base SVD is sufficient for this small marker panel and avoids dependence
+# on an optional truncated-SVD solver when disconnected groups need PCA init.
+obj <- RunUMAP(obj, dims = 10, n_neighbors = 15, seed = 1,
+               pca_method = "svd", n_threads = 1)
 EmbeddingPlot(obj, reduction = "umap", colour_by = "phenotype")
 ```
 
