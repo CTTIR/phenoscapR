@@ -175,3 +175,21 @@ update timestamp was verified. The one-time workflow was then removed at
 to the original baseline. The normal privacy check remains enabled. Scholarly
 author metadata were not removed or modified. All four standard hosted workflows passed for that unchanged source tree.
 Those results are separate from the current scientific-source qualification.
+
+
+## Hosted warning-test follow-up
+
+The scientific source milestone was published at `68359f2`. Its hosted lint,
+coverage and documentation workflows passed, as did Windows, macOS and Ubuntu
+release/devel R jobs. Ubuntu oldrel-1 and oldrel-3 retained an additional legitimate
+Wilcoxon ties warning and exposed an overly broad test assertion: it required
+every warning to contain the replication message. The application correctly
+retained both warnings.
+
+The test now requires the intended warning to be present and independently checks
+that an additional backend warning survives in the reactive result and visible
+UI. The actual abundance function still executes. Thirty affected recovery and
+real browser assertions pass with no failures, warnings or skips. Restoring the
+old assertion against the same fixture reproduces one failure. No runtime code
+or warning handling changed. New-head hosted results remain to be observed; the
+original failed run is retained as evidence.

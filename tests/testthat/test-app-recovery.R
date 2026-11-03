@@ -53,15 +53,23 @@ test_that("missing UMAP is visible and leaves PCA available", {
 test_that("differential comparison retains actual warnings in visible UI", {
   e <- .app_modules_for_test()
   o <- e$.app_example()
+  actual_da <- phenoscapR::DifferentialAbundance
+  extra_warning <- "Additional diagnostic warning from abundance backend."
+  local_mocked_bindings(DifferentialAbundance = function(...) {
+    warning(extra_warning, call. = FALSE)
+    actual_da(...)
+  }, .package = "phenoscapR")
   shiny::testServer(e$mod_reductions_server,
                    args = list(obj = shiny::reactive(o)), {
     session$setInputs(npcs = 2, colour = "phenotype", reduction = "pca")
     value <- differential()
     expect_gt(nrow(value$data), 0L)
-    expect_match(value$warnings, "fewer than 2 samples")
+    expect_true(any(grepl("fewer than 2 samples", value$warnings)))
+    expect_true(extra_warning %in% value$warnings)
     rendered <- output$diff_warnings$html
     expect_match(rendered, "not replicated group inference")
     expect_match(rendered, "p-values are unreliable", fixed = TRUE)
+    expect_match(rendered, extra_warning, fixed = TRUE)
     expect_match(rendered, 'role="alert"', fixed = TRUE)
     expect_gt(nchar(output$diff), 0L)
   })
