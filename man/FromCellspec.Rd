@@ -40,8 +40,13 @@ support in this snapshot are not current subset results or active graphs.
 No reviewed tissue window or observation area is inferred from cell centroids.
 
 The optional \pkg{cellspecR} package (\url{https://github.com/CTTIR/cellspecR})
-is available from the CTTIR R-universe; install it with
-\code{install.packages("cellspecR", repos = c("https://cttir.r-universe.dev", getOption("repos")))}.
+is available from the CTTIR R-universe; install it with:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{install.packages(
+  "cellspecR",
+  repos = c("https://cttir.r-universe.dev", getOption("repos"))
+)
+}\if{html}{\out{</div>}}
 }
 \examples{
 if (requireNamespace("cellspecR", quietly = TRUE)) {

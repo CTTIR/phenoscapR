@@ -68,6 +68,11 @@ qc_filter <- function(dt, min_area = NULL, max_area = NULL,
 #' Normalise Marker Intensities
 #'
 #' Normalises marker intensity columns using one of several methods.
+#' Inputs must be real numeric values without infinity. Z-scores use the sample
+#' standard deviation; z-score and min-max calculations retry in bounded
+#' power-of-two units if direct arithmetic overflows, underflows, or yields a
+#' subnormal variance whose precision is reduced.
+#' The definitions and ordinary finite calculations are unchanged.
 #'
 #' @param dt A `data.table` as returned by [read_spatial()].
 #' @param method Character string. Normalisation method: `"zscore"` (default),
@@ -117,21 +122,48 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
 #' Normalise a numeric vector
 #' @noRd
 .normalise_vector <- function(x, method) {
+  if (!typeof(x) %in% c("integer", "double") || is.object(x) || !is.null(dim(x))) {
+    stop("Marker intensities must be a real numeric vector.", call. = FALSE)
+  }
+  if (any(is.infinite(x))) {
+    stop("Marker intensities must not contain infinity; missing values are allowed.", call. = FALSE)
+  }
   observed <- !is.na(x)
   if (!any(observed)) return(x)
+  # Keep ordinary base-R arithmetic unchanged. Retry only degenerate finite-
+  # input arithmetic in bounded power-of-two units, before variance/range
+  # calculations can overflow or underflow (including a subnormal variance
+  # whose rounded square root is still positive). Missing positions stay untouched.
+  conditioned <- function() {
+    largest <- max(abs(x[observed]))
+    exponent <- max(-1074, min(1023, floor(log2(largest))))
+    x / 2^exponent
+  }
   switch(method,
     zscore = {
       mu <- mean(x, na.rm = TRUE)
       s <- sd(x, na.rm = TRUE)
-      if (is.na(s) || s == 0) return(x - mu)
-      (x - mu) / s
+      constant <- all(x[observed] == x[observed][1L])
+      if (is.finite(mu) && (is.na(s) || (s == 0 && constant))) return(x - mu)
+      value <- (x - mu) / s
+      safe_spread <- is.finite(s) && s >= sqrt(.Machine$double.xmin)
+      if (safe_spread && all(is.finite(value[observed]))) return(value)
+      bounded <- conditioned()
+      center <- mean(bounded, na.rm = TRUE)
+      spread <- sd(bounded, na.rm = TRUE)
+      if (is.na(spread) || spread == 0) return(bounded - center)
+      (bounded - center) / spread
     },
     minmax = {
       mn <- min(x, na.rm = TRUE)
       mx <- max(x, na.rm = TRUE)
       rng <- mx - mn
       if (rng == 0) return(x - mn)  # zeros, keeping missing values
-      (x - mn) / rng
+      value <- (x - mn) / rng
+      if (is.finite(rng) && all(is.finite(value[observed]))) return(value)
+      bounded <- conditioned()
+      mn <- min(bounded, na.rm = TRUE)
+      (bounded - mn) / (max(bounded, na.rm = TRUE) - mn)
     },
     quantile = {
       if (sum(observed) == 1L) {
@@ -194,6 +226,10 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
 #' \code{"+"}, or \code{"Negative"} when none are positive.
 #' @noRd
 .assign_phenotypes <- function(mat, thresholds, labels = NULL) {
+  if (!typeof(mat) %in% c("integer", "double") || any(is.infinite(mat))) {
+    stop("Marker intensities must be real numeric values without infinity; missing values are allowed.",
+         call. = FALSE)
+  }
   markers <- names(thresholds)
   missing <- setdiff(markers, colnames(mat))
   if (length(missing) > 0L) {
@@ -292,6 +328,7 @@ summarise_phenotypes <- function(dt) {
 #' @export
 QCFilter <- function(object, min_area = NULL, max_area = NULL,
                      min_intensity = 0, max_intensity = NULL) {
+  methods::validObject(object)
   md <- object@meta_data
   area <- if ("cell_area" %in% names(md)) md$cell_area else NULL
   total <- rowSums(object@counts, na.rm = TRUE)
@@ -304,7 +341,10 @@ QCFilter <- function(object, min_area = NULL, max_area = NULL,
 #' Normalise Marker Intensities (SpatialCellData)
 #'
 #' Normalises marker intensities and stores the result in the \code{data} slot.
-#' Raw counts remain unchanged.
+#' Raw counts remain unchanged. Z-scores use the sample standard deviation.
+#' When direct finite-input arithmetic overflows, underflows, or yields a
+#' subnormal variance, calculations retry in bounded power-of-two units with the same
+#' definitions; ordinary finite calculations are unchanged.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param method Character. \code{"zscore"} (default), \code{"minmax"}, or
@@ -326,6 +366,7 @@ QCFilter <- function(object, min_area = NULL, max_area = NULL,
 #' @export
 NormaliseData <- function(object, method = c("zscore", "minmax", "quantile"),
                           markers = NULL) {
+  methods::validObject(object)
   method <- match.arg(method)
   mat <- object@counts
 
@@ -366,6 +407,7 @@ NormaliseData <- function(object, method = c("zscore", "minmax", "quantile"),
 #'
 #' @export
 PhenotypeCells <- function(object, thresholds, labels = NULL) {
+  methods::validObject(object)
   object@meta_data$phenotype <-
     .assign_phenotypes(object@data, thresholds, labels)
   object
@@ -397,7 +439,7 @@ PhenotypeSummary <- function(object) {
 #' @noRd
 .marker_columns <- function(dt) {
   meta <- c("sample_id", "cell_id", "x", "y", "cell_area", "nucleus_area",
-            "classification", "parent", "phenotype", "cluster",
+            "classification", "parent", "source_image", "phenotype", "cluster",
             "nn_distance", "density")
   cols <- setdiff(names(dt), meta)
   # Keep only numeric columns

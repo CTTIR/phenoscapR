@@ -107,7 +107,7 @@ obj
 
 Use `QCPlot()` to inspect what was kept against any two metadata columns:
 
-```{r qcplot, fig.height = 4}
+```{r qcplot, fig.height = 4, fig.alt = "Synthetic cell area versus local cell density, coloured by known simulated phenotype after QC."}
 obj <- CellDensity(obj, radius = 40)
 QCPlot(obj, x = "cell_area", y = "density", colour_by = "phenotype_true")
 ```
@@ -144,7 +144,7 @@ obj@meta_data$phenotype <- obj@meta_data$phenotype_true
 
 `CompositionPlot()` shows phenotype proportions per sample:
 
-```{r composition, fig.height = 4}
+```{r composition, fig.height = 4, fig.alt = "Stacked phenotype proportions for the two synthetic example sections."}
 CompositionPlot(obj, group_by = "sample_id")
 ```
 
@@ -154,14 +154,14 @@ CompositionPlot(obj, group_by = "sample_id")
 coloured by phenotype. Spatial structure (the follicle, the T-cell zone) is
 immediately visible.
 
-```{r cellmap}
+```{r cellmap, fig.alt = "Synthetic tonsil A cell positions coloured by known simulated phenotype."}
 tonsil_a <- obj[obj$sample_id == "tonsil_A", ]
 CellMap(tonsil_a)
 ```
 
 Colour instead by a continuous marker with `FeaturePlot()`:
 
-```{r featureplot}
+```{r featureplot, fig.alt = "Synthetic tonsil A cell positions coloured by normalised CD20, CD3 and PanCK intensities."}
 FeaturePlot(tonsil_a, features = c("CD20", "CD3", "PanCK"))
 ```
 
@@ -169,7 +169,7 @@ FeaturePlot(tonsil_a, features = c("CD20", "CD3", "PanCK"))
 
 ### Local density and nearest neighbours
 
-```{r nn-density}
+```{r nn-density, fig.alt = "Synthetic tonsil A cell positions coloured by local cell density within radius 40."}
 obj <- FindNeighbours(obj, k = 5)
 summary(Meta(obj)$nn_distance)
 
@@ -183,7 +183,7 @@ within `radius` of one another versus what random mixing would predict. The
 score is `log2(observed / expected)` — positive means attraction, negative
 means avoidance. Neighbours are **never** counted across samples.
 
-```{r interactions}
+```{r interactions, fig.alt = "Pairwise phenotype interaction scores within the synthetic sections at radius 40."}
 im <- InteractionMatrix(obj, radius = 40)
 head(im[order(-im$interaction_score), ])
 
@@ -192,7 +192,7 @@ InteractionPlot(im)
 
 ### Marker signatures per phenotype
 
-```{r heatmap, fig.height = 5}
+```{r heatmap, fig.height = 5, fig.alt = "Mean normalised marker intensities by simulated phenotype in the synthetic example data."}
 MarkerHeatmap(obj)
 ```
 

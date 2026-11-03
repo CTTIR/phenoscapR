@@ -26,7 +26,10 @@ An \code{\link{SpatialCellData-class}} with updated \code{data} slot.
 }
 \description{
 Normalises marker intensities and stores the result in the \code{data} slot.
-Raw counts remain unchanged.
+Raw counts remain unchanged. Z-scores use the sample standard deviation.
+When direct finite-input arithmetic overflows, underflows, or yields a
+subnormal variance, calculations retry in bounded power-of-two units with the same
+definitions; ordinary finite calculations are unchanged.
 }
 \examples{
 counts <- matrix(rnorm(40, 500, 100), nrow = 20,

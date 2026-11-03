@@ -19,7 +19,8 @@ ReadSpatial(
 \item{path}{Character. Path to a CSV file or a directory containing CSV
 files.}
 
-\item{sample_id}{Character or \code{NULL}. An identifier for the sample.}
+\item{sample_id}{Character or \code{NULL}. Fallback sample identifier;
+nonblank QuPath Image identities are retained as in \code{\link[=read_spatial]{read_spatial()}}.}
 
 \item{markers}{Character vector or \code{NULL}. If provided, only these
 marker columns are retained.}

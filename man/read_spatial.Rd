@@ -22,7 +22,12 @@ combined.}
 each row. When \code{path} is a directory and \code{sample_id} is
 \code{NULL}, the file name (without extension) is used. For QuPath
 full-format files with an \code{Image} column, the scan identity is
-parsed automatically.}
+parsed automatically. This argument fills absent or blank identities; it
+does not overwrite a nonblank QuPath Image-derived identity. The original
+Image label is retained as \code{source_image}. Distinct Image labels that
+collapse to the same parsed identity are refused, including across files.
+Reserved cell/sample/Image identifier columns are read as text, retaining
+leading zeros; measurement and coordinate columns retain numeric inference.}
 
 \item{markers}{Character vector or \code{NULL}. If provided, only these
 marker columns are retained. Matching is case-insensitive.}
@@ -47,6 +52,7 @@ A \code{data.table} with standardised column names:
 \item{y}{Cell centroid y-coordinate.}
 \item{cell_area}{Cell area (if available).}
 \item{classification}{Cell classification label (if available).}
+\item{source_image}{Original QuPath Image label, when supplied.}
 }
 Additional columns contain marker intensities (one per marker).
 }

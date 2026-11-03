@@ -29,29 +29,37 @@ mod_niches_ui <- function(id) {
 mod_niches_server <- function(id, obj) {
   shiny::moduleServer(id, function(input, output, session) {
     shiny::observe({
+      o <- obj()
       shiny::updateSelectInput(session, "section",
-                               choices = unique(obj()$sample_id))
+                               choices = unique(o$sample_id))
     })
 
     cn <- shiny::reactive({
-      phenoscapR::CellularNeighbourhoods(obj(), n_neighbourhoods = input$n_cn,
+      o <- obj()
+      phenoscapR::CellularNeighbourhoods(o, n_neighbourhoods = input$n_cn,
                                          k = input$k, seed = 1)
     })
     dom <- shiny::reactive({
-      phenoscapR::SpatialDomains(obj(), n_domains = input$n_dom, k = input$k,
+      o <- obj()
+      phenoscapR::SpatialDomains(o, n_domains = input$n_dom, k = input$k,
                                  seed = 1)
     })
     pick <- function(o) {
       shiny::req(input$section)
-      o[o$sample_id == input$section, ]
+      selected <- o[o$sample_id == input$section, ]
+      shiny::validate(shiny::need(nrow(phenoscapR::Meta(selected)) > 0L,
+        "No cells remain in this section. Select another section or reset QC."))
+      selected
     }
 
     output$niche_map <- shiny::renderPlot({
-      phenoscapR::CellMap(pick(cn()), colour_by = "neighbourhood")
-    })
+      o <- pick(cn())
+      phenoscapR::CellMap(o, colour_by = "neighbourhood")
+    }, alt = "Synthetic cell positions coloured by inferred cellular neighbourhood")
     output$domain_map <- shiny::renderPlot({
-      phenoscapR::CellMap(pick(dom()), colour_by = "domain")
-    })
+      o <- pick(dom())
+      phenoscapR::CellMap(o, colour_by = "domain")
+    }, alt = "Synthetic cell positions coloured by inferred spatial domain")
     output$composition <- shiny::renderPlot({
       cc <- cn()@spatial$neighbourhood_composition
       df <- data.frame(
@@ -67,6 +75,6 @@ mod_niches_server <- function(id, obj) {
         ggplot2::theme_bw(base_size = 11) +
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
                                                            hjust = 1))
-    })
+    }, alt = "Simulated phenotype fractions within each inferred cellular neighbourhood")
   })
 }

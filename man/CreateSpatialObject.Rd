@@ -13,9 +13,15 @@ CreateSpatialObject(
 )
 }
 \arguments{
-\item{counts}{Numeric matrix (cells x markers). Row names are optional.}
+\item{counts}{Real numeric matrix (cells x markers), without infinity.
+Missing values are allowed. Row names are optional. Empty matrices retain
+their marker columns; all-missing columns in nonempty inputs are dropped
+with a warning. Logical placeholders with no entries, as produced by
+zero-row or zero-marker matrices, are stored as numeric matrices.}
 
-\item{coords}{Data frame with columns \code{x} and \code{y}.}
+\item{coords}{Data frame with finite numeric columns \code{x} and \code{y}.
+Zero-row logical coordinate placeholders are stored as numeric vectors;
+nonempty logical values and factors are refused.}
 
 \item{meta_data}{Data frame of per-cell metadata, or \code{NULL}.}
 

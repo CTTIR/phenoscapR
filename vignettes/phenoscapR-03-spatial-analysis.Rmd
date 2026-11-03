@@ -105,7 +105,7 @@ cells within `r`, normalised by intensity. Under complete spatial randomness
 `K(r) = πr²`; the `L` transform makes departures easy to read (`L(r) > 0`
 means clustering). The border correction removes edge bias.
 
-```{r ripleysk}
+```{r ripleysk, fig.alt = "Border-corrected Ripley L across radius for synthetic tonsil A, with the zero reference line."}
 rk <- RipleysK(a, r_seq = seq(0, 120, length.out = 40), correction = "border")
 head(rk)
 
@@ -122,7 +122,7 @@ with(rk, {
 `PairCorrelation()` is the scale-resolved companion to Ripley's K: `g(r) > 1`
 means more pairs at distance `r` than expected, `g(r) < 1` means inhibition.
 
-```{r pcf}
+```{r pcf, fig.alt = "Pair correlation g across radius for synthetic tonsil A."}
 pcf <- PairCorrelation(a, r_seq = seq(5, 120, length.out = 40))
 with(pcf, {
   plot(r, g, type = "l", lwd = 2, col = "#cc3366",
@@ -168,7 +168,7 @@ summary(d_help_to_b)
 The Delaunay triangulation approximates which cells physically touch. Capping
 edge length with `max_edge` drops the long edges that span empty space.
 
-```{r delaunay, eval = has_deldir}
+```{r delaunay, eval = has_deldir, fig.alt = "Delaunay connections between synthetic tonsil A cells after excluding edges longer than 60."}
 a <- DelaunayNetwork(a, max_edge = 60)
 nrow(a@spatial$delaunay_edges)
 SpatialNetworkPlot(a)
@@ -184,7 +184,7 @@ cat("> The `deldir` package is not installed, so the Delaunay example is",
 Cluster cells by their normalised marker profiles, independent of position,
 then look at where those clusters fall in the tissue.
 
-```{r exprclusters}
+```{r exprclusters, fig.alt = "Synthetic tonsil A cell positions coloured by expression-derived cluster."}
 a <- ExpressionClusters(a, k = 6)
 table(a$expr_cluster)
 CellMap(a, colour_by = "expr_cluster")

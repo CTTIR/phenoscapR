@@ -65,9 +65,10 @@ first occurrence as the graph vertex and gives later copies no neighbours
 
 Engines: \code{"geos"} (default) uses GEOS through \pkg{sf}
 (\code{st_triangulate(..., bOnlyEdges = TRUE)}); input coordinates are mapped
-back to cells exactly. \code{"deldir"} uses \code{deldir::deldir()} as
-\code{\link[=BuildExactDelaunayEdges]{BuildExactDelaunayEdges()}} does; its run time grows roughly quadratically
-with the number of cells, so it is meant for cross-checks on small sections.
+back to cells exactly. \code{"deldir"} uses \code{deldir::deldir()} as the
+\link[=BuildExactDelaunayEdges]{exact graph builder} does; its run time grows
+roughly quadratically with the number of cells, so it is meant for
+cross-checks on small sections.
 }
 \examples{
 if (requireNamespace("sf", quietly = TRUE)) {

@@ -9,9 +9,9 @@
 
 #' Load a table from a path, matrix, or data.frame
 #' @noRd
-.load_table <- function(x) {
+.load_table <- function(x, identity_columns = character()) {
   if (is.character(x) && length(x) == 1L) {
-    return(as.data.frame(data.table::fread(x), stringsAsFactors = FALSE))
+    return(as.data.frame(.read_table_ids(x, identity_columns), stringsAsFactors = FALSE))
   }
   if (is.matrix(x)) return(x)
   as.data.frame(x, stringsAsFactors = FALSE)
@@ -34,12 +34,16 @@
 #'   path). Non-numeric and \code{id_cols} columns are dropped.
 #' @param metadata Cell metadata containing the coordinate columns (data frame
 #'   or CSV path).
-#' @param x_col,y_col Character. Coordinate column names in \code{metadata}.
+#' @param x_col,y_col Character. Coordinate column names in \code{metadata};
+#'   values must be real numeric, finite vectors. Factor codes are never used
+#'   as coordinate values.
 #' @param cell_id_col Character or \code{NULL}. Shared cell-id column; if present
 #'   in both tables, rows are matched on it, otherwise row order is assumed.
 #'   Further columns (for example \code{"fov"}) can follow: those present in
 #'   both tables are matched as well, so ids need only be unique within them.
 #'   The first column becomes \code{cell_id}. Matched ids must be unique.
+#'   Declared ID columns and reserved cell/sample identifiers in CSV files are
+#'   read as text before type inference, so leading-zero identities remain distinct.
 #' @param id_cols Character vector. Non-marker id columns to drop from
 #'   \code{expression} (e.g. \code{"fov"}, \code{"cell_ID"}).
 #' @param sample_id Character. Sample identifier. Default \code{"sample1"}.
@@ -61,8 +65,9 @@ ReadMatrixCoords <- function(expression, metadata, x_col = "x", y_col = "y",
                              cell_id_col = NULL, id_cols = character(0),
                              sample_id = "sample1", transpose = FALSE,
                              project = "SpatialProject") {
-  expr <- .load_table(expression)
-  meta <- .load_table(metadata)
+  identities <- unique(c(cell_id_col, id_cols))
+  expr <- .load_table(expression, identities)
+  meta <- .load_table(metadata, identities)
   id_col <- cell_id_col[1L]
   keys <- id_col
   expr_keys <- NULL
@@ -112,8 +117,16 @@ ReadMatrixCoords <- function(expression, metadata, x_col = "x", y_col = "y",
          nrow(meta), "; provide cell_id_col to match them.", call. = FALSE)
   }
 
-  coords <- data.frame(x = as.numeric(meta[[x_col]]),
-                       y = as.numeric(meta[[y_col]]))
+  coordinate_values <- meta[, c(x_col, y_col), drop = FALSE]
+  numeric_coordinates <- vapply(coordinate_values, function(value) {
+    (typeof(value) %in% c("integer", "double") ||
+       (length(value) == 0L && is.logical(value))) && !is.object(value)
+  }, logical(1L))
+  if (!all(numeric_coordinates)) {
+    stop("Coordinate columns must be real numeric vectors; factors and text are not converted.",
+         call. = FALSE)
+  }
+  coords <- data.frame(x = meta[[x_col]], y = meta[[y_col]])
   extra <- setdiff(names(meta), c(x_col, y_col))
   meta_data <- meta[, extra, drop = FALSE]
   if (is.null(id_col) || !id_col %in% names(meta_data)) {
@@ -121,7 +134,9 @@ ReadMatrixCoords <- function(expression, metadata, x_col = "x", y_col = "y",
   } else {
     meta_data$cell_id <- as.character(meta_data[[id_col]])
   }
-  if (!"sample_id" %in% names(meta_data)) meta_data$sample_id <- sample_id
+  if (!"sample_id" %in% names(meta_data)) {
+    meta_data$sample_id <- if (nrow(meta_data) == 0L) character(0) else sample_id
+  }
 
   CreateSpatialObject(counts, coords, meta_data = meta_data, project = project)
 }

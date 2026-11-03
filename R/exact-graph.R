@@ -140,8 +140,8 @@
 #'   routines to pin. Kept so that existing calls keep working.
 #' @param eps Explicit positive finite scalar tolerance passed to the engine.
 #' @param mode Explicit `"stock"`, `"bounded"` or `"auto"` workspace mode,
-#'   validated with [PlanExactDelaunayWorkspace()] and recorded in the
-#'   provenance. Every mode runs `deldir::deldir()`, which sizes its own
+#'   validated with the [workspace planner][PlanExactDelaunayWorkspace()] and
+#'   recorded in the provenance. Every mode runs `deldir::deldir()`, which sizes its own
 #'   workspace and enlarges it when needed; frames whose stock workspace would
 #'   exceed the integer limit (`bounded_required`) are refused.
 #' @param caps Named positive finite numeric thresholds in `coordinate_unit`.

@@ -149,10 +149,18 @@ print.phenoscapR_figure <- function(x, newpage = TRUE, ...) {
 #' the session. Without 'ragg', PNGs saved at different resolutions in one
 #' session can place rich text a pixel apart.
 #'
+#' Both outputs are rendered to temporary files beside their destinations before
+#' replacing either destination. A rendering failure leaves existing files
+#' unchanged. If replacement fails, previous files are restored where the file
+#' system permits it; any backup that cannot be restored is retained and its
+#' path is reported. This is recovery from reported errors, not a transaction
+#' across process termination or a concurrent writer. Destinations must be
+#' distinct files in existing directories.
+#'
 #' @param figure A [ComposeFigure()] result.
 #' @param pdf Output PDF path, or `NULL`.
 #' @param png Output PNG path, or `NULL`.
-#' @param dpi Raster resolution; defaults to the style's.
+#' @param dpi Positive finite raster resolution; defaults to the style's.
 #' @return The output paths, invisibly.
 #' @examples
 #' p <- ggplot2::ggplot(data.frame(x = 1:3, y = c(2, 1, 3)), ggplot2::aes(x, y)) +
@@ -170,32 +178,127 @@ SaveFigure <- function(figure, pdf = NULL, png = NULL, dpi = NULL) {
   if (is.null(pdf) && is.null(png)) stop("Give at least one output path.", call. = FALSE)
   style <- figure$style
   if (is.null(dpi)) dpi <- style$page$dpi
+  if (!is.numeric(dpi) || length(dpi) != 1L || !is.finite(dpi) || dpi <= 0) {
+    stop("dpi must be one positive finite number.", call. = FALSE)
+  }
+  paths <- c(pdf = pdf, png = png)
+  destinations <- c(pdf = if (!is.null(pdf)) .fig_output_path(pdf, "pdf"),
+                    png = if (!is.null(png)) .fig_output_path(png, "png"))
+  comparison <- if (.Platform$OS.type == "windows" || Sys.info()[["sysname"]] == "Darwin") {
+    tolower(destinations)
+  } else destinations
+  if (anyDuplicated(comparison)) stop("PDF and PNG output paths must be distinct.", call. = FALSE)
+  staged <- vapply(names(destinations), function(name) {
+    tempfile(paste0(".phenoscapR-", name, "-"), tmpdir = dirname(destinations[[name]]),
+             fileext = paste0(".", name))
+  }, character(1))
+  on.exit(unlink(staged), add = TRUE)
+  .fig_write_outputs(figure, if ("pdf" %in% names(staged)) staged[["pdf"]] else NULL,
+                     if ("png" %in% names(staged)) staged[["png"]] else NULL, dpi)
+  if (any(!file.exists(staged)) || any(!is.finite(file.info(staged)$size)) ||
+      any(file.info(staged)$size <= 0)) {
+    stop("Figure rendering did not produce every requested output.", call. = FALSE)
+  }
+  .fig_publish_outputs(staged, destinations)
+  invisible(paths)
+}
+
+.fig_output_path <- function(path, name) {
+  if (!is.character(path) || length(path) != 1L || is.na(path) || !nzchar(path)) {
+    stop(name, " must be one nonempty file path.", call. = FALSE)
+  }
+  path <- path.expand(path)
+  if (!dir.exists(dirname(path)) || dir.exists(path)) {
+    stop(name, " must name a file in an existing directory.", call. = FALSE)
+  }
+  link <- Sys.readlink(path)
+  if (!is.na(link) && nzchar(link) && !file.exists(path)) {
+    stop(name, " must not be a dangling symbolic link.", call. = FALSE)
+  }
+  if (file.exists(path)) return(unname(normalizePath(path, winslash = "/", mustWork = TRUE)))
+  file.path(normalizePath(dirname(path), winslash = "/", mustWork = TRUE), basename(path))
+}
+
+# Keep backups beside their targets so promotion/restoration uses same-volume
+# renames. Failed restoration must retain the only remaining original bytes.
+.fig_publish_outputs <- function(staged, destinations) {
+  backups <- rep(NA_character_, length(destinations))
+  promoted <- rep(FALSE, length(destinations))
+  complete <- FALSE
+  on.exit({
+    if (!complete) {
+      retained <- character()
+      for (i in rev(seq_along(destinations))) {
+        if (promoted[i]) unlink(destinations[i])
+        if (!is.na(backups[i]) && !isTRUE(file.rename(backups[i], destinations[i]))) {
+          retained <- c(retained, backups[i])
+        }
+      }
+      if (length(retained)) warning("Could not restore figure output; originals retained at: ",
+                                     paste(retained, collapse = ", "), call. = FALSE)
+    } else {
+      unlink(backups[!is.na(backups)])
+    }
+  }, add = TRUE)
+  for (i in seq_along(destinations)) {
+    if (file.exists(destinations[i])) {
+      backup <- tempfile(".phenoscapR-backup-", tmpdir = dirname(destinations[i]))
+      if (!isTRUE(file.rename(destinations[i], backup))) {
+        stop("Could not preserve existing figure output: ", destinations[i], call. = FALSE)
+      }
+      backups[i] <- backup
+    }
+    if (!isTRUE(file.rename(staged[i], destinations[i]))) {
+      stop("Could not publish figure output: ", destinations[i], call. = FALSE)
+    }
+    promoted[i] <- TRUE
+  }
+  complete <- TRUE
+  invisible(NULL)
+}
+
+.fig_write_outputs <- function(figure, pdf, png, dpi) {
+  style <- figure$style
   w <- figure$width_mm / 25.4
   h <- figure$height_mm / 25.4
   if (!is.null(pdf)) {
     if (!capabilities("cairo")) stop("PDF output needs R built with Cairo.", call. = FALSE)
-    grDevices::cairo_pdf(pdf, width = w, height = h, family = style$family, onefile = TRUE)
-    tryCatch(print(figure), finally = grDevices::dev.off())
+    .fig_export_device(function() {
+      grDevices::cairo_pdf(pdf, width = w, height = h, family = style$family, onefile = TRUE)
+    }, function(handle) print(figure))
   }
   if (!is.null(png)) {
     if (requireNamespace("ragg", quietly = TRUE)) {
-      cap <- ragg::agg_capture(width = w, height = h, units = "in", res = dpi, background = "white")
-      img <- tryCatch({
+      img <- .fig_export_device(function() {
+        ragg::agg_capture(width = w, height = h, units = "in", res = dpi, background = "white")
+      }, function(cap) {
         print(figure)
         cap(native = TRUE)
-      }, finally = grDevices::dev.off())
-      ragg::agg_png(png, width = w, height = h, units = "in", res = dpi, background = "white")
-      tryCatch(grid::grid.raster(img, x = 0, y = 0, width = grid::unit(1, "npc"),
-                                 height = grid::unit(1, "npc"), just = c(0, 0), interpolate = FALSE),
-               finally = grDevices::dev.off())
+      })
+      .fig_export_device(function() {
+        ragg::agg_png(png, width = w, height = h, units = "in", res = dpi, background = "white")
+      }, function(handle) grid::grid.raster(img, x = 0, y = 0, width = grid::unit(1, "npc"),
+                                 height = grid::unit(1, "npc"), just = c(0, 0), interpolate = FALSE))
     } else {
       if (!capabilities("cairo")) stop("PNG output needs 'ragg' or R built with Cairo.", call. = FALSE)
-      grDevices::png(png, width = w, height = h, units = "in", res = dpi, type = "cairo",
-                     bg = "white")
-      tryCatch(print(figure), finally = grDevices::dev.off())
+      .fig_export_device(function() {
+        grDevices::png(png, width = w, height = h, units = "in", res = dpi, type = "cairo",
+                       bg = "white")
+      }, function(handle) print(figure))
     }
   }
-  invisible(c(pdf = pdf, png = png))
+  invisible(NULL)
+}
+
+.fig_export_device <- function(open, draw) {
+  previous <- grDevices::dev.cur()
+  handle <- open()
+  device <- grDevices::dev.cur()
+  if (identical(device, previous)) stop("Could not open figure graphics device.", call. = FALSE)
+  on.exit({
+    if (device %in% grDevices::dev.list()) grDevices::dev.off(which = device)
+  }, add = TRUE)
+  draw(handle)
 }
 
 # ---- drawing ------------------------------------------------------------------

@@ -42,8 +42,8 @@ FigureGrammars <- function() {
 #' optional `letter`, `letter_at`, `heading` and `note`, a `grammar` from
 #' [FigureGrammars()], the name(s) of its `data` and builder `args`.
 #'
-#' Positions can also be given as fractions of the page, as in figure code
-#' that places axes with `[left, bottom, width, height]` fractions: a panel
+#' Positions can also be given as fractions of the page. The ordered fields
+#' are `left`, `bottom`, `width` and `height`. A panel
 #' `axes` field replaces `box`, `letter_xy` replaces `letter_at`, and a text
 #' or legend `xy` replaces `at` (fractions measured from the bottom-left
 #' corner; letters and texts hang from the given point).

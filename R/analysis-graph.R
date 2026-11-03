@@ -54,9 +54,10 @@
 #'
 #' Engines: `"geos"` (default) uses GEOS through \pkg{sf}
 #' (`st_triangulate(..., bOnlyEdges = TRUE)`); input coordinates are mapped
-#' back to cells exactly. `"deldir"` uses `deldir::deldir()` as
-#' [BuildExactDelaunayEdges()] does; its run time grows roughly quadratically
-#' with the number of cells, so it is meant for cross-checks on small sections.
+#' back to cells exactly. `"deldir"` uses `deldir::deldir()` as the
+#' [exact graph builder][BuildExactDelaunayEdges()] does; its run time grows
+#' roughly quadratically with the number of cells, so it is meant for
+#' cross-checks on small sections.
 #'
 #' @param cells Cell table of one section.
 #' @param x,y,type Column names of the coordinates and cell type.

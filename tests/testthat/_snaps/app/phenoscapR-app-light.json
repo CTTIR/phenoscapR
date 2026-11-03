@@ -1,6 +1,6 @@
 {
   "input": {
-    "color_mode": "dark",
+    "color_mode": "light",
     "data-area": [
       20,
       1000
@@ -8,6 +8,7 @@
     "data-colour": "phenotype",
     "data-feature": "CD3",
     "data-norm": "zscore",
+    "data-reset_qc": 0,
     "data-sample": "tonsil_A",
     "data-summary__reactable__page": 1,
     "data-summary__reactable__pageSize": 8,

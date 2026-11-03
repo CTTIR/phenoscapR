@@ -21,6 +21,18 @@
   if (n_semi > n_comma) ";" else ","
 }
 
+# Preserve declared and reserved identifiers before fread can infer numeric
+# types (001 and 1 are distinct cell identities, but both are numeric markers).
+.read_table_ids <- function(file, identity_columns = character(), ...) {
+  header <- names(data.table::fread(file, nrows = 0L, ...))
+  reserved <- header[tolower(header) %in% c(
+    "cell id", "cell_id", "cellid", "object id", "sample_id", "image", "source_image"
+  )]
+  identities <- intersect(header, unique(c(identity_columns, reserved)))
+  classes <- if (length(identities)) list(character = identities) else NULL
+  data.table::fread(file, colClasses = classes, ...)
+}
+
 #' Detect input format from column names
 #'
 #' @return One of \code{"qupath_full"}, \code{"minimal"}, or \code{"processor"}.
@@ -73,6 +85,38 @@
   if (length(idx) > 0L) nms[idx[1L]] else NA_character_
 }
 
+# Coordinate aliases are whole names, optionally followed by a known unit.
+# A marker such as "Cell intensity" must never match its final letter y.
+.coordinate_column <- function(nms, axis) {
+  normalized <- tolower(trimws(nms))
+  normalized <- gsub("[_.[:space:]]+", " ", normalized)
+  normalized <- sub(" (\\((um|\u00b5m|\u03bcm|px|pixels?)\\)|(um|\u00b5m|\u03bcm|px|pixels?))$", "", normalized)
+  canonical <- which(normalized == axis)
+  aliases <- c(paste(axis, "position"), paste(axis, "pos"),
+               paste("centroid", axis), paste("cell", axis),
+               paste("cell", axis, "position"), paste("cell", axis, "pos"),
+               paste("cell centroid", axis), paste("cell centroid", axis, "position"))
+  found <- if (length(canonical)) canonical else which(normalized %in% aliases)
+  if (length(found) != 1L) {
+    if (!length(found)) stop("Could not identify ", axis, " coordinate column.", call. = FALSE)
+    stop("Ambiguous ", axis, " coordinate columns: ", paste(nms[found], collapse = ", "),
+         ". Rename the intended coordinate to '", axis, "'.", call. = FALSE)
+  }
+  nms[found]
+}
+
+.check_qupath_identity <- function(dt) {
+  if (!"source_image" %in% names(dt)) return(invisible(NULL))
+  known <- !is.na(dt$source_image) & nzchar(dt$source_image)
+  pairs <- unique(as.data.frame(dt[known, c("sample_id", "source_image"), with = FALSE]))
+  if (anyDuplicated(pairs$sample_id)) {
+    stop("Distinct QuPath Image labels collapse to the same sample_id. ",
+         "Use distinct image-local identities before import, or ReadMatrixCoords() ",
+         "with explicit sample metadata; images must not be pooled silently.", call. = FALSE)
+  }
+  invisible(NULL)
+}
+
 # ---------------------------------------------------------------------------
 # Column standardisation per format
 # ---------------------------------------------------------------------------
@@ -84,13 +128,9 @@
   lower <- tolower(nms)
 
   # --- Spatial coordinates ---
-  x_idx <- which(grepl("^centroid x", lower))
-  y_idx <- which(grepl("^centroid y", lower))
-  if (length(x_idx) == 0L || length(y_idx) == 0L) {
-    stop("Could not find Centroid X / Centroid Y columns.", call. = FALSE)
-  }
-  data.table::setnames(dt, nms[x_idx[1L]], "x")
-  data.table::setnames(dt, nms[y_idx[1L]], "y")
+  x_name <- .coordinate_column(nms, "x")
+  y_name <- .coordinate_column(nms, "y")
+  data.table::setnames(dt, c(x_name, y_name), c("x", "y"))
 
   # --- Cell ID ---
   id_idx <- which(lower == "object id")
@@ -103,7 +143,12 @@
   # --- Sample identity from Image column ---
   img_idx <- which(lower == "image")
   if (length(img_idx) > 0L) {
-    dt[, sample_id := sub(" - .*$", "", dt[[nms[img_idx[1L]]]])]
+    image <- as.character(dt[[nms[img_idx[1L]]]])
+    if ("source_image" %in% names(dt) && !identical(dt$source_image, image)) {
+      stop("source_image is reserved for the original QuPath Image label.", call. = FALSE)
+    }
+    data.table::set(dt, j = "source_image", value = image)
+    dt[, sample_id := sub(" - .*$", "", image)]
   }
 
   # --- Classification ---
@@ -178,13 +223,9 @@
   nms <- names(dt)
   lower <- tolower(nms)
 
-  x_idx <- which(grepl("^centroid x", lower))
-  y_idx <- which(grepl("^centroid y", lower))
-  if (length(x_idx) == 0L || length(y_idx) == 0L) {
-    stop("Could not find Centroid X / Centroid Y columns.", call. = FALSE)
-  }
-  data.table::setnames(dt, nms[x_idx[1L]], "x")
-  data.table::setnames(dt, nms[y_idx[1L]], "y")
+  x_name <- .coordinate_column(nms, "x")
+  y_name <- .coordinate_column(nms, "y")
+  data.table::setnames(dt, c(x_name, y_name), c("x", "y"))
 
   dt[, cell_id := as.character(seq_len(.N))]
 
@@ -214,23 +255,9 @@
     dt[, cell_id := as.character(seq_len(.N))]
   }
 
-  x_pat <- which(
-    grepl("cell.*(x|centroid.*x|x.*pos)|^centroid.*x", lower) |
-      lower %in% c("x", "x_position", "x position", "centroid x",
-                    "centroid_x")
-  )
-  if (length(x_pat) > 0L) {
-    data.table::setnames(dt, nms[x_pat[1L]], "x")
-  }
-
-  y_pat <- which(
-    grepl("cell.*(y|centroid.*y|y.*pos)|^centroid.*y", lower) |
-      lower %in% c("y", "y_position", "y position", "centroid y",
-                    "centroid_y")
-  )
-  if (length(y_pat) > 0L) {
-    data.table::setnames(dt, nms[y_pat[1L]], "y")
-  }
+  x_name <- .coordinate_column(nms, "x")
+  y_name <- .coordinate_column(nms, "y")
+  data.table::setnames(dt, c(x_name, y_name), c("x", "y"))
 
   area_pat <- which(
     grepl("cell.*area|area.*px|area.*pixel", lower) |
@@ -275,7 +302,12 @@
 #'   each row. When \code{path} is a directory and \code{sample_id} is
 #'   \code{NULL}, the file name (without extension) is used. For QuPath
 #'   full-format files with an \code{Image} column, the scan identity is
-#'   parsed automatically.
+#'   parsed automatically. This argument fills absent or blank identities; it
+#'   does not overwrite a nonblank QuPath Image-derived identity. The original
+#'   Image label is retained as `source_image`. Distinct Image labels that
+#'   collapse to the same parsed identity are refused, including across files.
+#'   Reserved cell/sample/Image identifier columns are read as text, retaining
+#'   leading zeros; measurement and coordinate columns retain numeric inference.
 #' @param markers Character vector or \code{NULL}. If provided, only these
 #'   marker columns are retained. Matching is case-insensitive.
 #' @param compartment Character. For QuPath full-format data, which
@@ -295,6 +327,7 @@
 #'     \item{y}{Cell centroid y-coordinate.}
 #'     \item{cell_area}{Cell area (if available).}
 #'     \item{classification}{Cell classification label (if available).}
+#'     \item{source_image}{Original QuPath Image label, when supplied.}
 #'   }
 #'   Additional columns contain marker intensities (one per marker).
 #'
@@ -345,6 +378,7 @@ read_spatial <- function(path, sample_id = NULL, markers = NULL,
     dt <- .read_single(path, sid, markers, compartment, statistic, sep)
   }
 
+  .check_qupath_identity(dt)
   dt
 }
 
@@ -356,8 +390,8 @@ read_spatial <- function(path, sample_id = NULL, markers = NULL,
     sep <- .detect_sep(file)
   }
 
-  dt <- data.table::fread(file, sep = sep, check.names = FALSE,
-                          encoding = "UTF-8")
+  dt <- .read_table_ids(file, sep = sep, check.names = FALSE,
+                         encoding = "UTF-8")
 
   fmt <- .detect_format(names(dt))
   dt <- switch(fmt,
@@ -379,7 +413,7 @@ read_spatial <- function(path, sample_id = NULL, markers = NULL,
   if (!is.null(markers)) {
     markers_lower <- tolower(markers)
     meta_cols <- c("sample_id", "cell_id", "x", "y", "cell_area",
-                   "nucleus_area", "classification", "parent")
+                   "nucleus_area", "classification", "parent", "source_image")
     marker_cols <- names(dt)[tolower(names(dt)) %in% markers_lower]
     keep <- intersect(c(meta_cols, marker_cols), names(dt))
     dt <- dt[, keep, with = FALSE]
@@ -387,7 +421,7 @@ read_spatial <- function(path, sample_id = NULL, markers = NULL,
 
   meta <- intersect(
     c("sample_id", "cell_id", "x", "y", "cell_area", "nucleus_area",
-      "classification", "parent"),
+      "classification", "parent", "source_image"),
     names(dt)
   )
   rest <- setdiff(names(dt), meta)
@@ -401,8 +435,14 @@ read_spatial <- function(path, sample_id = NULL, markers = NULL,
 #' Constructs a \code{\link{SpatialCellData-class}} object from a counts matrix,
 #' coordinate data frame, and optional metadata.
 #'
-#' @param counts Numeric matrix (cells x markers). Row names are optional.
-#' @param coords Data frame with columns \code{x} and \code{y}.
+#' @param counts Real numeric matrix (cells x markers), without infinity.
+#'   Missing values are allowed. Row names are optional. Empty matrices retain
+#'   their marker columns; all-missing columns in nonempty inputs are dropped
+#'   with a warning. Logical placeholders with no entries, as produced by
+#'   zero-row or zero-marker matrices, are stored as numeric matrices.
+#' @param coords Data frame with finite numeric columns \code{x} and \code{y}.
+#'   Zero-row logical coordinate placeholders are stored as numeric vectors;
+#'   nonempty logical values and factors are refused.
 #' @param meta_data Data frame of per-cell metadata, or \code{NULL}.
 #' @param sample_id Character. Sample identifier. Default \code{"sample1"}.
 #' @param project Character. Project name. Default \code{"SpatialProject"}.
@@ -423,6 +463,12 @@ CreateSpatialObject <- function(counts, coords, meta_data = NULL,
   counts <- as.matrix(counts)
   coords <- as.data.frame(coords)
   n <- nrow(counts)
+  # Header-only files use logical coordinate placeholders, not observations.
+  if (nrow(coords) == 0L) {
+    for (axis in intersect(c("x", "y"), names(coords))) {
+      if (is.logical(coords[[axis]])) coords[[axis]] <- numeric(0)
+    }
+  }
 
   # --- Marker-matrix robustness -------------------------------------------
   # Unnamed columns get stable default names; columns that are entirely NA are
@@ -433,12 +479,15 @@ CreateSpatialObject <- function(counts, coords, meta_data = NULL,
     colnames(counts) <- paste0("M", seq_len(ncol(counts)))
   }
   all_na <- colSums(!is.na(counts)) == 0L
-  if (any(all_na)) {
+  if (n > 0L && any(all_na)) {
     warning("Dropping ", sum(all_na), " all-NA marker column(s): ",
             paste(colnames(counts)[all_na], collapse = ", "), ".",
             call. = FALSE)
     counts <- counts[, !all_na, drop = FALSE]
   }
+  # Empty matrices can have cells but no markers, including after all-NA
+  # filtering. Canonicalize only matrices with no entries, never observations.
+  if (length(counts) == 0L && is.logical(counts)) storage.mode(counts) <- "double"
 
   if (is.null(meta_data)) {
     meta_data <- data.frame(
@@ -474,7 +523,8 @@ CreateSpatialObject <- function(counts, coords, meta_data = NULL,
 #'
 #' @param path Character. Path to a CSV file or a directory containing CSV
 #'   files.
-#' @param sample_id Character or \code{NULL}. An identifier for the sample.
+#' @param sample_id Character or \code{NULL}. Fallback sample identifier;
+#'   nonblank QuPath Image identities are retained as in [read_spatial()].
 #' @param markers Character vector or \code{NULL}. If provided, only these
 #'   marker columns are retained.
 #' @param filter Character or \code{NA}. Regex pattern for marker names to
@@ -522,11 +572,15 @@ ReadSpatial <- function(path, sample_id = NULL, markers = NULL,
   }
 
   meta_names <- c("sample_id", "cell_id", "cell_area", "nucleus_area",
-                  "classification", "parent")
+                  "classification", "parent", "source_image")
   meta_cols <- intersect(meta_names, names(dt))
   marker_cols <- .marker_columns(dt)
 
-  counts <- as.matrix(dt[, marker_cols, with = FALSE])
+  counts <- if (length(marker_cols)) {
+    as.matrix(dt[, marker_cols, with = FALSE])
+  } else {
+    matrix(numeric(0), nrow = nrow(dt), ncol = 0L)
+  }
   coords <- data.frame(x = dt$x, y = dt$y)
   meta_data <- as.data.frame(dt[, meta_cols, with = FALSE])
 

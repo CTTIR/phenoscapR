@@ -24,7 +24,10 @@ test_that("run_app() dispatches to shiny::runApp with the bundled app dir", {
   app_dir <- system.file("app", package = "phenoscapR")
   skip_if(!nzchar(app_dir), "app directory not installed")
 
-  local_mocked_bindings(requireNamespace = function(...) TRUE)
+  local_mocked_bindings(
+    requireNamespace = function(...) TRUE,
+    .app_bslib_version = function() package_version("0.9.0")
+  )
   seen <- NULL
   local_mocked_bindings(
     .run_shiny_app = function(app_dir, ...) {
@@ -35,4 +38,14 @@ test_that("run_app() dispatches to shiny::runApp with the bundled app dir", {
   expect_identical(run_app(), "launched")
   expect_identical(seen, app_dir)
   expect_true(dir.exists(seen))
+})
+
+
+test_that("run_app() reports the actual branding dependency floor", {
+  local_mocked_bindings(
+    requireNamespace = function(...) TRUE,
+    .app_bslib_version = function() package_version("0.8.0")
+  )
+  expect_error(run_app(), 'bslib >= 0.9.0; update with install.packages("bslib")',
+               fixed = TRUE)
 })

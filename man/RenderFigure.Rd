@@ -28,8 +28,8 @@ optional \code{letter}, \code{letter_at}, \code{heading} and \code{note}, a \cod
 \code{\link[=FigureGrammars]{FigureGrammars()}}, the name(s) of its \code{data} and builder \code{args}.
 }
 \details{
-Positions can also be given as fractions of the page, as in figure code
-that places axes with \verb{[left, bottom, width, height]} fractions: a panel
+Positions can also be given as fractions of the page. The ordered fields
+are \code{left}, \code{bottom}, \code{width} and \code{height}. A panel
 \code{axes} field replaces \code{box}, \code{letter_xy} replaces \code{letter_at}, and a text
 or legend \code{xy} replaces \code{at} (fractions measured from the bottom-left
 corner; letters and texts hang from the given point).

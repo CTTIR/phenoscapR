@@ -48,25 +48,32 @@ mod_spatial_server <- function(id, obj) {
     section <- shiny::reactive({
       shiny::req(input$section)
       o <- obj()
-      o[o$sample_id == input$section, ]
+      selected <- o[o$sample_id == input$section, ]
+      shiny::validate(shiny::need(nrow(phenoscapR::Meta(selected)) > 0L,
+        "No cells remain in this section. Select another section or reset QC."))
+      selected
     })
 
     output$ripley <- shiny::renderPlot({
-      rk <- phenoscapR::RipleysK(section(), correction = input$correction)
+      o <- section()
+      rk <- phenoscapR::RipleysK(o, correction = input$correction)
       ggplot2::autoplot(rk)
-    })
+    }, alt = "Ripley L curves by simulated phenotype in the selected synthetic section")
     output$enrich <- shiny::renderPlot({
-      ne <- phenoscapR::NeighbourhoodEnrichment(section(), radius = input$radius,
+      o <- section()
+      ne <- phenoscapR::NeighbourhoodEnrichment(o, radius = input$radius,
                                                 n_perm = input$nperm, seed = 1)
       ggplot2::autoplot(ne)
-    })
+    }, alt = "Permutation-based neighbourhood enrichment among simulated phenotypes")
     output$interaction <- shiny::renderPlot({
-      im <- phenoscapR::InteractionMatrix(obj(), radius = input$radius)
+      o <- obj()
+      im <- phenoscapR::InteractionMatrix(o, radius = input$radius)
       phenoscapR::InteractionPlot(im)
-    })
+    }, alt = "Spatial interaction scores among simulated phenotypes")
     output$moran <- shiny::renderPrint({
       shiny::req(input$feature)
-      phenoscapR::MoransI(section(), feature = input$feature,
+      o <- section()
+      phenoscapR::MoransI(o, feature = input$feature,
                           radius = input$radius)
     })
   })

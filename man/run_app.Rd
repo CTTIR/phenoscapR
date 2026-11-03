@@ -16,15 +16,21 @@ Called for its side effect of launching the app; returns the value of
 }
 \description{
 Opens an interactive, Hugo Coder-themed Shiny interface to the package's
-analysis functions: load the bundled example data (or your own object),
-run quality control, phenotyping, spatial statistics, cellular
+analysis functions using the bundled synthetic teaching data:
+run quality control, spatial statistics, cellular
 neighbourhoods, spatial domains, dimensionality reductions, and differential
-abundance, and explore the results with live plots and tables.
+abundance, and explore the results with live plots and tables. Simulated
+phenotypes are supplied with the example. This app does not import user
+objects or export results; use the package functions for those workflows.
+Each example section is one sample, so differential-abundance p-values
+are not suitable for replicated group inference.
 }
 \details{
 The app ships in \code{inst/app}. It depends on optional packages (Shiny,
 bslib, sass, thematic, reactable, bsicons); \code{run_app()} checks for them
-and reports any that are missing.
+and reports any that are missing. Branding requires bslib >= 0.9.0.
+The optional UMAP view requires uwot; PCA remains available without it.
+If QC removes every cell, widen or reset the cell-area filter.
 }
 \examples{
 if (interactive()) {

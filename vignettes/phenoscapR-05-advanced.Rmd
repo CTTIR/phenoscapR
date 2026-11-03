@@ -76,7 +76,7 @@ rk                       # tidy print
 head(rk$L)               # ...but still a data frame
 ```
 
-```{r autoplot, fig.height = 3.6}
+```{r autoplot, fig.height = 3.6, fig.alt = c("Border-corrected Ripley L curves for synthetic tonsil A.", "Permutation-based phenotype neighbourhood enrichment in synthetic tonsil A at radius 40.")}
 autoplot(rk)
 autoplot(NeighbourhoodEnrichment(a, radius = 40, n_perm = 199, seed = 1))
 ```
@@ -111,7 +111,7 @@ InteractionMatrix(a, radius = 40, method = "permutation", n_perm = 99,
 
 ### PCA variance
 
-```{r pca, fig.height = 3.6}
+```{r pca, fig.height = 3.6, fig.alt = "Percentage of variance explained by each principal component of the synthetic marker data."}
 obj <- RunPCA(obj, n_pcs = 8)
 round(VarianceExplained(obj), 1)
 ScreePlot(obj)
@@ -126,7 +126,7 @@ Cell subsetting retains these labels as frozen annotations from the cohort fit,
 so the tissue maps below show that original fit. Recompute neighbourhoods or
 domains after filtering if the aim is to describe the changed cell population.
 
-```{r niches, fig.height = 4.6}
+```{r niches, fig.height = 4.6, fig.alt = "Synthetic tonsil A cell positions coloured by cellular neighbourhood from the full-cohort fit."}
 obj <- CellularNeighbourhoods(obj, n_neighbourhoods = 6, k = 20, seed = 1)
 table(obj$neighbourhood)
 CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "neighbourhood")
@@ -136,7 +136,7 @@ CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "neighbourhood")
 
 Cluster cells by spatially smoothed expression into coherent tissue regions.
 
-```{r domains, fig.height = 4.6}
+```{r domains, fig.height = 4.6, fig.alt = "Synthetic tonsil A cell positions coloured by spatial domain from the full-cohort fit."}
 obj <- SpatialDomains(obj, n_domains = 4, k = 20, seed = 1)
 CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "domain")
 ```

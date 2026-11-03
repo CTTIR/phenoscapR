@@ -79,25 +79,25 @@ markers <- c("CD20", "CD3", "CD8", "PanCK")
 
 ### `CellMap()` — phenotype map
 
-```{r cellmap}
+```{r cellmap, fig.alt = "Synthetic tonsil A cell positions coloured by simulated phenotype."}
 CellMap(a)
 ```
 
 ### `FeaturePlot()` — marker intensity in space
 
-```{r featureplot, fig.height = 5}
+```{r featureplot, fig.height = 5, fig.alt = "Spatial distributions of normalised CD20, CD3, CD8 and PanCK intensity in synthetic tonsil A."}
 FeaturePlot(a, features = markers)
 ```
 
 ### `DensityPlot()` — local cell density
 
-```{r densityplot}
+```{r densityplot, fig.alt = "Synthetic tonsil A cell positions coloured by local cell density within radius 40."}
 DensityPlot(a)
 ```
 
 ### `SpatialNetworkPlot()` — cell-contact graph
 
-```{r network, eval = has_deldir}
+```{r network, eval = has_deldir, fig.alt = "Delaunay network of synthetic tonsil A cells, retaining edges no longer than 60."}
 a_net <- DelaunayNetwork(a, max_edge = 60)
 SpatialNetworkPlot(a_net)
 ```
@@ -106,27 +106,27 @@ SpatialNetworkPlot(a_net)
 
 ### `ViolinPlot()` and `BoxPlot()`
 
-```{r violin}
+```{r violin, fig.alt = "Violin distributions of four normalised marker intensities by simulated phenotype."}
 ViolinPlot(a, features = markers, group_by = "phenotype")
 ```
 
-```{r box}
+```{r box, fig.alt = "Box plots of four normalised marker intensities by simulated phenotype."}
 BoxPlot(a, features = markers, group_by = "phenotype")
 ```
 
 ### `RidgePlot()` and `HistogramPlot()`
 
-```{r ridge}
+```{r ridge, fig.alt = "Distributions of four normalised marker intensities by simulated phenotype."}
 RidgePlot(a, features = markers, group_by = "phenotype")
 ```
 
-```{r histogram, fig.height = 4}
+```{r histogram, fig.height = 4, fig.alt = "Histograms of normalised CD20 intensity by simulated phenotype."}
 HistogramPlot(a, feature = "CD20", group_by = "phenotype")
 ```
 
 ### `DotPlot()` — mean expression × fraction expressing
 
-```{r dotplot, fig.height = 4}
+```{r dotplot, fig.height = 4, fig.alt = "Marker expression by simulated phenotype; dot colour shows mean expression and size shows the expressing fraction."}
 DotPlot(a, features = c("CD3", "CD4", "CD8", "CD20", "CD68", "PanCK", "FoxP3"))
 ```
 
@@ -134,25 +134,25 @@ DotPlot(a, features = c("CD3", "CD4", "CD8", "CD20", "CD68", "PanCK", "FoxP3"))
 
 ### `MarkerHeatmap()` — phenotype signatures
 
-```{r heatmap, fig.height = 5}
+```{r heatmap, fig.height = 5, fig.alt = "Mean normalised marker intensities for each simulated phenotype."}
 MarkerHeatmap(obj)
 ```
 
 ### `CompositionPlot()` — phenotype proportions
 
-```{r composition, fig.height = 4}
+```{r composition, fig.height = 4, fig.alt = "Stacked simulated phenotype proportions in each synthetic section."}
 CompositionPlot(obj, group_by = "sample_id")
 ```
 
 ### `InteractionPlot()` — co-localisation scores
 
-```{r interactions}
+```{r interactions, fig.alt = "Pairwise simulated phenotype interaction scores within the synthetic sections at radius 40."}
 InteractionPlot(InteractionMatrix(obj, radius = 40))
 ```
 
 ### `QCPlot()` — any metadata pair
 
-```{r qcplot, fig.height = 4}
+```{r qcplot, fig.height = 4, fig.alt = "Cell area versus local density in synthetic tonsil A, coloured by simulated phenotype."}
 QCPlot(a, x = "cell_area", y = "density", colour_by = "phenotype")
 ```
 
@@ -160,12 +160,12 @@ QCPlot(a, x = "cell_area", y = "density", colour_by = "phenotype")
 
 Reduce marker space and plot it with `DimPlot()` / `EmbeddingPlot()`.
 
-```{r pca}
+```{r pca, fig.alt = "PCA embedding of synthetic cells coloured by simulated phenotype."}
 obj <- RunPCA(obj, n_pcs = 10)
 DimPlot(obj, reduction = "pca", colour_by = "phenotype")
 ```
 
-```{r umap, eval = has_uwot}
+```{r umap, eval = has_uwot, fig.alt = "UMAP embedding of synthetic cells coloured by simulated phenotype."}
 # Base SVD is sufficient for this small marker panel and avoids dependence
 # on an optional truncated-SVD solver when disconnected groups need PCA init.
 obj <- RunUMAP(obj, dims = 10, n_neighbors = 15, seed = 1,
@@ -177,7 +177,7 @@ EmbeddingPlot(obj, reduction = "umap", colour_by = "phenotype")
 
 Because each plot is a plain ggplot, standard customisation just works:
 
-```{r theme}
+```{r theme, fig.alt = "Synthetic tonsil A phenotype map with a customised title."}
 CellMap(a) +
   labs(title = "Tonsil A — phenotype map") +
   theme(plot.title = element_text(face = "bold"))
@@ -187,7 +187,7 @@ The package palette is global. Set it once and every plot follows. Any
 viridis-family option works (`"viridis"`, `"inferno"`, `"plasma"`,
 `"cividis"`, `"rocket"`, `"mako"`):
 
-```{r palette}
+```{r palette, fig.alt = "Stacked simulated phenotype proportions in each section using the rocket palette."}
 SetPalette("rocket")
 CompositionPlot(obj, group_by = "sample_id")
 ```

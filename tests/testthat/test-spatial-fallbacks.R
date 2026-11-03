@@ -13,7 +13,10 @@ make_obj <- function(n = 50L, seed = 1L) {
   CreateSpatialObject(counts, coords, meta)
 }
 
-mock_no <- function(pkg) function(package, ...) !identical(package, pkg)
+# Hide only the requested backend; do not invent other optional installations.
+mock_no <- function(pkg) function(package, ...) {
+  !identical(package, pkg) && base::requireNamespace(package, ...)
+}
 
 test_that("CellDensity matches between RANN and the pure-R fallback", {
   obj <- make_obj()

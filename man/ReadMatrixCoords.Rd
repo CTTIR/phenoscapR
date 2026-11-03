@@ -23,13 +23,17 @@ path). Non-numeric and \code{id_cols} columns are dropped.}
 \item{metadata}{Cell metadata containing the coordinate columns (data frame
 or CSV path).}
 
-\item{x_col, y_col}{Character. Coordinate column names in \code{metadata}.}
+\item{x_col, y_col}{Character. Coordinate column names in \code{metadata};
+values must be real numeric, finite vectors. Factor codes are never used
+as coordinate values.}
 
 \item{cell_id_col}{Character or \code{NULL}. Shared cell-id column; if present
 in both tables, rows are matched on it, otherwise row order is assumed.
 Further columns (for example \code{"fov"}) can follow: those present in
 both tables are matched as well, so ids need only be unique within them.
-The first column becomes \code{cell_id}. Matched ids must be unique.}
+The first column becomes \code{cell_id}. Matched ids must be unique.
+Declared ID columns and reserved cell/sample identifiers in CSV files are
+read as text before type inference, so leading-zero identities remain distinct.}
 
 \item{id_cols}{Character vector. Non-marker id columns to drop from
 \code{expression} (e.g. \code{"fov"}, \code{"cell_ID"}).}

@@ -347,8 +347,8 @@ reference:
 
   - title: "Shiny Application"
     desc: >
-      Launch the interactive phenoscapR Shiny interface to run the full
-      analysis workflow and explore results with live plots and tables.
+      Launch the interactive phenoscapR Shiny interface to explore bundled
+      synthetic teaching data with live plots and tables.
     contents:
       - run_app
 

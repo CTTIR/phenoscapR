@@ -17,7 +17,9 @@ Builds a \pkg{Seurat} object with raw counts, normalised data, cell metadata,
 and the spatial coordinates stored both in metadata (\code{x}, \code{y}) and
 as a \code{"spatial"} dimensional reduction. Cell IDs repeated across
 samples are made unique with \code{\link[=make.unique]{make.unique()}} for the Seurat cell names; the
-metadata keep the original \code{cell_id}.
+metadata keep the original \code{cell_id}. Export refuses marker identifiers
+that Seurat would rewrite (such as underscores); use \code{\link[=as_SpatialExperiment]{as_SpatialExperiment()}}
+for unchanged identifiers, or rename markers explicitly before export.
 }
 \examples{
 \donttest{

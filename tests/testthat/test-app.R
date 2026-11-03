@@ -24,11 +24,22 @@ test_that("the Shiny app launches and toggles colour mode", {
   withr::defer(app$stop())
   app$wait_for_idle(timeout = 30000)
 
-  # Light mode: snapshot the (deterministic) input state.
+  # Set each mode explicitly instead of inheriting the browser/OS preference.
+  app$run_js(paste0(
+    "if (document.documentElement.dataset.bsTheme !== 'light') ",
+    "document.querySelector('bslib-input-dark-mode').shadowRoot",
+    ".querySelector('button').click();"
+  ))
+  app$wait_for_idle(timeout = 15000)
+  expect_identical(app$get_value(input = "color_mode"), "light")
   app$expect_values(input = TRUE, name = "light")
 
   # Toggle to dark mode and confirm the switch took effect.
-  app$set_inputs(color_mode = "dark")
+  app$run_js(paste0(
+    "if (document.documentElement.dataset.bsTheme !== 'dark') ",
+    "document.querySelector('bslib-input-dark-mode').shadowRoot",
+    ".querySelector('button').click();"
+  ))
   app$wait_for_idle(timeout = 15000)
   expect_identical(app$get_value(input = "color_mode"), "dark")
   app$expect_values(input = TRUE, name = "dark")

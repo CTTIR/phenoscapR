@@ -73,8 +73,8 @@ routines to pin. Kept so that existing calls keep working.}
 \item{eps}{Explicit positive finite scalar tolerance passed to the engine.}
 
 \item{mode}{Explicit \code{"stock"}, \code{"bounded"} or \code{"auto"} workspace mode,
-validated with \code{\link[=PlanExactDelaunayWorkspace]{PlanExactDelaunayWorkspace()}} and recorded in the
-provenance. Every mode runs \code{deldir::deldir()}, which sizes its own
+validated with the \link[=PlanExactDelaunayWorkspace]{workspace planner} and
+recorded in the provenance. Every mode runs \code{deldir::deldir()}, which sizes its own
 workspace and enlarges it when needed; frames whose stock workspace would
 exceed the integer limit (\code{bounded_required}) are refused.}
 

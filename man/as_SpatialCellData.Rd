@@ -17,7 +17,13 @@ A \code{\link{SpatialCellData-class}} object.
 \description{
 Imports an object from the wider ecosystem. Coordinates are taken from
 \code{spatialCoords} (SpatialExperiment) or from \code{x}/\code{y} metadata
-columns or a \code{"spatial"} reduction (Seurat).
+columns or a \code{"spatial"} reduction (Seurat). The normalized \code{logcounts}
+assay (SpatialExperiment) or \code{data} layer (Seurat) is retained when present;
+raw counts are used as data only when it is absent. Normalized assays must
+contain the same cells and features as counts; named axes are aligned, and
+incompatible partial assays are refused. All-missing features are retained.
+Existing cell identifiers are kept; absent \code{cell_id} metadata use the source
+cell names when available. No normalization method is inferred or applied.
 }
 \examples{
 \donttest{

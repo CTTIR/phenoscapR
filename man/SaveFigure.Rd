@@ -13,7 +13,7 @@ SaveFigure(figure, pdf = NULL, png = NULL, dpi = NULL)
 
 \item{png}{Output PNG path, or \code{NULL}.}
 
-\item{dpi}{Raster resolution; defaults to the style's.}
+\item{dpi}{Positive finite raster resolution; defaults to the style's.}
 }
 \value{
 The output paths, invisibly.
@@ -30,6 +30,14 @@ text metrics for the session under the device name, not its resolution, so
 a fresh device name makes the PNG independent of what was drawn before in
 the session. Without 'ragg', PNGs saved at different resolutions in one
 session can place rich text a pixel apart.
+
+Both outputs are rendered to temporary files beside their destinations before
+replacing either destination. A rendering failure leaves existing files
+unchanged. If replacement fails, previous files are restored where the file
+system permits it; any backup that cannot be restored is retained and its
+path is reported. This is recovery from reported errors, not a transaction
+across process termination or a concurrent writer. Destinations must be
+distinct files in existing directories.
 }
 \examples{
 p <- ggplot2::ggplot(data.frame(x = 1:3, y = c(2, 1, 3)), ggplot2::aes(x, y)) +

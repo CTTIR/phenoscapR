@@ -64,3 +64,13 @@ pre {
     background-color: #262626;
   }
 }
+
+// Reactable retains white row surfaces in both modes; retain readable text too.
+.reactable .ReactTable {
+  color: #212121;
+}
+
+// Recovery instructions are normal reading text, including in dark mode.
+.shiny-output-error-validation {
+  color: var(--bs-body-color);
+}

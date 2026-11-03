@@ -1,0 +1,12 @@
+/* Scientific colours and labels must retain their meaning in both themes. */
+html[data-bs-theme] img.r-plt {
+  filter: none !important;
+  background-color: #fff;
+}
+
+/* Keep comments, output, and variable names readable on code panels. */
+html[data-bs-theme="light"] pre code span.co { color: #505b66; }
+html[data-bs-theme="dark"] pre code span.co { color: #adb5bd; }
+html[data-bs-theme="light"] pre code span.va { color: #a04400; }
+html[data-bs-theme="light"] pre code span.kw,
+html[data-bs-theme="light"] pre code span.kw a { color: #a62c3a; }
