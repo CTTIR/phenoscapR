@@ -30,5 +30,5 @@ coords <- data.frame(x = runif(50), y = runif(50))
 obj <- RunPCA(CreateSpatialObject(counts, coords), n_pcs = 5)
 VarianceExplained(obj)
 #>     PC_1     PC_2     PC_3     PC_4     PC_5 
-#> 18.74946 14.38885 13.74663 11.60316 10.56589 
+#> 19.65410 14.41696 13.84016 11.95552 10.68559 
 ```
