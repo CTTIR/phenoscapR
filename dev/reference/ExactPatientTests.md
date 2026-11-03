@@ -12,11 +12,13 @@ not depend on the scale of the values. A shift leaves them unchanged
 while the rounding of the shifted values stays below the spacing of
 distinct statistics; for example, whole numbers from 0 to 20 for up to
 12 patients keep their exact p values up to a shift of 1e13, while
-larger shifts can merge distinct statistics into ties. This requires
-exchangeability under the null. Observational confounding, paired
-designs and stratified randomisation are not addressed by this test.
-Repeated images must be aggregated to one endpoint per patient
-beforehand.
+larger shifts can merge distinct statistics into ties. If an
+intermediate tolerance bound overflows, the same bound is evaluated with
+machine precision multiplied first; finite ordinary bounds are
+unchanged. This requires exchangeability under the null. Observational
+confounding, paired designs and stratified randomisation are not
+addressed by this test. Repeated images must be aggregated to one
+endpoint per patient beforehand.
 
 ## Usage
 

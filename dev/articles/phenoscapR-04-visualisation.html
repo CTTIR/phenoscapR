@@ -17,15 +17,16 @@
 <link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Visualisation Gallery">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Visualisation Gallery">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1565c0">
 <!-- Package browser icons -->
-<link rel="icon" type="image/x-icon" href="../favicon.ico?v=b46ff4b1148d">
-<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png?v=b46ff4b1148d">
-<link rel="icon" type="image/svg+xml" sizes="any" href="../favicon.svg?v=b46ff4b1148d">
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png?v=b46ff4b1148d">
-<link rel="manifest" href="../site.webmanifest?v=b46ff4b1148d">
+<link rel="icon" type="image/x-icon" href="../favicon.ico?v=d8b0da3b7941">
+<link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png?v=d8b0da3b7941">
+<link rel="icon" type="image/svg+xml" sizes="any" href="../favicon.svg?v=d8b0da3b7941">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png?v=d8b0da3b7941">
+<link rel="manifest" href="../site.webmanifest?v=d8b0da3b7941">
 <!-- /Package browser icons -->
 </head>
 <body>
@@ -37,7 +38,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -137,7 +138,7 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/CellMap.html">CellMap</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/cellmap-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/cellmap-1.png" class="r-plt" alt="Synthetic tonsil A cell positions coloured by simulated phenotype." width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="featureplot-marker-intensity-in-space">
@@ -145,7 +146,7 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/FeaturePlot.html">FeaturePlot</a></span><span class="op">(</span><span class="va">a</span>, features <span class="op">=</span> <span class="va">markers</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/featureplot-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/featureplot-1.png" class="r-plt" alt="Spatial distributions of normalised CD20, CD3, CD8 and PanCK intensity in synthetic tonsil A." width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="densityplot-local-cell-density">
@@ -153,7 +154,7 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/DensityPlot.html">DensityPlot</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/densityplot-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/densityplot-1.png" class="r-plt" alt="Synthetic tonsil A cell positions coloured by local cell density within radius 40." width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="spatialnetworkplot-cell-contact-graph">
@@ -162,7 +163,7 @@ data.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">a_net</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DelaunayNetwork.html">DelaunayNetwork</a></span><span class="op">(</span><span class="va">a</span>, max_edge <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/SpatialNetworkPlot.html">SpatialNetworkPlot</a></span><span class="op">(</span><span class="va">a_net</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/network-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/network-1.png" class="r-plt" alt="Delaunay network of synthetic tonsil A cells, retaining edges no longer than 60." width="672"></p>
 </div>
 </div>
 <div class="section level2">
@@ -174,10 +175,10 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ViolinPlot.html">ViolinPlot</a></span><span class="op">(</span><span class="va">a</span>, features <span class="op">=</span> <span class="va">markers</span>, group_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/violin-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/violin-1.png" class="r-plt" alt="Violin distributions of four normalised marker intensities by simulated phenotype." width="672"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/BoxPlot.html">BoxPlot</a></span><span class="op">(</span><span class="va">a</span>, features <span class="op">=</span> <span class="va">markers</span>, group_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/box-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/box-1.png" class="r-plt" alt="Box plots of four normalised marker intensities by simulated phenotype." width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="ridgeplot-and-histogramplot">
@@ -185,10 +186,10 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/RidgePlot.html">RidgePlot</a></span><span class="op">(</span><span class="va">a</span>, features <span class="op">=</span> <span class="va">markers</span>, group_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/ridge-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/ridge-1.png" class="r-plt" alt="Distributions of four normalised marker intensities by simulated phenotype." width="672"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/HistogramPlot.html">HistogramPlot</a></span><span class="op">(</span><span class="va">a</span>, feature <span class="op">=</span> <span class="st">"CD20"</span>, group_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/histogram-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/histogram-1.png" class="r-plt" alt="Histograms of normalised CD20 intensity by simulated phenotype." width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="dotplot-mean-expression-fraction-expressing">
@@ -196,7 +197,7 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/DotPlot.html">DotPlot</a></span><span class="op">(</span><span class="va">a</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"CD20"</span>, <span class="st">"CD68"</span>, <span class="st">"PanCK"</span>, <span class="st">"FoxP3"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/dotplot-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/dotplot-1.png" class="r-plt" alt="Marker expression by simulated phenotype; dot colour shows mean expression and size shows the expressing fraction." width="672"></p>
 </div>
 </div>
 <div class="section level2">
@@ -208,7 +209,7 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/MarkerHeatmap.html">MarkerHeatmap</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/heatmap-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/heatmap-1.png" class="r-plt" alt="Mean normalised marker intensities for each simulated phenotype." width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="compositionplot-phenotype-proportions">
@@ -216,7 +217,7 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/CompositionPlot.html">CompositionPlot</a></span><span class="op">(</span><span class="va">obj</span>, group_by <span class="op">=</span> <span class="st">"sample_id"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/composition-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/composition-1.png" class="r-plt" alt="Stacked simulated phenotype proportions in each synthetic section." width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="interactionplot-co-localisation-scores">
@@ -224,7 +225,7 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/InteractionPlot.html">InteractionPlot</a></span><span class="op">(</span><span class="fu"><a href="../reference/InteractionMatrix.html">InteractionMatrix</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/interactions-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/interactions-1.png" class="r-plt" alt="Pairwise simulated phenotype interaction scores within the synthetic sections at radius 40." width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="qcplot-any-metadata-pair">
@@ -232,7 +233,7 @@ data.</p>
 </h3>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/QCPlot.html">QCPlot</a></span><span class="op">(</span><span class="va">a</span>, x <span class="op">=</span> <span class="st">"cell_area"</span>, y <span class="op">=</span> <span class="st">"density"</span>, colour_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/qcplot-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/qcplot-1.png" class="r-plt" alt="Cell area versus local density in synthetic tonsil A, coloured by simulated phenotype." width="672"></p>
 </div>
 </div>
 <div class="section level2">
@@ -243,11 +244,14 @@ data.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunPCA.html">RunPCA</a></span><span class="op">(</span><span class="va">obj</span>, n_pcs <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/EmbeddingPlot.html">DimPlot</a></span><span class="op">(</span><span class="va">obj</span>, reduction <span class="op">=</span> <span class="st">"pca"</span>, colour_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/pca-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/pca-1.png" class="r-plt" alt="PCA embedding of synthetic cells coloured by simulated phenotype." width="672"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunUMAP.html">RunUMAP</a></span><span class="op">(</span><span class="va">obj</span>, dims <span class="op">=</span> <span class="fl">10</span>, n_neighbors <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Base SVD is sufficient for this small marker panel and avoids dependence</span></span>
+<span><span class="co"># on an optional truncated-SVD solver when disconnected groups need PCA init.</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunUMAP.html">RunUMAP</a></span><span class="op">(</span><span class="va">obj</span>, dims <span class="op">=</span> <span class="fl">10</span>, n_neighbors <span class="op">=</span> <span class="fl">15</span>, seed <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>               pca_method <span class="op">=</span> <span class="st">"svd"</span>, n_threads <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/EmbeddingPlot.html">EmbeddingPlot</a></span><span class="op">(</span><span class="va">obj</span>, reduction <span class="op">=</span> <span class="st">"umap"</span>, colour_by <span class="op">=</span> <span class="st">"phenotype"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/umap-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/umap-1.png" class="r-plt" alt="UMAP embedding of synthetic cells coloured by simulated phenotype." width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="theming-and-palettes">Theming and palettes<a class="anchor" aria-label="anchor" href="#theming-and-palettes"></a>
@@ -258,7 +262,7 @@ works:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/CellMap.html">CellMap</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Tonsil A — phenotype map"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/theme-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/theme-1.png" class="r-plt" alt="Synthetic tonsil A phenotype map with a customised title." width="672"></p>
 <p>The package palette is global. Set it once and every plot follows.
 Any viridis-family option works (<code>"viridis"</code>,
 <code>"inferno"</code>, <code>"plasma"</code>, <code>"cividis"</code>,
@@ -266,7 +270,7 @@ Any viridis-family option works (<code>"viridis"</code>,
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/SetPalette.html">SetPalette</a></span><span class="op">(</span><span class="st">"rocket"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/CompositionPlot.html">CompositionPlot</a></span><span class="op">(</span><span class="va">obj</span>, group_by <span class="op">=</span> <span class="st">"sample_id"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-04-visualisation_files/figure-html/palette-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-04-visualisation_files/figure-html/palette-1.png" class="r-plt" alt="Stacked simulated phenotype proportions in each section using the rocket palette." width="672"></p>
 <p><code><a href="../reference/PaletteDiscrete.html">PaletteDiscrete()</a></code>, <code><a href="../reference/PaletteContinuous.html">PaletteContinuous()</a></code>, and
 <code><a href="../reference/CustomGradient.html">CustomGradient()</a></code> expose the same colours for use in bespoke
 plots.</p>
@@ -293,7 +297,7 @@ Spatial Analysis</a></strong> — the statistics behind these plots</li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://github.com/cttir" class="external-link">Hanno Witte</a>.</p>
+  <p>Developed by <a href="https://github.com/cttir" class="external-link">R. Heller</a>, <a href="https://www.uniklinik-ulm.de/en/pathologie/ueber-uns/team.html" class="external-link">E. Chteinberg</a>, <a href="https://github.com/cttir" class="external-link">H. Witte</a>.</p>
 </div>
 
 <div class="pkgdown-footer-center themakr-footer-suite">

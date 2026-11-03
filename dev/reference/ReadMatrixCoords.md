@@ -36,7 +36,9 @@ ReadMatrixCoords(
 
 - x_col, y_col:
 
-  Character. Coordinate column names in `metadata`.
+  Character. Coordinate column names in `metadata`; values must be real
+  numeric, finite vectors. Factor codes are never used as coordinate
+  values.
 
 - cell_id_col:
 
@@ -44,7 +46,10 @@ ReadMatrixCoords(
   rows are matched on it, otherwise row order is assumed. Further
   columns (for example `"fov"`) can follow: those present in both tables
   are matched as well, so ids need only be unique within them. The first
-  column becomes `cell_id`. Matched ids must be unique.
+  column becomes `cell_id`. Matched ids must be unique. Declared ID
+  columns and reserved cell/sample identifiers in CSV files are read as
+  text before type inference, so leading-zero identities remain
+  distinct.
 
 - id_cols:
 

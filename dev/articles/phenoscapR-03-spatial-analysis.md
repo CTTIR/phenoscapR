@@ -112,7 +112,9 @@ with(rk, {
 })
 ```
 
-![](phenoscapR-03-spatial-analysis_files/figure-html/ripleysk-1.png)
+![Border-corrected Ripley L across radius for synthetic tonsil A, with
+the zero reference
+line.](phenoscapR-03-spatial-analysis_files/figure-html/ripleysk-1.png)
 
 ## Pair correlation function
 
@@ -130,7 +132,8 @@ with(pcf, {
 })
 ```
 
-![](phenoscapR-03-spatial-analysis_files/figure-html/pcf-1.png)
+![Pair correlation g across radius for synthetic tonsil
+A.](phenoscapR-03-spatial-analysis_files/figure-html/pcf-1.png)
 
 ## Moran’s I
 
@@ -195,7 +198,9 @@ nrow(a@spatial$delaunay_edges)
 SpatialNetworkPlot(a)
 ```
 
-![](phenoscapR-03-spatial-analysis_files/figure-html/delaunay-1.png)
+![Delaunay connections between synthetic tonsil A cells after excluding
+edges longer than
+60.](phenoscapR-03-spatial-analysis_files/figure-html/delaunay-1.png)
 
 ## Expression clustering
 
@@ -212,7 +217,8 @@ table(a$expr_cluster)
 CellMap(a, colour_by = "expr_cluster")
 ```
 
-![](phenoscapR-03-spatial-analysis_files/figure-html/exprclusters-1.png)
+![Synthetic tonsil A cell positions coloured by expression-derived
+cluster.](phenoscapR-03-spatial-analysis_files/figure-html/exprclusters-1.png)
 
 ## Choosing a statistic
 

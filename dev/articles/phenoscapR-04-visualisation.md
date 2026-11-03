@@ -45,7 +45,8 @@ markers <- c("CD20", "CD3", "CD8", "PanCK")
 CellMap(a)
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/cellmap-1.png)
+![Synthetic tonsil A cell positions coloured by simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/cellmap-1.png)
 
 ### `FeaturePlot()` — marker intensity in space
 
@@ -54,7 +55,9 @@ CellMap(a)
 FeaturePlot(a, features = markers)
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/featureplot-1.png)
+![Spatial distributions of normalised CD20, CD3, CD8 and PanCK intensity
+in synthetic tonsil
+A.](phenoscapR-04-visualisation_files/figure-html/featureplot-1.png)
 
 ### `DensityPlot()` — local cell density
 
@@ -63,7 +66,9 @@ FeaturePlot(a, features = markers)
 DensityPlot(a)
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/densityplot-1.png)
+![Synthetic tonsil A cell positions coloured by local cell density
+within radius
+40.](phenoscapR-04-visualisation_files/figure-html/densityplot-1.png)
 
 ### `SpatialNetworkPlot()` — cell-contact graph
 
@@ -73,7 +78,9 @@ a_net <- DelaunayNetwork(a, max_edge = 60)
 SpatialNetworkPlot(a_net)
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/network-1.png)
+![Delaunay network of synthetic tonsil A cells, retaining edges no
+longer than
+60.](phenoscapR-04-visualisation_files/figure-html/network-1.png)
 
 ## Marker distributions
 
@@ -84,14 +91,17 @@ SpatialNetworkPlot(a_net)
 ViolinPlot(a, features = markers, group_by = "phenotype")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/violin-1.png)
+![Violin distributions of four normalised marker intensities by
+simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/violin-1.png)
 
 ``` r
 
 BoxPlot(a, features = markers, group_by = "phenotype")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/box-1.png)
+![Box plots of four normalised marker intensities by simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/box-1.png)
 
 ### `RidgePlot()` and `HistogramPlot()`
 
@@ -100,14 +110,16 @@ BoxPlot(a, features = markers, group_by = "phenotype")
 RidgePlot(a, features = markers, group_by = "phenotype")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/ridge-1.png)
+![Distributions of four normalised marker intensities by simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/ridge-1.png)
 
 ``` r
 
 HistogramPlot(a, feature = "CD20", group_by = "phenotype")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/histogram-1.png)
+![Histograms of normalised CD20 intensity by simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/histogram-1.png)
 
 ### `DotPlot()` — mean expression × fraction expressing
 
@@ -116,7 +128,9 @@ HistogramPlot(a, feature = "CD20", group_by = "phenotype")
 DotPlot(a, features = c("CD3", "CD4", "CD8", "CD20", "CD68", "PanCK", "FoxP3"))
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/dotplot-1.png)
+![Marker expression by simulated phenotype; dot colour shows mean
+expression and size shows the expressing
+fraction.](phenoscapR-04-visualisation_files/figure-html/dotplot-1.png)
 
 ## Summaries
 
@@ -127,7 +141,8 @@ DotPlot(a, features = c("CD3", "CD4", "CD8", "CD20", "CD68", "PanCK", "FoxP3"))
 MarkerHeatmap(obj)
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/heatmap-1.png)
+![Mean normalised marker intensities for each simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/heatmap-1.png)
 
 ### `CompositionPlot()` — phenotype proportions
 
@@ -136,7 +151,8 @@ MarkerHeatmap(obj)
 CompositionPlot(obj, group_by = "sample_id")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/composition-1.png)
+![Stacked simulated phenotype proportions in each synthetic
+section.](phenoscapR-04-visualisation_files/figure-html/composition-1.png)
 
 ### `InteractionPlot()` — co-localisation scores
 
@@ -145,7 +161,9 @@ CompositionPlot(obj, group_by = "sample_id")
 InteractionPlot(InteractionMatrix(obj, radius = 40))
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/interactions-1.png)
+![Pairwise simulated phenotype interaction scores within the synthetic
+sections at radius
+40.](phenoscapR-04-visualisation_files/figure-html/interactions-1.png)
 
 ### `QCPlot()` — any metadata pair
 
@@ -154,7 +172,9 @@ InteractionPlot(InteractionMatrix(obj, radius = 40))
 QCPlot(a, x = "cell_area", y = "density", colour_by = "phenotype")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/qcplot-1.png)
+![Cell area versus local density in synthetic tonsil A, coloured by
+simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/qcplot-1.png)
 
 ## Dimensionality reductions
 
@@ -169,15 +189,20 @@ obj <- RunPCA(obj, n_pcs = 10)
 DimPlot(obj, reduction = "pca", colour_by = "phenotype")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/pca-1.png)
+![PCA embedding of synthetic cells coloured by simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/pca-1.png)
 
 ``` r
 
-obj <- RunUMAP(obj, dims = 10, n_neighbors = 15)
+# Base SVD is sufficient for this small marker panel and avoids dependence
+# on an optional truncated-SVD solver when disconnected groups need PCA init.
+obj <- RunUMAP(obj, dims = 10, n_neighbors = 15, seed = 1,
+               pca_method = "svd", n_threads = 1)
 EmbeddingPlot(obj, reduction = "umap", colour_by = "phenotype")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/umap-1.png)
+![UMAP embedding of synthetic cells coloured by simulated
+phenotype.](phenoscapR-04-visualisation_files/figure-html/umap-1.png)
 
 ## Theming and palettes
 
@@ -190,7 +215,8 @@ CellMap(a) +
   theme(plot.title = element_text(face = "bold"))
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/theme-1.png)
+![Synthetic tonsil A phenotype map with a customised
+title.](phenoscapR-04-visualisation_files/figure-html/theme-1.png)
 
 The package palette is global. Set it once and every plot follows. Any
 viridis-family option works (`"viridis"`, `"inferno"`, `"plasma"`,
@@ -202,7 +228,9 @@ SetPalette("rocket")
 CompositionPlot(obj, group_by = "sample_id")
 ```
 
-![](phenoscapR-04-visualisation_files/figure-html/palette-1.png)
+![Stacked simulated phenotype proportions in each section using the
+rocket
+palette.](phenoscapR-04-visualisation_files/figure-html/palette-1.png)
 
 [`PaletteDiscrete()`](https://cttir.github.io/phenoscapR/dev/reference/PaletteDiscrete.md),
 [`PaletteContinuous()`](https://cttir.github.io/phenoscapR/dev/reference/PaletteContinuous.md),

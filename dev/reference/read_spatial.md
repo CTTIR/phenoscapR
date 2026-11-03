@@ -30,7 +30,14 @@ read_spatial(
   Character string or `NULL`. An identifier appended to each row. When
   `path` is a directory and `sample_id` is `NULL`, the file name
   (without extension) is used. For QuPath full-format files with an
-  `Image` column, the scan identity is parsed automatically.
+  `Image` column, the scan identity is parsed automatically. This
+  argument fills absent or blank identities; it does not overwrite a
+  nonblank QuPath Image-derived identity. The original Image label is
+  retained as `source_image`. Distinct Image labels that collapse to the
+  same parsed identity are refused, including across files. Reserved
+  cell/sample/Image identifier columns are read as text, retaining
+  leading zeros; measurement and coordinate columns retain numeric
+  inference.
 
 - markers:
 
@@ -82,6 +89,10 @@ A `data.table` with standardised column names:
 
   Cell classification label (if available).
 
+- source_image:
+
+  Original QuPath Image label, when supplied.
+
 Additional columns contain marker intensities (one per marker).
 
 ## Details
@@ -118,11 +129,11 @@ write.csv(data.frame(
 dat <- read_spatial(tmp)
 head(dat)
 #>           sample_id cell_id         x        y cell_area     DAPI      CD3
-#>              <char>   <int>     <num>    <num>     <num>    <num>    <num>
-#> 1: file20715d5e10c5       1 547.88770  31.0337  174.3390 583.8669 380.0891
-#> 2: file20715d5e10c5       2 304.46452 652.2918  141.1577 434.5385 359.7962
-#> 3: file20715d5e10c5       3 402.30483 596.8411   70.7169 595.3961 249.8740
-#> 4: file20715d5e10c5       4  27.59579 312.6110  180.6391 535.2951 331.6179
-#> 5: file20715d5e10c5       5 848.99369 986.9101  136.5632 520.6599 228.6266
+#>              <char>  <char>     <num>    <num>     <num>    <num>    <num>
+#> 1: file212257f0ab04       1 547.88770  31.0337  174.3390 583.8669 380.0891
+#> 2: file212257f0ab04       2 304.46452 652.2918  141.1577 434.5385 359.7962
+#> 3: file212257f0ab04       3 402.30483 596.8411   70.7169 595.3961 249.8740
+#> 4: file212257f0ab04       4  27.59579 312.6110  180.6391 535.2951 331.6179
+#> 5: file212257f0ab04       5 848.99369 986.9101  136.5632 520.6599 228.6266
 unlink(tmp)
 ```

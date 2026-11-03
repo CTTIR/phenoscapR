@@ -39,11 +39,11 @@ result.
 
 ## Details
 
-Positions can also be given as fractions of the page, as in figure code
-that places axes with `[left, bottom, width, height]` fractions: a panel
-`axes` field replaces `box`, `letter_xy` replaces `letter_at`, and a
-text or legend `xy` replaces `at` (fractions measured from the
-bottom-left corner; letters and texts hang from the given point).
+Positions can also be given as fractions of the page. The ordered fields
+are `left`, `bottom`, `width` and `height`. A panel `axes` field
+replaces `box`, `letter_xy` replaces `letter_at`, and a text or legend
+`xy` replaces `at` (fractions measured from the bottom-left corner;
+letters and texts hang from the given point).
 
 A specification may be split over several files: give a character vector
 of JSON paths (or a directory of `*.json` files). Page fields are taken

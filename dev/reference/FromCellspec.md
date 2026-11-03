@@ -51,8 +51,12 @@ active graphs. No reviewed tissue window or observation area is inferred
 from cell centroids.
 
 The optional cellspecR package (<https://github.com/CTTIR/cellspecR>) is
-available from the CTTIR R-universe; install it with
-`install.packages("cellspecR", repos = c("https://cttir.r-universe.dev", getOption("repos")))`.
+available from the CTTIR R-universe; install it with:
+
+    install.packages(
+      "cellspecR",
+      repos = c("https://cttir.r-universe.dev", getOption("repos"))
+    )
 
 ## Examples
 

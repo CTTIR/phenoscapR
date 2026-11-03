@@ -5,6 +5,13 @@ data. Inspired by the Seurat object design, it holds raw and normalised
 marker intensities, spatial coordinates, cell-level metadata, and
 results from spatial analyses in a single container.
 
+## Details
+
+Raw and normalized matrices must have identical dimensions and
+row/marker names. They contain real numeric values; `NA` and `NaN` are
+allowed, infinity is not. Coordinates are finite real numeric vectors,
+and coordinate/metadata row counts must agree even for empty objects.
+
 ## Slots
 
 - `counts`:

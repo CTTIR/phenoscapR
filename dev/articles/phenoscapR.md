@@ -102,7 +102,9 @@ obj <- CellDensity(obj, radius = 40)
 QCPlot(obj, x = "cell_area", y = "density", colour_by = "phenotype_true")
 ```
 
-![](phenoscapR_files/figure-html/qcplot-1.png)
+![Synthetic cell area versus local cell density, coloured by known
+simulated phenotype after
+QC.](phenoscapR_files/figure-html/qcplot-1.png)
 
 ## 2. Normalisation
 
@@ -160,7 +162,8 @@ shows phenotype proportions per sample:
 CompositionPlot(obj, group_by = "sample_id")
 ```
 
-![](phenoscapR_files/figure-html/composition-1.png)
+![Stacked phenotype proportions for the two synthetic example
+sections.](phenoscapR_files/figure-html/composition-1.png)
 
 ## 4. The phenotype map
 
@@ -175,7 +178,8 @@ tonsil_a <- obj[obj$sample_id == "tonsil_A", ]
 CellMap(tonsil_a)
 ```
 
-![](phenoscapR_files/figure-html/cellmap-1.png)
+![Synthetic tonsil A cell positions coloured by known simulated
+phenotype.](phenoscapR_files/figure-html/cellmap-1.png)
 
 Colour instead by a continuous marker with
 [`FeaturePlot()`](https://cttir.github.io/phenoscapR/dev/reference/FeaturePlot.md):
@@ -185,7 +189,8 @@ Colour instead by a continuous marker with
 FeaturePlot(tonsil_a, features = c("CD20", "CD3", "PanCK"))
 ```
 
-![](phenoscapR_files/figure-html/featureplot-1.png)
+![Synthetic tonsil A cell positions coloured by normalised CD20, CD3 and
+PanCK intensities.](phenoscapR_files/figure-html/featureplot-1.png)
 
 ## 5. Spatial analysis
 
@@ -201,7 +206,8 @@ summary(Meta(obj)$nn_distance)
 DensityPlot(tonsil_a <- CellDensity(tonsil_a, radius = 40))
 ```
 
-![](phenoscapR_files/figure-html/nn-density-1.png)
+![Synthetic tonsil A cell positions coloured by local cell density
+within radius 40.](phenoscapR_files/figure-html/nn-density-1.png)
 
 ### Phenotype interactions
 
@@ -228,7 +234,8 @@ head(im[order(-im$interaction_score), ])
 InteractionPlot(im)
 ```
 
-![](phenoscapR_files/figure-html/interactions-1.png)
+![Pairwise phenotype interaction scores within the synthetic sections at
+radius 40.](phenoscapR_files/figure-html/interactions-1.png)
 
 ### Marker signatures per phenotype
 
@@ -237,7 +244,8 @@ InteractionPlot(im)
 MarkerHeatmap(obj)
 ```
 
-![](phenoscapR_files/figure-html/heatmap-1.png)
+![Mean normalised marker intensities by simulated phenotype in the
+synthetic example data.](phenoscapR_files/figure-html/heatmap-1.png)
 
 ## Where to next
 

@@ -57,14 +57,17 @@ head(rk$L)               # ...but still a data frame
 autoplot(rk)
 ```
 
-![](phenoscapR-05-advanced_files/figure-html/autoplot-1.png)
+![Border-corrected Ripley L curves for synthetic tonsil
+A.](phenoscapR-05-advanced_files/figure-html/autoplot-1.png)
 
 ``` r
 
 autoplot(NeighbourhoodEnrichment(a, radius = 40, n_perm = 199, seed = 1))
 ```
 
-![](phenoscapR-05-advanced_files/figure-html/autoplot-2.png)
+![Permutation-based phenotype neighbourhood enrichment in synthetic
+tonsil A at radius
+40.](phenoscapR-05-advanced_files/figure-html/autoplot-2.png)
 
 ### Per-sample analysis
 
@@ -134,7 +137,9 @@ round(VarianceExplained(obj), 1)
 ScreePlot(obj)
 ```
 
-![](phenoscapR-05-advanced_files/figure-html/pca-1.png)
+![Percentage of variance explained by each principal component of the
+synthetic marker
+data.](phenoscapR-05-advanced_files/figure-html/pca-1.png)
 
 ## Higher-order spatial structure
 
@@ -156,7 +161,9 @@ table(obj$neighbourhood)
 CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "neighbourhood")
 ```
 
-![](phenoscapR-05-advanced_files/figure-html/niches-1.png)
+![Synthetic tonsil A cell positions coloured by cellular neighbourhood
+from the full-cohort
+fit.](phenoscapR-05-advanced_files/figure-html/niches-1.png)
 
 ### Spatial domains
 
@@ -169,7 +176,9 @@ obj <- SpatialDomains(obj, n_domains = 4, k = 20, seed = 1)
 CellMap(obj[obj$sample_id == "tonsil_A", ], colour_by = "domain")
 ```
 
-![](phenoscapR-05-advanced_files/figure-html/domains-1.png)
+![Synthetic tonsil A cell positions coloured by spatial domain from the
+full-cohort
+fit.](phenoscapR-05-advanced_files/figure-html/domains-1.png)
 
 ## Unsupervised phenotyping
 

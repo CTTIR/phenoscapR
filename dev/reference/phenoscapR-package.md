@@ -34,11 +34,17 @@ Useful links:
 ## Author
 
 **Maintainer**: R. Heller <raban.heller@uni-ulm.de>
-([ORCID](https://orcid.org/0000-0001-8006-9742)) \[copyright holder\]
+([ORCID](https://orcid.org/0000-0001-8006-9742)) (affiliation: Ulm
+University) \[copyright holder\]
 
 Authors:
 
 - R. Heller <raban.heller@uni-ulm.de>
-  ([ORCID](https://orcid.org/0000-0001-8006-9742)) \[copyright holder\]
+  ([ORCID](https://orcid.org/0000-0001-8006-9742)) (affiliation: Ulm
+  University) \[copyright holder\]
 
-- Hanno Witte \[copyright holder\]
+- E. Chteinberg ([ORCID](https://orcid.org/0000-0002-9231-9291))
+  (affiliation: Ulm University) \[copyright holder\]
+
+- H. Witte ([ORCID](https://orcid.org/0000-0001-5767-7125))
+  (affiliation: Ulm University) \[copyright holder\]

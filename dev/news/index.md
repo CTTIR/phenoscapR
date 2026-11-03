@@ -1,7 +1,65 @@
 # Changelog
 
-## phenoscapR (development version)
+## phenoscapR 0.2.0.9001 (development)
 
+- Cell objects require aligned numeric raw and processed measurement
+  matrices, finite numeric coordinates and complete empty-object
+  schemas. Unsupported character measurements can no longer produce
+  lexicographic phenotypes. Empty logical placeholders receive a numeric
+  schema. Header-only imports remain valid, and removing every marker
+  retains cell rows, IDs and coordinates.
+- Normalisation conditions extreme finite inputs when variance or range
+  arithmetic overflows or loses precision in the subnormal range. Exact
+  patient tests compute an overflowing tie bound without changing its
+  definition; ordinary well-scaled arithmetic and existing missingness
+  rules are retained.
+- CSV readers bind whole coordinate names and refuse factor-coordinate
+  codes. Declared and reserved identifier columns retain leading zeros,
+  so `001` and `1` remain distinct while measurement columns retain
+  numeric parsing. QuPath retains original Image labels and refuses
+  distinct images that would collapse to one parsed sample identity,
+  including across files.
+- SpatialExperiment and Seurat imports retain available normalized
+  assays and all-missing features, with explicit axis validation. Seurat
+  export refuses marker identifiers that its backend rewrites;
+  SpatialExperiment preserves those names. No normalization method is
+  inferred during conversion.
+- Figure exports validate distinct destinations and render before
+  replacing files. Reported render or publication failures preserve or
+  restore previous outputs; unsuccessful restoration retains a
+  recoverable backup. Failed graphics-device initialization cannot draw
+  on or close a caller’s device.
+- The synthetic-data app recovers from empty filters, reports
+  unavailable UMAP and insufficient sample replication explicitly, and
+  keeps tables readable in both themes. Its actual branding requires
+  bslib 0.9.0; descriptive plot alternatives require shiny 1.6.0. These
+  minimum versions are now declared.
+- Vignette plots have descriptive text alternatives. The documentation
+  site retains scientific plot colours and readable code text in both
+  themes.
+
+## phenoscapR 0.2.0
+
+- Normalisation preserves empty and all-missing markers without
+  warnings. Quantile normalisation assigns a sole observed value 0.5,
+  consistently with a constant marker, instead of producing `NaN`.
+- Resampling functions reject non-numeric observation columns and
+  non-finite draw counts.
+  [`PermutationCorrelation()`](https://cttir.github.io/phenoscapR/dev/reference/PermutationCorrelation.md)
+  also validates its tolerance and exact-enumeration limit, preventing
+  factor-code analyses, invalid exact p values from negative tolerances,
+  and infinite permutation loops. Pearson permutation correlations are
+  stable for finite observations at very large or small numeric scales.
+- [`RunUMAP()`](https://cttir.github.io/phenoscapR/dev/reference/RunUMAP.md)
+  uses one worker thread and base SVD by default; `n_threads` and
+  `pca_method` can be changed explicitly. Base SVD avoids an older-R
+  failure in the optional truncated solver during PCA initialisation of
+  disconnected groups. The visualisation vignette also uses a fixed
+  seed.
+- E. Chteinberg added as an author alongside R. Heller (author and
+  maintainer) and H. Witte (author). All three authors are affiliated
+  with Ulm University. Author names use initials throughout the package
+  metadata, citation, and documentation.
 - Patient-level and cell-level analysis exports:
   [`ExactPairedTests()`](https://cttir.github.io/phenoscapR/dev/reference/ExactPairedTests.md)
   (exact signed-rank test over all sign flips with midranks, exact sign
@@ -366,8 +424,7 @@ releases. The package version for this release is 0.1.1.
 - The app ships in `inst/app` as composable Shiny modules over the
   package’s exported functions, with a `shinytest2` smoke test (light
   and dark).
-- Hanno Witte is credited as co-author throughout (README, citation,
-  site).
+- H. Witte is credited as co-author throughout (README, citation, site).
 
 #### Original development label: phenoscapR 2.0.0
 
@@ -452,7 +509,7 @@ API coherence.
   returned as a named list (`phenoscapR_by_sample`).
 - Added a project `.lintr` configuration (the package is lint-clean) and
   a `lint` GitHub Actions workflow running lintr and goodpractice.
-- Hanno Witte added as a package author.
+- H. Witte added as a package author.
 
 #### Original development label: phenoscapR 1.0.1
 

@@ -1,6 +1,11 @@
 # Normalise Marker Intensities
 
-Normalises marker intensity columns using one of several methods.
+Normalises marker intensity columns using one of several methods. Inputs
+must be real numeric values without infinity. Z-scores use the sample
+standard deviation; z-score and min-max calculations retry in bounded
+power-of-two units if direct arithmetic overflows, underflows, or yields
+a subnormal variance whose precision is reduced. The definitions and
+ordinary finite calculations are unchanged.
 
 ## Usage
 
@@ -22,7 +27,9 @@ normalise_markers(
 - method:
 
   Character string. Normalisation method: `"zscore"` (default),
-  `"minmax"`, or `"quantile"`.
+  `"minmax"`, or `"quantile"`. Missing values are preserved. Quantile
+  normalisation scales average ranks to `[0, 1]`; a sole observed value
+  is assigned 0.5, as for a constant marker with several observations.
 
 - markers:
 

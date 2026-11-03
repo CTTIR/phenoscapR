@@ -27,7 +27,9 @@ ReadSpatial(
 
 - sample_id:
 
-  Character or `NULL`. An identifier for the sample.
+  Character or `NULL`. Fallback sample identifier; nonblank QuPath Image
+  identities are retained as in
+  [`read_spatial()`](https://cttir.github.io/phenoscapR/dev/reference/read_spatial.md).
 
 - markers:
 
