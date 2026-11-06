@@ -9,7 +9,8 @@ plot_cell_map(
   colour_by = "phenotype",
   colours = NULL,
   point_size = 0.5,
-  title = NULL
+  title = NULL,
+  y_down = TRUE
 )
 }
 \arguments{
@@ -24,6 +25,11 @@ colours.}
 \item{point_size}{Numeric. Size of plotted points. Default \code{0.5}.}
 
 \item{title}{Character string or \code{NULL}. Plot title.}
+
+\item{y_down}{Logical. If \code{TRUE} (default), y increases downward, as in
+image coordinates (origin at the top left; QuPath, cellspecR), so the map
+has the orientation of the tissue image. Use \code{FALSE} for coordinates whose
+y axis points up.}
 }
 \value{
 A \code{ggplot} object.

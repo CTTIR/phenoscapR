@@ -14,6 +14,10 @@
 #' @param title Character or \code{NULL}. Plot title.
 #' @param dark_theme Logical. Use a dark background (useful for tissue
 #'   images). Default \code{FALSE}.
+#' @param y_down Logical. If `TRUE` (default), y increases downward, as in
+#'   image coordinates (origin at the top left; QuPath, cellspecR), so the map
+#'   has the orientation of the tissue image. Use `FALSE` for coordinates whose
+#'   y axis points up.
 #'
 #' @return A \code{ggplot} object.
 #'
@@ -30,7 +34,8 @@
 #' @importFrom ggplot2 scale_colour_manual theme element_rect element_text
 #' @importFrom ggplot2 element_blank .data
 CellMap <- function(object, colour_by = "phenotype", colours = NULL,
-                     pt_size = 0.5, title = NULL, dark_theme = FALSE) {
+                     pt_size = 0.5, title = NULL, dark_theme = FALSE,
+                     y_down = TRUE) {
   if (!colour_by %in% names(object@meta_data)) {
     stop("Column '", colour_by, "' not found in meta_data.", call. = FALSE)
   }
@@ -42,7 +47,7 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
     stringsAsFactors = FALSE
   )
 
-  .cell_map_plot(df, colour_by, colours, pt_size, title, dark_theme)
+  .cell_map_plot(df, colour_by, colours, pt_size, title, dark_theme, y_down)
 }
 
 #' Build a cell-map scatter plot from a prepared data frame
@@ -54,11 +59,12 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
 #' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_minimal labs
 #' @importFrom ggplot2 scale_colour_manual .data
 .cell_map_plot <- function(df, colour_label, colours = NULL, pt_size = 0.5,
-                           title = NULL, dark_theme = FALSE) {
+                           title = NULL, dark_theme = FALSE, y_down = TRUE) {
   p <- ggplot2::ggplot(df, ggplot2::aes(
     x = .data[["x"]], y = .data[["y"]], colour = .data[["colour"]]
   )) +
     ggplot2::geom_point(size = pt_size) +
+    .tissue_y_scale(y_down) +
     ggplot2::coord_fixed() +
     ggplot2::labs(x = "X", y = "Y", colour = colour_label, title = title)
 
@@ -98,10 +104,12 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
 #' obj <- CreateSpatialObject(counts, coords)
 #' FeaturePlot(obj, features = c("CD3", "CD8"))
 #'
+#' @inheritParams CellMap
 #' @export
 #' @importFrom ggplot2 facet_wrap
 FeaturePlot <- function(object, features, slot = "data", pt_size = 0.3,
-                         ncol = NULL, palette = NULL, dark_theme = FALSE) {
+                         ncol = NULL, palette = NULL, dark_theme = FALSE,
+                         y_down = TRUE) {
   mat <- GetData(object, slot = slot)
   features <- intersect(features, colnames(mat))
   if (length(features) == 0L) {
@@ -124,6 +132,7 @@ FeaturePlot <- function(object, features, slot = "data", pt_size = 0.3,
   )) +
     ggplot2::geom_point(size = pt_size) +
     .gg_continuous_scale("colour", palette) +
+    .tissue_y_scale(y_down) +
     ggplot2::coord_fixed() +
     ggplot2::facet_wrap(~ feature, ncol = ncol) +
     ggplot2::labs(x = "X", y = "Y", colour = "Expression")
@@ -517,8 +526,10 @@ RidgePlot <- function(object, features, group_by = "phenotype",
 #' obj <- CellDensity(obj, radius = 20)
 #' DensityPlot(obj)
 #'
+#' @inheritParams CellMap
 #' @export
-DensityPlot <- function(object, pt_size = 1, title = NULL, palette = NULL) {
+DensityPlot <- function(object, pt_size = 1, title = NULL, palette = NULL,
+                        y_down = TRUE) {
   if (!"density" %in% names(object@meta_data)) {
     stop("No 'density' column. Run CellDensity() first.", call. = FALSE)
   }
@@ -529,7 +540,7 @@ DensityPlot <- function(object, pt_size = 1, title = NULL, palette = NULL) {
     density = object@meta_data$density
   )
 
-  .density_plot(df, pt_size, title, palette)
+  .density_plot(df, pt_size, title, palette, y_down)
 }
 
 #' Build a density scatter plot from a prepared data frame
@@ -537,12 +548,14 @@ DensityPlot <- function(object, pt_size = 1, title = NULL, palette = NULL) {
 #' Shared engine for [DensityPlot()] and [plot_density()]. \code{df} must
 #' contain columns \code{x}, \code{y}, and \code{density}.
 #' @noRd
-.density_plot <- function(df, pt_size = 1, title = NULL, palette = NULL) {
+.density_plot <- function(df, pt_size = 1, title = NULL, palette = NULL,
+                          y_down = TRUE) {
   ggplot2::ggplot(df, ggplot2::aes(
     x = .data[["x"]], y = .data[["y"]], colour = .data[["density"]]
   )) +
     ggplot2::geom_point(size = pt_size) +
     .gg_continuous_scale("colour", palette, name = "Density") +
+    .tissue_y_scale(y_down) +
     ggplot2::coord_fixed() +
     ggplot2::theme_minimal() +
     ggplot2::labs(x = "X", y = "Y", title = title)
@@ -690,12 +703,13 @@ MarkerHeatmap <- function(object, markers = NULL, slot = "data",
 #' obj <- DelaunayNetwork(obj)
 #' SpatialNetworkPlot(obj)
 #'
+#' @inheritParams CellMap
 #' @export
 #' @importFrom ggplot2 geom_segment
 SpatialNetworkPlot <- function(object, edges = NULL, colour_by = "phenotype",
                                 colours = NULL, pt_size = 2,
                                 edge_alpha = 0.15, edge_colour = "grey60",
-                                dark_theme = TRUE) {
+                                dark_theme = TRUE, y_down = TRUE) {
   if (is.null(edges)) {
     edges <- object@spatial$delaunay_edges
   }
@@ -735,6 +749,7 @@ SpatialNetworkPlot <- function(object, edges = NULL, colour_by = "phenotype",
                    colour = .data[["colour"]]),
       size = pt_size
     ) +
+    .tissue_y_scale(y_down) +
     ggplot2::coord_fixed() +
     ggplot2::labs(colour = colour_by, x = "X", y = "Y")
 
@@ -852,6 +867,18 @@ QCPlot <- function(object, x, y, colour_by = NULL, pt_size = 0.5) {
 }
 
 # --- Internal helpers --------------------------------------------------------
+
+#' Orientation of the y axis of a tissue map
+#'
+#' Cell coordinates follow the image convention (y increasing downward), so a
+#' map that should look like the tissue image reverses the y scale.
+#' @noRd
+.tissue_y_scale <- function(y_down) {
+  if (!is.logical(y_down) || length(y_down) != 1L || is.na(y_down)) {
+    stop("y_down must be TRUE or FALSE.", call. = FALSE)
+  }
+  if (y_down) ggplot2::scale_y_reverse() else NULL
+}
 
 #' Dark theme for tissue plots
 #' @noRd

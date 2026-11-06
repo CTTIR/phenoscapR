@@ -65,3 +65,36 @@ test_that("a numeric colour column gets a continuous scale", {
   expect_length(unique(b$data[[1]]$colour), 10L)
   expect_true(ggplot2::ggplot_build(CellMap(o))$plot$scales$get_scales("colour")$is_discrete())
 })
+
+test_that("tissue maps draw y downward like image coordinates by default", {
+  # Cell coordinates follow the image convention (origin at the top left, y
+  # increasing downward; cellspecR, QuPath), so the maps reverse the y scale
+  # and look like the tissue image. y_down = FALSE keeps y pointing up.
+  set.seed(1)
+  counts <- matrix(rnorm(40), nrow = 20, dimnames = list(NULL, c("CD3", "CD8")))
+  coords <- data.frame(x = runif(20, 0, 100), y = runif(20, 0, 100))
+  obj <- CreateSpatialObject(counts, coords)
+  obj <- PhenotypeCells(obj, thresholds = list(CD3 = 0, CD8 = 0))
+  obj@meta_data$density <- seq_len(20)
+  obj <- DelaunayNetwork(obj)
+  dt <- data.table::data.table(x = coords$x, y = coords$y,
+                               phenotype = obj@meta_data$phenotype,
+                               density = seq_len(20))
+  drawn_y <- function(p) {
+    d <- ggplot2::layer_data(p, length(p$layers))
+    d$y[order(d$x)]
+  }
+  y_true <- coords$y[order(coords$x)]
+  maps <- list(
+    CellMap = function(...) CellMap(obj, ...),
+    FeaturePlot = function(...) FeaturePlot(obj, features = "CD3", ...),
+    DensityPlot = function(...) DensityPlot(obj, ...),
+    SpatialNetworkPlot = function(...) SpatialNetworkPlot(obj, ...),
+    plot_cell_map = function(...) plot_cell_map(dt, ...),
+    plot_density = function(...) plot_density(dt, ...)
+  )
+  for (nm in names(maps)) {
+    expect_equal(drawn_y(maps[[nm]]()), -y_true, info = nm)
+    expect_equal(drawn_y(maps[[nm]](y_down = FALSE)), y_true, info = nm)
+  }
+})

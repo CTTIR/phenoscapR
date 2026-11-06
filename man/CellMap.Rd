@@ -10,7 +10,8 @@ CellMap(
   colours = NULL,
   pt_size = 0.5,
   title = NULL,
-  dark_theme = FALSE
+  dark_theme = FALSE,
+  y_down = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,11 @@ colours via the global palette.}
 
 \item{dark_theme}{Logical. Use a dark background (useful for tissue
 images). Default \code{FALSE}.}
+
+\item{y_down}{Logical. If \code{TRUE} (default), y increases downward, as in
+image coordinates (origin at the top left; QuPath, cellspecR), so the map
+has the orientation of the tissue image. Use \code{FALSE} for coordinates whose
+y axis points up.}
 }
 \value{
 A \code{ggplot} object.

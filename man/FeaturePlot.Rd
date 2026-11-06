@@ -11,7 +11,8 @@ FeaturePlot(
   pt_size = 0.3,
   ncol = NULL,
   palette = NULL,
-  dark_theme = FALSE
+  dark_theme = FALSE,
+  y_down = TRUE
 )
 }
 \arguments{
@@ -30,6 +31,11 @@ FeaturePlot(
 \code{NULL} uses the global palette.}
 
 \item{dark_theme}{Logical. Dark background. Default \code{FALSE}.}
+
+\item{y_down}{Logical. If \code{TRUE} (default), y increases downward, as in
+image coordinates (origin at the top left; QuPath, cellspecR), so the map
+has the orientation of the tissue image. Use \code{FALSE} for coordinates whose
+y axis points up.}
 }
 \value{
 A \code{ggplot} object.

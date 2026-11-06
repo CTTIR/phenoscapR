@@ -12,7 +12,8 @@ SpatialNetworkPlot(
   pt_size = 2,
   edge_alpha = 0.15,
   edge_colour = "grey60",
-  dark_theme = TRUE
+  dark_theme = TRUE,
+  y_down = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,11 @@ contains \code{delaunay_edges}, those are used.}
 \item{edge_colour}{Character. Edge colour. Default \code{"grey60"}.}
 
 \item{dark_theme}{Logical. Default \code{TRUE}.}
+
+\item{y_down}{Logical. If \code{TRUE} (default), y increases downward, as in
+image coordinates (origin at the top left; QuPath, cellspecR), so the map
+has the orientation of the tissue image. Use \code{FALSE} for coordinates whose
+y axis points up.}
 }
 \value{
 A \code{ggplot} object.

@@ -4,7 +4,7 @@
 \alias{DensityPlot}
 \title{Plot Cell Density}
 \usage{
-DensityPlot(object, pt_size = 1, title = NULL, palette = NULL)
+DensityPlot(object, pt_size = 1, title = NULL, palette = NULL, y_down = TRUE)
 }
 \arguments{
 \item{object}{An \code{\link[=SpatialCellData-class]{SpatialCellData}} object with a
@@ -16,6 +16,11 @@ DensityPlot(object, pt_size = 1, title = NULL, palette = NULL)
 
 \item{palette}{Character or character vector. Default \code{NULL}
 (global palette).}
+
+\item{y_down}{Logical. If \code{TRUE} (default), y increases downward, as in
+image coordinates (origin at the top left; QuPath, cellspecR), so the map
+has the orientation of the tissue image. Use \code{FALSE} for coordinates whose
+y axis points up.}
 }
 \value{
 A \code{ggplot} object.

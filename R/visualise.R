@@ -20,9 +20,10 @@
 #' )
 #' plot_cell_map(dt)
 #'
+#' @inheritParams CellMap
 #' @export
 plot_cell_map <- function(dt, colour_by = "phenotype", colours = NULL,
-                           point_size = 0.5, title = NULL) {
+                           point_size = 0.5, title = NULL, y_down = TRUE) {
   if (!colour_by %in% names(dt)) {
     stop("Column '", colour_by, "' not found in data.", call. = FALSE)
   }
@@ -30,7 +31,7 @@ plot_cell_map <- function(dt, colour_by = "phenotype", colours = NULL,
   df <- data.frame(x = dt$x, y = dt$y, colour = dt[[colour_by]],
                    stringsAsFactors = FALSE)
   .cell_map_plot(df, colour_by, colours, point_size, title,
-                 dark_theme = FALSE)
+                 dark_theme = FALSE, y_down = y_down)
 }
 
 #' Plot Density Map
@@ -53,15 +54,16 @@ plot_cell_map <- function(dt, colour_by = "phenotype", colours = NULL,
 #' )
 #' plot_density(dt)
 #'
+#' @inheritParams CellMap
 #' @export
-plot_density <- function(dt, point_size = 1, title = NULL) {
+plot_density <- function(dt, point_size = 1, title = NULL, y_down = TRUE) {
   if (!"density" %in% names(dt)) {
     stop("Column 'density' not found. Run cell_density() first.",
          call. = FALSE)
   }
 
   df <- data.frame(x = dt$x, y = dt$y, density = dt$density)
-  .density_plot(df, point_size, title)
+  .density_plot(df, point_size, title, y_down = y_down)
 }
 
 #' Plot Interaction Heatmap

@@ -4,7 +4,7 @@
 \alias{plot_density}
 \title{Plot Density Map}
 \usage{
-plot_density(dt, point_size = 1, title = NULL)
+plot_density(dt, point_size = 1, title = NULL, y_down = TRUE)
 }
 \arguments{
 \item{dt}{A \code{data.table} with columns \code{x}, \code{y}, and \code{density} (as
@@ -13,6 +13,11 @@ returned by \code{\link[=cell_density]{cell_density()}}).}
 \item{point_size}{Numeric. Base point size. Default \code{1}.}
 
 \item{title}{Character string or \code{NULL}. Plot title.}
+
+\item{y_down}{Logical. If \code{TRUE} (default), y increases downward, as in
+image coordinates (origin at the top left; QuPath, cellspecR), so the map
+has the orientation of the tissue image. Use \code{FALSE} for coordinates whose
+y axis points up.}
 }
 \value{
 A \code{ggplot} object.
