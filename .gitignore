@@ -22,3 +22,6 @@ inst/doc/
 
 _coverage/
 fingerprint_baseline.rds
+
+# Local maintenance notes (kept out of the repository)
+/planning/

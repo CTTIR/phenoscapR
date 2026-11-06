@@ -1,5 +1,14 @@
-# phenoscapR 0.2.0.9001 (development)
+# phenoscapR 1.0.0
 
+* Tissue maps (`CellMap()`, `FeaturePlot()`, `DensityPlot()`,
+  `SpatialNetworkPlot()`, `plot_cell_map()` and `plot_density()`) now draw the
+  y axis increasing downward, as in image coordinates (origin at the top left;
+  QuPath, cellspecR), so a map has the orientation of its tissue image. The new
+  argument `y_down = FALSE` restores the previous upward axis.
+* Column subsets of classed results (interaction matrices, neighbourhood
+  enrichment, Ripley's K, pair correlation and differential abundance) print
+  as plain data frames. Previously the summary failed with an error or
+  reported values from columns that were no longer present.
 * Cell objects require aligned numeric raw and processed measurement matrices,
   finite numeric coordinates and complete empty-object schemas. Unsupported
   character measurements can no longer produce lexicographic phenotypes.
