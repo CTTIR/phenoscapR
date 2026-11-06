@@ -82,3 +82,37 @@ test_that("results without a defined statistic print as not evaluable", {
                  class = "phenoscapR_quadrat")
   expect_output(print(q), "not evaluable")
 })
+
+test_that("column subsets of data-frame results print as plain data frames", {
+  # `[` keeps the result class on a column subset, but the summaries need
+  # particular columns. A subset that lost them must print as the plain data
+  # frame it is: no error, no warning and no summary built on missing columns.
+  im <- InteractionMatrix(one, radius = 30)
+  ne <- NeighbourhoodEnrichment(one, radius = 30, n_perm = 9, seed = 1)
+  rk <- RipleysK(one, r_seq = seq(0, 80, length.out = 8))
+  pc <- PairCorrelation(one, r_seq = seq(5, 80, length.out = 8))
+  both <- phenoscapR_example
+  both@meta_data$phenotype <- both@meta_data$phenotype_true
+  both@meta_data$arm <- ifelse(both$sample_id == "tonsil_A", "ctrl", "treat")
+  expect_warning(da <- DifferentialAbundance(both, condition = "arm"),
+                 "fewer than 2 samples")
+
+  subsets <- list(
+    interaction = im[, c("from", "to")],
+    enrichment = ne[, c("from", "to")],
+    ripley = rk[, "r", drop = FALSE],
+    pcf = pc[, "r", drop = FALSE],
+    diffabund = da[, 1:2]
+  )
+  for (nm in names(subsets)) {
+    x <- subsets[[nm]]
+    expect_true(inherits(x, paste0("phenoscapR_", nm)), info = nm)
+    expect_no_warning(out <- capture.output(print(x)), message = NULL)
+    expect_identical(out, capture.output(print(as.data.frame(x))), info = nm)
+  }
+})
+
+test_that("results that keep their columns still print their summary", {
+  im <- InteractionMatrix(one, radius = 30)
+  expect_output(print(im[1:3, ]), "strongest attractions")
+})

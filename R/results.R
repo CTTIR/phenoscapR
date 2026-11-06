@@ -14,10 +14,24 @@
   x
 }
 
+#' Print a subset that lost the columns of its result summary
+#'
+#' A column subset keeps the result class, but the summary of each print
+#' method is built on particular columns. Without them the object is printed
+#' as the plain data frame it now is.
+#' @return `TRUE` when `x` was printed this way, otherwise `FALSE`.
+#' @noRd
+.print_partial_result <- function(x, required, ...) {
+  if (all(required %in% names(x))) return(FALSE)
+  print(as.data.frame(x), ...)
+  TRUE
+}
+
 # --- Ripley's K --------------------------------------------------------------
 
 #' @export
 print.phenoscapR_ripley <- function(x, ...) {
+  if (.print_partial_result(x, c("r", "L"), ...)) return(invisible(x))
   cat("<phenoscapR> Ripley's K /", attr(x, "correction") %||% "none",
       "correction\n")
   cat(sprintf("  %d radii from %.3g to %.3g\n", nrow(x),
@@ -43,6 +57,7 @@ autoplot.phenoscapR_ripley <- function(object, ...) {
 
 #' @export
 print.phenoscapR_pcf <- function(x, ...) {
+  if (.print_partial_result(x, c("r", "g"), ...)) return(invisible(x))
   cat("<phenoscapR> Pair correlation function g(r)\n")
   cat(sprintf("  %d radii from %.3g to %.3g; peak g = %.3g at r = %.3g\n",
               nrow(x), min(x$r), max(x$r), max(x$g, na.rm = TRUE),
@@ -116,6 +131,7 @@ autoplot.phenoscapR_quadrat <- function(object, ...) {
 
 #' @export
 print.phenoscapR_enrichment <- function(x, ...) {
+  if (.print_partial_result(x, c("from", "to", "z_score", "p_value"), ...)) return(invisible(x))
   cat("<phenoscapR> Neighbourhood enrichment (permutation test)\n")
   d <- as.data.frame(x)
   top <- d[order(-d$z_score), ][seq_len(min(5L, nrow(d))), ]
@@ -144,6 +160,7 @@ autoplot.phenoscapR_enrichment <- function(object, ...) {
 
 #' @export
 print.phenoscapR_interaction <- function(x, ...) {
+  if (.print_partial_result(x, c("from", "to", "interaction_score"), ...)) return(invisible(x))
   cat("<phenoscapR> Phenotype interaction matrix\n")
   d <- as.data.frame(x)
   np <- length(unique(d$from))

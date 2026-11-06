@@ -103,6 +103,7 @@ DifferentialAbundance <- function(object, condition,
 
 #' @export
 print.phenoscapR_diffabund <- function(x, ...) {
+  if (.print_partial_result(x, "p_adj", ...)) return(invisible(x))
   cat("<phenoscapR> Differential abundance (", attr(x, "test"),
       " test)\n", sep = "")
   cat("  conditions: ", paste(attr(x, "conditions"), collapse = " vs "), "\n",
