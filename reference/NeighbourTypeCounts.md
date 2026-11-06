@@ -88,8 +88,9 @@ coplanar-point handling does).
 Engines: `"geos"` (default) uses GEOS through sf
 (`st_triangulate(..., bOnlyEdges = TRUE)`); input coordinates are mapped
 back to cells exactly. `"deldir"` uses
-[`deldir::deldir()`](https://rdrr.io/pkg/deldir/man/deldir.html) as
-[`BuildExactDelaunayEdges()`](https://cttir.github.io/phenoscapR/reference/BuildExactDelaunayEdges.md)
+[`deldir::deldir()`](https://rdrr.io/pkg/deldir/man/deldir.html) as the
+[exact graph
+builder](https://cttir.github.io/phenoscapR/reference/BuildExactDelaunayEdges.md)
 does; its run time grows roughly quadratically with the number of cells,
 so it is meant for cross-checks on small sections.
 

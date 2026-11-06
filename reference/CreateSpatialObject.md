@@ -21,11 +21,18 @@ CreateSpatialObject(
 
 - counts:
 
-  Numeric matrix (cells x markers). Row names are optional.
+  Real numeric matrix (cells x markers), without infinity. Missing
+  values are allowed. Row names are optional. Empty matrices retain
+  their marker columns; all-missing columns in nonempty inputs are
+  dropped with a warning. Logical placeholders with no entries, as
+  produced by zero-row or zero-marker matrices, are stored as numeric
+  matrices.
 
 - coords:
 
-  Data frame with columns `x` and `y`.
+  Data frame with finite numeric columns `x` and `y`. Zero-row logical
+  coordinate placeholders are stored as numeric vectors; nonempty
+  logical values and factors are refused.
 
 - meta_data:
 

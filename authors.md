@@ -21,13 +21,13 @@ Source:
 [`inst/CITATION`](https://github.com/CTTIR/phenoscapR/blob/main/inst/CITATION)
 
 R. Heller, E. Chteinberg, H. Witte (2026). phenoscapR: Read, Analyse,
-and Visualise Single-Cell Spatial Biology Data. R package version 0.2.0.
+and Visualise Single-Cell Spatial Biology Data. R package version 1.0.0.
 https://cttir.github.io/phenoscapR/
 
     @Manual{,
       title = {phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data},
       author = {R. Heller and E. Chteinberg and H. Witte},
       year = {2026},
-      note = {R package version 0.2.0},
+      note = {R package version 1.0.0},
       url = {https://cttir.github.io/phenoscapR/},
     }

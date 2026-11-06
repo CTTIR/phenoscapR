@@ -1,6 +1,11 @@
 # Normalise Marker Intensities
 
-Normalises marker intensity columns using one of several methods.
+Normalises marker intensity columns using one of several methods. Inputs
+must be real numeric values without infinity. Z-scores use the sample
+standard deviation; z-score and min-max calculations retry in bounded
+power-of-two units if direct arithmetic overflows, underflows, or yields
+a subnormal variance whose precision is reduced. The definitions and
+ordinary finite calculations are unchanged.
 
 ## Usage
 

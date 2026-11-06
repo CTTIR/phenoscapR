@@ -78,11 +78,12 @@ backend and a clean S4 object model (`SpatialCellData`).
 
 ## Installation
 
-phenoscapR is not on CRAN yet. Install it from GitHub:
+phenoscapR requires R 4.1.0 or newer and is not on CRAN yet. Install it
+from GitHub:
 
 ``` r
 
-# install.packages("pak")
+if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
 pak::pak("CTTIR/phenoscapR")
 ```
 
@@ -160,6 +161,28 @@ InteractionPlot(InteractionMatrix(obj, radius = 50))
 SpatialNetworkPlot(obj)
 ```
 
+### Input identity and figure files
+
+Coordinate columns must contain actual numeric values; factor labels are
+not silently converted to integer codes. CSV readers preserve leading
+zeros in declared and reserved identifier columns: `001` and `1` remain
+distinct. QuPath Image names are retained in `source_image`. If
+different Image labels collapse to the same legacy sample identifier,
+import stops so you can supply distinct identities explicitly.
+
+[`as_SpatialCellData()`](https://cttir.github.io/phenoscapR/reference/as_SpatialCellData.md)
+retains available normalized assays when importing from Seurat or
+SpatialExperiment. Seurat’s marker-name rewriting is refused on export;
+use SpatialExperiment when those exact names must be preserved.
+
+[`SaveFigure()`](https://cttir.github.io/phenoscapR/reference/SaveFigure.md)
+requires distinct PDF and PNG destinations in existing folders. It
+renders both formats before replacing either file. A reported rendering
+failure leaves previous files intact; a replacement failure attempts
+restoration and reports the path of any original backup it cannot
+restore. This recovery does not cover process termination or another
+program writing the same paths.
+
 ### Performance
 
 All neighbour-based statistics route through a kd-tree search engine
@@ -169,12 +192,14 @@ multi-gigabyte distance matrix.
 
 ## Interactive app
 
-phenoscapR ships a **Hugo Coder–themed Shiny app** that drives the
-package’s analysis functions interactively — load the bundled data, run
-QC and phenotyping, explore spatial statistics, cellular neighbourhoods,
-spatial domains, dimensionality reductions, and differential abundance,
-with a light/dark colour-mode toggle. The app is a thin UI over the
-exported functions; the heavy lifting is the package.
+phenoscapR ships a **Hugo Coder–themed Shiny app** for the bundled
+synthetic teaching data and known simulated phenotypes. Explore QC,
+spatial statistics, cellular neighbourhoods, spatial domains, PCA/UMAP,
+and differential abundance with a light/dark toggle. It does not import
+user objects or export results; use the package functions for those
+workflows. Each example section is one sample in its own condition, so
+the displayed differential-abundance results are a demonstration, not
+replicated group inference.
 
 ``` r
 
@@ -184,6 +209,12 @@ install.packages(c("shiny", "bslib", "sass", "thematic", "reactable",
 
 phenoscapR::run_app()
 ```
+
+Branding requires bslib \>= 0.9.0. UMAP additionally requires `uwot`;
+selecting UMAP without it shows an installation hint, while PCA remains
+available. If a QC filter removes every cell, widen it or use **Reset
+cell-area filter**; the same session recovers without restarting the
+app.
 
 The app’s visual design is adapted from the [Hugo
 Coder](https://github.com/luizdepra/hugo-coder) theme (MIT) — colour
@@ -224,14 +255,14 @@ citation("phenoscapR")
 
 > R. Heller, E. Chteinberg, H. Witte (2026). phenoscapR: Read, Analyse,
 > and Visualise Single-Cell Spatial Biology Data. R package version
-> 0.2.0. <https://cttir.github.io/phenoscapR/>
+> 1.0.0. <https://cttir.github.io/phenoscapR/>
 
 ``` bibtex
 @Manual{,
   title = {phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data},
   author = {R. Heller and E. Chteinberg and H. Witte},
   year = {2026},
-  note = {R package version 0.2.0},
+  note = {R package version 1.0.0},
   url = {https://cttir.github.io/phenoscapR/},
 }
 ```

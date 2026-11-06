@@ -17,7 +17,8 @@
 <link href="deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="phenoscapR — Single-Cell Spatial Biology in R">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<meta property="og:title" content="phenoscapR — Single-Cell Spatial Biology in R">
 <meta name="description" content="Read, process, analyse, and visualise single-cell spatial biology data from multiplexed imaging platforms.
 ">
 <meta property="og:description" content="Read, process, analyse, and visualise single-cell spatial biology data from multiplexed imaging platforms.
@@ -41,7 +42,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="index.html"><img src="logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,9 +147,9 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>phenoscapR is not on CRAN yet. Install it from GitHub:</p>
+<p>phenoscapR requires R 4.1.0 or newer and is not on CRAN yet. Install it from GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"pak"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"CTTIR/phenoscapR"</span><span class="op">)</span></span></code></pre></div>
 <p>Optional canonical cell-table imports and SONG embeddings require packages available from the CTTIR R-universe:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -210,6 +211,13 @@
 <span><span class="fu"><a href="reference/InteractionPlot.html">InteractionPlot</a></span><span class="op">(</span><span class="fu"><a href="reference/InteractionMatrix.html">InteractionMatrix</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/SpatialNetworkPlot.html">SpatialNetworkPlot</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
+<h3 id="input-identity-and-figure-files">Input identity and figure files<a class="anchor" aria-label="anchor" href="#input-identity-and-figure-files"></a>
+</h3>
+<p>Coordinate columns must contain actual numeric values; factor labels are not silently converted to integer codes. CSV readers preserve leading zeros in declared and reserved identifier columns: <code>001</code> and <code>1</code> remain distinct. QuPath Image names are retained in <code>source_image</code>. If different Image labels collapse to the same legacy sample identifier, import stops so you can supply distinct identities explicitly.</p>
+<p><code><a href="reference/as_SpatialCellData.html">as_SpatialCellData()</a></code> retains available normalized assays when importing from Seurat or SpatialExperiment. Seurat’s marker-name rewriting is refused on export; use SpatialExperiment when those exact names must be preserved.</p>
+<p><code><a href="reference/SaveFigure.html">SaveFigure()</a></code> requires distinct PDF and PNG destinations in existing folders. It renders both formats before replacing either file. A reported rendering failure leaves previous files intact; a replacement failure attempts restoration and reports the path of any original backup it cannot restore. This recovery does not cover process termination or another program writing the same paths.</p>
+</div>
+<div class="section level3">
 <h3 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a>
 </h3>
 <p>All neighbour-based statistics route through a kd-tree search engine (<code>RANN</code> when installed, with an exact base-R fallback otherwise), so a 20,000-cell section runs each statistic in seconds instead of building a multi-gigabyte distance matrix.</p>
@@ -218,13 +226,14 @@
 <div class="section level2">
 <h2 id="interactive-app">Interactive app<a class="anchor" aria-label="anchor" href="#interactive-app"></a>
 </h2>
-<p>phenoscapR ships a <strong>Hugo Coder–themed Shiny app</strong> that drives the package’s analysis functions interactively — load the bundled data, run QC and phenotyping, explore spatial statistics, cellular neighbourhoods, spatial domains, dimensionality reductions, and differential abundance, with a light/dark colour-mode toggle. The app is a thin UI over the exported functions; the heavy lifting is the package.</p>
+<p>phenoscapR ships a <strong>Hugo Coder–themed Shiny app</strong> for the bundled synthetic teaching data and known simulated phenotypes. Explore QC, spatial statistics, cellular neighbourhoods, spatial domains, PCA/UMAP, and differential abundance with a light/dark toggle. It does not import user objects or export results; use the package functions for those workflows. Each example section is one sample in its own condition, so the displayed differential-abundance results are a demonstration, not replicated group inference.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># one-time: install the optional app dependencies</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"shiny"</span>, <span class="st">"bslib"</span>, <span class="st">"sass"</span>, <span class="st">"thematic"</span>, <span class="st">"reactable"</span>,</span>
 <span>                   <span class="st">"bsicons"</span>, <span class="st">"brand.yml"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">phenoscapR</span><span class="fu">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Branding requires bslib &gt;= 0.9.0. UMAP additionally requires <code>uwot</code>; selecting UMAP without it shows an installation hint, while PCA remains available. If a QC filter removes every cell, widen it or use <strong>Reset cell-area filter</strong>; the same session recovers without restarting the app.</p>
 <p>The app’s visual design is adapted from the <a href="https://github.com/luizdepra/hugo-coder" class="external-link">Hugo Coder</a> theme (MIT) — colour tokens and flat aesthetic only, no source copied.</p>
 </div>
 <div class="section level2">
@@ -286,13 +295,13 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"phenoscapR"</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
-<p>R. Heller, E. Chteinberg, H. Witte (2026). phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data. R package version 0.2.0. <a href="https://cttir.github.io/phenoscapR/" class="uri">https://cttir.github.io/phenoscapR/</a></p>
+<p>R. Heller, E. Chteinberg, H. Witte (2026). phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data. R package version 1.0.0. <a href="https://cttir.github.io/phenoscapR/" class="uri">https://cttir.github.io/phenoscapR/</a></p>
 </blockquote>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="va">@Manual</span>{,</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="dt">title</span> = {phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data},</span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="dt">author</span> = {R. Heller and E. Chteinberg and H. Witte},</span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="dt">year</span> = {2026},</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.2.0},</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 1.0.0},</span>
 <span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="dt">url</span> = {https://cttir.github.io/phenoscapR/},</span>
 <span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>}</span></code></pre></div>
 </div>

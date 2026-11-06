@@ -11,7 +11,8 @@ plot_cell_map(
   colour_by = "phenotype",
   colours = NULL,
   point_size = 0.5,
-  title = NULL
+  title = NULL,
+  y_down = TRUE
 )
 ```
 
@@ -37,6 +38,13 @@ plot_cell_map(
 - title:
 
   Character string or `NULL`. Plot title.
+
+- y_down:
+
+  Logical. If `TRUE` (default), y increases downward, as in image
+  coordinates (origin at the top left; QuPath, cellspecR), so the map
+  has the orientation of the tissue image. Use `FALSE` for coordinates
+  whose y axis points up.
 
 ## Value
 

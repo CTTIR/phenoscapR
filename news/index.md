@@ -1,5 +1,59 @@
 # Changelog
 
+## phenoscapR 1.0.0
+
+- Tissue maps
+  ([`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md),
+  [`FeaturePlot()`](https://cttir.github.io/phenoscapR/reference/FeaturePlot.md),
+  [`DensityPlot()`](https://cttir.github.io/phenoscapR/reference/DensityPlot.md),
+  [`SpatialNetworkPlot()`](https://cttir.github.io/phenoscapR/reference/SpatialNetworkPlot.md),
+  [`plot_cell_map()`](https://cttir.github.io/phenoscapR/reference/plot_cell_map.md)
+  and
+  [`plot_density()`](https://cttir.github.io/phenoscapR/reference/plot_density.md))
+  now draw the y axis increasing downward, as in image coordinates
+  (origin at the top left; QuPath, cellspecR), so a map has the
+  orientation of its tissue image. The new argument `y_down = FALSE`
+  restores the previous upward axis.
+- Column subsets of classed results (interaction matrices, neighbourhood
+  enrichment, Ripley’s K, pair correlation and differential abundance)
+  print as plain data frames. Previously the summary failed with an
+  error or reported values from columns that were no longer present.
+- Cell objects require aligned numeric raw and processed measurement
+  matrices, finite numeric coordinates and complete empty-object
+  schemas. Unsupported character measurements can no longer produce
+  lexicographic phenotypes. Empty logical placeholders receive a numeric
+  schema. Header-only imports remain valid, and removing every marker
+  retains cell rows, IDs and coordinates.
+- Normalisation conditions extreme finite inputs when variance or range
+  arithmetic overflows or loses precision in the subnormal range. Exact
+  patient tests compute an overflowing tie bound without changing its
+  definition; ordinary well-scaled arithmetic and existing missingness
+  rules are retained.
+- CSV readers bind whole coordinate names and refuse factor-coordinate
+  codes. Declared and reserved identifier columns retain leading zeros,
+  so `001` and `1` remain distinct while measurement columns retain
+  numeric parsing. QuPath retains original Image labels and refuses
+  distinct images that would collapse to one parsed sample identity,
+  including across files.
+- SpatialExperiment and Seurat imports retain available normalized
+  assays and all-missing features, with explicit axis validation. Seurat
+  export refuses marker identifiers that its backend rewrites;
+  SpatialExperiment preserves those names. No normalization method is
+  inferred during conversion.
+- Figure exports validate distinct destinations and render before
+  replacing files. Reported render or publication failures preserve or
+  restore previous outputs; unsuccessful restoration retains a
+  recoverable backup. Failed graphics-device initialization cannot draw
+  on or close a caller’s device.
+- The synthetic-data app recovers from empty filters, reports
+  unavailable UMAP and insufficient sample replication explicitly, and
+  keeps tables readable in both themes. Its actual branding requires
+  bslib 0.9.0; descriptive plot alternatives require shiny 1.6.0. These
+  minimum versions are now declared.
+- Vignette plots have descriptive text alternatives. The documentation
+  site retains scientific plot colours and readable code text in both
+  themes.
+
 ## phenoscapR 0.2.0
 
 - Normalisation preserves empty and all-missing markers without

@@ -12,7 +12,8 @@ CellMap(
   colours = NULL,
   pt_size = 0.5,
   title = NULL,
-  dark_theme = FALSE
+  dark_theme = FALSE,
+  y_down = TRUE
 )
 ```
 
@@ -46,6 +47,13 @@ CellMap(
 
   Logical. Use a dark background (useful for tissue images). Default
   `FALSE`.
+
+- y_down:
+
+  Logical. If `TRUE` (default), y increases downward, as in image
+  coordinates (origin at the top left; QuPath, cellspecR), so the map
+  has the orientation of the tissue image. Use `FALSE` for coordinates
+  whose y axis points up.
 
 ## Value
 

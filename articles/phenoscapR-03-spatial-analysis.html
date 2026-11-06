@@ -17,7 +17,8 @@
 <link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Advanced Spatial Analysis">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Advanced Spatial Analysis">
 <meta name="theme-color" content="#1565c0">
 <!-- Package browser icons -->
 <link rel="icon" type="image/x-icon" href="../favicon.ico?v=d8b0da3b7941">
@@ -36,7 +37,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -209,7 +210,7 @@ removes edge bias.</p>
 <span>       main <span class="op">=</span> <span class="st">"Ripley's L, border-corrected"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/ripleysk-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/ripleysk-1.png" class="r-plt" alt="Border-corrected Ripley L across radius for synthetic tonsil A, with the zero reference line." width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="pair-correlation-function">Pair correlation function<a class="anchor" aria-label="anchor" href="#pair-correlation-function"></a>
@@ -225,7 +226,7 @@ inhibition.</p>
 <span>       xlab <span class="op">=</span> <span class="st">"r"</span>, ylab <span class="op">=</span> <span class="st">"g(r)"</span>, main <span class="op">=</span> <span class="st">"Pair correlation function"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/pcf-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/pcf-1.png" class="r-plt" alt="Pair correlation g across radius for synthetic tonsil A." width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="morans-i">Moran’s I<a class="anchor" aria-label="anchor" href="#morans-i"></a>
@@ -283,7 +284,7 @@ span empty space.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">a</span><span class="op">@</span><span class="va">spatial</span><span class="op">$</span><span class="va">delaunay_edges</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 661</span></span>
 <span><span class="fu"><a href="../reference/SpatialNetworkPlot.html">SpatialNetworkPlot</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/delaunay-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/delaunay-1.png" class="r-plt" alt="Delaunay connections between synthetic tonsil A cells after excluding edges longer than 60." width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="expression-clustering">Expression clustering<a class="anchor" aria-label="anchor" href="#expression-clustering"></a>
@@ -297,7 +298,7 @@ position, then look at where those clusters fall in the tissue.</p>
 <span><span class="co">#&gt;  1  2  3  4  5  6 </span></span>
 <span><span class="co">#&gt; 45 67 31 59 38 80</span></span>
 <span><span class="fu"><a href="../reference/CellMap.html">CellMap</a></span><span class="op">(</span><span class="va">a</span>, colour_by <span class="op">=</span> <span class="st">"expr_cluster"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/exprclusters-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="phenoscapR-03-spatial-analysis_files/figure-html/exprclusters-1.png" class="r-plt" alt="Synthetic tonsil A cell positions coloured by expression-derived cluster." width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="choosing-a-statistic">Choosing a statistic<a class="anchor" aria-label="anchor" href="#choosing-a-statistic"></a>

@@ -7,7 +7,7 @@ to have been run.
 ## Usage
 
 ``` r
-DensityPlot(object, pt_size = 1, title = NULL, palette = NULL)
+DensityPlot(object, pt_size = 1, title = NULL, palette = NULL, y_down = TRUE)
 ```
 
 ## Arguments
@@ -29,6 +29,13 @@ DensityPlot(object, pt_size = 1, title = NULL, palette = NULL)
 - palette:
 
   Character or character vector. Default `NULL` (global palette).
+
+- y_down:
+
+  Logical. If `TRUE` (default), y increases downward, as in image
+  coordinates (origin at the top left; QuPath, cellspecR), so the map
+  has the orientation of the tissue image. Use `FALSE` for coordinates
+  whose y axis points up.
 
 ## Value
 

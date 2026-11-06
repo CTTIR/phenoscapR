@@ -14,7 +14,8 @@ FeaturePlot(
   pt_size = 0.3,
   ncol = NULL,
   palette = NULL,
-  dark_theme = FALSE
+  dark_theme = FALSE,
+  y_down = TRUE
 )
 ```
 
@@ -51,6 +52,13 @@ FeaturePlot(
 - dark_theme:
 
   Logical. Dark background. Default `FALSE`.
+
+- y_down:
+
+  Logical. If `TRUE` (default), y increases downward, as in image
+  coordinates (origin at the top left; QuPath, cellspecR), so the map
+  has the orientation of the tissue image. Use `FALSE` for coordinates
+  whose y axis points up.
 
 ## Value
 

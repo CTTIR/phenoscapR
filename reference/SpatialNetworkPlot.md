@@ -15,7 +15,8 @@ SpatialNetworkPlot(
   pt_size = 2,
   edge_alpha = 0.15,
   edge_colour = "grey60",
-  dark_theme = TRUE
+  dark_theme = TRUE,
+  y_down = TRUE
 )
 ```
 
@@ -59,6 +60,13 @@ SpatialNetworkPlot(
 - dark_theme:
 
   Logical. Default `TRUE`.
+
+- y_down:
+
+  Logical. If `TRUE` (default), y increases downward, as in image
+  coordinates (origin at the top left; QuPath, cellspecR), so the map
+  has the orientation of the tissue image. Use `FALSE` for coordinates
+  whose y axis points up.
 
 ## Value
 

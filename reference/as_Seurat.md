@@ -5,7 +5,11 @@ and the spatial coordinates stored both in metadata (`x`, `y`) and as a
 `"spatial"` dimensional reduction. Cell IDs repeated across samples are
 made unique with
 [`make.unique()`](https://rdrr.io/r/base/make.unique.html) for the
-Seurat cell names; the metadata keep the original `cell_id`.
+Seurat cell names; the metadata keep the original `cell_id`. Export
+refuses marker identifiers that Seurat would rewrite (such as
+underscores); use
+[`as_SpatialExperiment()`](https://cttir.github.io/phenoscapR/reference/as_SpatialExperiment.md)
+for unchanged identifiers, or rename markers explicitly before export.
 
 ## Usage
 

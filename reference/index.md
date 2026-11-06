@@ -517,8 +517,8 @@ colours.
 
 ## Shiny Application
 
-Launch the interactive phenoscapR Shiny interface to run the full
-analysis workflow and explore results with live plots and tables.
+Launch the interactive phenoscapR Shiny interface to explore bundled
+synthetic teaching data with live plots and tables.
 
 - [`run_app()`](https://cttir.github.io/phenoscapR/reference/run_app.md)
   : Launch the phenoscapR Shiny Application

@@ -6,7 +6,7 @@ density.
 ## Usage
 
 ``` r
-plot_density(dt, point_size = 1, title = NULL)
+plot_density(dt, point_size = 1, title = NULL, y_down = TRUE)
 ```
 
 ## Arguments
@@ -23,6 +23,13 @@ plot_density(dt, point_size = 1, title = NULL)
 - title:
 
   Character string or `NULL`. Plot title.
+
+- y_down:
+
+  Logical. If `TRUE` (default), y increases downward, as in image
+  coordinates (origin at the top left; QuPath, cellspecR), so the map
+  has the orientation of the tissue image. Use `FALSE` for coordinates
+  whose y axis points up.
 
 ## Value
 

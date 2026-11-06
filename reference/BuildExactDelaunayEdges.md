@@ -114,8 +114,8 @@ BuildExactDelaunayEdges(
 - mode:
 
   Explicit `"stock"`, `"bounded"` or `"auto"` workspace mode, validated
-  with
-  [`PlanExactDelaunayWorkspace()`](https://cttir.github.io/phenoscapR/reference/PlanExactDelaunayWorkspace.md)
+  with the [workspace
+  planner](https://cttir.github.io/phenoscapR/reference/PlanExactDelaunayWorkspace.md)
   and recorded in the provenance. Every mode runs
   [`deldir::deldir()`](https://rdrr.io/pkg/deldir/man/deldir.html),
   which sizes its own workspace and enlarges it when needed; frames

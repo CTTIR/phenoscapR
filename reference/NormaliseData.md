@@ -1,7 +1,10 @@
 # Normalise Marker Intensities (SpatialCellData)
 
 Normalises marker intensities and stores the result in the `data` slot.
-Raw counts remain unchanged.
+Raw counts remain unchanged. Z-scores use the sample standard deviation.
+When direct finite-input arithmetic overflows, underflows, or yields a
+subnormal variance, calculations retry in bounded power-of-two units
+with the same definitions; ordinary finite calculations are unchanged.
 
 ## Usage
 
