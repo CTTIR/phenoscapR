@@ -69,7 +69,7 @@ or changing the input object.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 if (requireNamespace("songR", quietly = TRUE)) {
   counts <- matrix(rnorm(500), nrow = 50,
                    dimnames = list(NULL, paste0("M", 1:10)))
@@ -77,5 +77,5 @@ if (requireNamespace("songR", quietly = TRUE)) {
   obj <- CreateSpatialObject(counts, coords)
   obj <- RunSONG(obj, seed = 1, verbose = FALSE)
 }
-} # }
+# }
 ```

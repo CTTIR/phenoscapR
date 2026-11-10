@@ -35,7 +35,7 @@ Invisibly returns the previous palette setting.
 ## Examples
 
 ``` r
-SetPalette("inferno")
+old <- SetPalette("inferno")
 GetPalette()
 #> [1] "inferno"
 
@@ -44,6 +44,6 @@ SetPalette(c("navy", "white", "firebrick"))
 GetPalette()
 #> [1] "navy"      "white"     "firebrick"
 
-# Reset to default
-SetPalette("viridis")
+# Restore the previous setting
+SetPalette(old)
 ```

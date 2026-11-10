@@ -53,6 +53,12 @@
 - Vignette plots have descriptive text alternatives. The documentation
   site retains scientific plot colours and readable code text in both
   themes.
+- The
+  [`RunSONG()`](https://cttir.github.io/phenoscapR/reference/RunSONG.md)
+  example runs again (in `\donttest{}`, only when the optional songR
+  package is installed), and the
+  [`SetPalette()`](https://cttir.github.io/phenoscapR/reference/SetPalette.md)
+  example restores the previous palette option.
 
 ## phenoscapR 0.2.0
 
