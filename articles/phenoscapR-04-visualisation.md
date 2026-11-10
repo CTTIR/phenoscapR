@@ -224,13 +224,21 @@ viridis-family option works (`"viridis"`, `"inferno"`, `"plasma"`,
 
 ``` r
 
-SetPalette("rocket")
+old_palette <- SetPalette("rocket")
 CompositionPlot(obj, group_by = "sample_id")
 ```
 
 ![Stacked simulated phenotype proportions in each section using the
 rocket
 palette.](phenoscapR-04-visualisation_files/figure-html/palette-1.png)
+
+[`SetPalette()`](https://cttir.github.io/phenoscapR/reference/SetPalette.md)
+returns the previous setting invisibly, so it can be restored:
+
+``` r
+
+SetPalette(old_palette)
+```
 
 [`PaletteDiscrete()`](https://cttir.github.io/phenoscapR/reference/PaletteDiscrete.md),
 [`PaletteContinuous()`](https://cttir.github.io/phenoscapR/reference/PaletteContinuous.md),
