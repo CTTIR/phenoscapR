@@ -1,29 +1,46 @@
 ## Submission
 
-This is the first submission of phenoscapR (version 1.0.0).
+This is a new submission (phenoscapR 1.0.0).
 
 ## Test environments
 
-* Local: Ubuntu 26.04 LTS, R 4.6.1 (x86_64-pc-linux-gnu), with all suggested
-  packages installed, vignettes rebuilt and PDF and HTML manuals checked.
-* Local: the same environment with `_R_CHECK_DEPENDS_ONLY_=true`.
-* GitHub Actions: ubuntu-latest (R devel, release, oldrel-1 and oldrel-3),
-  macOS-latest (release) and windows-latest (release).
+* local macOS (aarch64-apple-darwin), R 4.6.1, with all suggested packages
+  installed (cellspecR 1.2.0 and songR 1.0.0 from the CTTIR R-universe):
+  `R CMD check --as-cran --no-manual` on the built tarball. LaTeX is not
+  installed on this machine, so the PDF manual was not built locally.
+* GitHub Actions (r-lib/actions v2, `--as-cran`):
+  * macos-latest (R release)
+  * windows-latest (R release)
+  * ubuntu-latest (R devel, release, oldrel-1)
 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
 
-* This is a new submission.
+* checking CRAN incoming feasibility ... NOTE
+  Maintainer: 'R. Heller <raban.heller@uni-ulm.de>'
+  New submission
+  Suggests or Enhances not in mainstream repositories:
+    cellspecR, songR
+  Availability using Additional_repositories specification:
+    cellspecR   yes   https://cttir.r-universe.dev
+    songR       yes   https://cttir.r-universe.dev
 
-* Suggests or Enhances not in mainstream repositories: cellspecR, songR.
-  Both are available from the repository declared in
-  `Additional_repositories` (<https://cttir.r-universe.dev>). They are used
-  only conditionally: examples, tests and vignettes check for them with
-  `requireNamespace()` or `skip_if_not_installed()`, and the package works
-  without them.
+  This is the first submission of this package. cellspecR and songR are
+  optional: they are available from the repository declared in
+  `Additional_repositories` and are used only conditionally. Examples, tests
+  and vignettes check for them with `requireNamespace()` or
+  `skip_if_not_installed()`, and the package works without them.
 
-## Examples
+## Additional notes
 
-The example of `RunSONG()` is in `\dontrun{}`: it needs the optional 'songR'
-package, whose compiled code does not run on every platform.
+* Examples longer than a few seconds are wrapped in `\donttest{}`; the
+  `RunSONG()` example additionally runs only when the optional 'songR'
+  package is installed.
+* Examples, tests and vignettes use small synthetic data, write only to
+  `tempdir()` and do not access the network. Browser-based app tests
+  ('shinytest2'/'chromote') are skipped on CRAN.
+
+## Downstream dependencies
+
+There are currently no downstream dependencies on CRAN.

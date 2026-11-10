@@ -37,6 +37,9 @@
   alternatives require shiny 1.6.0. These minimum versions are now declared.
 * Vignette plots have descriptive text alternatives. The documentation site
   retains scientific plot colours and readable code text in both themes.
+* The `RunSONG()` example runs again (in `\donttest{}`, only when the optional
+  songR package is installed), and the `SetPalette()` example restores the
+  previous palette option.
 
 # phenoscapR 0.2.0
 
