@@ -48,7 +48,7 @@ This function reports a missing dependency without installing software or
 changing the input object.
 }
 \examples{
-\dontrun{
+\donttest{
 if (requireNamespace("songR", quietly = TRUE)) {
   counts <- matrix(rnorm(500), nrow = 50,
                    dimnames = list(NULL, paste0("M", 1:10)))

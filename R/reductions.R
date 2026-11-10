@@ -334,7 +334,7 @@ RunTSNE <- function(object, dims = 30L, use_pca = TRUE, perplexity = 30,
 #' @return The object with a \code{"song"} entry in its \code{reductions} slot.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' if (requireNamespace("songR", quietly = TRUE)) {
 #'   counts <- matrix(rnorm(500), nrow = 50,
 #'                    dimnames = list(NULL, paste0("M", 1:10)))

@@ -18,15 +18,15 @@
 #' @return Invisibly returns the previous palette setting.
 #'
 #' @examples
-#' SetPalette("inferno")
+#' old <- SetPalette("inferno")
 #' GetPalette()
 #'
 #' # Custom 3-colour gradient
 #' SetPalette(c("navy", "white", "firebrick"))
 #' GetPalette()
 #'
-#' # Reset to default
-#' SetPalette("viridis")
+#' # Restore the previous setting
+#' SetPalette(old)
 #'
 #' @export
 SetPalette <- function(palette) {

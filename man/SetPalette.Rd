@@ -30,14 +30,14 @@ The palette can be a viridis option, a custom gradient defined by 2-3
 anchor colours, or a named vector of discrete colours.
 }
 \examples{
-SetPalette("inferno")
+old <- SetPalette("inferno")
 GetPalette()
 
 # Custom 3-colour gradient
 SetPalette(c("navy", "white", "firebrick"))
 GetPalette()
 
-# Reset to default
-SetPalette("viridis")
+# Restore the previous setting
+SetPalette(old)
 
 }
