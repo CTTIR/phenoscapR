@@ -188,12 +188,14 @@ viridis-family option works (`"viridis"`, `"inferno"`, `"plasma"`,
 `"cividis"`, `"rocket"`, `"mako"`):
 
 ```{r palette, fig.alt = "Stacked simulated phenotype proportions in each section using the rocket palette."}
-SetPalette("rocket")
+old_palette <- SetPalette("rocket")
 CompositionPlot(obj, group_by = "sample_id")
 ```
 
-```{r reset-palette, include = FALSE}
-SetPalette("viridis")
+`SetPalette()` returns the previous setting invisibly, so it can be restored:
+
+```{r reset-palette}
+SetPalette(old_palette)
 ```
 
 `PaletteDiscrete()`, `PaletteContinuous()`, and `CustomGradient()` expose the
