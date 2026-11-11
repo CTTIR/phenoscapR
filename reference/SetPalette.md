@@ -30,7 +30,8 @@ GetPalette()
 
 ## Value
 
-Invisibly returns the previous palette setting.
+Invisibly returns the previous palette setting. With `palette = NULL`,
+returns the current setting (visibly) and leaves it unchanged.
 
 ## Examples
 

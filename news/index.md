@@ -2,6 +2,9 @@
 
 ## phenoscapR 1.0.0
 
+- `SetPalette(NULL)` returns the current palette and leaves it
+  unchanged, as documented. It previously cleared the setting, resetting
+  the palette to `"viridis"`.
 - Tissue maps
   ([`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md),
   [`FeaturePlot()`](https://cttir.github.io/phenoscapR/reference/FeaturePlot.md),
