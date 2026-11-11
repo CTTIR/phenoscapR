@@ -15,7 +15,9 @@
 #'   }
 #'   An unrecognised name falls back to \code{"viridis"} rather than erroring.
 #'
-#' @return Invisibly returns the previous palette setting.
+#' @return Invisibly returns the previous palette setting. With
+#'   \code{palette = NULL}, returns the current setting (visibly) and leaves
+#'   it unchanged.
 #'
 #' @examples
 #' old <- SetPalette("inferno")
@@ -31,6 +33,9 @@
 #' @export
 SetPalette <- function(palette) {
   old <- getOption("phenoscapR.palette", default = "viridis")
+  if (is.null(palette)) {
+    return(old)
+  }
   options(phenoscapR.palette = palette)
   invisible(old)
 }

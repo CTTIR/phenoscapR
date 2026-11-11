@@ -1,5 +1,8 @@
 # phenoscapR 1.0.0
 
+* `SetPalette(NULL)` returns the current palette and leaves it unchanged, as
+  documented. It previously cleared the setting, resetting the palette to
+  `"viridis"`.
 * Tissue maps (`CellMap()`, `FeaturePlot()`, `DensityPlot()`,
   `SpatialNetworkPlot()`, `plot_cell_map()` and `plot_density()`) now draw the
   y axis increasing downward, as in image coordinates (origin at the top left;

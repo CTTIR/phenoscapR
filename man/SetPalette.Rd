@@ -22,7 +22,9 @@ GetPalette()
 An unrecognised name falls back to \code{"viridis"} rather than erroring.}
 }
 \value{
-Invisibly returns the previous palette setting.
+Invisibly returns the previous palette setting. With
+\code{palette = NULL}, returns the current setting (visibly) and leaves
+it unchanged.
 }
 \description{
 Sets a global colour palette used by all plotting functions in phenoscapR.

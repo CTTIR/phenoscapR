@@ -40,3 +40,11 @@ test_that("CustomGradient builds a working ramp", {
   expect_length(pal(20L), 20L)
   expect_error(CustomGradient("navy"), "2 or 3")
 })
+
+test_that("SetPalette(NULL) returns the current palette without changing it", {
+  old <- SetPalette("plasma")
+  on.exit(SetPalette(old), add = TRUE)
+  expect_identical(SetPalette(NULL), "plasma")
+  expect_identical(GetPalette(), "plasma")
+  expect_visible(SetPalette(NULL))
+})
