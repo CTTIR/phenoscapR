@@ -20,6 +20,11 @@ samples are made unique with \code{\link[=make.unique]{make.unique()}} for the S
 metadata keep the original \code{cell_id}. Export refuses marker identifiers
 that Seurat would rewrite (such as underscores); use \code{\link[=as_SpatialExperiment]{as_SpatialExperiment()}}
 for unchanged identifiers, or rename markers explicitly before export.
+The reduction uses named x/y only. Extra coordinate columns are retained in
+\code{misc$phenoscapR_coordinates}, keyed by unique Seurat cell names, and restored
+by \code{\link[=as_SpatialCellData]{as_SpatialCellData()}} after cell subsetting or reordering. Saved columns
+never override current x/y. Conflicting x/y metadata are refused rather than
+overwritten; rename such metadata explicitly before export.
 }
 \examples{
 \donttest{

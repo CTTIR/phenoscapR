@@ -24,6 +24,12 @@ contain the same cells and features as counts; named axes are aligned, and
 incompatible partial assays are refused. All-missing features are retained.
 Existing cell identifiers are kept; absent \code{cell_id} metadata use the source
 cell names when available. No normalization method is inferred or applied.
+SpatialExperiment coordinates retain named x/y regardless of column order;
+when neither name exists, the first two dimensions become x/y. Partial or
+duplicate coordinate names are refused. Seurat exports from this package
+restore additional coordinate columns from the namespaced misc mapping using
+current cell names. Missing or ambiguous mappings are refused; current x/y
+metadata (or the spatial reduction fallback) remain authoritative.
 }
 \examples{
 \donttest{

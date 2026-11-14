@@ -63,6 +63,11 @@
 #' metadata keep the original \code{cell_id}. Export refuses marker identifiers
 #' that Seurat would rewrite (such as underscores); use [as_SpatialExperiment()]
 #' for unchanged identifiers, or rename markers explicitly before export.
+#' The reduction uses named x/y only. Extra coordinate columns are retained in
+#' `misc$phenoscapR_coordinates`, keyed by unique Seurat cell names, and restored
+#' by [as_SpatialCellData()] after cell subsetting or reordering. Saved columns
+#' never override current x/y. Conflicting x/y metadata are refused rather than
+#' overwritten; rename such metadata explicitly before export.
 #'
 #' @param object A \code{\link{SpatialCellData-class}} object.
 #' @return A \code{Seurat} object.
@@ -88,8 +93,15 @@ as_Seurat <- function(object) {
 
   meta <- object@meta_data
   rownames(meta) <- cells
-  meta$x <- object@coords$x
-  meta$y <- object@coords$y
+  xy <- .spatial_xy(object)
+  for (axis in c("x", "y")) {
+    if (axis %in% names(meta) &&
+        !isTRUE(all.equal(meta[[axis]], xy[, axis], check.attributes = FALSE))) {
+      stop("Metadata column '", axis, "' conflicts with spatial coordinates; ",
+           "rename it explicitly before Seurat export.", call. = FALSE)
+    }
+    meta[[axis]] <- xy[, axis]
+  }
 
   se <- suppressWarnings(
     Seurat::CreateSeuratObject(counts = counts, meta.data = meta))
@@ -107,11 +119,16 @@ as_Seurat <- function(object) {
     Seurat::SetAssayData(se, slot = "data", new.data = data_mat)
   })
 
-  emb <- as.matrix(object@coords)
+  emb <- xy
   rownames(emb) <- cells
   colnames(emb) <- c("spatial_1", "spatial_2")
   se[["spatial"]] <- Seurat::CreateDimReducObject(
     embeddings = emb, key = "spatial_", assay = Seurat::DefaultAssay(se))
+  extra <- object@coords[, setdiff(names(object@coords), c("x", "y")), drop = FALSE]
+  if (ncol(extra)) {
+    rownames(extra) <- cells
+    se@misc$phenoscapR_coordinates <- list(version = 1L, extra = extra)
+  }
   se
 }
 
@@ -119,7 +136,9 @@ as_Seurat <- function(object) {
 #'
 #' Builds a \pkg{SpatialExperiment} with \code{counts} and \code{logcounts}
 #' assays (markers x cells), the metadata as \code{colData}, and the
-#' coordinates as \code{spatialCoords}.
+#' coordinates as \code{spatialCoords}. All numeric coordinate dimensions and
+#' their names are retained. Nonnumeric coordinate annotations are refused;
+#' move them to metadata explicitly before export.
 #'
 #' @param object A \code{\link{SpatialCellData-class}} object.
 #' @return A \code{SpatialExperiment} object.
@@ -140,6 +159,13 @@ as_SpatialExperiment <- function(object) {
          "BiocManager::install(\"SpatialExperiment\").", call. = FALSE)
   }
   methods::validObject(object)
+  .spatial_xy(object)
+  if (!all(vapply(object@coords, function(z) {
+    is.numeric(z) && !is.complex(z) && is.null(dim(z)) && !is.object(z)
+  }, logical(1)))) {
+    stop("SpatialExperiment coordinates must be plain numeric columns; ",
+         "move nonnumeric annotations to metadata explicitly before export.", call. = FALSE)
+  }
   SpatialExperiment::SpatialExperiment(
     assays = list(counts = t(object@counts), logcounts = t(object@data)),
     colData = S4Vectors::DataFrame(object@meta_data),
@@ -158,6 +184,12 @@ as_SpatialExperiment <- function(object) {
 #' incompatible partial assays are refused. All-missing features are retained.
 #' Existing cell identifiers are kept; absent `cell_id` metadata use the source
 #' cell names when available. No normalization method is inferred or applied.
+#' SpatialExperiment coordinates retain named x/y regardless of column order;
+#' when neither name exists, the first two dimensions become x/y. Partial or
+#' duplicate coordinate names are refused. Seurat exports from this package
+#' restore additional coordinate columns from the namespaced misc mapping using
+#' current cell names. Missing or ambiguous mappings are refused; current x/y
+#' metadata (or the spatial reduction fallback) remain authoritative.
 #'
 #' @param x A \code{Seurat} or \code{SpatialExperiment} object.
 #' @param ... Unused.
@@ -177,7 +209,13 @@ as_SpatialCellData <- function(x, ...) {
   if (methods::is(x, "SpatialExperiment")) {
     counts <- t(as.matrix(SummarizedExperiment::assay(x, "counts")))
     coords <- as.data.frame(SpatialExperiment::spatialCoords(x))
-    names(coords)[1:2] <- c("x", "y")
+    coordinate_names <- names(coords)
+    if (anyDuplicated(coordinate_names) || ncol(coords) < 2L ||
+        xor("x" %in% coordinate_names, "y" %in% coordinate_names)) {
+      stop("SpatialExperiment coordinates require at least two uniquely named ",
+           "columns, with both x/y names or neither.", call. = FALSE)
+    }
+    if (!all(c("x", "y") %in% coordinate_names)) names(coords)[1:2] <- c("x", "y")
     meta <- as.data.frame(SummarizedExperiment::colData(x))
     normalized <- if ("logcounts" %in% SummarizedExperiment::assayNames(x)) {
       t(as.matrix(SummarizedExperiment::assay(x, "logcounts")))
@@ -195,6 +233,23 @@ as_SpatialCellData <- function(x, ...) {
     } else {
       stop("No coordinates found: expected x/y metadata or a 'spatial' ",
            "reduction.", call. = FALSE)
+    }
+    saved <- x@misc$phenoscapR_coordinates
+    if (!is.null(saved)) {
+      extra <- if (is.list(saved)) saved$extra else NULL
+      keys <- if (is.data.frame(extra)) rownames(extra) else NULL
+      cells <- rownames(counts)
+      if (!is.list(saved) || !identical(saved$version, 1L) ||
+          !is.data.frame(extra) || is.null(keys) || anyNA(keys) ||
+          anyDuplicated(keys) || any(!nzchar(keys)) ||
+          anyDuplicated(names(extra)) || any(c("x", "y") %in% names(extra)) ||
+          is.null(cells) || anyDuplicated(cells) || !all(cells %in% keys)) {
+        stop("Invalid phenoscapR coordinate mapping in Seurat misc; ",
+             "current cells must match unique saved cell names.", call. = FALSE)
+      }
+      extra <- extra[match(cells, keys), , drop = FALSE]
+      rownames(extra) <- rownames(coords)
+      coords <- cbind(coords, extra)
     }
     normalized <- .seurat_assay(x, "data", optional = TRUE)
     if (!is.null(normalized)) normalized <- t(as.matrix(normalized))
