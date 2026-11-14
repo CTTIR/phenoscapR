@@ -7,7 +7,10 @@
 cell_density(dt, radius, target_phenotype = NULL)
 }
 \arguments{
-\item{dt}{A \code{data.table} with columns \code{x} and \code{y}.}
+\item{dt}{A \code{data.table} with columns \code{sample_id}, \code{x}, and \code{y}. Sample
+identifiers must be complete and nonblank; coordinates must be finite
+numeric vectors. Samples are processed independently. Empty tables retain
+their columns and receive an empty result column.}
 
 \item{radius}{Finite nonnegative numeric scalar. Radius of the
 neighbourhood (in coordinate units).}

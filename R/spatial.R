@@ -282,6 +282,47 @@
   out
 }
 
+#' Validate standalone spatial tables without changing row identity
+#' @noRd
+.validate_spatial_table <- function(dt, target_phenotype) {
+  if (!data.table::is.data.table(dt)) {
+    stop("dt must be a data.table.", call. = FALSE)
+  }
+  if (anyDuplicated(names(dt)) ||
+      !all(c("sample_id", "x", "y") %in% names(dt))) {
+    stop("dt must have unique column names and include sample_id, x, and y.",
+         call. = FALSE)
+  }
+  ids <- dt$sample_id
+  if (!is.atomic(ids) || !is.null(dim(ids)) ||
+      length(ids) != nrow(dt) || anyNA(ids) ||
+      any(!nzchar(trimws(as.character(ids))))) {
+    stop("sample_id must be a complete, nonblank vector with one value per cell.",
+         call. = FALSE)
+  }
+  for (nm in c("x", "y")) {
+    coord <- dt[[nm]]
+    if (!is.numeric(coord) || !is.null(dim(coord)) ||
+        length(coord) != nrow(dt) || any(!is.finite(coord))) {
+      stop("x and y must be finite numeric vectors with one value per cell.",
+           call. = FALSE)
+    }
+  }
+  if (!is.null(target_phenotype)) {
+    if (!is.character(target_phenotype) || length(target_phenotype) != 1L ||
+        !is.null(dim(target_phenotype)) || is.na(target_phenotype)) {
+      stop("target_phenotype must be NULL or one non-missing character string.",
+           call. = FALSE)
+    }
+    if (!"phenotype" %in% names(dt) || !is.atomic(dt$phenotype) ||
+        !is.null(dim(dt$phenotype))) {
+      stop("A phenotype vector is required when target_phenotype is set.",
+           call. = FALSE)
+    }
+  }
+  invisible(NULL)
+}
+
 #' Compute Nearest Neighbour Distances
 #'
 #' For each cell, computes the distance to the nearest neighbouring cell,
@@ -291,7 +332,10 @@
 #' target cells are available within the sample, their distances are averaged;
 #' if none are available, the distance is `NA`.
 #'
-#' @param dt A `data.table` with columns `x` and `y`.
+#' @param dt A `data.table` with columns `sample_id`, `x`, and `y`. Sample
+#'   identifiers must be complete and nonblank; coordinates must be finite
+#'   numeric vectors. Samples are processed independently. Empty tables retain
+#'   their columns and receive an empty result column.
 #' @param target_phenotype Character string or `NULL`. If provided, distances
 #'   are computed only to cells of this phenotype. Requires a `phenotype`
 #'   column.
@@ -316,7 +360,12 @@ nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
     stop("k must be one positive integer within the supported integer range.",
          call. = FALSE)
   }
+  .validate_spatial_table(dt, target_phenotype)
   dt <- data.table::copy(dt)
+  if (!nrow(dt)) {
+    dt[, nn_distance := numeric()]
+    return(dt)
+  }
   k <- as.integer(k)
 
   samples <- unique(dt$sample_id)
@@ -362,7 +411,10 @@ nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
 #' The query cell is excluded by identity; distinct cells sharing its
 #' coordinates are counted, including when a target phenotype is selected.
 #'
-#' @param dt A `data.table` with columns `x` and `y`.
+#' @param dt A `data.table` with columns `sample_id`, `x`, and `y`. Sample
+#'   identifiers must be complete and nonblank; coordinates must be finite
+#'   numeric vectors. Samples are processed independently. Empty tables retain
+#'   their columns and receive an empty result column.
 #' @param radius Finite nonnegative numeric scalar. Radius of the
 #'   neighbourhood (in coordinate units).
 #' @param target_phenotype Character string or `NULL`. If provided, only
@@ -385,7 +437,12 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
       !is.finite(radius) || radius < 0) {
     stop("radius must be one finite nonnegative number.", call. = FALSE)
   }
+  .validate_spatial_table(dt, target_phenotype)
   dt <- data.table::copy(dt)
+  if (!nrow(dt)) {
+    dt[, density := integer()]
+    return(dt)
+  }
 
   samples <- unique(dt$sample_id)
   rows <- lapply(samples, function(sid) which(dt$sample_id == sid))

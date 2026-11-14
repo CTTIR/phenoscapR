@@ -1,5 +1,7 @@
 # phenoscapR 1.0.0
 
+- Standalone nearest-neighbour and density tables now require explicit complete sample identifiers and finite coordinates, rejecting malformed columns before any rows can disappear. Empty tables preserve their schema and receive typed empty results.
+
 * Patient-level inference rejects matrix and array columns before indexing or
   coercion, preventing malformed patient identifiers from duplicating
   observations and malformed endpoints or p-values from being truncated.
