@@ -31,7 +31,10 @@ A data frame with columns \code{r} and \code{g}.
 }
 \description{
 Computes the pair correlation function g(r), the derivative of
-Ripley's K, measuring clustering/inhibition at specific distances.
+Ripley's K, measuring clustering/inhibition at specific distances. The
+rectangular observation window is the bounding box of retained points after
+optional phenotype selection, rather than a separately measured sample frame.
+The retained points must define a positive finite bounding-box area.
 }
 \examples{
 counts <- matrix(rnorm(100), nrow = 50,

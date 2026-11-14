@@ -1,5 +1,7 @@
 # phenoscapR 1.0.0
 
+- Cap radius-search neighbour estimates before integer conversion so large valid radii remain usable. Ripley and pair-correlation calculations now reject undefined zero-area planar windows rather than report artificial dispersion; the existing target-filtered bounding-box window convention is documented.
+
 - Treat machine-precision Moran permutation ties consistently, preserving two-sided theoretical-expectation centering and the Monte Carlo correction. Numerically constant sampled nulls no longer produce artificial z-scores or scale-dependent tail probabilities.
 
 - Preserve extra Seurat coordinate annotations by cell-name mapping while exporting only named x/y to the spatial reduction; refuse conflicting metadata instead of overwriting it. SpatialExperiment retains named numeric dimensions across reordered columns and rejects ambiguous names or nonnumeric coordinate annotations explicitly.

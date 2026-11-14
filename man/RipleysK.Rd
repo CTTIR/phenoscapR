@@ -22,7 +22,8 @@ RipleysK(
 \item{correction}{Character. Edge correction: \code{"none"} (default),
 \code{"border"} (reduced-sample), or \code{"translation"} (each pair
 weighted by the inverse window/translate overlap; rigorous for rectangular
-windows).}
+windows). Pairs with zero overlap contribute zero to the translation
+estimate; radii with no eligible border centres return \code{NA}.}
 
 \item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
 the statistic is computed per sample and returned as a named list (one
@@ -35,7 +36,10 @@ A data frame with columns \code{r}, \code{K}, \code{L}, and
 }
 \description{
 Computes Ripley's K function to assess spatial clustering or dispersion
-at multiple scales.
+at multiple scales. The observation window is inferred as the bounding box
+of the retained points, after optional phenotype selection; it is not an
+independently measured tissue frame. A positive finite bounding-box area is
+required, including within each sample when computing by sample.
 }
 \examples{
 counts <- matrix(rnorm(100), nrow = 50,

@@ -226,8 +226,12 @@
   area <- (max(coords[, 1L]) - min(coords[, 1L])) *
           (max(coords[, 2L]) - min(coords[, 2L]))
   lambda_hat <- if (area > 0) n / area else 1
-  k_start <- min(n, max(64L,
-    as.integer(ceiling(1.4 * lambda_hat * pi * rmax^2 + 16))))
+  expected <- 1.4 * lambda_hat * pi * rmax^2 + 16
+  # Cap in double precision before conversion: a large radius can imply far
+  # more theoretical neighbours than the integer range, but at most n exist.
+  k_start <- if (is.finite(expected)) {
+    as.integer(min(n, max(64, ceiling(expected))))
+  } else n
 
   add_pairs <- function(dvec, cidx, jidx) {
     if (!length(dvec)) return(invisible())
@@ -1132,10 +1136,31 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
   .as_result(results, "phenoscapR_enrichment")
 }
 
+# The current estimators infer their rectangular window from retained points.
+# A zero-area box cannot define planar intensity or a planar K/PCF estimate.
+.spatial_bounding_window <- function(xy) {
+  if (nrow(xy) < 2L) {
+    stop("Planar spatial estimation requires a positive finite bounding-box area; ",
+         "fewer than two retained points cannot define it.", call. = FALSE)
+  }
+  xr <- range(xy[, 1L])
+  yr <- range(xy[, 2L])
+  area <- diff(xr) * diff(yr)
+  if (!is.finite(area) || area <= 0) {
+    stop("Planar spatial estimation requires a positive finite bounding-box area; ",
+         "the retained coordinate ranges do not define a planar window.",
+         call. = FALSE)
+  }
+  list(x = xr, y = yr, area = area)
+}
+
 #' Ripley's K Function
 #'
 #' Computes Ripley's K function to assess spatial clustering or dispersion
-#' at multiple scales.
+#' at multiple scales. The observation window is inferred as the bounding box
+#' of the retained points, after optional phenotype selection; it is not an
+#' independently measured tissue frame. A positive finite bounding-box area is
+#' required, including within each sample when computing by sample.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param r_seq Numeric vector of radii, or \code{NULL} for automatic.
@@ -1143,7 +1168,8 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #' @param correction Character. Edge correction: \code{"none"} (default),
 #'   \code{"border"} (reduced-sample), or \code{"translation"} (each pair
 #'   weighted by the inverse window/translate overlap; rigorous for rectangular
-#'   windows).
+#'   windows). Pairs with zero overlap contribute zero to the translation
+#'   estimate; radii with no eligible border centres return `NA`.
 #' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
 #'   the statistic is computed per sample and returned as a named list (one
 #'   entry per sample). Default \code{FALSE}; otherwise a single sample is
@@ -1178,9 +1204,10 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
   }
 
   n <- nrow(xy)
-  x_range <- range(xy[, 1])
-  y_range <- range(xy[, 2])
-  area <- diff(x_range) * diff(y_range)
+  window <- .spatial_bounding_window(xy)
+  x_range <- window$x
+  y_range <- window$y
+  area <- window$area
   lambda <- n / area
 
   if (is.null(r_seq)) {
@@ -1473,7 +1500,10 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
 #' Pair Correlation Function
 #'
 #' Computes the pair correlation function g(r), the derivative of
-#' Ripley's K, measuring clustering/inhibition at specific distances.
+#' Ripley's K, measuring clustering/inhibition at specific distances. The
+#' rectangular observation window is the bounding box of retained points after
+#' optional phenotype selection, rather than a separately measured sample frame.
+#' The retained points must define a positive finite bounding-box area.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param r_seq Numeric vector of radii, or \code{NULL} for automatic.
@@ -1510,9 +1540,10 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
   }
 
   n <- nrow(xy)
-  x_range <- range(xy[, 1])
-  y_range <- range(xy[, 2])
-  area <- diff(x_range) * diff(y_range)
+  window <- .spatial_bounding_window(xy)
+  x_range <- window$x
+  y_range <- window$y
+  area <- window$area
   lambda <- n / area
 
   if (is.null(r_seq)) {
