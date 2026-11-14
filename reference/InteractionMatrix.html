@@ -100,7 +100,13 @@ state changes; <code>n_perm</code> and <code>seed</code> are ignored by the anal
 <code>expected</code>, and <code>interaction_score</code>; the permutation method adds
 <code>z_score</code> and <code>p_value</code>. Scores are log2 observed/expected:
 zero observations with positive expectation give negative infinity;
-zero expectation retains the historical zero-score convention.</p>
+zero expectation retains the historical zero-score convention.
+Permutation <code>p_value</code> is a two-sided normal approximation from <code>z_score</code>,
+not an empirical permutation tail probability. If the sampled null has
+zero variance but its mean differs from the observed count, both <code>z_score</code>
+and <code>p_value</code> are <code>NA</code>. A zero-variance sampled null whose mean matches
+the observation retains the compatibility convention <code>z_score = 0</code>,
+<code>p_value = 1</code>.</p>
     </div>
 
     <div class="section level2">

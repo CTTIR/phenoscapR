@@ -2,6 +2,12 @@
 
 ## phenoscapR 1.0.0
 
+- Permutation interaction results no longer report neutral z=0/p=1 when
+  sampled null counts have zero variance but differ from the
+  observation: those undefined normal-approximation statistics are now
+  NA. Matching zero-variance sampled nulls and positive-variance
+  formulas retain their existing behavior.
+
 - Interaction calculations now validate nonnegative finite radii before
   geometry shortcuts and validate permutation counts and signed integer
   seeds before coercion or RNG changes. At least two permutations are

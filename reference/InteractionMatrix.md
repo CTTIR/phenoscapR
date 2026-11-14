@@ -51,7 +51,13 @@ A data frame with columns `from`, `to`, `observed`, `expected`, and
 `interaction_score`; the permutation method adds `z_score` and
 `p_value`. Scores are log2 observed/expected: zero observations with
 positive expectation give negative infinity; zero expectation retains
-the historical zero-score convention.
+the historical zero-score convention. Permutation `p_value` is a
+two-sided normal approximation from `z_score`, not an empirical
+permutation tail probability. If the sampled null has zero variance but
+its mean differs from the observed count, both `z_score` and `p_value`
+are `NA`. A zero-variance sampled null whose mean matches the
+observation retains the compatibility convention `z_score = 0`,
+`p_value = 1`.
 
 ## Examples
 
