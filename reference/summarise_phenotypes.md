@@ -1,6 +1,9 @@
 # Summarise Phenotype Proportions
 
-Computes phenotype frequencies and proportions per sample.
+Computes phenotype frequencies and proportions per sample. Missing
+phenotype labels are retained as an explicit unknown category and remain
+in the sample denominator. This descriptive summary does not test
+differential abundance.
 
 ## Usage
 

@@ -30,7 +30,8 @@ SummarizeCellComposition(
 
 - type:
 
-  Cell-type column; every value must be in `levels`.
+  Dimensionless cell-type vector column with one value per cell; every
+  value must be in `levels`.
 
 - levels:
 
@@ -39,18 +40,24 @@ SummarizeCellComposition(
 
 - area:
 
-  Optional column summed over all cells into the section area; adds
-  density rows.
+  Optional plain finite nonnegative numeric vector column summed over
+  all cells into the section area; adds density rows. Missing values,
+  factors and matrix columns are rejected. The scaled total must be
+  strictly positive and finite for density; individual zero areas remain
+  allowed.
 
 - area_divisor:
 
-  Divisor applied to the summed area.
+  Positive finite numeric scalar applied to the summed area.
 
 - fractions:
 
   Optional named list of subset fractions. Each element is a list with
   `numerator` (types), `denominator` (types) and optional `flag` (name
-  of a logical or 0/1 column that numerator cells must have set).
+  of a plain logical or 0/1 vector column that numerator cells must have
+  set). All types must be registered, and numerator types must be a
+  subset of denominator types; this interface does not compute arbitrary
+  ratios.
 
 - percent:
 

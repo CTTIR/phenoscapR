@@ -1,6 +1,8 @@
 # Phenotype Summary (SpatialCellData)
 
-Computes phenotype counts and proportions per sample.
+Computes phenotype counts and proportions per sample. Missing phenotype
+labels remain an explicit unknown category in the denominator; this is a
+descriptive summary, not differential abundance inference.
 
 ## Usage
 

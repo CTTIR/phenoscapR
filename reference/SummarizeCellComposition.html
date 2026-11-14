@@ -85,7 +85,8 @@ from exact counts with <code><a href="SummarizeGroupedCountFractions.html">Summa
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>Cell-type column; every value must be in <code>levels</code>.</p></dd>
+<dd><p>Dimensionless cell-type vector column with one value per cell;
+every value must be in <code>levels</code>.</p></dd>
 
 
 <dt id="arg-levels">levels<a class="anchor" aria-label="anchor" href="#arg-levels"></a></dt>
@@ -94,18 +95,22 @@ are reported).</p></dd>
 
 
 <dt id="arg-area">area<a class="anchor" aria-label="anchor" href="#arg-area"></a></dt>
-<dd><p>Optional column summed over all cells into the section area;
-adds density rows.</p></dd>
+<dd><p>Optional plain finite nonnegative numeric vector column summed
+over all cells into the section area; adds density rows. Missing values,
+factors and matrix columns are rejected. The scaled total must be strictly
+positive and finite for density; individual zero areas remain allowed.</p></dd>
 
 
 <dt id="arg-area-divisor">area_divisor<a class="anchor" aria-label="anchor" href="#arg-area-divisor"></a></dt>
-<dd><p>Divisor applied to the summed area.</p></dd>
+<dd><p>Positive finite numeric scalar applied to the summed area.</p></dd>
 
 
 <dt id="arg-fractions">fractions<a class="anchor" aria-label="anchor" href="#arg-fractions"></a></dt>
 <dd><p>Optional named list of subset fractions. Each element is a
 list with <code>numerator</code> (types), <code>denominator</code> (types) and optional <code>flag</code>
-(name of a logical or 0/1 column that numerator cells must have set).</p></dd>
+(name of a plain logical or 0/1 vector column that numerator cells must have
+set). All types must be registered, and numerator types must be a subset
+of denominator types; this interface does not compute arbitrary ratios.</p></dd>
 
 
 <dt id="arg-percent">percent<a class="anchor" aria-label="anchor" href="#arg-percent"></a></dt>
