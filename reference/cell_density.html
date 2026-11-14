@@ -71,7 +71,10 @@ coordinates are counted, including when a target phenotype is selected.</p>
 
 
 <dl><dt id="arg-dt">dt<a class="anchor" aria-label="anchor" href="#arg-dt"></a></dt>
-<dd><p>A <code>data.table</code> with columns <code>x</code> and <code>y</code>.</p></dd>
+<dd><p>A <code>data.table</code> with columns <code>sample_id</code>, <code>x</code>, and <code>y</code>. Sample
+identifiers must be complete and nonblank; coordinates must be finite
+numeric vectors. Samples are processed independently. Empty tables retain
+their columns and receive an empty result column.</p></dd>
 
 
 <dt id="arg-radius">radius<a class="anchor" aria-label="anchor" href="#arg-radius"></a></dt>

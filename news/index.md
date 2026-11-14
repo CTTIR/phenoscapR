@@ -2,14 +2,21 @@
 
 ## phenoscapR 1.0.0
 
+- Standalone nearest-neighbour and density tables now require explicit
+  complete sample identifiers and finite coordinates, rejecting
+  malformed columns before any rows can disappear. Empty tables preserve
+  their schema and receive typed empty results.
+
 - Patient-level inference rejects matrix and array columns before
   indexing or coercion, preventing malformed patient identifiers from
   duplicating observations and malformed endpoints or p-values from
   being truncated. Ordinary vector inputs retain their existing
   numerical results.
+
 - Contrast and family labels must be nonmissing and nonblank and cannot
   contain the reserved token `::`. This prevents distinct registry pairs
   from silently sharing a multiple-testing adjustment family.
+
 - Spatial neighbours exclude the query cell by identity, including with
   tied coordinates and phenotype filters. Distinct cells at the same
   coordinates remain neighbours. Targeted nearest-neighbour distances no
@@ -17,9 +24,11 @@
   cell returns `NA`. Neighbourhood composition, spatial-domain smoothing
   and the fallback Delaunay graph no longer retain self-neighbours when
   coordinates coincide.
+
 - `SetPalette(NULL)` returns the current palette and leaves it
   unchanged, as documented. It previously cleared the setting, resetting
   the palette to `"viridis"`.
+
 - Tissue maps
   ([`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md),
   [`FeaturePlot()`](https://cttir.github.io/phenoscapR/reference/FeaturePlot.md),
@@ -32,45 +41,54 @@
   (origin at the top left; QuPath, cellspecR), so a map has the
   orientation of its tissue image. The new argument `y_down = FALSE`
   restores the previous upward axis.
+
 - Column subsets of classed results (interaction matrices, neighbourhood
   enrichment, Ripley’s K, pair correlation and differential abundance)
   print as plain data frames. Previously the summary failed with an
   error or reported values from columns that were no longer present.
+
 - Cell objects require aligned numeric raw and processed measurement
   matrices, finite numeric coordinates and complete empty-object
   schemas. Unsupported character measurements can no longer produce
   lexicographic phenotypes. Empty logical placeholders receive a numeric
   schema. Header-only imports remain valid, and removing every marker
   retains cell rows, IDs and coordinates.
+
 - Normalisation conditions extreme finite inputs when variance or range
   arithmetic overflows or loses precision in the subnormal range. Exact
   patient tests compute an overflowing tie bound without changing its
   definition; ordinary well-scaled arithmetic and existing missingness
   rules are retained.
+
 - CSV readers bind whole coordinate names and refuse factor-coordinate
   codes. Declared and reserved identifier columns retain leading zeros,
   so `001` and `1` remain distinct while measurement columns retain
   numeric parsing. QuPath retains original Image labels and refuses
   distinct images that would collapse to one parsed sample identity,
   including across files.
+
 - SpatialExperiment and Seurat imports retain available normalized
   assays and all-missing features, with explicit axis validation. Seurat
   export refuses marker identifiers that its backend rewrites;
   SpatialExperiment preserves those names. No normalization method is
   inferred during conversion.
+
 - Figure exports validate distinct destinations and render before
   replacing files. Reported render or publication failures preserve or
   restore previous outputs; unsuccessful restoration retains a
   recoverable backup. Failed graphics-device initialization cannot draw
   on or close a caller’s device.
+
 - The synthetic-data app recovers from empty filters, reports
   unavailable UMAP and insufficient sample replication explicitly, and
   keeps tables readable in both themes. Its actual branding requires
   bslib 0.9.0; descriptive plot alternatives require shiny 1.6.0. These
   minimum versions are now declared.
+
 - Vignette plots have descriptive text alternatives. The documentation
   site retains scientific plot colours and readable code text in both
   themes.
+
 - The
   [`RunSONG()`](https://cttir.github.io/phenoscapR/reference/RunSONG.md)
   example runs again (in `\donttest{}`, only when the optional songR

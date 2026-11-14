@@ -17,7 +17,10 @@ nearest_neighbours(dt, target_phenotype = NULL, k = 1L)
 
 - dt:
 
-  A `data.table` with columns `x` and `y`.
+  A `data.table` with columns `sample_id`, `x`, and `y`. Sample
+  identifiers must be complete and nonblank; coordinates must be finite
+  numeric vectors. Samples are processed independently. Empty tables
+  retain their columns and receive an empty result column.
 
 - target_phenotype:
 
