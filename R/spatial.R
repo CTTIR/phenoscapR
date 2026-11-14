@@ -475,6 +475,30 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
   dt
 }
 
+# Validate controls before coercion, geometry-dependent shortcuts, or RNG use.
+.validate_interaction_controls <- function(radius, n_perm = NULL, seed = NULL,
+                                           permutation = FALSE) {
+  if (!is.numeric(radius) || is.complex(radius) || length(radius) != 1L ||
+      !is.null(dim(radius)) || !is.finite(radius) || radius < 0) {
+    stop("radius must be one finite nonnegative number.", call. = FALSE)
+  }
+  if (permutation) {
+    if (!is.numeric(n_perm) || is.complex(n_perm) || length(n_perm) != 1L ||
+        !is.null(dim(n_perm)) || !is.finite(n_perm) || n_perm < 2 ||
+        n_perm != floor(n_perm) || n_perm > .Machine$integer.max) {
+      stop("n_perm must be one integer of at least 2 within the supported integer range.",
+           call. = FALSE)
+    }
+    if (!is.null(seed) && (!is.numeric(seed) || is.complex(seed) ||
+        length(seed) != 1L || !is.null(dim(seed)) || !is.finite(seed) ||
+        seed != floor(seed) || abs(seed) > .Machine$integer.max)) {
+      stop("seed must be NULL or one signed integer within the supported integer range.",
+           call. = FALSE)
+    }
+  }
+  invisible(NULL)
+}
+
 # Validate optional sample identifiers before accumulating interaction counts.
 .interaction_sample_ids <- function(dt) {
   if (!"sample_id" %in% names(dt)) return(rep("__all__", nrow(dt)))
@@ -500,7 +524,8 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
 #' @param dt A `data.table` with columns `x`, `y`, `phenotype`, and
 #'   optional `sample_id`. An absent sample column means one sample; a present
 #'   column must contain complete, nonblank identifiers.
-#' @param radius Numeric. Radius for defining spatial neighbourhoods.
+#' @param radius Finite nonnegative numeric scalar. Radius for defining
+#'   spatial neighbourhoods.
 #'
 #' @return A `data.table` in long format with columns `from`, `to`,
 #'   `observed`, `expected`, and `interaction_score`
@@ -521,6 +546,7 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
 #'
 #' @export
 interaction_matrix <- function(dt, radius) {
+  .validate_interaction_controls(radius)
   if (!"phenotype" %in% names(dt)) {
     stop("Column 'phenotype' not found.", call. = FALSE)
   }
@@ -741,14 +767,17 @@ CellDensity <- function(object, radius, target = NULL) {
 #' Computes pairwise spatial interaction scores between phenotypes.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param radius Numeric. Radius for defining spatial neighbourhoods.
+#' @param radius Finite nonnegative numeric scalar. Radius for defining
+#'   spatial neighbourhoods.
 #' @param method Character. \code{"analytic"} (default) compares observed
 #'   neighbour counts to an expectation under random mixing;
 #'   \code{"permutation"} builds the null by shuffling phenotype labels within
 #'   each sample, adding \code{z_score} and \code{p_value} columns.
-#' @param n_perm Integer. Number of label permutations when
+#' @param n_perm Integer of at least two. Number of label permutations when
 #'   \code{method = "permutation"}. Default \code{100}.
-#' @param seed Integer or \code{NULL}. Random seed for the permutation null.
+#' @param seed Signed integer scalar or \code{NULL}. Random seed for the
+#'   permutation null. Invalid permutation controls are rejected before RNG
+#'   state changes; `n_perm` and `seed` are ignored by the analytic method.
 #'
 #' @return A data frame with columns \code{from}, \code{to}, \code{observed},
 #'   \code{expected}, and \code{interaction_score}; the permutation method adds
@@ -778,7 +807,7 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
     phenotype = object@meta_data$phenotype
   )
   out <- if (method == "permutation") {
-    .interaction_permutation(dt, radius, as.integer(n_perm), seed)
+    .interaction_permutation(dt, radius, n_perm, seed)
   } else {
     as.data.frame(interaction_matrix(dt, radius = radius))
   }
@@ -792,10 +821,12 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
 #' permutation mean as the expectation, the interaction score, and z / p.
 #' @noRd
 .interaction_permutation <- function(dt, radius, n_perm, seed) {
+  .validate_interaction_controls(radius, n_perm, seed, permutation = TRUE)
+  sample_vec <- .interaction_sample_ids(dt)
+  n_perm <- as.integer(n_perm)
   if (!is.null(seed)) set.seed(seed)
   phenotypes <- sort(unique(dt$phenotype))
   np <- length(phenotypes)
-  sample_vec <- .interaction_sample_ids(dt)
 
   # Precompute each sample's fixed neighbour edge list once.
   per <- lapply(unique(sample_vec), function(sid) {

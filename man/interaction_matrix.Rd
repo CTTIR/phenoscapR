@@ -11,7 +11,8 @@ interaction_matrix(dt, radius)
 optional \code{sample_id}. An absent sample column means one sample; a present
 column must contain complete, nonblank identifiers.}
 
-\item{radius}{Numeric. Radius for defining spatial neighbourhoods.}
+\item{radius}{Finite nonnegative numeric scalar. Radius for defining
+spatial neighbourhoods.}
 }
 \value{
 A \code{data.table} in long format with columns \code{from}, \code{to},

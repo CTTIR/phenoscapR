@@ -15,17 +15,20 @@ InteractionMatrix(
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{radius}{Numeric. Radius for defining spatial neighbourhoods.}
+\item{radius}{Finite nonnegative numeric scalar. Radius for defining
+spatial neighbourhoods.}
 
 \item{method}{Character. \code{"analytic"} (default) compares observed
 neighbour counts to an expectation under random mixing;
 \code{"permutation"} builds the null by shuffling phenotype labels within
 each sample, adding \code{z_score} and \code{p_value} columns.}
 
-\item{n_perm}{Integer. Number of label permutations when
+\item{n_perm}{Integer of at least two. Number of label permutations when
 \code{method = "permutation"}. Default \code{100}.}
 
-\item{seed}{Integer or \code{NULL}. Random seed for the permutation null.}
+\item{seed}{Signed integer scalar or \code{NULL}. Random seed for the
+permutation null. Invalid permutation controls are rejected before RNG
+state changes; \code{n_perm} and \code{seed} are ignored by the analytic method.}
 }
 \value{
 A data frame with columns \code{from}, \code{to}, \code{observed},
