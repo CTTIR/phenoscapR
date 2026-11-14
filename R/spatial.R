@@ -1233,6 +1233,22 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
   .as_result(out, "phenoscapR_ripley")
 }
 
+# Compare dimensionless statistics at machine precision. The n factor allows
+# for accumulated rounding in the sums used to calculate each statistic.
+.moran_permutation_summary <- function(observed, perm, expected, n) {
+  tolerance <- 8 * n * .Machine$double.eps *
+    max(1, abs(observed), abs(expected), abs(perm))
+  psd <- stats::sd(perm)
+  delta <- observed - mean(perm)
+  negligible <- is.finite(psd) && psd <= tolerance
+  z <- if (negligible) {
+    if (abs(delta) <= tolerance) 0 else NA_real_
+  } else delta / psd
+  p <- (sum(abs(perm - expected) >= abs(observed - expected) - tolerance) + 1) /
+    (length(perm) + 1)
+  list(variance = if (negligible) 0 else psd^2, z_score = z, p_value = p)
+}
+
 #' Moran's I Spatial Autocorrelation
 #'
 #' Computes Moran's I statistic for a numeric variable.
@@ -1258,6 +1274,19 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 #'   the statistic is computed per sample and returned as a named list. Default
 #'   \code{FALSE}; otherwise a single sample is required. Sample identifiers
 #'   must be complete, nonblank vectors; validation precedes per-sample tests.
+#'
+#' @details The analytic calculation uses the normality variance for symmetric
+#' binary weights. Permutation p-values count two-sided deviations from the
+#' theoretical expectation `-1 / (n - 1)`, including numerical ties, with one
+#' added to both the tail count and number of permutations. The comparison
+#' tolerance is `8 * n * .Machine$double.eps * max(1, abs(I), abs(expected),
+#' abs(permuted I))`; it acts on the dimensionless statistic, not feature units.
+#' Permutation z-scores instead use the sampled null mean and standard deviation.
+#' A sampled standard deviation within this tolerance is reported as zero:
+#' z is zero when the observation matches the sampled mean within tolerance,
+#' otherwise z is unavailable (`NA`). The empirical p-value remains defined
+#' independently of z. Constant features and graphs without any edges yield
+#' unavailable statistics and inference.
 #'
 #' @return A list with \code{I}, \code{expected}, \code{variance},
 #'   \code{z_score}, \code{p_value}, and \code{method} (\code{"analytic"} or
@@ -1360,11 +1389,10 @@ MoransI <- function(object, feature, radius, slot = "data",
       xp <- sample(x)
       moran_stat(xp - mean(xp))
     }, numeric(1L))
-    psd <- stats::sd(perm)
-    z <- (I - mean(perm)) / max(psd, .Machine$double.eps)
-    p <- (sum(abs(perm - EI) >= abs(I - EI)) + 1) / (nperm + 1)
-    res <- list(I = I, expected = EI, variance = psd^2,
-                z_score = z, p_value = p, method = "permutation")
+    inference <- .moran_permutation_summary(I, perm, EI, n)
+    res <- list(I = I, expected = EI, variance = inference$variance,
+                z_score = inference$z_score, p_value = inference$p_value,
+                method = "permutation")
   } else {
     # Analytic variance under normality for symmetric binary weights:
     # S1 = 2 * S0, S2 = 4 * sum(deg^2).

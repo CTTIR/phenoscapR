@@ -1,5 +1,7 @@
 # phenoscapR 1.0.0
 
+- Treat machine-precision Moran permutation ties consistently, preserving two-sided theoretical-expectation centering and the Monte Carlo correction. Numerically constant sampled nulls no longer produce artificial z-scores or scale-dependent tail probabilities.
+
 - Preserve extra Seurat coordinate annotations by cell-name mapping while exporting only named x/y to the spatial reduction; refuse conflicting metadata instead of overwriting it. SpatialExperiment retains named numeric dimensions across reordered columns and rejects ambiguous names or nonnumeric coordinate annotations explicitly.
 
 - Two-dimensional object analyses now project only the named x/y axes. Extra coordinate metadata and column order no longer alter neighbor geometry, weighting, clustering or graph calculations across native and fallback search engines; the original coordinate table remains stored unchanged.
