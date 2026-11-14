@@ -7,9 +7,12 @@
 interaction_matrix(dt, radius)
 }
 \arguments{
-\item{dt}{A \code{data.table} with columns \code{x}, \code{y}, \code{phenotype}, and
-optional \code{sample_id}. An absent sample column means one sample; a present
-column must contain complete, nonblank identifiers.}
+\item{dt}{A \code{data.frame} or \code{data.table} with finite real numeric vectors
+\code{x} and \code{y}, complete nonblank \code{phenotype} labels, and optional
+\code{sample_id}. An absent sample column means one sample; a present column
+must contain complete, nonblank identifiers. Matrix and array columns
+are not accepted. Missing phenotype labels must be resolved explicitly
+before analysis; they are not silently dropped from counts.}
 
 \item{radius}{Finite nonnegative numeric scalar. Radius for defining
 spatial neighbourhoods.}

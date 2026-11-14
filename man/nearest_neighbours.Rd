@@ -9,7 +9,7 @@ nearest_neighbours(dt, target_phenotype = NULL, k = 1L)
 \arguments{
 \item{dt}{A \code{data.table} with columns \code{sample_id}, \code{x}, and \code{y}. Sample
 identifiers must be complete and nonblank; coordinates must be finite
-numeric vectors. Samples are processed independently. Empty tables retain
+real numeric vectors. Samples are processed independently. Empty tables retain
 their columns and receive an empty result column.}
 
 \item{target_phenotype}{Character string or \code{NULL}. If provided, distances

@@ -1,5 +1,10 @@
 # phenoscapR 1.0.0
 
+* Interaction tables reject missing phenotype labels and malformed coordinates
+  before computing counts or changing RNG state. Previously, missing labels
+  could disappear from observed counts while remaining in frequency denominators.
+  Density and nearest-neighbour tables also reject complex coordinates.
+
 - Permutation interaction results no longer report neutral z=0/p=1 when sampled null counts have zero variance but differ from the observation: those undefined normal-approximation statistics are now NA. Matching zero-variance sampled nulls and positive-variance formulas retain their existing behavior.
 
 - Interaction calculations now validate nonnegative finite radii before geometry shortcuts and validate permutation counts and signed integer seeds before coercion or RNG changes. At least two permutations are required for the reported variance; analytic methods continue to ignore unused permutation controls.

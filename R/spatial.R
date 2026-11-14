@@ -302,7 +302,7 @@
   }
   for (nm in c("x", "y")) {
     coord <- dt[[nm]]
-    if (!is.numeric(coord) || !is.null(dim(coord)) ||
+    if (!is.numeric(coord) || is.complex(coord) || !is.null(dim(coord)) ||
         length(coord) != nrow(dt) || any(!is.finite(coord))) {
       stop("x and y must be finite numeric vectors with one value per cell.",
            call. = FALSE)
@@ -334,7 +334,7 @@
 #'
 #' @param dt A `data.table` with columns `sample_id`, `x`, and `y`. Sample
 #'   identifiers must be complete and nonblank; coordinates must be finite
-#'   numeric vectors. Samples are processed independently. Empty tables retain
+#'   real numeric vectors. Samples are processed independently. Empty tables retain
 #'   their columns and receive an empty result column.
 #' @param target_phenotype Character string or `NULL`. If provided, distances
 #'   are computed only to cells of this phenotype. Requires a `phenotype`
@@ -413,7 +413,7 @@ nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
 #'
 #' @param dt A `data.table` with columns `sample_id`, `x`, and `y`. Sample
 #'   identifiers must be complete and nonblank; coordinates must be finite
-#'   numeric vectors. Samples are processed independently. Empty tables retain
+#'   real numeric vectors. Samples are processed independently. Empty tables retain
 #'   their columns and receive an empty result column.
 #' @param radius Finite nonnegative numeric scalar. Radius of the
 #'   neighbourhood (in coordinate units).
@@ -512,6 +512,32 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
   ids
 }
 
+# Validate interaction geometry and labels before counts or RNG state change.
+.validate_interaction_table <- function(dt) {
+  if (!is.data.frame(dt) || anyDuplicated(names(dt)) ||
+      !all(c("x", "y", "phenotype") %in% names(dt))) {
+    stop("dt must be a data.frame or data.table with unique x, y, and phenotype columns.",
+         call. = FALSE)
+  }
+  for (nm in c("x", "y")) {
+    coord <- dt[[nm]]
+    if (!is.numeric(coord) || is.complex(coord) || !is.null(dim(coord)) ||
+        length(coord) != nrow(dt) || any(!is.finite(coord))) {
+      stop("x and y must be finite real numeric vectors with one value per cell.",
+           call. = FALSE)
+    }
+  }
+  labels <- dt$phenotype
+  if (!is.atomic(labels) || is.complex(labels) || !is.null(dim(labels)) ||
+      length(labels) != nrow(dt) || anyNA(labels) ||
+      any(!nzchar(trimws(as.character(labels))))) {
+    stop("phenotype must be a complete, nonblank vector with one label per cell.",
+         call. = FALSE)
+  }
+  .interaction_sample_ids(dt)
+  invisible(NULL)
+}
+
 #' Spatial Interaction Matrix
 #'
 #' Computes a pairwise interaction matrix between phenotypes based on
@@ -521,9 +547,12 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
 #' samples. This analytic frequency model is distinct from the fixed-label
 #' permutation null available through [InteractionMatrix()].
 #'
-#' @param dt A `data.table` with columns `x`, `y`, `phenotype`, and
-#'   optional `sample_id`. An absent sample column means one sample; a present
-#'   column must contain complete, nonblank identifiers.
+#' @param dt A `data.frame` or `data.table` with finite real numeric vectors
+#'   `x` and `y`, complete nonblank `phenotype` labels, and optional
+#'   `sample_id`. An absent sample column means one sample; a present column
+#'   must contain complete, nonblank identifiers. Matrix and array columns
+#'   are not accepted. Missing phenotype labels must be resolved explicitly
+#'   before analysis; they are not silently dropped from counts.
 #' @param radius Finite nonnegative numeric scalar. Radius for defining
 #'   spatial neighbourhoods.
 #'
@@ -546,6 +575,7 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
 #'
 #' @export
 interaction_matrix <- function(dt, radius) {
+  .validate_interaction_table(dt)
   .validate_interaction_controls(radius)
   if (!"phenotype" %in% names(dt)) {
     stop("Column 'phenotype' not found.", call. = FALSE)
@@ -827,6 +857,7 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
 #' permutation mean as the expectation, the interaction score, and z / p.
 #' @noRd
 .interaction_permutation <- function(dt, radius, n_perm, seed) {
+  .validate_interaction_table(dt)
   .validate_interaction_controls(radius, n_perm, seed, permutation = TRUE)
   sample_vec <- .interaction_sample_ids(dt)
   n_perm <- as.integer(n_perm)
