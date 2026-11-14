@@ -1,7 +1,11 @@
 # Ripley's K Function
 
 Computes Ripley's K function to assess spatial clustering or dispersion
-at multiple scales.
+at multiple scales. The observation window is inferred as the bounding
+box of the retained points, after optional phenotype selection; it is
+not an independently measured tissue frame. A positive finite
+bounding-box area is required, including within each sample when
+computing by sample.
 
 ## Usage
 
@@ -36,6 +40,8 @@ RipleysK(
   Character. Edge correction: `"none"` (default), `"border"`
   (reduced-sample), or `"translation"` (each pair weighted by the
   inverse window/translate overlap; rigorous for rectangular windows).
+  Pairs with zero overlap contribute zero to the translation estimate;
+  radii with no eligible border centres return `NA`.
 
 - by_sample:
 

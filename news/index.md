@@ -2,6 +2,12 @@
 
 ## phenoscapR 1.0.0
 
+- Cap radius-search neighbour estimates before integer conversion so
+  large valid radii remain usable. Ripley and pair-correlation
+  calculations now reject undefined zero-area planar windows rather than
+  report artificial dispersion; the existing target-filtered
+  bounding-box window convention is documented.
+
 - Treat machine-precision Moran permutation ties consistently,
   preserving two-sided theoretical-expectation centering and the Monte
   Carlo correction. Numerically constant sampled nulls no longer produce
