@@ -19,7 +19,9 @@ PhenotypeCells(object, thresholds, labels = NULL)
 
 - thresholds:
 
-  Named list of thresholds (marker name = value).
+  Named list or numeric vector with unique, nonblank marker names and
+  one finite numeric threshold per marker. An empty list selects no
+  positive markers.
 
 - labels:
 

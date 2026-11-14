@@ -21,8 +21,9 @@ phenotype_cells(dt, thresholds, labels = NULL)
 
 - thresholds:
 
-  A named list where names are marker column names and values are
-  numeric thresholds. Example: `list(CD3 = 0.5, CD8 = 0.3)`.
+  A named list or numeric vector with unique, nonblank marker names and
+  one finite numeric threshold per marker. An empty list selects no
+  positive markers. Example: `list(CD3 = 0.5, CD8 = 0.3)`.
 
 - labels:
 

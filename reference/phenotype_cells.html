@@ -73,8 +73,9 @@ exceeds the given threshold.</p>
 
 
 <dt id="arg-thresholds">thresholds<a class="anchor" aria-label="anchor" href="#arg-thresholds"></a></dt>
-<dd><p>A named list where names are marker column names and
-values are numeric thresholds. Example:
+<dd><p>A named list or numeric vector with unique, nonblank
+marker names and one finite numeric threshold per marker. An empty list
+selects no positive markers. Example:
 <code>list(CD3 = 0.5, CD8 = 0.3)</code>.</p></dd>
 
 
