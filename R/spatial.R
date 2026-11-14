@@ -475,19 +475,39 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
   dt
 }
 
+# Validate optional sample identifiers before accumulating interaction counts.
+.interaction_sample_ids <- function(dt) {
+  if (!"sample_id" %in% names(dt)) return(rep("__all__", nrow(dt)))
+  ids <- dt$sample_id
+  if (!is.atomic(ids) || !is.null(dim(ids)) ||
+      length(ids) != nrow(dt) || anyNA(ids) ||
+      any(!nzchar(trimws(as.character(ids))))) {
+    stop("sample_id must be a complete, nonblank vector with one value per cell.",
+         call. = FALSE)
+  }
+  ids
+}
+
 #' Spatial Interaction Matrix
 #'
 #' Computes a pairwise interaction matrix between phenotypes based on
 #' observed versus expected neighbour frequencies within a given radius.
+#' Expected counts multiply the two phenotype frequencies within each sample
+#' by that sample's total observed directed neighbour count, then sum across
+#' samples. This analytic frequency model is distinct from the fixed-label
+#' permutation null available through [InteractionMatrix()].
 #'
 #' @param dt A `data.table` with columns `x`, `y`, `phenotype`, and
-#'   `sample_id`.
+#'   optional `sample_id`. An absent sample column means one sample; a present
+#'   column must contain complete, nonblank identifiers.
 #' @param radius Numeric. Radius for defining spatial neighbourhoods.
 #'
 #' @return A `data.table` in long format with columns `from`, `to`,
 #'   `observed`, `expected`, and `interaction_score`
 #'   (log2 observed/expected). Positive values indicate spatial attraction;
-#'   negative values indicate avoidance.
+#'   negative values indicate avoidance. Zero observed counts with positive
+#'   expectation yield `-Inf` (complete avoidance). When expectation is zero,
+#'   the historical score convention is zero.
 #'
 #' @examples
 #' set.seed(42)
@@ -511,12 +531,8 @@ interaction_matrix <- function(dt, radius) {
   # Sample identity governs which cells can be neighbours: distances are never
   # computed across samples (different tissues), so observed and expected
   # counts are accumulated within each sample and then summed.
-  samples <- if ("sample_id" %in% names(dt)) {
-    unique(dt$sample_id)
-  } else {
-    rep("__all__", 1L)
-  }
-  sample_vec <- if ("sample_id" %in% names(dt)) dt$sample_id else rep("__all__", nrow(dt))
+  sample_vec <- .interaction_sample_ids(dt)
+  samples <- unique(sample_vec)
 
   obs <- matrix(0, nrow = n_pheno, ncol = n_pheno,
                 dimnames = list(phenotypes, phenotypes))
@@ -557,7 +573,7 @@ interaction_matrix <- function(dt, radius) {
     expected = as.vector(exp_mat)
   )
   result[, interaction_score := ifelse(
-    expected > 0 & observed > 0,
+    expected > 0,
     log2(observed / expected),
     0
   )]
@@ -736,7 +752,9 @@ CellDensity <- function(object, radius, target = NULL) {
 #'
 #' @return A data frame with columns \code{from}, \code{to}, \code{observed},
 #'   \code{expected}, and \code{interaction_score}; the permutation method adds
-#'   \code{z_score} and \code{p_value}.
+#'   \code{z_score} and \code{p_value}. Scores are log2 observed/expected:
+#'   zero observations with positive expectation give negative infinity;
+#'   zero expectation retains the historical zero-score convention.
 #'
 #' @examples
 #' set.seed(42)
@@ -777,8 +795,7 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
   if (!is.null(seed)) set.seed(seed)
   phenotypes <- sort(unique(dt$phenotype))
   np <- length(phenotypes)
-  sample_vec <- if ("sample_id" %in% names(dt)) dt$sample_id else
-    rep("__all__", nrow(dt))
+  sample_vec <- .interaction_sample_ids(dt)
 
   # Precompute each sample's fixed neighbour edge list once.
   per <- lapply(unique(sample_vec), function(sid) {
@@ -796,7 +813,9 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
       factor(s$ph[s$centre], levels = phenotypes),
       factor(s$ph[s$flat], levels = phenotypes)))
   }
-  tabulate_counts <- function(parts) Reduce(`+`, lapply(parts, one_tab))
+  tabulate_counts <- function(parts) {
+    Reduce(`+`, lapply(parts, one_tab), init = matrix(0, nrow = np, ncol = np))
+  }
 
   obs <- tabulate_counts(per)
   perms <- vapply(seq_len(n_perm), function(p) {
@@ -805,6 +824,8 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
       s
     })))
   }, numeric(np * np))
+  # vapply simplifies a single phenotype pair to a vector; retain both axes.
+  perms <- matrix(perms, nrow = np * np, ncol = n_perm)
   mean_exp <- rowMeans(perms)
   sd_exp <- apply(perms, 1L, stats::sd)
   obs_v <- as.vector(obs)
@@ -815,7 +836,7 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
     to = rep(phenotypes, np),
     observed = obs_v,
     expected = mean_exp,
-    interaction_score = ifelse(mean_exp > 0 & obs_v > 0,
+    interaction_score = ifelse(mean_exp > 0,
                                log2(obs_v / mean_exp), 0),
     z_score = z,
     p_value = 2 * stats::pnorm(-abs(z))

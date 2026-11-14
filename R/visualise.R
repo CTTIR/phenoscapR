@@ -68,7 +68,9 @@ plot_density <- function(dt, point_size = 1, title = NULL, y_down = TRUE) {
 
 #' Plot Interaction Heatmap
 #'
-#' Visualises the spatial interaction matrix as a heatmap.
+#' Visualises the spatial interaction matrix as a heatmap. Infinite scores are
+#' displayed at colour scale endpoints with an explanatory caption; the raw
+#' scores are preserved.
 #'
 #' @param interactions A `data.table` as returned by [interaction_matrix()].
 #' @param title Character string or `NULL`. Plot title.

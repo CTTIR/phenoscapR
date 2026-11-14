@@ -30,7 +30,9 @@ each sample, adding \code{z_score} and \code{p_value} columns.}
 \value{
 A data frame with columns \code{from}, \code{to}, \code{observed},
 \code{expected}, and \code{interaction_score}; the permutation method adds
-\code{z_score} and \code{p_value}.
+\code{z_score} and \code{p_value}. Scores are log2 observed/expected:
+zero observations with positive expectation give negative infinity;
+zero expectation retains the historical zero-score convention.
 }
 \description{
 Computes pairwise spatial interaction scores between phenotypes.

@@ -564,6 +564,8 @@ DensityPlot <- function(object, pt_size = 1, title = NULL, palette = NULL,
 #' Plot Spatial Interaction Heatmap
 #'
 #' Heatmap of pairwise spatial interaction scores between phenotypes.
+#' Infinite scores are displayed at the endpoints of a symmetric colour scale
+#' and identified in the caption; the underlying score values are preserved.
 #'
 #' @param interactions Data frame as returned by
 #'   \code{\link{InteractionMatrix}}.
@@ -584,6 +586,21 @@ DensityPlot <- function(object, pt_size = 1, title = NULL, palette = NULL,
 #' @export
 #' @importFrom ggplot2 geom_tile scale_fill_gradient2
 InteractionPlot <- function(interactions, title = NULL) {
+  scores <- interactions$interaction_score
+  infinite <- any(is.infinite(scores))
+  limits <- NULL
+  caption <- NULL
+  colour_oob <- function(x, range = c(0, 1)) x
+  if (infinite) {
+    bound <- max(c(1, abs(scores[is.finite(scores)])))
+    limits <- c(-bound, bound)
+    caption <- "Infinite scores are shown at the colour scale limits."
+    colour_oob <- function(x, range = c(0, 1)) {
+      x[is.infinite(x) & x < 0] <- range[1L]
+      x[is.infinite(x) & x > 0] <- range[2L]
+      x
+    }
+  }
   ggplot2::ggplot(interactions, ggplot2::aes(
     x = .data[["to"]], y = .data[["from"]],
     fill = .data[["interaction_score"]]
@@ -591,10 +608,10 @@ InteractionPlot <- function(interactions, title = NULL) {
     ggplot2::geom_tile() +
     ggplot2::scale_fill_gradient2(
       low = "blue", mid = "white", high = "red", midpoint = 0,
-      name = "log2(obs/exp)"
+      name = "log2(obs/exp)", limits = limits, oob = colour_oob
     ) +
     ggplot2::theme_minimal() +
-    ggplot2::labs(x = "To", y = "From", title = title)
+    ggplot2::labs(x = "To", y = "From", title = title, caption = caption)
 }
 
 #' Plot Marker Heatmap

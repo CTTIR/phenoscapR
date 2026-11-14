@@ -17,6 +17,8 @@ A \code{ggplot} object.
 }
 \description{
 Heatmap of pairwise spatial interaction scores between phenotypes.
+Infinite scores are displayed at the endpoints of a symmetric colour scale
+and identified in the caption; the underlying score values are preserved.
 }
 \examples{
 interactions <- data.frame(

@@ -15,7 +15,9 @@ plot_interactions(interactions, title = NULL)
 A \code{ggplot} object.
 }
 \description{
-Visualises the spatial interaction matrix as a heatmap.
+Visualises the spatial interaction matrix as a heatmap. Infinite scores are
+displayed at colour scale endpoints with an explanatory caption; the raw
+scores are preserved.
 }
 \examples{
 interactions <- data.table::data.table(

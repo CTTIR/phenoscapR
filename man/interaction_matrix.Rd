@@ -8,7 +8,8 @@ interaction_matrix(dt, radius)
 }
 \arguments{
 \item{dt}{A \code{data.table} with columns \code{x}, \code{y}, \code{phenotype}, and
-\code{sample_id}.}
+optional \code{sample_id}. An absent sample column means one sample; a present
+column must contain complete, nonblank identifiers.}
 
 \item{radius}{Numeric. Radius for defining spatial neighbourhoods.}
 }
@@ -16,11 +17,17 @@ interaction_matrix(dt, radius)
 A \code{data.table} in long format with columns \code{from}, \code{to},
 \code{observed}, \code{expected}, and \code{interaction_score}
 (log2 observed/expected). Positive values indicate spatial attraction;
-negative values indicate avoidance.
+negative values indicate avoidance. Zero observed counts with positive
+expectation yield \code{-Inf} (complete avoidance). When expectation is zero,
+the historical score convention is zero.
 }
 \description{
 Computes a pairwise interaction matrix between phenotypes based on
 observed versus expected neighbour frequencies within a given radius.
+Expected counts multiply the two phenotype frequencies within each sample
+by that sample's total observed directed neighbour count, then sum across
+samples. This analytic frequency model is distinct from the fixed-label
+permutation null available through \code{\link[=InteractionMatrix]{InteractionMatrix()}}.
 }
 \examples{
 set.seed(42)
