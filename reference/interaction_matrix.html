@@ -77,9 +77,12 @@ permutation null available through <code><a href="InteractionMatrix.html">Intera
 
 
 <dl><dt id="arg-dt">dt<a class="anchor" aria-label="anchor" href="#arg-dt"></a></dt>
-<dd><p>A <code>data.table</code> with columns <code>x</code>, <code>y</code>, <code>phenotype</code>, and
-optional <code>sample_id</code>. An absent sample column means one sample; a present
-column must contain complete, nonblank identifiers.</p></dd>
+<dd><p>A <code>data.frame</code> or <code>data.table</code> with finite real numeric vectors
+<code>x</code> and <code>y</code>, complete nonblank <code>phenotype</code> labels, and optional
+<code>sample_id</code>. An absent sample column means one sample; a present column
+must contain complete, nonblank identifiers. Matrix and array columns
+are not accepted. Missing phenotype labels must be resolved explicitly
+before analysis; they are not silently dropped from counts.</p></dd>
 
 
 <dt id="arg-radius">radius<a class="anchor" aria-label="anchor" href="#arg-radius"></a></dt>

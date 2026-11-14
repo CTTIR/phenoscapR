@@ -17,8 +17,8 @@ cell_density(dt, radius, target_phenotype = NULL)
 
   A `data.table` with columns `sample_id`, `x`, and `y`. Sample
   identifiers must be complete and nonblank; coordinates must be finite
-  numeric vectors. Samples are processed independently. Empty tables
-  retain their columns and receive an empty result column.
+  real numeric vectors. Samples are processed independently. Empty
+  tables retain their columns and receive an empty result column.
 
 - radius:
 

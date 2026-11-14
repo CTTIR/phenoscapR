@@ -2,6 +2,12 @@
 
 ## phenoscapR 1.0.0
 
+- Interaction tables reject missing phenotype labels and malformed
+  coordinates before computing counts or changing RNG state. Previously,
+  missing labels could disappear from observed counts while remaining in
+  frequency denominators. Density and nearest-neighbour tables also
+  reject complex coordinates.
+
 - Permutation interaction results no longer report neutral z=0/p=1 when
   sampled null counts have zero variance but differ from the
   observation: those undefined normal-approximation statistics are now

@@ -18,9 +18,12 @@ interaction_matrix(dt, radius)
 
 - dt:
 
-  A `data.table` with columns `x`, `y`, `phenotype`, and optional
+  A `data.frame` or `data.table` with finite real numeric vectors `x`
+  and `y`, complete nonblank `phenotype` labels, and optional
   `sample_id`. An absent sample column means one sample; a present
-  column must contain complete, nonblank identifiers.
+  column must contain complete, nonblank identifiers. Matrix and array
+  columns are not accepted. Missing phenotype labels must be resolved
+  explicitly before analysis; they are not silently dropped from counts.
 
 - radius:
 
