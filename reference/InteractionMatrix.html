@@ -72,7 +72,8 @@
 
 
 <dt id="arg-radius">radius<a class="anchor" aria-label="anchor" href="#arg-radius"></a></dt>
-<dd><p>Numeric. Radius for defining spatial neighbourhoods.</p></dd>
+<dd><p>Finite nonnegative numeric scalar. Radius for defining
+spatial neighbourhoods.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
@@ -83,12 +84,14 @@ each sample, adding <code>z_score</code> and <code>p_value</code> columns.</p></
 
 
 <dt id="arg-n-perm">n_perm<a class="anchor" aria-label="anchor" href="#arg-n-perm"></a></dt>
-<dd><p>Integer. Number of label permutations when
+<dd><p>Integer of at least two. Number of label permutations when
 <code>method = "permutation"</code>. Default <code>100</code>.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Random seed for the permutation null.</p></dd>
+<dd><p>Signed integer scalar or <code>NULL</code>. Random seed for the
+permutation null. Invalid permutation controls are rejected before RNG
+state changes; <code>n_perm</code> and <code>seed</code> are ignored by the analytic method.</p></dd>
 
 </dl></div>
     <div class="section level2">

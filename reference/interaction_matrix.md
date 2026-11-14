@@ -24,7 +24,8 @@ interaction_matrix(dt, radius)
 
 - radius:
 
-  Numeric. Radius for defining spatial neighbourhoods.
+  Finite nonnegative numeric scalar. Radius for defining spatial
+  neighbourhoods.
 
 ## Value
 

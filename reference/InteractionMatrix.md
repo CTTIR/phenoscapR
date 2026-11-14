@@ -24,7 +24,8 @@ InteractionMatrix(
 
 - radius:
 
-  Numeric. Radius for defining spatial neighbourhoods.
+  Finite nonnegative numeric scalar. Radius for defining spatial
+  neighbourhoods.
 
 - method:
 
@@ -35,12 +36,14 @@ InteractionMatrix(
 
 - n_perm:
 
-  Integer. Number of label permutations when `method = "permutation"`.
-  Default `100`.
+  Integer of at least two. Number of label permutations when
+  `method = "permutation"`. Default `100`.
 
 - seed:
 
-  Integer or `NULL`. Random seed for the permutation null.
+  Signed integer scalar or `NULL`. Random seed for the permutation null.
+  Invalid permutation controls are rejected before RNG state changes;
+  `n_perm` and `seed` are ignored by the analytic method.
 
 ## Value
 

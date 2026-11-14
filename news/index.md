@@ -2,6 +2,12 @@
 
 ## phenoscapR 1.0.0
 
+- Interaction calculations now validate nonnegative finite radii before
+  geometry shortcuts and validate permutation counts and signed integer
+  seeds before coercion or RNG changes. At least two permutations are
+  required for the reported variance; analytic methods continue to
+  ignore unused permutation controls.
+
 - Interaction scores now preserve complete avoidance as negative
   infinity when observed counts are zero and expected counts are
   positive, in both analytic and permutation methods. Present sample
