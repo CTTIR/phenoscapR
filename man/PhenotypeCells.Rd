@@ -9,7 +9,9 @@ PhenotypeCells(object, thresholds, labels = NULL)
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{thresholds}{Named list of thresholds (marker name = value).}
+\item{thresholds}{Named list or numeric vector with unique, nonblank
+marker names and one finite numeric threshold per marker. An empty list
+selects no positive markers.}
 
 \item{labels}{Named character vector mapping signatures to labels, or
 \code{NULL} for automatic labelling.}

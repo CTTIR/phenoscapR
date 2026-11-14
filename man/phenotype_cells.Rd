@@ -10,8 +10,9 @@ phenotype_cells(dt, thresholds, labels = NULL)
 \item{dt}{A \code{data.table} as returned by \code{\link[=read_spatial]{read_spatial()}} or
 \code{\link[=normalise_markers]{normalise_markers()}}.}
 
-\item{thresholds}{A named list where names are marker column names and
-values are numeric thresholds. Example:
+\item{thresholds}{A named list or numeric vector with unique, nonblank
+marker names and one finite numeric threshold per marker. An empty list
+selects no positive markers. Example:
 \code{list(CD3 = 0.5, CD8 = 0.3)}.}
 
 \item{labels}{A named character vector mapping phenotype signatures to

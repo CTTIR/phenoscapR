@@ -1,5 +1,10 @@
 # phenoscapR 1.0.0
 
+* Phenotyping requires unique named, finite scalar thresholds. Reject recycled,
+  missing, coerced and duplicate threshold definitions before assigning labels;
+  selected marker columns must be unambiguous. Valid named numeric vectors and
+  the existing empty-threshold behavior remain supported.
+
 - Neighborhood and Moran analyses reject malformed sample/phenotype vectors and invalid integer controls before computation or RNG changes. Moran features must be finite real numeric vectors, and inverse-distance weighting explicitly rejects coincident neighbors rather than returning undefined values from infinite weights.
 
 * Interaction tables reject missing phenotype labels and malformed coordinates

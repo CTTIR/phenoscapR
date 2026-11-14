@@ -184,8 +184,9 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
 #'
 #' @param dt A `data.table` as returned by [read_spatial()] or
 #'   [normalise_markers()].
-#' @param thresholds A named list where names are marker column names and
-#'   values are numeric thresholds. Example:
+#' @param thresholds A named list or numeric vector with unique, nonblank
+#'   marker names and one finite numeric threshold per marker. An empty list
+#'   selects no positive markers. Example:
 #'   `list(CD3 = 0.5, CD8 = 0.3)`.
 #' @param labels A named character vector mapping phenotype signatures to
 #'   labels, or `NULL` for automatic labelling. When `NULL`, phenotypes are
@@ -205,6 +206,12 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
 #'
 #' @export
 phenotype_cells <- function(dt, thresholds, labels = NULL) {
+  .validate_phenotype_thresholds(thresholds)
+  if (any(vapply(names(thresholds), function(marker) {
+    sum(names(dt) == marker) > 1L
+  }, logical(1)))) {
+    stop("Selected marker columns must have unique names.", call. = FALSE)
+  }
   dt <- data.table::copy(dt)
 
   present <- intersect(names(thresholds), names(dt))
@@ -218,6 +225,29 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
   dt
 }
 
+.validate_phenotype_thresholds <- function(thresholds) {
+  plain_numeric <- function(x) {
+    typeof(x) %in% c("integer", "double") && !is.object(x) && is.null(dim(x))
+  }
+  if ((!is.list(thresholds) && !plain_numeric(thresholds)) ||
+      is.object(thresholds) || !is.null(dim(thresholds))) {
+    stop("thresholds must be a named list or numeric vector.", call. = FALSE)
+  }
+  if (!length(thresholds)) return(invisible(NULL))
+  markers <- names(thresholds)
+  if (is.null(markers) || anyNA(markers) || anyDuplicated(markers) ||
+      any(!nzchar(trimws(markers)))) {
+    stop("thresholds must have unique, nonblank marker names.", call. = FALSE)
+  }
+  valid <- vapply(thresholds, function(x) {
+    plain_numeric(x) && length(x) == 1L && is.finite(x)
+  }, logical(1))
+  if (!all(valid)) {
+    stop("Each threshold must be one finite numeric value.", call. = FALSE)
+  }
+  invisible(NULL)
+}
+
 #' Assign phenotype labels from a marker matrix
 #'
 #' Shared engine for [phenotype_cells()] (data.table) and [PhenotypeCells()]
@@ -226,6 +256,7 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
 #' \code{"+"}, or \code{"Negative"} when none are positive.
 #' @noRd
 .assign_phenotypes <- function(mat, thresholds, labels = NULL) {
+  .validate_phenotype_thresholds(thresholds)
   if (!typeof(mat) %in% c("integer", "double") || any(is.infinite(mat))) {
     stop("Marker intensities must be real numeric values without infinity; missing values are allowed.",
          call. = FALSE)
@@ -390,7 +421,9 @@ NormaliseData <- function(object, method = c("zscore", "minmax", "quantile"),
 #' Uses the normalised \code{data} slot.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param thresholds Named list of thresholds (marker name = value).
+#' @param thresholds Named list or numeric vector with unique, nonblank
+#'   marker names and one finite numeric threshold per marker. An empty list
+#'   selects no positive markers.
 #' @param labels Named character vector mapping signatures to labels, or
 #'   \code{NULL} for automatic labelling.
 #'
