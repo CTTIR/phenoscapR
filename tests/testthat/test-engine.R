@@ -98,3 +98,39 @@ test_that("knn mean distance matches a direct computation", {
                 function(i) mean(sort(d[i, ])[seq_len(k)]), numeric(1L))
   expect_equal(got, ref, tolerance = 1e-9)
 })
+
+test_that("knn removes self by identity when cells share coordinates", {
+  skip_if_not_installed("RANN")
+  for (coords in list(rbind(c(0, 0), c(0, 0), c(1, 0)),
+                      matrix(0, nrow = 8L, ncol = 2L))) {
+    distances <- as.matrix(dist(coords))
+    diag(distances) <- Inf
+    for (k in unique(c(1L, 2L, nrow(coords) - 1L))) {
+      got <- phenoscapR:::.knn_index(coords, k)
+      expect_equal(dim(got$idx), c(nrow(coords), k))
+      for (i in seq_len(nrow(coords))) {
+        expect_false(i %in% got$idx[i, ])
+        expect_length(unique(got$idx[i, ]), k)
+        expect_equal(got$dist[i, ], unname(sort(distances[i, ])[seq_len(k)]))
+        expect_equal(got$dist[i, ], unname(distances[i, got$idx[i, ]]))
+      }
+    }
+  }
+})
+
+test_that("neighbourhood composition excludes each cell at duplicate positions", {
+  skip_if_not_installed("RANN")
+  counts <- matrix(1:6, nrow = 3L, dimnames = list(NULL, c("m1", "m2")))
+  coords <- data.frame(x = c(0, 0, 1), y = c(0, 0, 0))
+  meta <- data.frame(cell_id = letters[1:3], sample_id = "s1",
+                     phenotype = c("A", "B", "C"))
+  # At k = n - 1 every other cell is included, regardless of distance ties
+  # and input order. Each phenotype has average frequency one third.
+  for (order in list(1:3, c(3L, 1L, 2L), c(2L, 3L, 1L))) {
+    object <- CreateSpatialObject(counts[order, ], coords[order, ], meta[order, ])
+    result <- CellularNeighbourhoods(object, n_neighbourhoods = 1L, k = 2L,
+                                     seed = 1L)
+    expect_equal(unname(result@spatial$neighbourhood_composition),
+                 matrix(rep(1 / 3, 3L), nrow = 1L))
+  }
+})

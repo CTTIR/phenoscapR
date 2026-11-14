@@ -13,7 +13,8 @@ nearest_neighbours(dt, target_phenotype = NULL, k = 1L)
 are computed only to cells of this phenotype. Requires a \code{phenotype}
 column.}
 
-\item{k}{Integer. Number of nearest neighbours to consider. Default \code{1}.}
+\item{k}{Positive integer. Number of nearest neighbours to consider.
+Default \code{1}.}
 }
 \value{
 The input \code{data.table} with an added \code{nn_distance} column
@@ -22,6 +23,10 @@ The input \code{data.table} with an added \code{nn_distance} column
 \description{
 For each cell, computes the distance to the nearest neighbouring cell,
 optionally restricted to specific phenotypes.
+The query cell is excluded even when it has the target phenotype. Distinct
+cells at the same coordinates remain neighbours. If fewer than \code{k} other
+target cells are available within the sample, their distances are averaged;
+if none are available, the distance is \code{NA}.
 }
 \examples{
 dt <- data.table::data.table(

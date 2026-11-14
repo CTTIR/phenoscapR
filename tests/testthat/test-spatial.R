@@ -192,3 +192,22 @@ test_that("a sample with a single cell has no nearest neighbour", {
   one <- o[o@meta_data$sample_id == "b", ]
   expect_true(is.na(as.numeric(CrossNNDistance(one, "A", "A"))))
 })
+
+test_that("nearest-neighbour and density parameters reject invalid scalars", {
+  dt <- data.table::data.table(sample_id = "s", cell_id = 1:3,
+                                x = c(0, 0, 3), y = 0, phenotype = "A")
+  for (bad in list(0, -1, 1.9, NA_real_, NaN, Inf, -Inf, numeric(),
+                   c(1, 2), "1", TRUE, matrix(1), .Machine$integer.max + 1)) {
+    expect_error(nearest_neighbours(dt, k = bad), "k must be one positive integer")
+  }
+  for (bad in list(-1, NA_real_, NaN, Inf, -Inf, numeric(), c(1, 2),
+                   "1", TRUE, matrix(1))) {
+    expect_error(cell_density(dt, bad), "radius must be one finite nonnegative")
+  }
+  # Zero is meaningful for coincident, distinct cells. The largest supported
+  # k uses all available other cells without overflowing k + 1.
+  expect_equal(cell_density(dt, 0)$density, c(1L, 1L, 0L))
+  expect_equal(cell_density(dt, 0, "A")$density, c(1L, 1L, 0L))
+  expect_equal(nearest_neighbours(dt, "A", .Machine$integer.max)$nn_distance,
+               c(1.5, 1.5, 3))
+})

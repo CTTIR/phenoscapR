@@ -9,7 +9,8 @@ cell_density(dt, radius, target_phenotype = NULL)
 \arguments{
 \item{dt}{A \code{data.table} with columns \code{x} and \code{y}.}
 
-\item{radius}{Numeric. Radius of the neighbourhood (in coordinate units).}
+\item{radius}{Finite nonnegative numeric scalar. Radius of the
+neighbourhood (in coordinate units).}
 
 \item{target_phenotype}{Character string or \code{NULL}. If provided, only
 cells of this phenotype are counted in the neighbourhood.}
@@ -21,6 +22,8 @@ the number of neighbours within the specified radius.
 \description{
 Estimates the local cell density around each cell using a circular
 neighbourhood of a given radius.
+The query cell is excluded by identity; distinct cells sharing its
+coordinates are counted, including when a target phenotype is selected.
 }
 \examples{
 dt <- data.table::data.table(

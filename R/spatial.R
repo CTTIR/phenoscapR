@@ -71,13 +71,14 @@
 
 #' Count points of `data` within `radius` of each `query` point
 #'
-#' Cross-set fixed-radius count, excluding exact (zero-distance) coincidences
-#' so a query point never counts its own copy in `data`.
+#' Cross-set fixed-radius count. `exclude` maps each query to its own row in
+#' `data` (zero means no self-match). Distinct coincident cells are counted.
 #' @noRd
-.cross_radius_count <- function(query, data, radius) {
+.cross_radius_count <- function(query, data, radius, exclude = NULL) {
   nq <- nrow(query)
   nd <- nrow(data)
   if (nd == 0L || nq == 0L) return(integer(nq))
+  if (is.null(exclude)) exclude <- integer(nq)
 
   if (requireNamespace("RANN", quietly = TRUE)) {
     k <- min(nd, 64L)
@@ -87,7 +88,7 @@
       if (!(k < nd && any(res$nn.idx[, k] != 0L))) break
       k <- min(nd, k * 4L)
     }
-    return(as.integer(rowSums(res$nn.idx != 0L & res$nn.dists > 0)))
+    return(as.integer(rowSums(res$nn.idx != 0L & res$nn.idx != exclude)))
   }
 
   out <- integer(nq)
@@ -99,29 +100,37 @@
     dx <- outer(query[qi, 1L], data[, 1L], "-")
     dy <- outer(query[qi, 2L], data[, 2L], "-")
     d2 <- dx * dx + dy * dy
-    out[qi] <- rowSums(d2 <= r2 & d2 > 0)
+    within <- d2 <= r2
+    self <- which(exclude[qi] > 0L)
+    within[cbind(self, exclude[qi][self])] <- FALSE
+    out[qi] <- rowSums(within)
   }
   out
 }
 
 #' Mean distance to the `k` nearest points of `data` for each `query`
 #'
-#' When `drop_self` is `TRUE`, the closest match (the query point's own copy in
-#' `data`, at distance 0) is discarded before averaging.
+#' When `drop_self` is `TRUE`, query and data rows have the same identities.
+#' `exclude` can instead map each query to its own data row (zero for none).
+#' Self is excluded by identity; distinct coincident cells remain neighbours.
 #' @noRd
-.knn_mean_dist <- function(query, data, k, drop_self) {
+.knn_mean_dist <- function(query, data, k, drop_self, exclude = NULL) {
   nq <- nrow(query)
   nd <- nrow(data)
   if (nq == 0L) return(numeric(0))
   if (nd == 0L) return(rep(NA_real_, nq))
 
-  kk <- if (drop_self) k + 1L else k
+  if (is.null(exclude)) exclude <- if (drop_self) seq_len(nq) else integer(nq)
+  kk <- as.double(k) + as.integer(any(exclude > 0L))
   kk <- min(kk, nd)
 
   if (requireNamespace("RANN", quietly = TRUE)) {
-    d <- RANN::nn2(data, query, k = kk)$nn.dists
+    neighbours <- RANN::nn2(data, query, k = kk)
+    d <- neighbours$nn.dists
+    idx <- neighbours$nn.idx
   } else {
     d <- matrix(NA_real_, nq, kk)
+    idx <- matrix(0L, nq, kk)
     block <- 2048L
     for (start in seq.int(1L, nq, by = block)) {
       end <- min(start + block - 1L, nq)
@@ -129,13 +138,19 @@
       dx <- outer(query[qi, 1L], data[, 1L], "-")
       dy <- outer(query[qi, 2L], data[, 2L], "-")
       dd <- sqrt(dx * dx + dy * dy)
-      d[qi, ] <- t(apply(dd, 1L, function(r) sort(r)[seq_len(kk)]))
+      for (a in seq_along(qi)) {
+        nearest <- order(dd[a, ])[seq_len(kk)]
+        idx[qi[a], ] <- nearest
+        d[qi[a], ] <- dd[a, nearest]
+      }
     }
   }
 
-  cols <- if (drop_self) seq_len(kk)[-1L] else seq_len(kk)  # no other cell: NA
-  if (length(cols) == 0L) return(rep(NA_real_, nq))
-  rowMeans(d[, cols, drop = FALSE])
+  vapply(seq_len(nq), function(i) {
+    values <- d[i, idx[i, ] != exclude[i]]
+    if (!length(values)) return(NA_real_)
+    mean(utils::head(values, k))
+  }, numeric(1))
 }
 
 #' Indices and distances of the `k` nearest neighbours of each point
@@ -154,8 +169,15 @@
 
   if (requireNamespace("RANN", quietly = TRUE)) {
     res <- RANN::nn2(coords, coords, k = k + 1L)
-    return(list(idx = res$nn.idx[, -1L, drop = FALSE],
-                dist = res$nn.dists[, -1L, drop = FALSE]))
+    # Equal coordinates can put another cell before the query cell, or omit
+    # the query from the returned ties altogether. Remove self by row identity,
+    # then retain k neighbours; dropping the first match can retain self.
+    keep <- t(vapply(seq_len(n), function(i) {
+      which(res$nn.idx[i, ] != i)[seq_len(k)]
+    }, integer(k)))
+    positions <- cbind(rep(seq_len(n), times = k), as.vector(keep))
+    return(list(idx = matrix(res$nn.idx[positions], nrow = n, ncol = k),
+                dist = matrix(res$nn.dists[positions], nrow = n, ncol = k)))
   }
 
   idx <- matrix(0L, n, k)
@@ -264,12 +286,17 @@
 #'
 #' For each cell, computes the distance to the nearest neighbouring cell,
 #' optionally restricted to specific phenotypes.
+#' The query cell is excluded even when it has the target phenotype. Distinct
+#' cells at the same coordinates remain neighbours. If fewer than `k` other
+#' target cells are available within the sample, their distances are averaged;
+#' if none are available, the distance is `NA`.
 #'
 #' @param dt A `data.table` with columns `x` and `y`.
 #' @param target_phenotype Character string or `NULL`. If provided, distances
 #'   are computed only to cells of this phenotype. Requires a `phenotype`
 #'   column.
-#' @param k Integer. Number of nearest neighbours to consider. Default `1`.
+#' @param k Positive integer. Number of nearest neighbours to consider.
+#'   Default `1`.
 #'
 #' @return The input `data.table` with an added `nn_distance` column
 #'   (mean distance to the `k` nearest neighbours).
@@ -284,6 +311,11 @@
 #'
 #' @export
 nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
+  if (!is.numeric(k) || length(k) != 1L || !is.null(dim(k)) ||
+      !is.finite(k) || k < 1 || k != floor(k) || k > .Machine$integer.max) {
+    stop("k must be one positive integer within the supported integer range.",
+         call. = FALSE)
+  }
   dt <- data.table::copy(dt)
   k <- as.integer(k)
 
@@ -312,7 +344,9 @@ nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
       return(dt)
     }
     coords_to <- coords_from[target_idx, , drop = FALSE]
-    nn_dist <- .knn_mean_dist(coords_from, coords_to, k, drop_self = FALSE)
+    self <- match(seq_len(nrow(dt)), target_idx, nomatch = 0L)
+    nn_dist <- .knn_mean_dist(coords_from, coords_to, k, drop_self = FALSE,
+                              exclude = self)
   } else {
     nn_dist <- .knn_mean_dist(coords_from, coords_from, k, drop_self = TRUE)
   }
@@ -325,9 +359,12 @@ nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
 #'
 #' Estimates the local cell density around each cell using a circular
 #' neighbourhood of a given radius.
+#' The query cell is excluded by identity; distinct cells sharing its
+#' coordinates are counted, including when a target phenotype is selected.
 #'
 #' @param dt A `data.table` with columns `x` and `y`.
-#' @param radius Numeric. Radius of the neighbourhood (in coordinate units).
+#' @param radius Finite nonnegative numeric scalar. Radius of the
+#'   neighbourhood (in coordinate units).
 #' @param target_phenotype Character string or `NULL`. If provided, only
 #'   cells of this phenotype are counted in the neighbourhood.
 #'
@@ -344,6 +381,10 @@ nearest_neighbours <- function(dt, target_phenotype = NULL, k = 1L) {
 #'
 #' @export
 cell_density <- function(dt, radius, target_phenotype = NULL) {
+  if (!is.numeric(radius) || length(radius) != 1L || !is.null(dim(radius)) ||
+      !is.finite(radius) || radius < 0) {
+    stop("radius must be one finite nonnegative number.", call. = FALSE)
+  }
   dt <- data.table::copy(dt)
 
   samples <- unique(dt$sample_id)
@@ -367,7 +408,8 @@ cell_density <- function(dt, radius, target_phenotype = NULL) {
     }
     target_idx <- which(dt$phenotype == target_phenotype)
     target_coords <- coords[target_idx, , drop = FALSE]
-    dens <- .cross_radius_count(coords, target_coords, radius)
+    self <- match(seq_len(nrow(dt)), target_idx, nomatch = 0L)
+    dens <- .cross_radius_count(coords, target_coords, radius, exclude = self)
   } else {
     dens <- lengths(.radius_neighbours(coords, radius)$idx)
   }

@@ -58,3 +58,56 @@ test_that("DelaunayNetwork warns and falls back without deldir", {
   expect_true(all(c("from", "to", "distance") %in% names(edges)))
   expect_gt(nrow(edges), 0L)
 })
+
+test_that("targeted queries exclude self but retain coincident other cells", {
+  dt <- data.table::data.table(
+    sample_id = c("s1", "s2", "s1", "s1", "s2"),
+    cell_id = letters[1:5], x = c(0, 0, 0, 2, 3), y = 0,
+    phenotype = c("A", "A", "B", "A", "B")
+  )
+  # Independent references enumerate cell identities within each sample.
+  oracle <- function(target, k = 1L, radius = 3) {
+    lapply(seq_len(nrow(dt)), function(i) {
+      other <- which(dt$sample_id == dt$sample_id[i] &
+                       dt$phenotype == target & seq_len(nrow(dt)) != i)
+      distances <- sqrt((dt$x[other] - dt$x[i])^2 + (dt$y[other] - dt$y[i])^2)
+      c(density = sum(distances <= radius),
+        distance = if (length(distances)) mean(head(sort(distances), k)) else NA_real_)
+    })
+  }
+  verify <- function() {
+    for (target in c("A", "B", "absent")) {
+      for (k in c(1L, 2L, 10L)) {
+        reference <- do.call(rbind, oracle(target, k))
+        expect_equal(cell_density(dt, 3, target)$density,
+                     unname(reference[, "density"]))
+        expect_equal(nearest_neighbours(dt, target, k)$nn_distance,
+                     unname(reference[, "distance"]))
+      }
+    }
+    expect_equal(cell_density(dt, 3, "A")$density +
+                   cell_density(dt, 3, "B")$density,
+                 cell_density(dt, 3)$density)
+    reordered <- dt[c(5L, 3L, 1L, 4L, 2L)]
+    back <- match(dt$cell_id, reordered$cell_id)
+    expect_equal(nearest_neighbours(reordered, "A", 2L)$nn_distance[back],
+                 nearest_neighbours(dt, "A", 2L)$nn_distance)
+    expect_equal(cell_density(reordered, 3, "A")$density[back],
+                 cell_density(dt, 3, "A")$density)
+  }
+  verify()
+  local_mocked_bindings(requireNamespace = mock_no("RANN"))
+  verify()
+})
+
+test_that("duplicate-coordinate kNN fallback excludes identities too", {
+  coords <- rbind(c(0, 0), c(0, 0), c(1, 0))
+  fast <- phenoscapR:::.knn_index(coords, 2L)
+  local_mocked_bindings(requireNamespace = mock_no("RANN"))
+  slow <- phenoscapR:::.knn_index(coords, 2L)
+  for (i in seq_len(nrow(coords))) {
+    expect_setequal(fast$idx[i, ], setdiff(seq_len(nrow(coords)), i))
+    expect_setequal(slow$idx[i, ], setdiff(seq_len(nrow(coords)), i))
+    expect_equal(sort(slow$dist[i, ]), sort(fast$dist[i, ]))
+  }
+})

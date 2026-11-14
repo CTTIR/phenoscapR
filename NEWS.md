@@ -1,5 +1,11 @@
 # phenoscapR 1.0.0
 
+* Spatial neighbours exclude the query cell by identity, including with tied
+  coordinates and phenotype filters. Distinct cells at the same coordinates
+  remain neighbours. Targeted nearest-neighbour distances no longer include
+  the query cell itself; a sample with no other target cell returns `NA`.
+  Neighbourhood composition, spatial-domain smoothing and the fallback
+  Delaunay graph no longer retain self-neighbours when coordinates coincide.
 * `SetPalette(NULL)` returns the current palette and leaves it unchanged, as
   documented. It previously cleared the setting, resetting the palette to
   `"viridis"`.
