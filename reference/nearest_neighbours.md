@@ -1,7 +1,11 @@
 # Compute Nearest Neighbour Distances
 
 For each cell, computes the distance to the nearest neighbouring cell,
-optionally restricted to specific phenotypes.
+optionally restricted to specific phenotypes. The query cell is excluded
+even when it has the target phenotype. Distinct cells at the same
+coordinates remain neighbours. If fewer than `k` other target cells are
+available within the sample, their distances are averaged; if none are
+available, the distance is `NA`.
 
 ## Usage
 
@@ -22,7 +26,8 @@ nearest_neighbours(dt, target_phenotype = NULL, k = 1L)
 
 - k:
 
-  Integer. Number of nearest neighbours to consider. Default `1`.
+  Positive integer. Number of nearest neighbours to consider. Default
+  `1`.
 
 ## Value
 

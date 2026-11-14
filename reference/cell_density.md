@@ -1,7 +1,9 @@
 # Compute Cell Density
 
 Estimates the local cell density around each cell using a circular
-neighbourhood of a given radius.
+neighbourhood of a given radius. The query cell is excluded by identity;
+distinct cells sharing its coordinates are counted, including when a
+target phenotype is selected.
 
 ## Usage
 
@@ -17,7 +19,8 @@ cell_density(dt, radius, target_phenotype = NULL)
 
 - radius:
 
-  Numeric. Radius of the neighbourhood (in coordinate units).
+  Finite nonnegative numeric scalar. Radius of the neighbourhood (in
+  coordinate units).
 
 - target_phenotype:
 
