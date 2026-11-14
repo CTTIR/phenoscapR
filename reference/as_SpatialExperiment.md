@@ -2,7 +2,9 @@
 
 Builds a SpatialExperiment with `counts` and `logcounts` assays (markers
 x cells), the metadata as `colData`, and the coordinates as
-`spatialCoords`.
+`spatialCoords`. All numeric coordinate dimensions and their names are
+retained. Nonnumeric coordinate annotations are refused; move them to
+metadata explicitly before export.
 
 ## Usage
 

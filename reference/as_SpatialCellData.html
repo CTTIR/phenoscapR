@@ -7,7 +7,13 @@ raw counts are used as data only when it is absent. Normalized assays must
 contain the same cells and features as counts; named axes are aligned, and
 incompatible partial assays are refused. All-missing features are retained.
 Existing cell identifiers are kept; absent cell_id metadata use the source
-cell names when available. No normalization method is inferred or applied."><meta property="og:description" content="Imports an object from the wider ecosystem. Coordinates are taken from
+cell names when available. No normalization method is inferred or applied.
+SpatialExperiment coordinates retain named x/y regardless of column order;
+when neither name exists, the first two dimensions become x/y. Partial or
+duplicate coordinate names are refused. Seurat exports from this package
+restore additional coordinate columns from the namespaced misc mapping using
+current cell names. Missing or ambiguous mappings are refused; current x/y
+metadata (or the spatial reduction fallback) remain authoritative."><meta property="og:description" content="Imports an object from the wider ecosystem. Coordinates are taken from
 spatialCoords (SpatialExperiment) or from x/y metadata
 columns or a &quot;spatial&quot; reduction (Seurat). The normalized logcounts
 assay (SpatialExperiment) or data layer (Seurat) is retained when present;
@@ -15,7 +21,13 @@ raw counts are used as data only when it is absent. Normalized assays must
 contain the same cells and features as counts; named axes are aligned, and
 incompatible partial assays are refused. All-missing features are retained.
 Existing cell identifiers are kept; absent cell_id metadata use the source
-cell names when available. No normalization method is inferred or applied."><meta property="og:image" content="https://cttir.github.io/phenoscapR/logo.svg"><meta name="theme-color" content="#1565c0"><script defer data-domain="cttir.github.io/phenoscapr" src="https://analytics.hellebo.de/js/script.file-downloads.outbound-links.js"></script><!-- Package browser icons -->
+cell names when available. No normalization method is inferred or applied.
+SpatialExperiment coordinates retain named x/y regardless of column order;
+when neither name exists, the first two dimensions become x/y. Partial or
+duplicate coordinate names are refused. Seurat exports from this package
+restore additional coordinate columns from the namespaced misc mapping using
+current cell names. Missing or ambiguous mappings are refused; current x/y
+metadata (or the spatial reduction fallback) remain authoritative."><meta property="og:image" content="https://cttir.github.io/phenoscapR/logo.svg"><meta name="theme-color" content="#1565c0"><script defer data-domain="cttir.github.io/phenoscapr" src="https://analytics.hellebo.de/js/script.file-downloads.outbound-links.js"></script><!-- Package browser icons -->
 <link rel="icon" type="image/x-icon" href="../favicon.ico?v=d8b0da3b7941">
 <link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png?v=d8b0da3b7941">
 <link rel="icon" type="image/svg+xml" sizes="any" href="../favicon.svg?v=d8b0da3b7941">
@@ -73,7 +85,13 @@ raw counts are used as data only when it is absent. Normalized assays must
 contain the same cells and features as counts; named axes are aligned, and
 incompatible partial assays are refused. All-missing features are retained.
 Existing cell identifiers are kept; absent <code>cell_id</code> metadata use the source
-cell names when available. No normalization method is inferred or applied.</p>
+cell names when available. No normalization method is inferred or applied.
+SpatialExperiment coordinates retain named x/y regardless of column order;
+when neither name exists, the first two dimensions become x/y. Partial or
+duplicate coordinate names are refused. Seurat exports from this package
+restore additional coordinate columns from the namespaced misc mapping using
+current cell names. Missing or ambiguous mappings are refused; current x/y
+metadata (or the spatial reduction fallback) remain authoritative.</p>
     </div>
 
     <div class="section level2">

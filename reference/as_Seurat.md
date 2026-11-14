@@ -10,6 +10,13 @@ refuses marker identifiers that Seurat would rewrite (such as
 underscores); use
 [`as_SpatialExperiment()`](https://cttir.github.io/phenoscapR/reference/as_SpatialExperiment.md)
 for unchanged identifiers, or rename markers explicitly before export.
+The reduction uses named x/y only. Extra coordinate columns are retained
+in `misc$phenoscapR_coordinates`, keyed by unique Seurat cell names, and
+restored by
+[`as_SpatialCellData()`](https://cttir.github.io/phenoscapR/reference/as_SpatialCellData.md)
+after cell subsetting or reordering. Saved columns never override
+current x/y. Conflicting x/y metadata are refused rather than
+overwritten; rename such metadata explicitly before export.
 
 ## Usage
 

@@ -5,13 +5,23 @@ as a &quot;spatial&quot; dimensional reduction. Cell IDs repeated across
 samples are made unique with make.unique() for the Seurat cell names; the
 metadata keep the original cell_id. Export refuses marker identifiers
 that Seurat would rewrite (such as underscores); use as_SpatialExperiment()
-for unchanged identifiers, or rename markers explicitly before export."><meta property="og:description" content="Builds a Seurat object with raw counts, normalised data, cell metadata,
+for unchanged identifiers, or rename markers explicitly before export.
+The reduction uses named x/y only. Extra coordinate columns are retained in
+misc$phenoscapR_coordinates, keyed by unique Seurat cell names, and restored
+by as_SpatialCellData() after cell subsetting or reordering. Saved columns
+never override current x/y. Conflicting x/y metadata are refused rather than
+overwritten; rename such metadata explicitly before export."><meta property="og:description" content="Builds a Seurat object with raw counts, normalised data, cell metadata,
 and the spatial coordinates stored both in metadata (x, y) and
 as a &quot;spatial&quot; dimensional reduction. Cell IDs repeated across
 samples are made unique with make.unique() for the Seurat cell names; the
 metadata keep the original cell_id. Export refuses marker identifiers
 that Seurat would rewrite (such as underscores); use as_SpatialExperiment()
-for unchanged identifiers, or rename markers explicitly before export."><meta property="og:image" content="https://cttir.github.io/phenoscapR/logo.svg"><meta name="theme-color" content="#1565c0"><script defer data-domain="cttir.github.io/phenoscapr" src="https://analytics.hellebo.de/js/script.file-downloads.outbound-links.js"></script><!-- Package browser icons -->
+for unchanged identifiers, or rename markers explicitly before export.
+The reduction uses named x/y only. Extra coordinate columns are retained in
+misc$phenoscapR_coordinates, keyed by unique Seurat cell names, and restored
+by as_SpatialCellData() after cell subsetting or reordering. Saved columns
+never override current x/y. Conflicting x/y metadata are refused rather than
+overwritten; rename such metadata explicitly before export."><meta property="og:image" content="https://cttir.github.io/phenoscapR/logo.svg"><meta name="theme-color" content="#1565c0"><script defer data-domain="cttir.github.io/phenoscapr" src="https://analytics.hellebo.de/js/script.file-downloads.outbound-links.js"></script><!-- Package browser icons -->
 <link rel="icon" type="image/x-icon" href="../favicon.ico?v=d8b0da3b7941">
 <link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png?v=d8b0da3b7941">
 <link rel="icon" type="image/svg+xml" sizes="any" href="../favicon.svg?v=d8b0da3b7941">
@@ -67,7 +77,12 @@ as a <code>"spatial"</code> dimensional reduction. Cell IDs repeated across
 samples are made unique with <code><a href="https://rdrr.io/r/base/make.unique.html" class="external-link">make.unique()</a></code> for the Seurat cell names; the
 metadata keep the original <code>cell_id</code>. Export refuses marker identifiers
 that Seurat would rewrite (such as underscores); use <code><a href="as_SpatialExperiment.html">as_SpatialExperiment()</a></code>
-for unchanged identifiers, or rename markers explicitly before export.</p>
+for unchanged identifiers, or rename markers explicitly before export.
+The reduction uses named x/y only. Extra coordinate columns are retained in
+<code>misc$phenoscapR_coordinates</code>, keyed by unique Seurat cell names, and restored
+by <code><a href="as_SpatialCellData.html">as_SpatialCellData()</a></code> after cell subsetting or reordering. Saved columns
+never override current x/y. Conflicting x/y metadata are refused rather than
+overwritten; rename such metadata explicitly before export.</p>
     </div>
 
     <div class="section level2">
