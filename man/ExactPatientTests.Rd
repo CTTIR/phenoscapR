@@ -14,7 +14,8 @@ ExactPatientTests(
 }
 \arguments{
 \item{endpoints}{Data frame with character \code{endpoint_id}, \code{patient_id},
-numeric \code{value}, and logical \code{eligible}. At most one row per endpoint and
+dimensionless numeric vector \code{value}, and dimensionless logical vector
+\code{eligible}. At most one row per endpoint and
 patient. NA values or eligibility mark unavailable observations; NaN and
 infinite values are rejected. Extra columns are ignored.}
 

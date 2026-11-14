@@ -111,6 +111,44 @@ test_that("family adjustments preserve declared unavailable hypotheses", {
   expect_error(AdjustPatientFamilies(x[FALSE, ], "declared"), "At least one")
 })
 
+test_that("patient values and eligibility cannot hide multiple columns", {
+  x <- exact_fixture()
+  for (columns in c(1L, 2L)) {
+    y <- x
+    y$endpoints$value <- I(matrix(seq_len(4L * columns), nrow = 4L))
+    expect_error(do.call(ExactPatientTests, y), "dimensionless numeric vector")
+    y <- x
+    y$endpoints$eligible <- I(matrix(TRUE, nrow = 4L, ncol = columns))
+    expect_error(do.call(ExactPatientTests, y), "dimensionless logical vector")
+  }
+  # The previously accepted matrix's second column must not be silently
+  # discarded. Rejection also applies to higher-dimensional array columns.
+  y <- x
+  y$endpoints$value <- I(array(seq_len(8L), dim = c(4L, 1L, 2L)))
+  expect_error(do.call(ExactPatientTests, y), "dimensionless numeric vector")
+  y <- x
+  y$endpoints$eligible <- I(array(TRUE, dim = c(4L, 1L, 2L)))
+  expect_error(do.call(ExactPatientTests, y), "dimensionless logical vector")
+  named <- x
+  names(named$endpoints$value) <- names(named$endpoints$eligible) <- letters[1:4]
+  expect_identical(do.call(ExactPatientTests, named), do.call(ExactPatientTests, x))
+})
+
+test_that("family adjustment requires one scalar p value per hypothesis", {
+  x <- data.frame(hypothesis_id = c("h1", "h2"), family_id = "f",
+                   p_value = c(.01, .02))
+  for (columns in c(1L, 2L)) {
+    bad <- x
+    bad$p_value <- I(matrix(c(.01, .02), nrow = 2L, ncol = columns))
+    expect_error(AdjustPatientFamilies(bad, "declared"), "dimensionless numeric vector")
+  }
+  bad <- x
+  bad$p_value <- I(array(c(.01, .02, .5, .9), dim = c(2L, 1L, 2L)))
+  expect_error(AdjustPatientFamilies(bad, "declared"), "dimensionless numeric vector")
+  names(x$p_value) <- c("first", "second")
+  expect_equal(AdjustPatientFamilies(x, "declared")$tests$p_adjusted, c(.02, .02))
+})
+
 # Well-conditioned designs: values of order 0.01-1000, 4-12 patients per group,
 # with and without ties. The p values below were recorded with the
 # implementation before centring and the relative tie tolerance; they equal an

@@ -8,7 +8,8 @@ AdjustPatientFamilies(tests, policy, method = c("BH", "BY"))
 }
 \arguments{
 \item{tests}{Data frame containing character \code{hypothesis_id}, \code{family_id},
-and numeric \code{p_value}. All declared hypotheses must be present exactly once.}
+and dimensionless numeric vector \code{p_value}. All declared hypotheses must
+be present exactly once.}
 
 \item{policy}{Explicit adjustment policy, \code{"declared"} or \code{"finite_only"}.}
 

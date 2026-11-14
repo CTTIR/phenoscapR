@@ -19,10 +19,14 @@ ContrastPatientEndpoints(
 )
 }
 \arguments{
-\item{data}{Wide patient table with the \code{id}, \code{group} and endpoint columns.}
+\item{data}{Wide patient table with the \code{id}, \code{group} and endpoint columns.
+The \code{id} and \code{group} columns must be dimensionless atomic vectors, with
+one value per row. Factors are supported. Each endpoint column must be a
+dimensionless numeric vector, or an atomic vector containing only NA.}
 
 \item{registry}{Data frame with one row per hypothesis and the \code{endpoint},
-\code{contrast} and \code{family} columns. Extra columns are ignored.}
+\code{contrast} and \code{family} columns. These columns must be dimensionless atomic
+vectors with one value per row; factors are supported. Extra columns are ignored.}
 
 \item{contrasts}{Named list: contrast name to a list with character vectors
 \code{A} and \code{B} of patient groups (disjoint).}
@@ -61,7 +65,9 @@ otherwise the hypothesis is unavailable (no patient is dropped).
 
 Each hypothesis receives its own design, so a registry may repeat an
 endpoint-contrast pair in different families. The effect is the mean of arm
-A minus the mean of arm B.
+A minus the mean of arm B. Family and contrast labels must be nonmissing and
+nonblank, and cannot contain the reserved separator token \code{"::"}. This keeps
+distinct family-contrast pairs from merging into one adjustment family.
 }
 \examples{
 d <- data.frame(patient = paste0("p", 1:6), arm = rep(c("x", "y"), each = 3),

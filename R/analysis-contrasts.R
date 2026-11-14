@@ -15,11 +15,17 @@
 #'
 #' Each hypothesis receives its own design, so a registry may repeat an
 #' endpoint-contrast pair in different families. The effect is the mean of arm
-#' A minus the mean of arm B.
+#' A minus the mean of arm B. Family and contrast labels must be nonmissing and
+#' nonblank, and cannot contain the reserved separator token `"::"`. This keeps
+#' distinct family-contrast pairs from merging into one adjustment family.
 #'
 #' @param data Wide patient table with the `id`, `group` and endpoint columns.
+#'   The `id` and `group` columns must be dimensionless atomic vectors, with
+#'   one value per row. Factors are supported. Each endpoint column must be a
+#'   dimensionless numeric vector, or an atomic vector containing only NA.
 #' @param registry Data frame with one row per hypothesis and the `endpoint`,
-#'   `contrast` and `family` columns. Extra columns are ignored.
+#'   `contrast` and `family` columns. These columns must be dimensionless atomic
+#'   vectors with one value per row; factors are supported. Extra columns are ignored.
 #' @param contrasts Named list: contrast name to a list with character vectors
 #'   `A` and `B` of patient groups (disjoint).
 #' @param id,group Patient identifier and patient group columns of `data`.
@@ -54,6 +60,12 @@ ContrastPatientEndpoints <- function(data, registry, contrasts, id, group,
   .an_assert(nrow(registry) > 0L, "registry is empty")
   data <- as.data.frame(data, stringsAsFactors = FALSE)
   registry <- as.data.frame(registry, stringsAsFactors = FALSE)
+  scalar_column <- function(x, n) is.atomic(x) && is.null(dim(x)) && length(x) == n
+  .an_assert(all(vapply(data[c(id, group)], scalar_column, logical(1), n = nrow(data))),
+             "Patient ID and group columns must be dimensionless atomic vectors with one value per row")
+  .an_assert(all(vapply(registry[c(endpoint, contrast, family)], scalar_column,
+                       logical(1), n = nrow(registry))),
+             "Registry endpoint, contrast and family columns must be dimensionless atomic vectors with one value per row")
   patients <- as.character(data[[id]])
   groups <- as.character(data[[group]])
   .an_assert(!anyNA(patients) && !anyDuplicated(patients), "Patients must be unique")
@@ -67,6 +79,14 @@ ContrastPatientEndpoints <- function(data, registry, contrasts, id, group,
   }
   ends <- as.character(registry[[endpoint]])
   ctrs <- as.character(registry[[contrast]])
+  families <- as.character(registry[[family]])
+  .an_assert(is.null(dim(registry[[contrast]])) && is.null(dim(registry[[family]])) &&
+               length(ctrs) == nrow(registry) && length(families) == nrow(registry) &&
+               !anyNA(ctrs) && !anyNA(families) &&
+               all(nzchar(trimws(ctrs))) && all(nzchar(trimws(families))),
+             "Family and contrast labels must be nonmissing, nonblank values")
+  .an_assert(!any(grepl("::", c(families, ctrs), fixed = TRUE)),
+             "Family and contrast labels cannot contain the reserved separator token '::'")
   .an_assert(all(ends %in% names(data)), paste("Unknown endpoint column(s):",
              paste(setdiff(ends, names(data)), collapse = ", ")))
   .an_assert(all(ctrs %in% names(contrasts)), "Unknown contrast in registry")
@@ -74,7 +94,8 @@ ContrastPatientEndpoints <- function(data, registry, contrasts, id, group,
   .an_assert(!anyDuplicated(hyp), "Duplicate hypothesis identifiers")
   endpoints <- do.call(rbind, lapply(unique(ends), function(e) {
     v <- data[[e]]
-    .an_assert(is.numeric(v) || all(is.na(v)), paste("Endpoint", e, "is not numeric"))
+    .an_assert(scalar_column(v, nrow(data)) && (is.numeric(v) || all(is.na(v))),
+               paste("Endpoint", e, "must be a dimensionless numeric vector or all NA"))
     v <- as.numeric(v)
     v[!is.finite(v)] <- NA_real_
     data.frame(endpoint_id = e, patient_id = patients, value = v, eligible = TRUE,
@@ -121,7 +142,7 @@ ContrastPatientEndpoints <- function(data, registry, contrasts, id, group,
   }
   out <- registry[c(endpoint, contrast, family)]
   out$hypothesis_id <- hyp
-  out$family_id <- paste(registry[[family]], registry[[contrast]], sep = " :: ")
+  out$family_id <- paste(families, ctrs, sep = " :: ")
   out <- cbind(out, base[-1L])
   out$missingness <- missingness
   rownames(out) <- NULL

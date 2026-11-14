@@ -38,7 +38,8 @@
 #' Repeated images must be aggregated to one endpoint per patient beforehand.
 #'
 #' @param endpoints Data frame with character `endpoint_id`, `patient_id`,
-#'   numeric `value`, and logical `eligible`. At most one row per endpoint and
+#'   dimensionless numeric vector `value`, and dimensionless logical vector
+#'   `eligible`. At most one row per endpoint and
 #'   patient. NA values or eligibility mark unavailable observations; NaN and
 #'   infinite values are rejected. Extra columns are ignored.
 #' @param design Data frame with character `contrast_id`, `patient_id`, and
@@ -88,10 +89,12 @@ ExactPatientTests <- function(endpoints, design, hypotheses,
   .exact_assert(!anyDuplicated(hypotheses$hypothesis_id), "Duplicate hypothesis_id")
   .exact_assert(!anyDuplicated(.exact_keys(hypotheses, c("endpoint_id", "contrast_id"))),
                 "Duplicate endpoint contrast hypothesis")
-  .exact_assert(is.numeric(endpoints$value) && !any(is.nan(endpoints$value)) &&
+  .exact_assert(is.numeric(endpoints$value) && is.null(dim(endpoints$value)) &&
+                  !any(is.nan(endpoints$value)) &&
                   all(is.na(endpoints$value) | is.finite(endpoints$value)),
-                "Values must be numeric, finite or explicit NA")
-  .exact_assert(is.logical(endpoints$eligible), "eligible must be logical")
+                "Values must be a dimensionless numeric vector, finite or explicit NA")
+  .exact_assert(is.logical(endpoints$eligible) && is.null(dim(endpoints$eligible)),
+                "eligible must be a dimensionless logical vector")
   .exact_assert(all(design$group %in% c("A", "B")), "group must be A or B")
   .exact_assert(all(hypotheses$contrast_id %in% design$contrast_id), "Unknown contrast")
   .exact_assert(all(hypotheses$endpoint_id %in% endpoints$endpoint_id), "Unknown endpoint")
@@ -163,7 +166,8 @@ ExactPatientTests <- function(endpoints, design, hypotheses,
 #' adjustment establishes biological validity or study-wide error control.
 #'
 #' @param tests Data frame containing character `hypothesis_id`, `family_id`,
-#'   and numeric `p_value`. All declared hypotheses must be present exactly once.
+#'   and dimensionless numeric vector `p_value`. All declared hypotheses must
+#'   be present exactly once.
 #' @param policy Explicit adjustment policy, `"declared"` or `"finite_only"`.
 #' @param method Selected correction, `"BH"` or `"BY"`.
 #' @return A list with `tests` (input columns plus all adjustment variants,
@@ -182,8 +186,9 @@ AdjustPatientFamilies <- function(tests, policy, method = c("BH", "BY")) {
   .exact_keys(tests, c("hypothesis_id", "family_id"))
   .exact_assert(!anyDuplicated(tests$hypothesis_id), "Duplicate hypothesis_id")
   p <- tests$p_value
-  .exact_assert(is.numeric(p) && !any(is.nan(p)) &&
-                  all(is.na(p) | (is.finite(p) & p >= 0 & p <= 1)), "Invalid p value")
+  .exact_assert(is.numeric(p) && is.null(dim(p)) && !any(is.nan(p)) &&
+                  all(is.na(p) | (is.finite(p) & p >= 0 & p <= 1)),
+                "Invalid p value: require a dimensionless numeric vector in [0, 1] or NA")
   added <- c("q_bh_finite", "q_by_finite", "q_bh_declared", "q_by_declared",
              "p_adjusted", "adjustment_policy", "adjustment_method")
   .exact_assert(!any(added %in% names(tests)), "Reserved adjustment output columns")
