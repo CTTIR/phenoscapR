@@ -36,6 +36,10 @@ expression) by clustering cells on their spatially smoothed expression:
 each cell's profile is averaged with its \code{k} nearest neighbours before
 clustering, so neighbouring cells tend to share a domain.
 }
+\details{
+Sample identifiers must be complete, nonblank vectors. Counts and
+k must be positive whole numbers, validated before smoothing or RNG use.
+}
 \examples{
 data(phenoscapR_example)
 obj <- NormaliseData(phenoscapR_example, "zscore")

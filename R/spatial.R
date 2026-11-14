@@ -1238,21 +1238,26 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 #' Computes Moran's I statistic for a numeric variable.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param feature Character. Name of the marker or metadata column.
-#' @param radius Numeric. Neighbourhood radius for spatial weights.
+#' @param feature Character. Name of a finite real numeric marker or metadata
+#'   vector. Factors and missing/nonfinite values are rejected.
+#' @param radius Finite nonnegative numeric scalar. Neighbourhood radius for
+#'   spatial weights.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
 #' @param weights Character. Spatial weighting within the radius:
 #'   \code{"binary"} (default; 1 for every neighbour), \code{"row"}
 #'   (row-standardised, each cell's weights sum to 1), or \code{"idw"}
-#'   (inverse-distance, \code{1 / d}).
-#' @param n_perm Integer. Number of label permutations for the p-value. \code{0}
-#'   (default) uses the analytic normal approximation, which is exact only for
+#'   (inverse-distance, \code{1 / d}); coincident neighbours are rejected for
+#'   inverse-distance weighting, whose weights would be infinite.
+#' @param n_perm Integer. Number of label permutations (at least two) for the
+#'   p-value. \code{0}
+#'   (default) uses the analytic normal approximation, implemented only for
 #'   \code{"binary"} weights; any other weighting auto-enables a permutation
 #'   test.
 #' @param seed Integer or \code{NULL}. Random seed for the permutation test.
 #' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
 #'   the statistic is computed per sample and returned as a named list. Default
-#'   \code{FALSE}; otherwise a single sample is required.
+#'   \code{FALSE}; otherwise a single sample is required. Sample identifiers
+#'   must be complete, nonblank vectors; validation precedes per-sample tests.
 #'
 #' @return A list with \code{I}, \code{expected}, \code{variance},
 #'   \code{z_score}, \code{p_value}, and \code{method} (\code{"analytic"} or
@@ -1271,6 +1276,40 @@ MoransI <- function(object, feature, radius, slot = "data",
                     weights = c("binary", "row", "idw"), n_perm = 0L,
                     seed = NULL, by_sample = FALSE) {
   weights <- match.arg(weights)
+  .spatial_object_inputs(object)
+  .validate_interaction_controls(radius)
+  .spatial_whole_scalar(n_perm, "n_perm", minimum = 0)
+  if (n_perm == 1L) stop("n_perm must be zero or at least two.", call. = FALSE)
+  if (!is.logical(by_sample) || length(by_sample) != 1L ||
+      !is.null(dim(by_sample)) || is.na(by_sample)) {
+    stop("by_sample must be one nonmissing logical value.", call. = FALSE)
+  }
+  if (!is.character(feature) || length(feature) != 1L ||
+      !is.null(dim(feature)) || is.na(feature)) {
+    stop("feature must be one nonmissing column name.", call. = FALSE)
+  }
+  if (n_perm > 0L || weights != "binary") .spatial_seed(seed)
+  mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
+
+  if (feature %in% colnames(mat)) {
+    x <- mat[, feature]
+  } else if (feature %in% names(object@meta_data)) {
+    x <- object@meta_data[[feature]]
+  } else {
+    stop("Feature '", feature, "' not found.", call. = FALSE)
+  }
+
+  if (!typeof(x) %in% c("integer", "double") || is.object(x) ||
+      !is.null(dim(x)) || length(x) != NCells(object) || any(!is.finite(x))) {
+    stop("The feature must be a finite real numeric vector; factors are not scores.",
+         call. = FALSE)
+  }
+  if (weights == "idw" && anyDuplicated(data.frame(
+      sample_id = object@meta_data$sample_id,
+      x = object@coords$x, y = object@coords$y))) {
+    stop("Inverse-distance weights require positive distances between neighbours; coincident cells are unsupported.",
+         call. = FALSE)
+  }
   if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
     return(.by_sample_apply(object, function(o) {
       MoransI(o, feature = feature, radius = radius, slot = slot,
@@ -1278,15 +1317,6 @@ MoransI <- function(object, feature, radius, slot = "data",
     }))
   }
   .assert_single_sample(object, "Moran's I")
-  mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
-
-  if (feature %in% colnames(mat)) {
-    x <- mat[, feature]
-  } else if (feature %in% names(object@meta_data)) {
-    x <- as.numeric(object@meta_data[[feature]])
-  } else {
-    stop("Feature '", feature, "' not found.", call. = FALSE)
-  }
 
   xy <- as.matrix(object@coords)
   n <- as.numeric(length(x))   # double throughout: n^2 overflows integer at ~46k
@@ -1296,6 +1326,10 @@ MoransI <- function(object, feature, radius, slot = "data",
   # Neighbour lists avoid the n^2 weight matrix. Per-neighbour weights depend on
   # the chosen scheme; distances are needed only for inverse-distance weights.
   nbr <- .radius_neighbours(xy, radius)
+  if (weights == "idw" && any(unlist(nbr$dist, use.names = FALSE) == 0)) {
+    stop("Inverse-distance weights require positive distances between neighbours; coincident cells are unsupported.",
+         call. = FALSE)
+  }
   nb <- nbr$idx
   deg <- as.numeric(lengths(nb))
   row_weight <- function(i) {

@@ -26,6 +26,10 @@
 #'   \code{"phenotype"}.
 #' @param seed Integer or \code{NULL}. Random seed for k-means.
 #'
+#' @details Sample identifiers and phenotype labels must be complete, nonblank
+#'   vectors. Counts and k must be positive whole numbers; malformed inputs are
+#'   rejected before clustering or changing the random state.
+#'
 #' @return The object with a \code{neighbourhood} column in \code{meta_data};
 #'   the neighbourhood-by-phenotype composition matrix is stored in
 #'   \code{object@spatial$neighbourhood_composition}.
@@ -40,11 +44,26 @@
 #' @export
 CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
                                    phenotype_col = "phenotype", seed = NULL) {
+  .spatial_object_inputs(object)
+  .spatial_whole_scalar(k, "k")
+  .spatial_whole_scalar(n_neighbourhoods, "n_neighbourhoods")
+  .spatial_seed(seed)
+  if (!is.character(phenotype_col) || length(phenotype_col) != 1L ||
+      !is.null(dim(phenotype_col)) || is.na(phenotype_col)) {
+    stop("phenotype_col must be one nonmissing column name.", call. = FALSE)
+  }
   if (!phenotype_col %in% names(object@meta_data)) {
     stop("Phenotype column '", phenotype_col, "' not found. Run ",
          "PhenotypeCells() first.", call. = FALSE)
   }
-  pheno <- as.character(object@meta_data[[phenotype_col]])
+  labels <- object@meta_data[[phenotype_col]]
+  if (!is.atomic(labels) || !is.null(dim(labels)) ||
+      length(labels) != NCells(object) || anyNA(labels) ||
+      any(!nzchar(trimws(as.character(labels))))) {
+    stop("Phenotypes must be a complete, nonblank vector with one value per cell.",
+         call. = FALSE)
+  }
+  pheno <- as.character(labels)
   phenos <- sort(unique(pheno))
   comp <- matrix(0, nrow = NCells(object), ncol = length(phenos),
                  dimnames = list(NULL, phenos))
@@ -86,6 +105,9 @@ CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
 #'   uses all.
 #' @param seed Integer or \code{NULL}. Random seed for k-means.
 #'
+#' @details Sample identifiers must be complete, nonblank vectors. Counts and
+#'   k must be positive whole numbers, validated before smoothing or RNG use.
+#'
 #' @return The object with a \code{domain} column in \code{meta_data}.
 #'
 #' @examples
@@ -97,6 +119,10 @@ CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
 #' @export
 SpatialDomains <- function(object, n_domains = 6L, k = 20L, slot = "data",
                            markers = NULL, seed = NULL) {
+  .spatial_object_inputs(object)
+  .spatial_whole_scalar(k, "k")
+  .spatial_whole_scalar(n_domains, "n_domains")
+  .spatial_seed(seed)
   mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
   if (!is.null(markers)) {
     mat <- mat[, intersect(markers, colnames(mat)), drop = FALSE]

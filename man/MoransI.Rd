@@ -18,19 +18,23 @@ MoransI(
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{feature}{Character. Name of the marker or metadata column.}
+\item{feature}{Character. Name of a finite real numeric marker or metadata
+vector. Factors and missing/nonfinite values are rejected.}
 
-\item{radius}{Numeric. Neighbourhood radius for spatial weights.}
+\item{radius}{Finite nonnegative numeric scalar. Neighbourhood radius for
+spatial weights.}
 
 \item{slot}{Character. \code{"data"} (default) or \code{"counts"}.}
 
 \item{weights}{Character. Spatial weighting within the radius:
 \code{"binary"} (default; 1 for every neighbour), \code{"row"}
 (row-standardised, each cell's weights sum to 1), or \code{"idw"}
-(inverse-distance, \code{1 / d}).}
+(inverse-distance, \code{1 / d}); coincident neighbours are rejected for
+inverse-distance weighting, whose weights would be infinite.}
 
-\item{n_perm}{Integer. Number of label permutations for the p-value. \code{0}
-(default) uses the analytic normal approximation, which is exact only for
+\item{n_perm}{Integer. Number of label permutations (at least two) for the
+p-value. \code{0}
+(default) uses the analytic normal approximation, implemented only for
 \code{"binary"} weights; any other weighting auto-enables a permutation
 test.}
 
@@ -38,7 +42,8 @@ test.}
 
 \item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
 the statistic is computed per sample and returned as a named list. Default
-\code{FALSE}; otherwise a single sample is required.}
+\code{FALSE}; otherwise a single sample is required. Sample identifiers
+must be complete, nonblank vectors; validation precedes per-sample tests.}
 }
 \value{
 A list with \code{I}, \code{expected}, \code{variance},

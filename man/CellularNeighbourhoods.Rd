@@ -39,6 +39,11 @@ the windowed-neighbourhood approach popularised for multiplexed imaging:
 for every cell the phenotype frequencies among its \code{k} nearest
 neighbours form a composition vector, and those vectors are clustered.
 }
+\details{
+Sample identifiers and phenotype labels must be complete, nonblank
+vectors. Counts and k must be positive whole numbers; malformed inputs are
+rejected before clustering or changing the random state.
+}
 \examples{
 data(phenoscapR_example)
 obj <- phenoscapR_example

@@ -1,5 +1,7 @@
 # phenoscapR 1.0.0
 
+- Neighborhood and Moran analyses reject malformed sample/phenotype vectors and invalid integer controls before computation or RNG changes. Moran features must be finite real numeric vectors, and inverse-distance weighting explicitly rejects coincident neighbors rather than returning undefined values from infinite weights.
+
 * Interaction tables reject missing phenotype labels and malformed coordinates
   before computing counts or changing RNG state. Previously, missing labels
   could disappear from observed counts while remaining in frequency denominators.
