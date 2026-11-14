@@ -30,7 +30,12 @@ column.}
 \value{
 The object with a \code{neighbourhood} column in \code{meta_data};
 the neighbourhood-by-phenotype composition matrix is stored in
-\code{object@spatial$neighbourhood_composition}.
+\code{object@spatial$neighbourhood_composition}. Availability is recorded
+in \code{object@spatial$neighbourhood_availability}: \code{per_cell} retains cell/sample
+IDs, input \code{row_index} and status (\code{defined} or \code{no_neighbors}); \code{by_sample}
+reports \code{n_total}, \code{n_defined} and \code{n_unavailable}. The \code{weighting} field
+records \code{cell}. Existing metadata other than the neighbourhood label is
+preserved.
 }
 \description{
 Assigns each cell to a cellular neighbourhood ("niche") by clustering cells
@@ -42,7 +47,13 @@ neighbours form a composition vector, and those vectors are clustered.
 \details{
 Sample identifiers and phenotype labels must be complete, nonblank
 vectors. Counts and k must be positive whole numbers; malformed inputs are
-rejected before clustering or changing the random state.
+rejected before clustering or changing the random state. Cells in singleton
+samples have no neighbour composition: they retain their row and receive
+an \code{NA} neighbourhood label, and are excluded from clustering. Centres are
+cell-weighted means of defined composition vectors, not equal-sample means.
+The requested number of centres cannot exceed the distinct defined vectors.
+With no defined vectors (including empty input), no clustering or random
+draws occur and the centre matrix has zero rows.
 }
 \examples{
 data(phenoscapR_example)

@@ -1,5 +1,7 @@
 # phenoscapR 1.0.0
 
+- Singleton samples no longer contribute zero vectors to neighborhood clustering. Their cells retain NA neighborhood labels and explicit availability records; centers use only defined cell compositions. Empty/all-singleton inputs return zero-row centers without RNG use, and the app reports unavailable compositions explicitly.
+
 * Phenotyping requires unique named, finite scalar thresholds. Reject recycled,
   missing, coerced and duplicate threshold definitions before assigning labels;
   selected marker columns must be unambiguous. Valid named numeric vectors and

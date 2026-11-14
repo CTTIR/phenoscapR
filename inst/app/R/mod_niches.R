@@ -62,6 +62,8 @@ mod_niches_server <- function(id, obj) {
     }, alt = "Synthetic cell positions coloured by inferred spatial domain")
     output$composition <- shiny::renderPlot({
       cc <- cn()@spatial$neighbourhood_composition
+      shiny::validate(shiny::need(nrow(cc) > 0L,
+        "No neighbourhood compositions are available: each sample needs at least two cells."))
       df <- data.frame(
         cn = rep(rownames(cc), ncol(cc)),
         phenotype = rep(colnames(cc), each = nrow(cc)),

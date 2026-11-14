@@ -28,11 +28,22 @@
 #'
 #' @details Sample identifiers and phenotype labels must be complete, nonblank
 #'   vectors. Counts and k must be positive whole numbers; malformed inputs are
-#'   rejected before clustering or changing the random state.
+#'   rejected before clustering or changing the random state. Cells in singleton
+#'   samples have no neighbour composition: they retain their row and receive
+#'   an `NA` neighbourhood label, and are excluded from clustering. Centres are
+#'   cell-weighted means of defined composition vectors, not equal-sample means.
+#'   The requested number of centres cannot exceed the distinct defined vectors.
+#'   With no defined vectors (including empty input), no clustering or random
+#'   draws occur and the centre matrix has zero rows.
 #'
 #' @return The object with a \code{neighbourhood} column in \code{meta_data};
 #'   the neighbourhood-by-phenotype composition matrix is stored in
-#'   \code{object@spatial$neighbourhood_composition}.
+#'   \code{object@spatial$neighbourhood_composition}. Availability is recorded
+#'   in `object@spatial$neighbourhood_availability`: `per_cell` retains cell/sample
+#'   IDs, input `row_index` and status (`defined` or `no_neighbors`); `by_sample`
+#'   reports `n_total`, `n_defined` and `n_unavailable`. The `weighting` field
+#'   records `cell`. Existing metadata other than the neighbourhood label is
+#'   preserved.
 #'
 #' @examples
 #' data(phenoscapR_example)
@@ -65,13 +76,15 @@ CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
   }
   pheno <- as.character(labels)
   phenos <- sort(unique(pheno))
-  comp <- matrix(0, nrow = NCells(object), ncol = length(phenos),
+  comp <- matrix(NA_real_, nrow = NCells(object), ncol = length(phenos),
                  dimnames = list(NULL, phenos))
 
+  available <- rep(FALSE, NCells(object))
   samples <- unique(object@meta_data$sample_id)
   for (s in samples) {
     rows <- which(object@meta_data$sample_id == s)
     if (length(rows) < 2L) next
+    available[rows] <- TRUE
     kk <- min(k, length(rows) - 1L)
     kn <- .knn_index(as.matrix(object@coords[rows, , drop = FALSE]), kk)
     nbr_labels <- matrix(pheno[rows][kn$idx], nrow = length(rows))
@@ -80,13 +93,35 @@ CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
     }
   }
 
-  if (!is.null(seed)) set.seed(seed)
-  km <- stats::kmeans(comp, centers = n_neighbourhoods, nstart = 10L)
+  assignments <- rep(NA_character_, NCells(object))
+  centres <- matrix(numeric(), nrow = 0L, ncol = length(phenos),
+                    dimnames = list(character(), phenos))
+  if (any(available)) {
+    defined <- comp[available, , drop = FALSE]
+    if (n_neighbourhoods > nrow(unique(defined))) {
+      stop("n_neighbourhoods exceeds the number of distinct defined composition vectors.",
+           call. = FALSE)
+    }
+    if (!is.null(seed)) set.seed(seed)
+    km <- stats::kmeans(defined, centers = n_neighbourhoods, nstart = 10L)
+    assignments[available] <- paste0("CN", km$cluster)
+    centres <- km$centers
+    rownames(centres) <- paste0("CN", seq_len(nrow(centres)))
+  }
+  availability <- object@meta_data[, c("cell_id", "sample_id"), drop = FALSE]
+  availability$row_index <- seq_len(NCells(object))
+  availability$status <- rep("no_neighbors", NCells(object))
+  availability$status[available] <- "defined"
+  n_total <- tabulate(match(object@meta_data$sample_id, samples), nbins = length(samples))
+  n_defined <- n_total
+  n_defined[n_total < 2L] <- 0L
+  summary <- data.frame(sample_id = samples, n_total = n_total,
+                        n_defined = n_defined, n_unavailable = n_total - n_defined)
   object <- .clear_frozen_spatial_label(object, "neighbourhood")
-  object@meta_data$neighbourhood <- paste0("CN", km$cluster)
-  centres <- km$centers
-  rownames(centres) <- paste0("CN", seq_len(nrow(centres)))
+  object@meta_data$neighbourhood <- assignments
   object@spatial$neighbourhood_composition <- centres
+  object@spatial$neighbourhood_availability <- list(
+    per_cell = availability, by_sample = summary, weighting = "cell")
   object
 }
 
