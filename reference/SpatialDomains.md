@@ -50,6 +50,11 @@ SpatialDomains(
 
 The object with a `domain` column in `meta_data`.
 
+## Details
+
+Sample identifiers must be complete, nonblank vectors. Counts and k must
+be positive whole numbers, validated before smoothing or RNG use.
+
 ## Examples
 
 ``` r

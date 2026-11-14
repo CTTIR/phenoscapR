@@ -49,6 +49,12 @@ The object with a `neighbourhood` column in `meta_data`; the
 neighbourhood-by-phenotype composition matrix is stored in
 `object@spatial$neighbourhood_composition`.
 
+## Details
+
+Sample identifiers and phenotype labels must be complete, nonblank
+vectors. Counts and k must be positive whole numbers; malformed inputs
+are rejected before clustering or changing the random state.
+
 ## Examples
 
 ``` r

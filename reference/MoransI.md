@@ -27,11 +27,13 @@ MoransI(
 
 - feature:
 
-  Character. Name of the marker or metadata column.
+  Character. Name of a finite real numeric marker or metadata vector.
+  Factors and missing/nonfinite values are rejected.
 
 - radius:
 
-  Numeric. Neighbourhood radius for spatial weights.
+  Finite nonnegative numeric scalar. Neighbourhood radius for spatial
+  weights.
 
 - slot:
 
@@ -41,13 +43,15 @@ MoransI(
 
   Character. Spatial weighting within the radius: `"binary"` (default; 1
   for every neighbour), `"row"` (row-standardised, each cell's weights
-  sum to 1), or `"idw"` (inverse-distance, `1 / d`).
+  sum to 1), or `"idw"` (inverse-distance, `1 / d`); coincident
+  neighbours are rejected for inverse-distance weighting, whose weights
+  would be infinite.
 
 - n_perm:
 
-  Integer. Number of label permutations for the p-value. `0` (default)
-  uses the analytic normal approximation, which is exact only for
-  `"binary"` weights; any other weighting auto-enables a permutation
+  Integer. Number of label permutations (at least two) for the p-value.
+  `0` (default) uses the analytic normal approximation, implemented only
+  for `"binary"` weights; any other weighting auto-enables a permutation
   test.
 
 - seed:
@@ -58,7 +62,8 @@ MoransI(
 
   Logical. If `TRUE` and the object holds several samples, the statistic
   is computed per sample and returned as a named list. Default `FALSE`;
-  otherwise a single sample is required.
+  otherwise a single sample is required. Sample identifiers must be
+  complete, nonblank vectors; validation precedes per-sample tests.
 
 ## Value
 

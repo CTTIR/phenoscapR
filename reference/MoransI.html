@@ -75,11 +75,13 @@
 
 
 <dt id="arg-feature">feature<a class="anchor" aria-label="anchor" href="#arg-feature"></a></dt>
-<dd><p>Character. Name of the marker or metadata column.</p></dd>
+<dd><p>Character. Name of a finite real numeric marker or metadata
+vector. Factors and missing/nonfinite values are rejected.</p></dd>
 
 
 <dt id="arg-radius">radius<a class="anchor" aria-label="anchor" href="#arg-radius"></a></dt>
-<dd><p>Numeric. Neighbourhood radius for spatial weights.</p></dd>
+<dd><p>Finite nonnegative numeric scalar. Neighbourhood radius for
+spatial weights.</p></dd>
 
 
 <dt id="arg-slot">slot<a class="anchor" aria-label="anchor" href="#arg-slot"></a></dt>
@@ -90,12 +92,14 @@
 <dd><p>Character. Spatial weighting within the radius:
 <code>"binary"</code> (default; 1 for every neighbour), <code>"row"</code>
 (row-standardised, each cell's weights sum to 1), or <code>"idw"</code>
-(inverse-distance, <code>1 / d</code>).</p></dd>
+(inverse-distance, <code>1 / d</code>); coincident neighbours are rejected for
+inverse-distance weighting, whose weights would be infinite.</p></dd>
 
 
 <dt id="arg-n-perm">n_perm<a class="anchor" aria-label="anchor" href="#arg-n-perm"></a></dt>
-<dd><p>Integer. Number of label permutations for the p-value. <code>0</code>
-(default) uses the analytic normal approximation, which is exact only for
+<dd><p>Integer. Number of label permutations (at least two) for the
+p-value. <code>0</code>
+(default) uses the analytic normal approximation, implemented only for
 <code>"binary"</code> weights; any other weighting auto-enables a permutation
 test.</p></dd>
 
@@ -107,7 +111,8 @@ test.</p></dd>
 <dt id="arg-by-sample">by_sample<a class="anchor" aria-label="anchor" href="#arg-by-sample"></a></dt>
 <dd><p>Logical. If <code>TRUE</code> and the object holds several samples,
 the statistic is computed per sample and returned as a named list. Default
-<code>FALSE</code>; otherwise a single sample is required.</p></dd>
+<code>FALSE</code>; otherwise a single sample is required. Sample identifiers
+must be complete, nonblank vectors; validation precedes per-sample tests.</p></dd>
 
 </dl></div>
     <div class="section level2">
