@@ -83,12 +83,16 @@ groups. Two missingness policies are offered:</p>
 
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>Wide patient table with the <code>id</code>, <code>group</code> and endpoint columns.</p></dd>
+<dd><p>Wide patient table with the <code>id</code>, <code>group</code> and endpoint columns.
+The <code>id</code> and <code>group</code> columns must be dimensionless atomic vectors, with
+one value per row. Factors are supported. Each endpoint column must be a
+dimensionless numeric vector, or an atomic vector containing only NA.</p></dd>
 
 
 <dt id="arg-registry">registry<a class="anchor" aria-label="anchor" href="#arg-registry"></a></dt>
 <dd><p>Data frame with one row per hypothesis and the <code>endpoint</code>,
-<code>contrast</code> and <code>family</code> columns. Extra columns are ignored.</p></dd>
+<code>contrast</code> and <code>family</code> columns. These columns must be dimensionless atomic
+vectors with one value per row; factors are supported. Extra columns are ignored.</p></dd>
 
 
 <dt id="arg-contrasts">contrasts<a class="anchor" aria-label="anchor" href="#arg-contrasts"></a></dt>
@@ -134,7 +138,9 @@ tables that silently drop missing patients.</p></li>
 otherwise the hypothesis is unavailable (no patient is dropped).</p></li>
 </ul><p>Each hypothesis receives its own design, so a registry may repeat an
 endpoint-contrast pair in different families. The effect is the mean of arm
-A minus the mean of arm B.</p>
+A minus the mean of arm B. Family and contrast labels must be nonmissing and
+nonblank, and cannot contain the reserved separator token <code>"::"</code>. This keeps
+distinct family-contrast pairs from merging into one adjustment family.</p>
     </div>
 
     <div class="section level2">

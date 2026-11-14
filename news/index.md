@@ -2,6 +2,14 @@
 
 ## phenoscapR 1.0.0
 
+- Patient-level inference rejects matrix and array columns before
+  indexing or coercion, preventing malformed patient identifiers from
+  duplicating observations and malformed endpoints or p-values from
+  being truncated. Ordinary vector inputs retain their existing
+  numerical results.
+- Contrast and family labels must be nonmissing and nonblank and cannot
+  contain the reserved token `::`. This prevents distinct registry pairs
+  from silently sharing a multiple-testing adjustment family.
 - Spatial neighbours exclude the query cell by identity, including with
   tied coordinates and phenotype filters. Distinct cells at the same
   coordinates remain neighbours. Targeted nearest-neighbour distances no

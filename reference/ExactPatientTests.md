@@ -36,10 +36,11 @@ ExactPatientTests(
 
 - endpoints:
 
-  Data frame with character `endpoint_id`, `patient_id`, numeric
-  `value`, and logical `eligible`. At most one row per endpoint and
-  patient. NA values or eligibility mark unavailable observations; NaN
-  and infinite values are rejected. Extra columns are ignored.
+  Data frame with character `endpoint_id`, `patient_id`, dimensionless
+  numeric vector `value`, and dimensionless logical vector `eligible`.
+  At most one row per endpoint and patient. NA values or eligibility
+  mark unavailable observations; NaN and infinite values are rejected.
+  Extra columns are ignored.
 
 - design:
 

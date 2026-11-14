@@ -29,12 +29,18 @@ ContrastPatientEndpoints(
 
 - data:
 
-  Wide patient table with the `id`, `group` and endpoint columns.
+  Wide patient table with the `id`, `group` and endpoint columns. The
+  `id` and `group` columns must be dimensionless atomic vectors, with
+  one value per row. Factors are supported. Each endpoint column must be
+  a dimensionless numeric vector, or an atomic vector containing only
+  NA.
 
 - registry:
 
   Data frame with one row per hypothesis and the `endpoint`, `contrast`
-  and `family` columns. Extra columns are ignored.
+  and `family` columns. These columns must be dimensionless atomic
+  vectors with one value per row; factors are supported. Extra columns
+  are ignored.
 
 - contrasts:
 
@@ -83,7 +89,10 @@ in registry order. Pass it to
 
 Each hypothesis receives its own design, so a registry may repeat an
 endpoint-contrast pair in different families. The effect is the mean of
-arm A minus the mean of arm B.
+arm A minus the mean of arm B. Family and contrast labels must be
+nonmissing and nonblank, and cannot contain the reserved separator token
+`"::"`. This keeps distinct family-contrast pairs from merging into one
+adjustment family.
 
 ## Examples
 

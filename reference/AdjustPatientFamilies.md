@@ -19,8 +19,8 @@ AdjustPatientFamilies(tests, policy, method = c("BH", "BY"))
 - tests:
 
   Data frame containing character `hypothesis_id`, `family_id`, and
-  numeric `p_value`. All declared hypotheses must be present exactly
-  once.
+  dimensionless numeric vector `p_value`. All declared hypotheses must
+  be present exactly once.
 
 - policy:
 
