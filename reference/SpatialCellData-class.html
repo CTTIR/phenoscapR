@@ -85,7 +85,9 @@ coordinate/metadata row counts must agree even for empty objects.</p>
 
 <dt><code>coords</code></dt>
 <dd><p>Data frame with columns <code>x</code> and <code>y</code> holding
-spatial coordinates for each cell.</p></dd>
+spatial coordinates for each cell. Two-dimensional spatial analyses select
+these axes by name, independently of column order. Additional coordinate
+columns are retained in the object but do not enter those analyses.</p></dd>
 
 
 <dt><code>meta_data</code></dt>

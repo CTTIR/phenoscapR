@@ -2,6 +2,12 @@
 
 ## phenoscapR 1.0.0
 
+- Two-dimensional object analyses now project only the named x/y axes.
+  Extra coordinate metadata and column order no longer alter neighbor
+  geometry, weighting, clustering or graph calculations across native
+  and fallback search engines; the original coordinate table remains
+  stored unchanged.
+
 - Differential abundance rejects incomplete or dimensioned labels
   instead of silently excluding unknown phenotypes from denominators.
   Its declared replication unit remains the sample; descriptive

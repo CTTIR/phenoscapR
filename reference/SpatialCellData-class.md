@@ -28,7 +28,9 @@ and coordinate/metadata row counts must agree even for empty objects.
 - `coords`:
 
   Data frame with columns `x` and `y` holding spatial coordinates for
-  each cell.
+  each cell. Two-dimensional spatial analyses select these axes by name,
+  independently of column order. Additional coordinate columns are
+  retained in the object but do not enter those analyses.
 
 - `meta_data`:
 
