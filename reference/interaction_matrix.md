@@ -2,6 +2,11 @@
 
 Computes a pairwise interaction matrix between phenotypes based on
 observed versus expected neighbour frequencies within a given radius.
+Expected counts multiply the two phenotype frequencies within each
+sample by that sample's total observed directed neighbour count, then
+sum across samples. This analytic frequency model is distinct from the
+fixed-label permutation null available through
+[`InteractionMatrix()`](https://cttir.github.io/phenoscapR/reference/InteractionMatrix.md).
 
 ## Usage
 
@@ -13,7 +18,9 @@ interaction_matrix(dt, radius)
 
 - dt:
 
-  A `data.table` with columns `x`, `y`, `phenotype`, and `sample_id`.
+  A `data.table` with columns `x`, `y`, `phenotype`, and optional
+  `sample_id`. An absent sample column means one sample; a present
+  column must contain complete, nonblank identifiers.
 
 - radius:
 
@@ -24,6 +31,9 @@ interaction_matrix(dt, radius)
 A `data.table` in long format with columns `from`, `to`, `observed`,
 `expected`, and `interaction_score` (log2 observed/expected). Positive
 values indicate spatial attraction; negative values indicate avoidance.
+Zero observed counts with positive expectation yield `-Inf` (complete
+avoidance). When expectation is zero, the historical score convention is
+zero.
 
 ## Examples
 

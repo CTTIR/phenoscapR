@@ -277,8 +277,12 @@ follicle, the T-cell zone) is immediately visible.</p>
 phenotype pair sits within <code>radius</code> of one another versus
 what random mixing would predict. The score is
 <code>log2(observed / expected)</code> — positive means attraction,
-negative means avoidance. Neighbours are <strong>never</strong> counted
-across samples.</p>
+negative means avoidance. Zero observations with positive expectation
+give negative infinity (complete avoidance); zero expectation retains
+the historical score convention of zero. Heatmaps display infinite
+scores at the colour scale limits and identify this in their caption,
+while preserving the raw scores. Neighbours are <strong>never</strong>
+counted across samples.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">im</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/InteractionMatrix.html">InteractionMatrix</a></span><span class="op">(</span><span class="va">obj</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">im</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">im</span><span class="op">$</span><span class="va">interaction_score</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>

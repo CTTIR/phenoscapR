@@ -121,9 +121,9 @@ InteractionMatrix(a, radius = 40, method = "permutation", n_perm = 99,
 #>   strongest attractions:
 #>    from          to interaction_score
 #>  B cell      B cell         2.4380689
-#>  B cell  Epithelial         0.0000000
-#>  B cell T cytotoxic         0.0000000
 #>  B cell  Macrophage        -0.1477536
+#>  B cell  Epithelial              -Inf
+#>  B cell T cytotoxic              -Inf
 ```
 
 ### PCA variance

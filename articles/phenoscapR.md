@@ -214,7 +214,11 @@ within radius 40.](phenoscapR_files/figure-html/nn-density-1.png)
 counts, per sample, how often each phenotype pair sits within `radius`
 of one another versus what random mixing would predict. The score is
 `log2(observed / expected)` — positive means attraction, negative means
-avoidance. Neighbours are **never** counted across samples.
+avoidance. Zero observations with positive expectation give negative
+infinity (complete avoidance); zero expectation retains the historical
+score convention of zero. Heatmaps display infinite scores at the colour
+scale limits and identify this in their caption, while preserving the
+raw scores. Neighbours are **never** counted across samples.
 
 ``` r
 

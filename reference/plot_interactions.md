@@ -1,6 +1,8 @@
 # Plot Interaction Heatmap
 
-Visualises the spatial interaction matrix as a heatmap.
+Visualises the spatial interaction matrix as a heatmap. Infinite scores
+are displayed at colour scale endpoints with an explanatory caption; the
+raw scores are preserved.
 
 ## Usage
 

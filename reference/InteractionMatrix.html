@@ -95,7 +95,9 @@ each sample, adding <code>z_score</code> and <code>p_value</code> columns.</p></
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data frame with columns <code>from</code>, <code>to</code>, <code>observed</code>,
 <code>expected</code>, and <code>interaction_score</code>; the permutation method adds
-<code>z_score</code> and <code>p_value</code>.</p>
+<code>z_score</code> and <code>p_value</code>. Scores are log2 observed/expected:
+zero observations with positive expectation give negative infinity;
+zero expectation retains the historical zero-score convention.</p>
     </div>
 
     <div class="section level2">

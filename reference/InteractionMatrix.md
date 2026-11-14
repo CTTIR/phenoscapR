@@ -46,7 +46,9 @@ InteractionMatrix(
 
 A data frame with columns `from`, `to`, `observed`, `expected`, and
 `interaction_score`; the permutation method adds `z_score` and
-`p_value`.
+`p_value`. Scores are log2 observed/expected: zero observations with
+positive expectation give negative infinity; zero expectation retains
+the historical zero-score convention.
 
 ## Examples
 

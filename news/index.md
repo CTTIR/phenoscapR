@@ -2,6 +2,15 @@
 
 ## phenoscapR 1.0.0
 
+- Interaction scores now preserve complete avoidance as negative
+  infinity when observed counts are zero and expected counts are
+  positive, in both analytic and permutation methods. Present sample
+  identifiers must be complete and nonblank; the optional missing-column
+  single-sample convention is retained. Heatmaps identify infinite
+  scores at colour scale endpoints while retaining the raw values.
+  Permutation calculations now return zero counts for samples with no
+  eligible neighbour edges.
+
 - Standalone nearest-neighbour and density tables now require explicit
   complete sample identifiers and finite coordinates, rejecting
   malformed columns before any rows can disappear. Empty tables preserve
