@@ -121,6 +121,20 @@ must be complete, nonblank vectors; validation precedes per-sample tests.</p></d
 <code>z_score</code>, <code>p_value</code>, and <code>method</code> (<code>"analytic"</code> or
 <code>"permutation"</code>).</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The analytic calculation uses the normality variance for symmetric
+binary weights. Permutation p-values count two-sided deviations from the
+theoretical expectation <code>-1 / (n - 1)</code>, including numerical ties, with one
+added to both the tail count and number of permutations. The comparison
+tolerance is <code>8 * n * .Machine$double.eps * max(1, abs(I), abs(expected), abs(permuted I))</code>; it acts on the dimensionless statistic, not feature units.
+Permutation z-scores instead use the sampled null mean and standard deviation.
+A sampled standard deviation within this tolerance is reported as zero:
+z is zero when the observation matches the sampled mean within tolerance,
+otherwise z is unavailable (<code>NA</code>). The empirical p-value remains defined
+independently of z. Constant features and graphs without any edges yield
+unavailable statistics and inference.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

@@ -2,6 +2,11 @@
 
 ## phenoscapR 1.0.0
 
+- Treat machine-precision Moran permutation ties consistently,
+  preserving two-sided theoretical-expectation centering and the Monte
+  Carlo correction. Numerically constant sampled nulls no longer produce
+  artificial z-scores or scale-dependent tail probabilities.
+
 - Preserve extra Seurat coordinate annotations by cell-name mapping
   while exporting only named x/y to the spatial reduction; refuse
   conflicting metadata instead of overwriting it. SpatialExperiment

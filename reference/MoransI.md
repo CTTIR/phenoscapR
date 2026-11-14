@@ -70,6 +70,22 @@ MoransI(
 A list with `I`, `expected`, `variance`, `z_score`, `p_value`, and
 `method` (`"analytic"` or `"permutation"`).
 
+## Details
+
+The analytic calculation uses the normality variance for symmetric
+binary weights. Permutation p-values count two-sided deviations from the
+theoretical expectation `-1 / (n - 1)`, including numerical ties, with
+one added to both the tail count and number of permutations. The
+comparison tolerance is
+`8 * n * .Machine$double.eps * max(1, abs(I), abs(expected), abs(permuted I))`;
+it acts on the dimensionless statistic, not feature units. Permutation
+z-scores instead use the sampled null mean and standard deviation. A
+sampled standard deviation within this tolerance is reported as zero: z
+is zero when the observation matches the sampled mean within tolerance,
+otherwise z is unavailable (`NA`). The empirical p-value remains defined
+independently of z. Constant features and graphs without any edges yield
+unavailable statistics and inference.
+
 ## Examples
 
 ``` r
