@@ -38,3 +38,24 @@
   }
   invisible(NULL)
 }
+
+# Project only named axes for the package's two-dimensional analyses.
+# Extra coordinate metadata stays in the object and never enters distance math.
+.spatial_xy <- function(object) {
+  coords <- object@coords
+  if (anyDuplicated(names(coords)) || !all(c("x", "y") %in% names(coords)) ||
+      nrow(coords) != NCells(object)) {
+    stop("Coordinates must contain unique x/y columns and one row per cell.",
+         call. = FALSE)
+  }
+  for (axis in c("x", "y")) {
+    value <- coords[[axis]]
+    if (!typeof(value) %in% c("integer", "double") || is.object(value) ||
+        !is.null(dim(value)) || length(value) != nrow(coords) ||
+        any(!is.finite(value))) {
+      stop("x and y must be finite real numeric vectors with one value per cell.",
+           call. = FALSE)
+    }
+  }
+  as.matrix(coords[, c("x", "y"), drop = FALSE])
+}

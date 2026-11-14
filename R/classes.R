@@ -15,7 +15,9 @@
 #'   (cells x markers). Identical to \code{counts} until
 #'   \code{\link{NormaliseData}} is called.
 #' @slot coords Data frame with columns \code{x} and \code{y} holding
-#'   spatial coordinates for each cell.
+#'   spatial coordinates for each cell. Two-dimensional spatial analyses select
+#'   these axes by name, independently of column order. Additional coordinate
+#'   columns are retained in the object but do not enter those analyses.
 #' @slot meta_data Data frame of per-cell metadata. Always contains
 #'   \code{cell_id} and \code{sample_id}. Additional columns such as
 #'   \code{cell_area}, \code{phenotype}, or \code{cluster} are added by

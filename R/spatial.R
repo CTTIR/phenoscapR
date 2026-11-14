@@ -939,7 +939,7 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
 #' @export
 SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
   method <- match.arg(method)
-  coords <- as.matrix(object@coords)
+  coords <- .spatial_xy(object)
 
   cluster_ids <- switch(method,
     kmeans = {
@@ -982,7 +982,7 @@ SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
 #'
 #' @export
 DelaunayNetwork <- function(object, max_edge = NULL) {
-  xy <- as.matrix(object@coords)
+  xy <- .spatial_xy(object)
   n <- nrow(xy)
   if (n < 3L) stop("Need at least 3 cells for triangulation.", call. = FALSE)
 
@@ -1088,7 +1088,7 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
   .assert_single_sample(object, "Neighbourhood enrichment")
   if (!is.null(seed)) set.seed(seed)
 
-  xy <- as.matrix(object@coords)
+  xy <- .spatial_xy(object)
   pheno <- object@meta_data$phenotype
   if (is.null(pheno)) {
     stop("No phenotype column. Run PhenotypeCells() first.", call. = FALSE)
@@ -1170,7 +1170,7 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
     }))
   }
   .assert_single_sample(object, "Ripley's K")
-  xy <- as.matrix(object@coords)
+  xy <- .spatial_xy(object)
 
   if (!is.null(target)) {
     idx <- which(object@meta_data$phenotype == target)
@@ -1318,7 +1318,7 @@ MoransI <- function(object, feature, radius, slot = "data",
   }
   .assert_single_sample(object, "Moran's I")
 
-  xy <- as.matrix(object@coords)
+  xy <- .spatial_xy(object)
   n <- as.numeric(length(x))   # double throughout: n^2 overflows integer at ~46k
   xbar <- mean(x)
   dx <- x - xbar
@@ -1412,7 +1412,7 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
     }))
   }
   .assert_single_sample(object, "Quadrat analysis")
-  xy <- as.matrix(object@coords)
+  xy <- .spatial_xy(object)
 
   if (!is.null(target)) {
     idx <- which(object@meta_data$phenotype == target)
@@ -1474,7 +1474,7 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
     }))
   }
   .assert_single_sample(object, "The pair correlation function")
-  xy <- as.matrix(object@coords)
+  xy <- .spatial_xy(object)
 
   if (!is.null(target)) {
     idx <- which(object@meta_data$phenotype == target)
@@ -1545,7 +1545,7 @@ CrossNNDistance <- function(object, from, to, by_sample = FALSE) {
     }))
   }
   .assert_single_sample(object, "Cross nearest-neighbour distance")
-  xy <- as.matrix(object@coords)
+  xy <- .spatial_xy(object)
   pheno <- object@meta_data$phenotype
 
   from_idx <- which(pheno == from)

@@ -1,5 +1,7 @@
 # phenoscapR 1.0.0
 
+- Two-dimensional object analyses now project only the named x/y axes. Extra coordinate metadata and column order no longer alter neighbor geometry, weighting, clustering or graph calculations across native and fallback search engines; the original coordinate table remains stored unchanged.
+
 - Differential abundance rejects incomplete or dimensioned labels instead of silently excluding unknown phenotypes from denominators. Its declared replication unit remains the sample; descriptive summaries retain unknown categories. Section composition rejects malformed cell/area/flag columns, invalid area divisors and undefined aggregate density areas, and enforces registered subset membership. Missing areas remain unsupported; no imputation is introduced.
 
 - Singleton samples no longer contribute zero vectors to neighborhood clustering. Their cells retain NA neighborhood labels and explicit availability records; centers use only defined cell compositions. Empty/all-singleton inputs return zero-row centers without RNG use, and the app reports unavailable compositions explicitly.

@@ -79,6 +79,7 @@ CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
   comp <- matrix(NA_real_, nrow = NCells(object), ncol = length(phenos),
                  dimnames = list(NULL, phenos))
 
+  xy <- .spatial_xy(object)
   available <- rep(FALSE, NCells(object))
   samples <- unique(object@meta_data$sample_id)
   for (s in samples) {
@@ -86,7 +87,7 @@ CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
     if (length(rows) < 2L) next
     available[rows] <- TRUE
     kk <- min(k, length(rows) - 1L)
-    kn <- .knn_index(as.matrix(object@coords[rows, , drop = FALSE]), kk)
+    kn <- .knn_index(xy[rows, , drop = FALSE], kk)
     nbr_labels <- matrix(pheno[rows][kn$idx], nrow = length(rows))
     for (p in phenos) {
       comp[rows, p] <- rowMeans(nbr_labels == p)
@@ -162,6 +163,7 @@ SpatialDomains <- function(object, n_domains = 6L, k = 20L, slot = "data",
   if (!is.null(markers)) {
     mat <- mat[, intersect(markers, colnames(mat)), drop = FALSE]
   }
+  xy <- .spatial_xy(object)
   smoothed <- matrix(0, nrow = nrow(mat), ncol = ncol(mat),
                      dimnames = dimnames(mat))
 
@@ -173,7 +175,7 @@ SpatialDomains <- function(object, n_domains = 6L, k = 20L, slot = "data",
       next
     }
     kk <- min(k, length(rows) - 1L)
-    kn <- .knn_index(as.matrix(object@coords[rows, , drop = FALSE]), kk)
+    kn <- .knn_index(xy[rows, , drop = FALSE], kk)
     acc <- E
     for (j in seq_len(ncol(kn$idx))) {
       acc <- acc + E[kn$idx[, j], , drop = FALSE]
