@@ -47,13 +47,25 @@ CellularNeighbourhoods(
 
 The object with a `neighbourhood` column in `meta_data`; the
 neighbourhood-by-phenotype composition matrix is stored in
-`object@spatial$neighbourhood_composition`.
+`object@spatial$neighbourhood_composition`. Availability is recorded in
+`object@spatial$neighbourhood_availability`: `per_cell` retains
+cell/sample IDs, input `row_index` and status (`defined` or
+`no_neighbors`); `by_sample` reports `n_total`, `n_defined` and
+`n_unavailable`. The `weighting` field records `cell`. Existing metadata
+other than the neighbourhood label is preserved.
 
 ## Details
 
 Sample identifiers and phenotype labels must be complete, nonblank
 vectors. Counts and k must be positive whole numbers; malformed inputs
-are rejected before clustering or changing the random state.
+are rejected before clustering or changing the random state. Cells in
+singleton samples have no neighbour composition: they retain their row
+and receive an `NA` neighbourhood label, and are excluded from
+clustering. Centres are cell-weighted means of defined composition
+vectors, not equal-sample means. The requested number of centres cannot
+exceed the distinct defined vectors. With no defined vectors (including
+empty input), no clustering or random draws occur and the centre matrix
+has zero rows.
 
 ## Examples
 

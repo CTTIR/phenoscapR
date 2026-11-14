@@ -107,13 +107,24 @@ column.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The object with a <code>neighbourhood</code> column in <code>meta_data</code>;
 the neighbourhood-by-phenotype composition matrix is stored in
-<code>object@spatial$neighbourhood_composition</code>.</p>
+<code>object@spatial$neighbourhood_composition</code>. Availability is recorded
+in <code>object@spatial$neighbourhood_availability</code>: <code>per_cell</code> retains cell/sample
+IDs, input <code>row_index</code> and status (<code>defined</code> or <code>no_neighbors</code>); <code>by_sample</code>
+reports <code>n_total</code>, <code>n_defined</code> and <code>n_unavailable</code>. The <code>weighting</code> field
+records <code>cell</code>. Existing metadata other than the neighbourhood label is
+preserved.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Sample identifiers and phenotype labels must be complete, nonblank
 vectors. Counts and k must be positive whole numbers; malformed inputs are
-rejected before clustering or changing the random state.</p>
+rejected before clustering or changing the random state. Cells in singleton
+samples have no neighbour composition: they retain their row and receive
+an <code>NA</code> neighbourhood label, and are excluded from clustering. Centres are
+cell-weighted means of defined composition vectors, not equal-sample means.
+The requested number of centres cannot exceed the distinct defined vectors.
+With no defined vectors (including empty input), no clustering or random
+draws occur and the centre matrix has zero rows.</p>
     </div>
 
     <div class="section level2">
