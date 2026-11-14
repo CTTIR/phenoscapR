@@ -19,19 +19,24 @@ SummarizeCellComposition(
 \arguments{
 \item{cells}{Cell table (one section).}
 
-\item{type}{Cell-type column; every value must be in \code{levels}.}
+\item{type}{Dimensionless cell-type vector column with one value per cell;
+every value must be in \code{levels}.}
 
 \item{levels}{Character vector: the complete type registry (zero counts
 are reported).}
 
-\item{area}{Optional column summed over all cells into the section area;
-adds density rows.}
+\item{area}{Optional plain finite nonnegative numeric vector column summed
+over all cells into the section area; adds density rows. Missing values,
+factors and matrix columns are rejected. The scaled total must be strictly
+positive and finite for density; individual zero areas remain allowed.}
 
-\item{area_divisor}{Divisor applied to the summed area.}
+\item{area_divisor}{Positive finite numeric scalar applied to the summed area.}
 
 \item{fractions}{Optional named list of subset fractions. Each element is a
 list with \code{numerator} (types), \code{denominator} (types) and optional \code{flag}
-(name of a logical or 0/1 column that numerator cells must have set).}
+(name of a plain logical or 0/1 vector column that numerator cells must have
+set). All types must be registered, and numerator types must be a subset
+of denominator types; this interface does not compute arbitrary ratios.}
 
 \item{percent}{Express fractions in percent.}
 

@@ -292,7 +292,9 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
 
 #' Summarise Phenotype Proportions
 #'
-#' Computes phenotype frequencies and proportions per sample.
+#' Computes phenotype frequencies and proportions per sample. Missing phenotype
+#' labels are retained as an explicit unknown category and remain in the sample
+#' denominator. This descriptive summary does not test differential abundance.
 #'
 #' @param dt A `data.table` with a `phenotype` column, as returned by
 #'   [phenotype_cells()].
@@ -448,7 +450,9 @@ PhenotypeCells <- function(object, thresholds, labels = NULL) {
 
 #' Phenotype Summary (SpatialCellData)
 #'
-#' Computes phenotype counts and proportions per sample.
+#' Computes phenotype counts and proportions per sample. Missing phenotype
+#' labels remain an explicit unknown category in the denominator; this is a
+#' descriptive summary, not differential abundance inference.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #'

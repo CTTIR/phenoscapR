@@ -19,7 +19,9 @@ samples.}
 (constant within a sample). Missing or empty conditions and sample IDs
 are rejected, as are conflicting conditions within a sample.}
 
-\item{phenotype_col}{Character. Phenotype column. Default \code{"phenotype"}.}
+\item{phenotype_col}{Character. Complete, nonblank phenotype vector column.
+Default \code{"phenotype"}. Selected metadata columns must have one
+dimensionless value per cell.}
 
 \item{test}{Character. \code{"wilcox"} (default) or \code{"t"} for two groups;
 \code{"kruskal"} for more than two.}
@@ -34,6 +36,10 @@ Tests whether the proportion of each phenotype differs between experimental
 conditions. Proportions are computed per sample (the unit of replication),
 then compared across the condition groups, so the test respects the
 sample-level design rather than treating individual cells as independent.
+Sample IDs define the replication unit; patient IDs are not inferred or
+aggregated automatically. The caller must supply independent sampling units.
+Incomplete phenotype labels are rejected rather than silently changing the
+denominator to only labeled cells.
 }
 \examples{
 data(phenoscapR_example)

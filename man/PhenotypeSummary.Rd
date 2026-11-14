@@ -14,7 +14,9 @@ A data frame with columns \code{sample_id}, \code{phenotype},
 \code{count}, and \code{proportion}.
 }
 \description{
-Computes phenotype counts and proportions per sample.
+Computes phenotype counts and proportions per sample. Missing phenotype
+labels remain an explicit unknown category in the denominator; this is a
+descriptive summary, not differential abundance inference.
 }
 \examples{
 counts <- matrix(c(rnorm(15, 5), rnorm(15, 1)), ncol = 2,

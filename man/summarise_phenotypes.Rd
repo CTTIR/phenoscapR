@@ -15,7 +15,9 @@ A \code{data.table} with columns \code{sample_id}, \code{phenotype}, \code{count
 and \code{proportion}.
 }
 \description{
-Computes phenotype frequencies and proportions per sample.
+Computes phenotype frequencies and proportions per sample. Missing phenotype
+labels are retained as an explicit unknown category and remain in the sample
+denominator. This descriptive summary does not test differential abundance.
 }
 \examples{
 dt <- data.table::data.table(

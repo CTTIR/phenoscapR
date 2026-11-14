@@ -8,13 +8,19 @@
 #' conditions. Proportions are computed per sample (the unit of replication),
 #' then compared across the condition groups, so the test respects the
 #' sample-level design rather than treating individual cells as independent.
+#' Sample IDs define the replication unit; patient IDs are not inferred or
+#' aggregated automatically. The caller must supply independent sampling units.
+#' Incomplete phenotype labels are rejected rather than silently changing the
+#' denominator to only labeled cells.
 #'
 #' @param object A \code{\link{SpatialCellData-class}} object with several
 #'   samples.
 #' @param condition Character. Metadata column giving each cell's condition
 #'   (constant within a sample). Missing or empty conditions and sample IDs
 #'   are rejected, as are conflicting conditions within a sample.
-#' @param phenotype_col Character. Phenotype column. Default \code{"phenotype"}.
+#' @param phenotype_col Character. Complete, nonblank phenotype vector column.
+#'   Default \code{"phenotype"}. Selected metadata columns must have one
+#'   dimensionless value per cell.
 #' @param test Character. \code{"wilcox"} (default) or \code{"t"} for two groups;
 #'   \code{"kruskal"} for more than two.
 #'
@@ -36,6 +42,11 @@ DifferentialAbundance <- function(object, condition,
                                   test = c("wilcox", "t", "kruskal")) {
   test <- match.arg(test)
   md <- object@meta_data
+  for (name in list(condition, phenotype_col)) {
+    if (!.an_name(name) || !is.null(dim(name))) {
+      stop("Selected columns must be nonblank scalar character names.", call. = FALSE)
+    }
+  }
   if (!condition %in% names(md)) {
     stop("Condition column '", condition, "' not found.", call. = FALSE)
   }
@@ -43,6 +54,17 @@ DifferentialAbundance <- function(object, condition,
     stop("Phenotype column '", phenotype_col, "' not found.", call. = FALSE)
   }
 
+  for (name in c("sample_id", condition, phenotype_col)) {
+    values <- md[[name]]
+    if (!is.atomic(values) || !is.null(dim(values)) || length(values) != nrow(md)) {
+      stop(name, " must be a dimensionless vector with one value per cell.", call. = FALSE)
+    }
+  }
+  phenotypes <- as.character(md[[phenotype_col]])
+  if (anyNA(phenotypes) || any(!nzchar(trimws(phenotypes)))) {
+    stop("Every cell must have a complete, nonblank phenotype before differential abundance testing.",
+         call. = FALSE)
+  }
   sample_ids <- .spatial_sample_ids(md, nrow(md))
   conditions <- as.character(md[[condition]])
   if (anyNA(conditions) || any(!nzchar(trimws(conditions)))) {

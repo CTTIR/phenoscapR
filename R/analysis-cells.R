@@ -98,15 +98,20 @@ SummarizeNearestDistances <- function(cells, from, to, x = "x", y = "y", type = 
 #' from exact counts with [SummarizeGroupedCountFractions()].
 #'
 #' @param cells Cell table (one section).
-#' @param type Cell-type column; every value must be in `levels`.
+#' @param type Dimensionless cell-type vector column with one value per cell;
+#'   every value must be in `levels`.
 #' @param levels Character vector: the complete type registry (zero counts
 #'   are reported).
-#' @param area Optional column summed over all cells into the section area;
-#'   adds density rows.
-#' @param area_divisor Divisor applied to the summed area.
+#' @param area Optional plain finite nonnegative numeric vector column summed
+#'   over all cells into the section area; adds density rows. Missing values,
+#'   factors and matrix columns are rejected. The scaled total must be strictly
+#'   positive and finite for density; individual zero areas remain allowed.
+#' @param area_divisor Positive finite numeric scalar applied to the summed area.
 #' @param fractions Optional named list of subset fractions. Each element is a
 #'   list with `numerator` (types), `denominator` (types) and optional `flag`
-#'   (name of a logical or 0/1 column that numerator cells must have set).
+#'   (name of a plain logical or 0/1 vector column that numerator cells must have
+#'   set). All types must be registered, and numerator types must be a subset
+#'   of denominator types; this interface does not compute arbitrary ratios.
 #' @param percent Express fractions in percent.
 #' @param prefix Named character vector with prefixes of the `fraction` and
 #'   `density` endpoint names (followed by the type).
@@ -135,7 +140,10 @@ SummarizeCellComposition <- function(cells, type, levels, area = NULL, area_divi
                all(c("cells", "area") %in% names(totals)), "Invalid prefix or totals")
   flags <- unique(unlist(lapply(fractions, function(f) f$flag)))
   .an_require(cells, c(type, area, flags), "cells")
-  lab <- as.character(cells[[type]])
+  labels <- cells[[type]]
+  .an_assert(is.atomic(labels) && is.null(dim(labels)) && length(labels) == nrow(cells),
+             "Cell types must be a dimensionless vector with one value per cell")
+  lab <- as.character(labels)
   .an_assert(!anyNA(lab) && all(lab %in% levels), "Cell types outside the registry")
   n <- length(lab)
   count <- as.numeric(table(factor(lab, levels = levels)))
@@ -150,15 +158,25 @@ SummarizeCellComposition <- function(cells, type, levels, area = NULL, area_divi
       f <- fractions[[k]]
       .an_assert(!is.null(f$numerator) && !is.null(f$denominator),
                  paste("Fraction", k, "needs numerator and denominator types"))
-      hit <- lab %in% unlist(f$numerator)
+      numerator_types <- as.character(unlist(f$numerator))
+      denominator_types <- as.character(unlist(f$denominator))
+      .an_assert(!anyNA(numerator_types) && !anyNA(denominator_types) &&
+                   all(c(numerator_types, denominator_types) %in% levels),
+                 paste("Fraction", k, "types must be registered"))
+      .an_assert(all(numerator_types %in% denominator_types),
+                 paste("Fraction", k, "numerator types must be a subset of denominator types"))
+      hit <- lab %in% numerator_types
       if (!is.null(f$flag)) {
+        .an_assert(.an_name(f$flag) && is.null(dim(f$flag)), "Flag must name one column")
         v <- cells[[f$flag]]
-        .an_assert((is.logical(v) || is.numeric(v)) && !anyNA(v) && all(v %in% c(0, 1)),
+        .an_assert(typeof(v) %in% c("logical", "integer", "double") &&
+                     !is.object(v) && is.null(dim(v)) && length(v) == nrow(cells) &&
+                     !anyNA(v) && all(v %in% c(0, 1)),
                    paste("Flag", f$flag, "must be logical or 0/1"))
         hit <- hit & as.logical(v)
       }
       num <- c(num, sum(hit))
-      den <- c(den, sum(lab %in% unlist(f$denominator)))
+      den <- c(den, sum(lab %in% denominator_types))
       endpoints <- c(endpoints, k)
     }
   }
@@ -176,9 +194,18 @@ SummarizeCellComposition <- function(cells, type, levels, area = NULL, area_divi
   extra <- data.frame(endpoint = totals[["cells"]], measure = "total", numerator = n,
                       denominator = NA_real_, value = n, stringsAsFactors = FALSE)
   if (!is.null(area)) {
-    a <- as.numeric(cells[[area]])
-    .an_assert(all(is.finite(a) & a >= 0), "Areas must be finite and nonnegative")
+    .an_assert(.an_name(area) && is.null(dim(area)), "Area must name one column")
+    .an_assert(typeof(area_divisor) %in% c("integer", "double") &&
+                 !is.object(area_divisor) && is.null(dim(area_divisor)) &&
+                 length(area_divisor) == 1L && is.finite(area_divisor) && area_divisor > 0,
+               "area_divisor must be one positive finite number")
+    a <- cells[[area]]
+    .an_assert(typeof(a) %in% c("integer", "double") && !is.object(a) &&
+                 is.null(dim(a)) && length(a) == nrow(cells) && all(is.finite(a) & a >= 0),
+               "Areas must be plain finite nonnegative vectors with one value per cell")
     total <- sum(a) / area_divisor
+    .an_assert(is.finite(total) && total > 0,
+               "Density requires a positive finite aggregate area")
     density <- data.frame(endpoint = paste0(prefix[["density"]], levels), measure = "density",
                           numerator = count, denominator = total, value = count / total,
                           stringsAsFactors = FALSE)
