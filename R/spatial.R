@@ -784,6 +784,12 @@ CellDensity <- function(object, radius, target = NULL) {
 #'   \code{z_score} and \code{p_value}. Scores are log2 observed/expected:
 #'   zero observations with positive expectation give negative infinity;
 #'   zero expectation retains the historical zero-score convention.
+#'   Permutation `p_value` is a two-sided normal approximation from `z_score`,
+#'   not an empirical permutation tail probability. If the sampled null has
+#'   zero variance but its mean differs from the observed count, both `z_score`
+#'   and `p_value` are `NA`. A zero-variance sampled null whose mean matches
+#'   the observation retains the compatibility convention `z_score = 0`,
+#'   `p_value = 1`.
 #'
 #' @examples
 #' set.seed(42)
@@ -860,7 +866,11 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
   mean_exp <- rowMeans(perms)
   sd_exp <- apply(perms, 1L, stats::sd)
   obs_v <- as.vector(obs)
-  z <- ifelse(sd_exp > 0, (obs_v - mean_exp) / sd_exp, 0)
+  z <- rep(NA_real_, length(obs_v))
+  varying <- is.finite(sd_exp) & sd_exp > 0
+  z[varying] <- (obs_v[varying] - mean_exp[varying]) / sd_exp[varying]
+  matching <- is.finite(sd_exp) & sd_exp == 0 & obs_v == mean_exp
+  z[matching] <- 0
 
   data.frame(
     from = rep(phenotypes, each = np),

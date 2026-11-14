@@ -1,5 +1,7 @@
 # phenoscapR 1.0.0
 
+- Permutation interaction results no longer report neutral z=0/p=1 when sampled null counts have zero variance but differ from the observation: those undefined normal-approximation statistics are now NA. Matching zero-variance sampled nulls and positive-variance formulas retain their existing behavior.
+
 - Interaction calculations now validate nonnegative finite radii before geometry shortcuts and validate permutation counts and signed integer seeds before coercion or RNG changes. At least two permutations are required for the reported variance; analytic methods continue to ignore unused permutation controls.
 
 - Interaction scores now preserve complete avoidance as negative infinity when observed counts are zero and expected counts are positive, in both analytic and permutation methods. Present sample identifiers must be complete and nonblank; the optional missing-column single-sample convention is retained. Heatmaps identify infinite scores at colour scale endpoints while retaining the raw values. Permutation calculations now return zero counts for samples with no eligible neighbour edges.

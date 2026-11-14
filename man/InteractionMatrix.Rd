@@ -36,6 +36,12 @@ A data frame with columns \code{from}, \code{to}, \code{observed},
 \code{z_score} and \code{p_value}. Scores are log2 observed/expected:
 zero observations with positive expectation give negative infinity;
 zero expectation retains the historical zero-score convention.
+Permutation \code{p_value} is a two-sided normal approximation from \code{z_score},
+not an empirical permutation tail probability. If the sampled null has
+zero variance but its mean differs from the observed count, both \code{z_score}
+and \code{p_value} are \code{NA}. A zero-variance sampled null whose mean matches
+the observation retains the compatibility convention \code{z_score = 0},
+\code{p_value = 1}.
 }
 \description{
 Computes pairwise spatial interaction scores between phenotypes.
