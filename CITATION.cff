@@ -16,6 +16,11 @@ authors:
   orcid: https://orcid.org/0000-0001-5767-7125
   affiliation: Ulm University
 version: 1.0.0
+doi: 10.5281/zenodo.21889952
 repository-code: https://github.com/CTTIR/phenoscapR
 url: https://cttir.github.io/phenoscapR/
 license: MIT
+identifiers:
+- type: doi
+  value: 10.5281/zenodo.21889952
+  description: Zenodo DOI (reserved; resolves once the record is published)
