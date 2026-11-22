@@ -191,7 +191,7 @@ CountRadiusSets(nodes, frames, "sample", "frame", "id", "x", "y",
 #> [1] "dbscan::frNN"
 #> 
 #> $backend$version
-#> [1] "1.2.7"
+#> [1] "1.3.0"
 #> 
 #> $backend$search
 #> [1] "kdtree"
@@ -206,14 +206,14 @@ CountRadiusSets(nodes, frames, "sample", "frame", "id", "x", "y",
 #> [1] "um"
 #> 
 #> $backend$description_sha256
-#> [1] "bdbfb6af0d1e05ba8c4de649e3aa0089d199f26672621187e7c4ea9b3d9f25a3"
+#> [1] "3c2ca1daa4f42713d7f1bf6eae5830ed26cc9278c69ea1fe447a0a3b59776caa"
 #> 
 #> $backend$function_sha256
-#> [1] "0a22705eae7c642abb21d9bf95a1d1e18767d73d86f058014a4c9a6495547b94"
+#> [1] "17c36532fad5e8afcfc6c3c18129a2c3d912a05b18be967d761feb016992971b"
 #> 
 #> $backend$native_sha256
 #>                                                          dbscan.so 
-#> "74f880d06549071ce25b244a1dcea31217828f062778d665ba3072e4a6d484b3" 
+#> "ccb9eb407878297df03db7332e7f05d30f3993bf987b2db74c0d967feeb750ed" 
 #> 
 #> $backend$authority
 #> [1] "CURRENT_INSTALLED_BACKEND_NOT_HISTORICAL_AUTHENTICATION"
