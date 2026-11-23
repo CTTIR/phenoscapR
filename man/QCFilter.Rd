@@ -20,7 +20,8 @@ missing area fail area thresholds.}
 
 \item{max_area}{Numeric or \code{NULL}. Maximum cell area.}
 
-\item{min_intensity}{Numeric. Minimum total marker intensity. Default \code{0}.}
+\item{min_intensity}{Numeric or \code{NULL}. Minimum total marker
+intensity. Default \code{0}; \code{NULL} applies no lower limit.}
 
 \item{max_intensity}{Numeric or \code{NULL}. Maximum total marker intensity.}
 }
@@ -30,6 +31,11 @@ A filtered \code{\link{SpatialCellData-class}} object.
 \description{
 Removes cells that fail quality control criteria based on cell area
 and/or total marker intensity.
+}
+\details{
+Each threshold is \code{NULL} or one non-missing number. A missing
+or non-numeric threshold is an error, because it would otherwise remove
+every cell.
 }
 \examples{
 counts <- matrix(rnorm(60, 5), nrow = 20,

@@ -15,6 +15,7 @@
 #' @noRd
 .detect_sep <- function(file) {
   line1 <- readLines(file, n = 1L, encoding = "UTF-8", warn = FALSE)
+  if (!length(line1)) stop("File is empty: ", file, call. = FALSE)
   line1 <- sub("^\ufeff", "", line1)
   n_semi  <- nchar(gsub("[^;]", "", line1))
   n_comma <- nchar(gsub("[^,]", "", line1))
@@ -350,6 +351,9 @@
 read_spatial <- function(path, sample_id = NULL, markers = NULL,
                          compartment = "Cell", statistic = "mean",
                          sep = "auto") {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    stop("path must be one file or directory path.", call. = FALSE)
+  }
   if (!file.exists(path)) {
     stop("Path does not exist: ", path, call. = FALSE)
   }

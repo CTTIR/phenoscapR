@@ -65,7 +65,7 @@
   }
   mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
   if (!is.null(markers)) {
-    mat <- mat[, intersect(markers, colnames(mat)), drop = FALSE]
+    mat <- mat[, .known_markers(markers, colnames(mat)), drop = FALSE]
   }
   mat
 }
@@ -82,7 +82,7 @@
 #'   rank of the data. Default \code{30}.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
 #' @param markers Character vector or \code{NULL}. Markers to use; \code{NULL}
-#'   uses all.
+#'   uses all. Names not found in the object are ignored with a warning.
 #'
 #' @return The object with a \code{"pca"} entry in its \code{reductions} slot.
 #'
@@ -99,9 +99,17 @@
 RunPCA <- function(object, n_pcs = 30L, slot = "data", markers = NULL) {
   mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
   if (!is.null(markers)) {
-    mat <- mat[, intersect(markers, colnames(mat)), drop = FALSE]
+    mat <- mat[, .known_markers(markers, colnames(mat)), drop = FALSE]
   }
   if (ncol(mat) < 1L) stop("No markers available for PCA.", call. = FALSE)
+  if (!is.numeric(n_pcs) || length(n_pcs) != 1L || is.na(n_pcs) || n_pcs < 1) {
+    stop("n_pcs must be one number of at least 1.", call. = FALSE)
+  }
+  if (nrow(mat) < 2L) stop("PCA requires at least two cells.", call. = FALSE)
+  if (any(!is.finite(mat))) {
+    stop("PCA requires complete, finite marker values; ",
+         "remove or impute missing intensities first.", call. = FALSE)
+  }
 
   n_pcs <- min(as.integer(n_pcs), ncol(mat), nrow(mat) - 1L)
   pr <- stats::prcomp(mat, center = TRUE, scale. = FALSE)

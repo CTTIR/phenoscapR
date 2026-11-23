@@ -15,7 +15,7 @@ rank of the data. Default \code{30}.}
 \item{slot}{Character. \code{"data"} (default) or \code{"counts"}.}
 
 \item{markers}{Character vector or \code{NULL}. Markers to use; \code{NULL}
-uses all.}
+uses all. Names not found in the object are ignored with a warning.}
 }
 \value{
 The object with a \code{"pca"} entry in its \code{reductions} slot.

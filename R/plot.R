@@ -121,7 +121,7 @@ FeaturePlot <- function(object, features, slot = "data", pt_size = 0.3,
       x = object@coords$x,
       y = object@coords$y,
       value = mat[, f],
-      feature = f,
+      feature = rep(f, nrow(mat)),
       stringsAsFactors = FALSE
     )
   })
@@ -191,7 +191,7 @@ ViolinPlot <- function(object, features, group_by = "phenotype",
     data.frame(
       group = groups,
       value = mat[, f],
-      feature = f,
+      feature = rep(f, nrow(mat)),
       stringsAsFactors = FALSE
     )
   })
@@ -267,7 +267,7 @@ BoxPlot <- function(object, features, group_by = "phenotype",
     data.frame(
       group = groups,
       value = mat[, f],
-      feature = f,
+      feature = rep(f, nrow(mat)),
       stringsAsFactors = FALSE
     )
   })
@@ -342,7 +342,7 @@ DotPlot <- function(object, features, group_by = "phenotype",
     for (g in grp_levels) {
       vals <- mat[groups == g, f]
       records[[length(records) + 1L]] <- data.frame(
-        feature = f,
+        feature = rep(f, nrow(mat)),
         group = g,
         avg_exp = mean(vals, na.rm = TRUE),
         pct_exp = 100 * mean(vals > threshold, na.rm = TRUE),
@@ -474,7 +474,7 @@ RidgePlot <- function(object, features, group_by = "phenotype",
     data.frame(
       group = groups,
       value = mat[, f],
-      feature = f,
+      feature = rep(f, nrow(mat)),
       stringsAsFactors = FALSE
     )
   })
@@ -622,7 +622,8 @@ InteractionPlot <- function(interactions, title = NULL) {
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object with a
 #'   \code{phenotype} column.
 #' @param markers Character vector or \code{NULL}. Markers to include. If
-#'   \code{NULL}, all markers are shown.
+#'   \code{NULL}, all markers are shown. Names not found in the object are
+#'   ignored with a warning.
 #' @param slot Character. Data slot to use: \code{"data"} (default) or
 #'   \code{"counts"}.
 #' @param palette Character or character vector. Default \code{NULL}
@@ -649,12 +650,15 @@ MarkerHeatmap <- function(object, markers = NULL, slot = "data",
   }
 
   mat <- GetData(object, slot = slot)
-  cols <- if (!is.null(markers)) intersect(markers, colnames(mat)) else colnames(mat)
+  cols <- if (!is.null(markers)) .known_markers(markers, colnames(mat)) else colnames(mat)
   if (length(cols) == 0L) stop("No marker columns found.", call. = FALSE)
 
   mat <- mat[, cols, drop = FALSE]
   pheno <- object@meta_data$phenotype
   phenotypes <- sort(unique(pheno))
+  if (!length(phenotypes)) {
+    stop("No cells with a phenotype to summarise.", call. = FALSE)
+  }
 
   means <- do.call(rbind, lapply(phenotypes, function(ph) {
     colMeans(mat[pheno == ph, , drop = FALSE], na.rm = TRUE)

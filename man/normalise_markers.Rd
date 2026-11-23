@@ -19,7 +19,8 @@ normalisation scales average ranks to \verb{[0, 1]}; a sole observed value is
 assigned 0.5, as for a constant marker with several observations.}
 
 \item{markers}{Character vector or \code{NULL}. Marker columns to normalise.
-If \code{NULL}, all detected marker columns are normalised.}
+If \code{NULL}, all detected marker columns are normalised. Names not found in
+\code{dt} are ignored with a warning.}
 }
 \value{
 A \code{data.table} with normalised marker intensities.

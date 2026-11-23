@@ -8,9 +8,14 @@
 #'   threshold, or with a missing area, are removed.
 #' @param max_area Numeric or `NULL`. Maximum cell area. Cells above this
 #'   threshold are removed.
-#' @param min_intensity Numeric. Minimum total marker intensity. Cells with
-#'   total intensity below this value are removed. Default `0`.
+#' @param min_intensity Numeric or `NULL`. Minimum total marker intensity.
+#'   Cells with total intensity below this value are removed. Default `0`;
+#'   `NULL` applies no lower limit.
 #' @param max_intensity Numeric or `NULL`. Maximum total marker intensity.
+#'
+#' @details Each threshold is `NULL` or one non-missing number. A missing or
+#'   non-numeric threshold is an error, because it would otherwise remove every
+#'   cell.
 #'
 #' @return A filtered `data.table`.
 #'
@@ -52,13 +57,26 @@ qc_filter <- function(dt, min_area = NULL, max_area = NULL,
 .qc_keep_mask <- function(n, area = NULL, total = NULL, min_area = NULL,
                           max_area = NULL, min_intensity = 0,
                           max_intensity = NULL) {
+  # A missing or non-numeric threshold compares as NA (or as text) and would
+  # silently remove every cell; reject it instead.
+  thresholds <- list(min_area = min_area, max_area = max_area,
+                     min_intensity = min_intensity,
+                     max_intensity = max_intensity)
+  for (name in names(thresholds)) {
+    value <- thresholds[[name]]
+    if (is.null(value)) next
+    if (!typeof(value) %in% c("integer", "double") || is.object(value) ||
+        length(value) != 1L || !is.null(dim(value)) || is.na(value)) {
+      stop(name, " must be NULL or one non-missing number.", call. = FALSE)
+    }
+  }
   keep <- rep(TRUE, n)
   if (!is.null(area)) {
     if (!is.null(min_area)) keep <- keep & area >= min_area
     if (!is.null(max_area)) keep <- keep & area <= max_area
   }
   if (!is.null(total)) {
-    keep <- keep & total >= min_intensity
+    if (!is.null(min_intensity)) keep <- keep & total >= min_intensity
     if (!is.null(max_intensity)) keep <- keep & total <= max_intensity
   }
   # A missing area cannot pass an area threshold (data.table drops such rows too).
@@ -80,7 +98,8 @@ qc_filter <- function(dt, min_area = NULL, max_area = NULL,
 #'   normalisation scales average ranks to `[0, 1]`; a sole observed value is
 #'   assigned 0.5, as for a constant marker with several observations.
 #' @param markers Character vector or `NULL`. Marker columns to normalise.
-#'   If `NULL`, all detected marker columns are normalised.
+#'   If `NULL`, all detected marker columns are normalised. Names not found in
+#'   `dt` are ignored with a warning.
 #'
 #' @return A `data.table` with normalised marker intensities.
 #'
@@ -101,7 +120,7 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
   dt <- data.table::copy(dt)
 
   cols <- if (!is.null(markers)) {
-    intersect(markers, names(dt))
+    .known_markers(markers, names(dt))
   } else {
     .marker_columns(dt)
   }
@@ -343,8 +362,13 @@ summarise_phenotypes <- function(dt) {
 #' @param min_area Numeric or \code{NULL}. Minimum cell area; cells with a
 #'   missing area fail area thresholds.
 #' @param max_area Numeric or \code{NULL}. Maximum cell area.
-#' @param min_intensity Numeric. Minimum total marker intensity. Default \code{0}.
+#' @param min_intensity Numeric or \code{NULL}. Minimum total marker
+#'   intensity. Default \code{0}; \code{NULL} applies no lower limit.
 #' @param max_intensity Numeric or \code{NULL}. Maximum total marker intensity.
+#'
+#' @details Each threshold is \code{NULL} or one non-missing number. A missing
+#'   or non-numeric threshold is an error, because it would otherwise remove
+#'   every cell.
 #'
 #' @return A filtered \code{\link{SpatialCellData-class}} object.
 #'
@@ -385,7 +409,8 @@ QCFilter <- function(object, min_area = NULL, max_area = NULL,
 #'   scales average ranks to `[0, 1]`; a sole observed value is assigned 0.5,
 #'   as for a constant marker with several observations.
 #' @param markers Character vector or \code{NULL}. Markers to normalise.
-#'   If \code{NULL}, all markers are normalised.
+#'   If \code{NULL}, all markers are normalised. Names not found in the
+#'   object are ignored with a warning.
 #'
 #' @return An \code{\link{SpatialCellData-class}} with updated \code{data} slot.
 #'
@@ -404,7 +429,7 @@ NormaliseData <- function(object, method = c("zscore", "minmax", "quantile"),
   mat <- object@counts
 
   cols <- if (!is.null(markers)) {
-    intersect(markers, colnames(mat))
+    .known_markers(markers, colnames(mat))
   } else {
     colnames(mat)
   }
@@ -474,6 +499,18 @@ PhenotypeSummary <- function(object) {
 
 #' Identify marker columns (non-metadata)
 #' @noRd
+# Select the requested markers that exist, naming the ones that do not. A
+# misspelt marker used to be dropped without any signal, so an analysis could
+# run on fewer markers (or on none) than the caller asked for.
+.known_markers <- function(markers, available) {
+  unknown <- setdiff(markers, available)
+  if (length(unknown)) {
+    warning("Ignoring markers not found in the data: ",
+            paste(unknown, collapse = ", "), ".", call. = FALSE)
+  }
+  intersect(markers, available)
+}
+
 .marker_columns <- function(dt) {
   meta <- c("sample_id", "cell_id", "x", "y", "cell_area", "nucleus_area",
             "classification", "parent", "source_image", "phenotype", "cluster",

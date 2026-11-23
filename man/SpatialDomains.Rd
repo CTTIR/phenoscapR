@@ -23,7 +23,7 @@ SpatialDomains(
 \item{slot}{Character. \code{"data"} (default) or \code{"counts"}.}
 
 \item{markers}{Character vector or \code{NULL}. Markers to use; \code{NULL}
-uses all.}
+uses all. Names not found in the object are ignored with a warning.}
 
 \item{seed}{Integer or \code{NULL}. Random seed for k-means.}
 }

@@ -195,6 +195,13 @@ setMethod("Idents", "SpatialCellData", function(object) {
 #' @export
 setMethod("[", signature(x = "SpatialCellData"), function(x, i, j, drop = FALSE) {
   if (!missing(i)) {
+    # A missing index (for example from comparing a column that holds NA)
+    # would create a cell without identity or coordinates.
+    if (anyNA(i)) {
+      stop("Cell indices must not contain missing values; ",
+           "use which() or %in% to select cells from a column that holds NA.",
+           call. = FALSE)
+    }
     source_snapshot <- attr(x@meta_data, "cellspec_import")
     frozen <- attr(x@meta_data, "frozen_spatial_labels")
     if (is.null(frozen)) frozen <- list()

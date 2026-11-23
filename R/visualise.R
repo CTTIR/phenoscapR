@@ -100,7 +100,8 @@ plot_interactions <- function(interactions, title = NULL) {
 #'
 #' @param dt A `data.table` with marker columns and a `phenotype` column.
 #' @param markers Character vector or `NULL`. Markers to include. If `NULL`,
-#'   all marker columns are used.
+#'   all marker columns are used. Names not found in `dt` are ignored with a
+#'   warning.
 #' @param title Character string or `NULL`. Plot title.
 #'
 #' @return A `ggplot` object.
@@ -122,7 +123,7 @@ plot_heatmap <- function(dt, markers = NULL, title = NULL) {
   }
 
   cols <- if (!is.null(markers)) {
-    intersect(markers, names(dt))
+    .known_markers(markers, names(dt))
   } else {
     .marker_columns(dt)
   }

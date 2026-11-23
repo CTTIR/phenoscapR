@@ -138,7 +138,7 @@ CellularNeighbourhoods <- function(object, n_neighbourhoods = 8L, k = 20L,
 #' @param k Integer. Number of neighbours to smooth over. Default \code{20}.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
 #' @param markers Character vector or \code{NULL}. Markers to use; \code{NULL}
-#'   uses all.
+#'   uses all. Names not found in the object are ignored with a warning.
 #' @param seed Integer or \code{NULL}. Random seed for k-means.
 #'
 #' @details Sample identifiers must be complete, nonblank vectors. Counts and
@@ -161,7 +161,10 @@ SpatialDomains <- function(object, n_domains = 6L, k = 20L, slot = "data",
   .spatial_seed(seed)
   mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
   if (!is.null(markers)) {
-    mat <- mat[, intersect(markers, colnames(mat)), drop = FALSE]
+    mat <- mat[, .known_markers(markers, colnames(mat)), drop = FALSE]
+  }
+  if (ncol(mat) < 1L) {
+    stop("No markers available for spatial domains.", call. = FALSE)
   }
   xy <- .spatial_xy(object)
   smoothed <- matrix(0, nrow = nrow(mat), ncol = ncol(mat),

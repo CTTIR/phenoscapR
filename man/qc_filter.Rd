@@ -21,8 +21,9 @@ threshold, or with a missing area, are removed.}
 \item{max_area}{Numeric or \code{NULL}. Maximum cell area. Cells above this
 threshold are removed.}
 
-\item{min_intensity}{Numeric. Minimum total marker intensity. Cells with
-total intensity below this value are removed. Default \code{0}.}
+\item{min_intensity}{Numeric or \code{NULL}. Minimum total marker intensity.
+Cells with total intensity below this value are removed. Default \code{0};
+\code{NULL} applies no lower limit.}
 
 \item{max_intensity}{Numeric or \code{NULL}. Maximum total marker intensity.}
 }
@@ -32,6 +33,11 @@ A filtered \code{data.table}.
 \description{
 Removes cells that fail quality control criteria based on marker intensity
 ranges, cell area, or custom filters.
+}
+\details{
+Each threshold is \code{NULL} or one non-missing number. A missing or
+non-numeric threshold is an error, because it would otherwise remove every
+cell.
 }
 \examples{
 dt <- data.table::data.table(

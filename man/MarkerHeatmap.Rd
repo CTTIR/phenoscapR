@@ -17,7 +17,8 @@ MarkerHeatmap(
 \code{phenotype} column.}
 
 \item{markers}{Character vector or \code{NULL}. Markers to include. If
-\code{NULL}, all markers are shown.}
+\code{NULL}, all markers are shown. Names not found in the object are
+ignored with a warning.}
 
 \item{slot}{Character. Data slot to use: \code{"data"} (default) or
 \code{"counts"}.}

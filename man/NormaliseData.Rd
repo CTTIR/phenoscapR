@@ -19,7 +19,8 @@ scales average ranks to \verb{[0, 1]}; a sole observed value is assigned 0.5,
 as for a constant marker with several observations.}
 
 \item{markers}{Character vector or \code{NULL}. Markers to normalise.
-If \code{NULL}, all markers are normalised.}
+If \code{NULL}, all markers are normalised. Names not found in the
+object are ignored with a warning.}
 }
 \value{
 An \code{\link{SpatialCellData-class}} with updated \code{data} slot.

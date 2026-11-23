@@ -10,7 +10,8 @@ plot_heatmap(dt, markers = NULL, title = NULL)
 \item{dt}{A \code{data.table} with marker columns and a \code{phenotype} column.}
 
 \item{markers}{Character vector or \code{NULL}. Markers to include. If \code{NULL},
-all marker columns are used.}
+all marker columns are used. Names not found in \code{dt} are ignored with a
+warning.}
 
 \item{title}{Character string or \code{NULL}. Plot title.}
 }
