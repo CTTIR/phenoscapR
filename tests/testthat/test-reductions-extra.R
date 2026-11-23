@@ -150,3 +150,20 @@ test_that("a seed does not leave a random stream behind when there was none", {
   RunSONG(obj, seed = 1L)
   expect_false(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
 })
+
+test_that("embedding plots keep the second axis increasing upward", {
+  set.seed(4)
+  counts <- matrix(rnorm(300), nrow = 60, dimnames = list(NULL, paste0("M", 1:5)))
+  obj <- CreateSpatialObject(counts, data.frame(x = runif(60), y = runif(60)))
+  obj <- PhenotypeCells(RunPCA(obj, n_pcs = 3), thresholds = list(M1 = 0))
+  y_transform <- function(plot) {
+    scale <- ggplot2::ggplot_build(plot)$layout$panel_scales_y[[1L]]
+    transformation <- if (is.null(scale$transformation)) scale$trans else scale$transformation
+    transformation$name
+  }
+  expect_identical(y_transform(EmbeddingPlot(obj, reduction = "pca")), "identity")
+  expect_identical(y_transform(DimPlot(obj, reduction = "pca", dark_theme = TRUE)), "identity")
+  # Tissue maps keep the image convention unless asked otherwise.
+  expect_identical(y_transform(CellMap(obj)), "reverse")
+  expect_identical(y_transform(CellMap(obj, y_down = FALSE)), "identity")
+})

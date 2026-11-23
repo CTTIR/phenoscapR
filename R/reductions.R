@@ -471,7 +471,9 @@ EmbeddingPlot <- function(object, reduction = "umap", colour_by = "phenotype",
     stringsAsFactors = FALSE
   )
 
-  .cell_map_plot(df, colour_by, colours, pt_size, title, dark_theme) +
+  # An embedding is not a tissue image: its second axis increases upward.
+  .cell_map_plot(df, colour_by, colours, pt_size, title, dark_theme,
+                 y_down = FALSE) +
     ggplot2::labs(x = colnames(emb)[1L], y = colnames(emb)[2L])
 }
 

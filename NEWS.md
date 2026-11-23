@@ -1,5 +1,9 @@
 # phenoscapR 1.0.0
 
+* `EmbeddingPlot()` and `DimPlot()` draw the second embedding axis increasing
+  upward again. They share the drawing code of the tissue maps and had picked
+  up its downward image-coordinate y axis, which mirrored every embedding
+  vertically.
 * The minimum 'ggplot2' version is 3.4.0 rather than 3.0.0: plots and themes
   set line widths through the `linewidth` argument, which older versions do not
   have.
