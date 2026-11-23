@@ -32,6 +32,11 @@ This is a new submission (phenoscapR 1.0.0).
   and vignettes check for them with `requireNamespace()` or
   `skip_if_not_installed()`, and the package works without them.
 
+  The incoming check also reports the DOI badge in `README.md`
+  (<https://doi.org/10.5281/zenodo.21889952>) as not found. This DOI is
+  reserved for this version and resolves once the archive record is published
+  with the release.
+
 ## Additional notes
 
 * Examples longer than a few seconds are wrapped in `\donttest{}`; the
