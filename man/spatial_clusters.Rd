@@ -9,7 +9,8 @@ spatial_clusters(dt, k, method = c("kmeans", "hierarchical"))
 \arguments{
 \item{dt}{A \code{data.table} with finite numeric columns \code{x} and \code{y}.}
 
-\item{k}{Integer. Number of clusters, between 1 and the number of cells.}
+\item{k}{Integer. Number of clusters, between 1 and the number of cells;
+k-means needs fewer clusters than cells.}
 
 \item{method}{Character string. Clustering method: \code{"kmeans"} (default) or
 \code{"hierarchical"}.}

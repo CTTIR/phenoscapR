@@ -187,6 +187,11 @@ test_that("cluster counts and edge limits are validated", {
   expect_error(SpatialClusters(obj[1:3, ], k = 4), "exceeds the number of cells")
   expect_error(SpatialClusters(obj[integer(0), ], k = 1), "exceeds the number of cells")
   expect_error(ExpressionClusters(obj[1:3, ], k = 4), "exceeds the number of cells")
+  # k-means needs fewer centres than cells; Ward linkage does not.
+  expect_error(SpatialClusters(obj[1:5, ], k = 5), "needs k \\(5\\) below the number of cells")
+  expect_error(ExpressionClusters(obj[1:5, ], k = 5), "needs k \\(5\\) below the number of cells")
+  expect_identical(sort(SpatialClusters(obj[1:5, ], k = 5, method = "hierarchical")$cluster),
+                   as.character(1:5))
   incomplete <- obj
   incomplete@counts[1L, 1L] <- NA
   incomplete@data[1L, 1L] <- NA
@@ -194,6 +199,10 @@ test_that("cluster counts and edge limits are validated", {
   # Ward linkage keeps working on distances with pairwise omission.
   ward <- ExpressionClusters(incomplete, k = 2, method = "hierarchical")
   expect_setequal(unique(ward$expr_cluster), c("1", "2"))
+  # A cell without any marker value has no distance to the other cells.
+  incomplete@data[1L, ] <- NA
+  expect_error(ExpressionClusters(incomplete, k = 2, method = "hierarchical"),
+               "at least one marker measured in both cells of every pair")
   expect_warning(
     expect_error(ExpressionClusters(obj, k = 2, markers = "nope"),
                  "No markers available for expression clustering"),
@@ -201,6 +210,7 @@ test_that("cluster counts and edge limits are validated", {
 
   dt <- data.table::data.table(x = c(0, 1, 50, 51), y = c(0, 1, 50, 51))
   expect_error(spatial_clusters(dt, k = 0), "k must be one whole number of at least 1")
+  expect_error(spatial_clusters(dt, k = 4), "needs k \\(4\\) below the number of cells")
   expect_error(spatial_clusters(dt, k = 5), "exceeds the number of cells")
   expect_error(spatial_clusters(data.table::data.table(a = 1:3), k = 2),
                "dt must be a data.table with x and y columns")
@@ -259,4 +269,24 @@ test_that("the enrichment summary names the source of its p-values", {
   expect_output(print(res), "Neighbourhood enrichment \\(label permutation\\)")
   expect_output(print(res), "p-values from the normal approximation")
   expect_output(print(res[, c("from", "to")]), "from")
+})
+
+test_that("pair correlation uses the exact area of rings cut off at zero", {
+  # Complete spatial randomness: g is close to one at every radius, also at a
+  # first radius smaller than half the ring width, whose ring is a disc.
+  withr::local_seed(42)
+  n <- 3000L
+  obj <- CreateSpatialObject(
+    matrix(1, n, 1L, dimnames = list(NULL, "m")),
+    data.frame(x = stats::runif(n, 0, 1000), y = stats::runif(n, 0, 1000)))
+  pcf <- PairCorrelation(obj, r_seq = c(1, 21, 41), dr = 20)
+  expect_true(all(abs(pcf$g - 1) < 0.15))
+  # The first radius of the default grid is no longer inflated.
+  expect_lt(abs(PairCorrelation(obj)$g[1L] - 1), 0.25)
+  # Rings that are not cut off keep the value of n * lambda * 2 * pi * r * dr.
+  xy <- as.matrix(Coords(obj)[, c("x", "y")])
+  d <- as.numeric(stats::dist(xy))
+  lambda <- n / (diff(range(xy[, 1L])) * diff(range(xy[, 2L])))
+  direct <- 2 * sum(d > 11 & d <= 31) / (n * lambda * 2 * pi * 21 * 20)
+  expect_equal(pcf$g[2L], direct, tolerance = 1e-10)
 })

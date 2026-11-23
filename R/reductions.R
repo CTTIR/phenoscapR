@@ -102,8 +102,8 @@ RunPCA <- function(object, n_pcs = 30L, slot = "data", markers = NULL) {
     mat <- mat[, .known_markers(markers, colnames(mat)), drop = FALSE]
   }
   if (ncol(mat) < 1L) stop("No markers available for PCA.", call. = FALSE)
-  if (!is.numeric(n_pcs) || length(n_pcs) != 1L || is.na(n_pcs) || n_pcs < 1) {
-    stop("n_pcs must be one number of at least 1.", call. = FALSE)
+  if (!is.numeric(n_pcs) || length(n_pcs) != 1L || !is.finite(n_pcs) || n_pcs < 1) {
+    stop("n_pcs must be one finite number of at least 1.", call. = FALSE)
   }
   if (nrow(mat) < 2L) stop("PCA requires at least two cells.", call. = FALSE)
   if (any(!is.finite(mat))) {
@@ -204,7 +204,9 @@ ScreePlot <- function(object, n_pcs = NULL) {
 #'   instead of plain UMAP. Default \code{FALSE}. For partial density
 #'   preservation, pass \code{dens_scale} through \code{...} instead.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
-#' @param markers Character vector or \code{NULL}.
+#' @param markers Character vector or \code{NULL}. Markers to use;
+#'   \code{NULL} uses all. Names not found in the object are ignored with a
+#'   warning.
 #' @param seed Integer or \code{NULL}. Random seed for reproducibility. The
 #'   random number stream of the caller is restored afterwards.
 #' @param n_threads Integer. Number of worker threads for UMAP neighbour
@@ -275,7 +277,9 @@ RunUMAP <- function(object, dims = 30L, use_pca = TRUE, n_neighbors = 15L,
 #' @param perplexity Numeric. t-SNE perplexity. Automatically capped at
 #'   \code{(n - 1) / 3}. Default \code{30}.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
-#' @param markers Character vector or \code{NULL}.
+#' @param markers Character vector or \code{NULL}. Markers to use;
+#'   \code{NULL} uses all. Names not found in the object are ignored with a
+#'   warning.
 #' @param seed Integer or \code{NULL}. Random seed for reproducibility. The
 #'   random number stream of the caller is restored afterwards.
 #' @param ... Passed to \code{Rtsne::Rtsne()}.
@@ -334,7 +338,9 @@ RunTSNE <- function(object, dims = 30L, use_pca = TRUE, perplexity = 30,
 #' @param use_pca Logical. Embed on PCA space (default \code{TRUE}) or directly
 #'   on the marker matrix.
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
-#' @param markers Character vector or \code{NULL}.
+#' @param markers Character vector or \code{NULL}. Markers to use;
+#'   \code{NULL} uses all. Names not found in the object are ignored with a
+#'   warning.
 #' @param seed Integer or \code{NULL}. Random seed for reproducibility. The
 #'   random number stream of the caller is restored afterwards.
 #' @param ... Passed to \code{songR::song()}.

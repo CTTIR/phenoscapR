@@ -15,7 +15,8 @@ ExpressionClusters(
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{k}{Integer. Number of clusters, between 1 and the number of cells.}
+\item{k}{Integer. Number of clusters, between 1 and the number of cells;
+k-means needs fewer clusters than cells.}
 
 \item{method}{Character. \code{"kmeans"} (default), \code{"hierarchical"}
 (Ward linkage on Euclidean distances) or \code{"gmm"} (a Gaussian mixture
@@ -25,7 +26,12 @@ with \code{k} components; requires the \pkg{mclust} package).}
 
 \item{markers}{Character vector or \code{NULL}. Markers to use. Names not
 found in the object are ignored with a warning. For \code{"kmeans"} and
-\code{"gmm"} the selected values must not contain missing intensities.}
+\code{"gmm"} the selected values must not contain missing intensities.
+\code{"hierarchical"} accepts them as long as every pair of cells shares
+at least one measured marker: \code{\link[stats]{dist}()} then leaves out
+the markers missing in either cell and rescales the sum to the number of
+markers, so the dissimilarities are only approximately Euclidean and the
+Ward clusters of incomplete data should be read with that in mind.}
 }
 \value{
 An \code{\link{SpatialCellData-class}} with an \code{expr_cluster}

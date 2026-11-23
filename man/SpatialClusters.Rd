@@ -9,7 +9,8 @@ SpatialClusters(object, k, method = c("kmeans", "hierarchical"))
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{k}{Integer. Number of clusters, between 1 and the number of cells.}
+\item{k}{Integer. Number of clusters, between 1 and the number of cells;
+k-means needs fewer clusters than cells.}
 
 \item{method}{Character. \code{"kmeans"} (default) or \code{"hierarchical"}.}
 }

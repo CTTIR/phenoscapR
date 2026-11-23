@@ -42,8 +42,11 @@ The retained points must define a positive finite bounding-box area.
 \details{
 For each radius, ordered point pairs at a distance within
 \code{dr / 2} of \code{r} are counted and divided by
-\code{n * lambda * 2 * pi * r * dr}, with \code{n} retained points and
-intensity \code{lambda = n / A}. No edge correction is applied, so
+\code{n * lambda * a}, with \code{n} retained points, intensity
+\code{lambda = n / A} and the area \code{a} of the ring, which is
+\code{2 * pi * r * dr} unless the ring is cut off at zero
+(\code{r < dr / 2}), where it is the disc of radius \code{r + dr / 2}. No
+edge correction is applied, so
 \code{g(r)} is biased downward as \code{r} approaches the size of the
 window; the automatic radii stop at a quarter of its shorter side.
 }

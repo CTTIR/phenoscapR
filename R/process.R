@@ -281,6 +281,10 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
   # Labels are looked up by signature name; an unnamed vector matches nothing
   # and used to be ignored without any signal.
   if (!is.null(labels)) {
+    # A factor would otherwise be written as its integer codes.
+    if (is.factor(labels)) {
+      labels <- stats::setNames(as.character(labels), names(labels))
+    }
     signatures <- names(labels)
     if (!is.atomic(labels) || !is.null(dim(labels)) || is.null(signatures) ||
         anyNA(signatures) || any(!nzchar(signatures)) ||

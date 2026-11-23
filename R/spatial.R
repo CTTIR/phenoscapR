@@ -650,7 +650,8 @@ interaction_matrix <- function(dt, radius) {
 #' [set.seed()] first for reproducible labels.
 #'
 #' @param dt A `data.table` with finite numeric columns `x` and `y`.
-#' @param k Integer. Number of clusters, between 1 and the number of cells.
+#' @param k Integer. Number of clusters, between 1 and the number of cells;
+#'   k-means needs fewer clusters than cells.
 #' @param method Character string. Clustering method: `"kmeans"` (default) or
 #'   `"hierarchical"`.
 #'
@@ -678,7 +679,7 @@ spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
     stop("x and y must be finite numeric vectors with one value per cell.",
          call. = FALSE)
   }
-  .validate_cluster_count(k, nrow(coords))
+  .validate_cluster_count(k, nrow(coords), method)
 
   cluster_ids <- switch(method,
     kmeans = {
@@ -696,7 +697,7 @@ spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
 }
 
 # A cluster count is one whole number between 1 and the number of cells.
-.validate_cluster_count <- function(k, n) {
+.validate_cluster_count <- function(k, n, method = "") {
   if (!typeof(k) %in% c("integer", "double") || is.object(k) ||
       length(k) != 1L || !is.null(dim(k)) || !is.finite(k) || k < 1 ||
       k != floor(k)) {
@@ -704,6 +705,11 @@ spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
   }
   if (k > n) {
     stop("k (", k, ") exceeds the number of cells (", n, ").", call. = FALSE)
+  }
+  # stats::kmeans() needs fewer centres than rows.
+  if (identical(method, "kmeans") && k >= n) {
+    stop("method = \"kmeans\" needs k (", k, ") below the number of cells (",
+         n, ").", call. = FALSE)
   }
   invisible(NULL)
 }
@@ -951,7 +957,8 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
 #' \code{\link{set.seed}()} first for reproducible labels.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param k Integer. Number of clusters, between 1 and the number of cells.
+#' @param k Integer. Number of clusters, between 1 and the number of cells;
+#'   k-means needs fewer clusters than cells.
 #' @param method Character. \code{"kmeans"} (default) or \code{"hierarchical"}.
 #'
 #' @return An \code{\link{SpatialCellData-class}} with a \code{cluster}
@@ -971,7 +978,7 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
 SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
   method <- match.arg(method)
   coords <- .spatial_xy(object)
-  .validate_cluster_count(k, nrow(coords))
+  .validate_cluster_count(k, nrow(coords), method)
 
   cluster_ids <- switch(method,
     kmeans = {
@@ -1616,8 +1623,11 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
 #'
 #' @details For each radius, ordered point pairs at a distance within
 #' \code{dr / 2} of \code{r} are counted and divided by
-#' \code{n * lambda * 2 * pi * r * dr}, with \code{n} retained points and
-#' intensity \code{lambda = n / A}. No edge correction is applied, so
+#' \code{n * lambda * a}, with \code{n} retained points, intensity
+#' \code{lambda = n / A} and the area \code{a} of the ring, which is
+#' \code{2 * pi * r * dr} unless the ring is cut off at zero
+#' (\code{r < dr / 2}), where it is the disc of radius \code{r + dr / 2}. No
+#' edge correction is applied, so
 #' \code{g(r)} is biased downward as \code{r} approaches the size of the
 #' window; the automatic radii stop at a quarter of its shorter side.
 #'
@@ -1692,7 +1702,10 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
 
   g <- vapply(seq_along(r_seq), function(i) {
     ring <- cumc(upper[i]) - cumc(lower[i])
-    ring / (n * lambda * 2 * pi * r_seq[i] * dr)
+    # Exact area of the ring; equal to 2 * pi * r * dr unless the ring is cut
+    # off at zero (r < dr / 2), where it is the disc of radius r + dr / 2.
+    ring_area <- pi * (upper[i]^2 - max(0, lower[i])^2)
+    ring / (n * lambda * ring_area)
   }, numeric(1L))
 
   .as_result(data.frame(r = r_seq, g = g), "phenoscapR_pcf")
@@ -1760,7 +1773,8 @@ CrossNNDistance <- function(object, from, to, by_sample = FALSE) {
 #' \code{\link{set.seed}()} first for reproducible labels.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param k Integer. Number of clusters, between 1 and the number of cells.
+#' @param k Integer. Number of clusters, between 1 and the number of cells;
+#'   k-means needs fewer clusters than cells.
 #' @param method Character. \code{"kmeans"} (default), \code{"hierarchical"}
 #'   (Ward linkage on Euclidean distances) or \code{"gmm"} (a Gaussian mixture
 #'   with \code{k} components; requires the \pkg{mclust} package).
@@ -1768,6 +1782,11 @@ CrossNNDistance <- function(object, from, to, by_sample = FALSE) {
 #' @param markers Character vector or \code{NULL}. Markers to use. Names not
 #'   found in the object are ignored with a warning. For \code{"kmeans"} and
 #'   \code{"gmm"} the selected values must not contain missing intensities.
+#'   \code{"hierarchical"} accepts them as long as every pair of cells shares
+#'   at least one measured marker: \code{\link[stats]{dist}()} then leaves out
+#'   the markers missing in either cell and rescales the sum to the number of
+#'   markers, so the dissimilarities are only approximately Euclidean and the
+#'   Ward clusters of incomplete data should be read with that in mind.
 #'
 #' @return An \code{\link{SpatialCellData-class}} with an \code{expr_cluster}
 #'   column in \code{meta_data}.
@@ -1793,13 +1812,14 @@ ExpressionClusters <- function(object, k,
   if (ncol(mat) < 1L) {
     stop("No markers available for expression clustering.", call. = FALSE)
   }
-  # Ward clustering on dist() tolerates missing values (pairwise omission);
-  # k-means and Gaussian mixtures cannot use them.
+  # dist() omits the markers missing in either cell of a pair, so Ward
+  # clustering stays available; k-means and Gaussian mixtures cannot use
+  # missing values.
   if (method != "hierarchical" && anyNA(mat)) {
     stop("method = \"", method, "\" requires complete marker values; ",
          "remove or impute missing intensities first.", call. = FALSE)
   }
-  .validate_cluster_count(k, nrow(mat))
+  .validate_cluster_count(k, nrow(mat), method)
 
   cluster_ids <- switch(method,
     kmeans = {
@@ -1807,7 +1827,13 @@ ExpressionClusters <- function(object, k,
       km$cluster
     },
     hierarchical = {
-      hc <- hclust(dist(mat), method = "ward.D2")
+      d <- dist(mat)
+      if (anyNA(d)) {
+        stop("method = \"hierarchical\" needs at least one marker measured in ",
+             "both cells of every pair; remove cells without marker values ",
+             "or impute missing intensities first.", call. = FALSE)
+      }
+      hc <- hclust(d, method = "ward.D2")
       cutree(hc, k = k)
     },
     gmm = {
