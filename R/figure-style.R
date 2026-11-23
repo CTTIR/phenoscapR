@@ -255,7 +255,12 @@ NiceBreaks <- function(limits, nbins = 9, steps = c(1, 2, 2.5, 5, 10), min_n = 2
 #' A compact theme for multi-panel figures: no panel title (headings are
 #' placed by [ComposeFigure()]), thin grey left and bottom axis lines, short
 #' ticks, light horizontal grid lines when `grid = "y"`, no legend
-#' background and zero outer margins. When the optional packages 'ggtext'
+#' background and zero outer margins. The panels are made for
+#' [ComposeFigure()], which leaves room around each panel box; printed on
+#' their own, labels drawn outside the panel meet the edge of the device, so
+#' add a margin first, for example
+#' `+ ggplot2::theme(plot.margin = ggplot2::margin(10, 10, 10, 10))`.
+#' When the optional packages 'ggtext'
 #' and 'gridtext' are installed, axis titles and tick labels accept the
 #' rich text produced by [TypesetLabel()].
 #'

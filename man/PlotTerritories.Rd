@@ -50,7 +50,8 @@ if (requireNamespace("deldir", quietly = TRUE)) {
   d <- data.frame(x = runif(300, 0, 100), y = runif(300, 0, 100),
                   label = sample(c("t", "a"), 300, TRUE))
   tt <- TerritoryTiles(d, c(50, 50), 40, cap = 5, classes = list(tumour = "t"))
-  g <- PlotTerritories(tt, colours = list(tumour = "#F4B6C2", other = "#DDDDDD"))
+  g <- PlotTerritories(tt, colours = list(tumour = "#F4B6C2", other = "#DDDDDD"),
+                       scale_bar = list(length = 20, label = "20 um"))
   grid::grid.newpage(); grid::grid.draw(g)
 }
 }
