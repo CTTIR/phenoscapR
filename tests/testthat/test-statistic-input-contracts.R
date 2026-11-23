@@ -231,3 +231,22 @@ test_that("the quadrat heatmap has the orientation of the tissue maps", {
   expect_identical(y_transform(CellMap(obj)), "reverse")
   expect_identical(nrow(ggplot2::autoplot(qa)$data), 12L)
 })
+
+test_that("cluster annotations mark every enriched marker", {
+  counts <- cbind(CD3 = c(5, 5, 5, 0, 0, 0), CD8 = c(4, 4, 4, 0, 0, 0),
+                  CD20 = c(0, 0, 0, 6, 6, 6), PanCK = c(1, 1, 1, 1, 1, 1))
+  meta <- data.frame(cell_id = as.character(1:6), sample_id = "s1",
+                     expr_cluster = rep(c("1", "2"), each = 3L))
+  obj <- CreateSpatialObject(counts, data.frame(x = 1:6, y = 1:6), meta)
+  expect_identical(AnnotateClusters(obj, add_column = FALSE),
+                   c("1" = "CD3+CD8+", "2" = "CD20+"))
+  expect_identical(AnnotateClusters(obj, n_markers = 1L, add_column = FALSE),
+                   c("1" = "CD3+", "2" = "CD20+"))
+  labelled <- AnnotateClusters(obj)
+  expect_identical(labelled$expr_cluster_label, rep(c("CD3+CD8+", "CD20+"), each = 3L))
+  flat <- CreateSpatialObject(matrix(1, 4, 2, dimnames = list(NULL, c("A", "B"))),
+                              data.frame(x = 1:4, y = 1:4),
+                              data.frame(expr_cluster = c("1", "1", "2", "2")))
+  expect_identical(unname(AnnotateClusters(flat, add_column = FALSE)), c("mixed", "mixed"))
+  expect_error(AnnotateClusters(obj, group = "nope"), "Group column 'nope' not found")
+})

@@ -34,7 +34,8 @@ added (access the mapping via \code{attr(., "labels")}).
 \description{
 Labels each cluster (or any categorical grouping) by the markers most
 enriched in it relative to the global mean, producing human-readable names
-such as \code{"CD3+CD8"}.
+such as \code{"CD3+CD8+"}. A group in which no marker exceeds the global
+mean is named \code{"mixed"}.
 }
 \examples{
 data(phenoscapR_example)

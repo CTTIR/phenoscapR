@@ -1828,7 +1828,8 @@ ExpressionClusters <- function(object, k,
 #'
 #' Labels each cluster (or any categorical grouping) by the markers most
 #' enriched in it relative to the global mean, producing human-readable names
-#' such as \code{"CD3+CD8"}.
+#' such as \code{"CD3+CD8+"}. A group in which no marker exceeds the global
+#' mean is named \code{"mixed"}.
 #'
 #' @param object A \code{\link{SpatialCellData-class}} object.
 #' @param group Character. Metadata column holding cluster labels. Default
@@ -1865,7 +1866,9 @@ AnnotateClusters <- function(object, group = "expr_cluster", slot = "data",
     top <- names(sort(enr, decreasing = TRUE))[seq_len(min(n_markers,
                                                            length(enr)))]
     top <- top[enr[top] > 0]
-    if (length(top) == 0L) "mixed" else paste0(paste(top, collapse = ""), "+")
+    # Each marker carries its own "+": joined names such as "CD20CD3+" cannot
+    # be read back unambiguously.
+    if (length(top) == 0L) "mixed" else paste0(top, "+", collapse = "")
   }, character(1L))
   names(labels) <- levels_g
 

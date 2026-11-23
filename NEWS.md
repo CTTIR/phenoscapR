@@ -1,5 +1,9 @@
 # phenoscapR 1.0.0
 
+* `AnnotateClusters()` writes every enriched marker with its own plus sign
+  (`"CD3+CD8+"`). It used to join the marker names without a separator
+  (`"CD3CD8+"`), which cannot be read back unambiguously and differed from the
+  documented form.
 * `EmbeddingPlot()` and `DimPlot()` draw the second embedding axis increasing
   upward again. They share the drawing code of the tissue maps and had picked
   up its downward image-coordinate y axis, which mirrored every embedding
