@@ -82,7 +82,7 @@ install.packages("songR", repos = c("https://cttir.r-universe.dev", getOption("r
 These packages are optional. Calling the corresponding function without its
 dependency reports an error; phenoscapR does not install packages automatically.
 
-## Quick Start
+## Quick start
 
 The package ships a synthetic two-sample example dataset, so you can run the
 whole workflow without any files of your own:
