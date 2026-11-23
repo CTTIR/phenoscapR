@@ -75,7 +75,6 @@ Suggests:
     SpatialExperiment,
     SummarizedExperiment,
     testthat (>= 3.1.7),
-    thematic,
     uwot,
     withr
 Config/Needs/check: CTTIR/cellspecR, CTTIR/songR

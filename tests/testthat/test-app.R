@@ -9,7 +9,7 @@ test_that("the Shiny app launches and toggles colour mode", {
   skip_if_not_installed("shinytest2")
   skip_if_not_installed("chromote")
   # The app's own requirements, as checked by run_app().
-  for (pkg in c("shiny", "bslib", "sass", "thematic", "reactable", "bsicons", "brand.yml")) {
+  for (pkg in c("shiny", "bslib", "sass", "reactable", "bsicons", "brand.yml")) {
     skip_if_not_installed(pkg)
   }
 

@@ -11,7 +11,7 @@
 #' are not suitable for replicated group inference.
 #'
 #' The app ships in \code{inst/app}. It depends on optional packages (Shiny,
-#' bslib, sass, thematic, reactable, bsicons); \code{run_app()} checks for them
+#' bslib, sass, reactable, bsicons, brand.yml); \code{run_app()} checks for them
 #' and reports any that are missing. Branding requires bslib >= 0.9.0.
 #' The optional UMAP view requires uwot; PCA remains available without it.
 #' If QC removes every cell, widen or reset the cell-area filter.
@@ -29,8 +29,7 @@
 #'
 #' @export
 run_app <- function(...) {
-  needed <- c("shiny", "bslib", "sass", "thematic", "reactable", "bsicons",
-              "brand.yml")
+  needed <- c("shiny", "bslib", "sass", "reactable", "bsicons", "brand.yml")
   missing <- needed[!vapply(needed, function(pkg)
     requireNamespace(pkg, quietly = TRUE), logical(1L))]
   if (length(missing) > 0L) {

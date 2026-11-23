@@ -49,3 +49,11 @@ test_that("run_app() reports the actual branding dependency floor", {
   expect_error(run_app(), 'bslib >= 0.9.0; update with install.packages("bslib")',
                fixed = TRUE)
 })
+
+test_that("the app leaves the complete themes of the plot functions alone", {
+  app_file <- system.file("app", "app.R", package = "phenoscapR")
+  skip_if(!nzchar(app_file), "app directory not installed")
+  # Re-theming plots that carry a complete theme removed their tick labels.
+  expect_false("thematic_shiny" %in% all.names(parse(app_file)))
+  expect_false("thematic" %in% eval(body(run_app)[[2]][[3]]))
+})

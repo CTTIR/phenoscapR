@@ -4,8 +4,10 @@
 # only wires the Hugo Coder theme, the navbar, and the colour-mode toggle.
 # ============================================================================
 
-# ggplot/plotly output adopts the active bslib theme automatically.
-thematic::thematic_shiny(font = "auto")
+# The plots keep the light theme of the package functions in both colour
+# modes. Automatic re-theming is not used: every plot function sets a complete
+# 'ggplot2' theme, and re-theming such plots dropped their axis tick labels
+# and shrank the remaining text.
 
 # Hugo Coder theme: brand tokens from _brand.yml + the flat SCSS overrides.
 coder_theme <- function() {

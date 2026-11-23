@@ -176,8 +176,8 @@ are a demonstration, not replicated group inference.
 
 ```r
 # one-time: install the optional app dependencies
-install.packages(c("shiny", "bslib", "sass", "thematic", "reactable",
-                   "bsicons", "brand.yml"))
+install.packages(c("shiny", "bslib", "sass", "reactable", "bsicons",
+                   "brand.yml"))
 
 phenoscapR::run_app()
 ```
