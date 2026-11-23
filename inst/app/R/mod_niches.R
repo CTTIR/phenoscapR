@@ -52,14 +52,15 @@ mod_niches_server <- function(id, obj) {
       selected
     }
 
+    # res = 96: plot text at 72 dpi is far smaller than the text of the page.
     output$niche_map <- shiny::renderPlot({
       o <- pick(cn())
       phenoscapR::CellMap(o, colour_by = "neighbourhood")
-    }, alt = "Synthetic cell positions coloured by inferred cellular neighbourhood")
+    }, res = 96, alt = "Synthetic cell positions coloured by inferred cellular neighbourhood")
     output$domain_map <- shiny::renderPlot({
       o <- pick(dom())
       phenoscapR::CellMap(o, colour_by = "domain")
-    }, alt = "Synthetic cell positions coloured by inferred spatial domain")
+    }, res = 96, alt = "Synthetic cell positions coloured by inferred spatial domain")
     output$composition <- shiny::renderPlot({
       cc <- cn()@spatial$neighbourhood_composition
       shiny::validate(shiny::need(nrow(cc) > 0L,
@@ -77,6 +78,6 @@ mod_niches_server <- function(id, obj) {
         ggplot2::theme_bw(base_size = 11) +
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
                                                            hjust = 1))
-    }, alt = "Simulated phenotype fractions within each inferred cellular neighbourhood")
+    }, res = 96, alt = "Simulated phenotype fractions within each inferred cellular neighbourhood")
   })
 }

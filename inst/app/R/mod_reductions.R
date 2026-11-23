@@ -58,17 +58,18 @@ mod_reductions_server <- function(id, obj) {
       o
     })
 
+    # res = 96: plot text at 72 dpi is far smaller than the text of the page.
     output$dimplot <- shiny::renderPlot({
       shiny::req(input$colour)
       o <- reduced()
       phenoscapR::DimPlot(o, reduction = input$reduction, colour_by = input$colour,
                           pt_size = 0.6)
-    }, alt = function() paste(toupper(input$reduction),
+    }, res = 96, alt = function() paste(toupper(input$reduction),
                              "embedding of synthetic cells coloured by", input$colour))
     output$scree <- shiny::renderPlot({
       o <- pca()
       phenoscapR::ScreePlot(o)
-    }, alt = "Variance explained by each principal component of synthetic marker data")
+    }, res = 96, alt = "Variance explained by each principal component of synthetic marker data")
     differential <- shiny::reactive({
       o <- obj()
       o@meta_data$section <- o$sample_id

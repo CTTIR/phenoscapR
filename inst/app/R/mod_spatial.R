@@ -54,22 +54,23 @@ mod_spatial_server <- function(id, obj) {
       selected
     })
 
+    # res = 96: plot text at 72 dpi is far smaller than the text of the page.
     output$ripley <- shiny::renderPlot({
       o <- section()
       rk <- phenoscapR::RipleysK(o, correction = input$correction)
       ggplot2::autoplot(rk)
-    }, alt = "Ripley L curves by simulated phenotype in the selected synthetic section")
+    }, res = 96, alt = "Ripley L curves by simulated phenotype in the selected synthetic section")
     output$enrich <- shiny::renderPlot({
       o <- section()
       ne <- phenoscapR::NeighbourhoodEnrichment(o, radius = input$radius,
                                                 n_perm = input$nperm, seed = 1)
       ggplot2::autoplot(ne)
-    }, alt = "Permutation-based neighbourhood enrichment among simulated phenotypes")
+    }, res = 96, alt = "Permutation-based neighbourhood enrichment among simulated phenotypes")
     output$interaction <- shiny::renderPlot({
       o <- obj()
       im <- phenoscapR::InteractionMatrix(o, radius = input$radius)
       phenoscapR::InteractionPlot(im)
-    }, alt = "Spatial interaction scores among simulated phenotypes")
+    }, res = 96, alt = "Spatial interaction scores among simulated phenotypes")
     output$moran <- shiny::renderPrint({
       shiny::req(input$feature)
       o <- section()

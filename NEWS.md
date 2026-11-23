@@ -55,7 +55,8 @@
   normal size. Automatic re-theming of the plots is no longer used, because
   it removed the tick labels of plots that set a complete 'ggplot2' theme;
   'thematic' is no longer needed by `run_app()`. The plots keep their light
-  background in both colour modes.
+  background in both colour modes and are rendered at 96 dpi, so that their
+  text is no longer much smaller than the text of the page.
 * The example of `PlotTerritories()` uses a scale bar that fits its field, and
   the help page of `ThemeManuscript()` explains that panels printed outside
   `ComposeFigure()` need a margin for their outer labels.

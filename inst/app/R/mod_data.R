@@ -86,21 +86,22 @@ mod_data_server <- function(id) {
       selected
     })
 
+    # res = 96: plot text at 72 dpi is far smaller than the text of the page.
     output$cellmap <- shiny::renderPlot({
       shiny::req(input$colour)
       o <- section()
       phenoscapR::CellMap(o, colour_by = input$colour)
-    }, alt = function() paste("Synthetic cell positions coloured by", input$colour))
+    }, res = 96, alt = function() paste("Synthetic cell positions coloured by", input$colour))
     output$feature_plot <- shiny::renderPlot({
       shiny::req(input$feature)
       o <- section()
       phenoscapR::FeaturePlot(o, features = input$feature)
-    }, alt = function() paste("Synthetic cell positions coloured by", input$feature,
+    }, res = 96, alt = function() paste("Synthetic cell positions coloured by", input$feature,
                              "normalised marker intensity"))
     output$composition <- shiny::renderPlot({
       o <- obj()
       phenoscapR::CompositionPlot(o, group_by = "sample_id")
-    }, alt = "Simulated phenotype composition in each synthetic section after QC")
+    }, res = 96, alt = "Simulated phenotype composition in each synthetic section after QC")
     output$summary <- reactable::renderReactable({
       o <- obj()
       reactable::reactable(phenoscapR::PhenotypeSummary(o),
