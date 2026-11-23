@@ -151,6 +151,9 @@
   theme and the logarithmic axes use minor axis ticks, which older versions
   do not have, and plots and themes set line widths through the `linewidth`
   argument.
+* `.zenodo.json` gives the creators in the "family name, initial" form that
+  Zenodo expects ("Heller, R."), matching the author names of `inst/CITATION`
+  and `CITATION.cff`.
 
 # phenoscapR 1.0.0
 
