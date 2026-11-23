@@ -81,9 +81,10 @@
 * Cell subsetting (`object[i, ]`) rejects missing indices, which arise from
   comparing a column that holds `NA`, instead of failing in the validity check
   with a message about coordinates.
-* `FeaturePlot()`, `ViolinPlot()`, `BoxPlot()` and `RidgePlot()` build an empty
-  plot for an object without cells instead of failing while assembling their
-  data; `MarkerHeatmap()` reports that there is no phenotype to summarise.
+* `FeaturePlot()`, `ViolinPlot()`, `BoxPlot()`, `RidgePlot()` and `DotPlot()`
+  build an empty plot for an object without cells instead of failing while
+  assembling their data; `MarkerHeatmap()` reports that there is no phenotype
+  to summarise.
 * `read_spatial()` and `ReadSpatial()` report an empty file and a path that is
   not one character string with a clear message.
 

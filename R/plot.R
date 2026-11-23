@@ -334,7 +334,7 @@ DotPlot <- function(object, features, group_by = "phenotype",
     for (g in grp_levels) {
       vals <- mat[groups == g, f]
       records[[length(records) + 1L]] <- data.frame(
-        feature = rep(f, nrow(mat)),
+        feature = f,
         group = g,
         avg_exp = mean(vals, na.rm = TRUE),
         pct_exp = 100 * mean(vals > threshold, na.rm = TRUE),
@@ -343,6 +343,12 @@ DotPlot <- function(object, features, group_by = "phenotype",
     }
   }
   df <- do.call(rbind, records)
+  if (is.null(df)) {
+    # No cells, hence no groups: an empty summary with the plotted columns.
+    df <- data.frame(feature = character(), group = groups[0L],
+                     avg_exp = numeric(), pct_exp = numeric(),
+                     stringsAsFactors = FALSE)
+  }
   df$feature <- factor(df$feature, levels = features)
 
   p <- ggplot2::ggplot(df, ggplot2::aes(

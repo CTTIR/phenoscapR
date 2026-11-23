@@ -194,3 +194,18 @@ test_that("interaction heatmaps rotate the phenotype labels", {
   expect_identical(plot_interactions(as.data.frame(InteractionMatrix(obj, radius = 20)))$theme$
                      axis.text.x$angle, 45)
 })
+
+test_that("dot plots hold one summary row per feature and group", {
+  obj <- contract_object()
+  plot <- DotPlot(obj, features = c("CD3", "CD8"))
+  expect_identical(nrow(plot$data), 2L * length(unique(obj$phenotype)))
+  expect_identical(anyDuplicated(plot$data[, c("feature", "group")]), 0L)
+  a_cd3 <- plot$data[plot$data$feature == "CD3" & plot$data$group == "A", ]
+  values <- obj@data[obj$phenotype == "A", "CD3"]
+  expect_equal(a_cd3$avg_exp, mean(values))
+  expect_equal(a_cd3$pct_exp, 100 * mean(values > 0))
+  none <- obj[integer(0), ]
+  empty <- DotPlot(none, features = "CD3")
+  expect_identical(nrow(empty$data), 0L)
+  expect_s3_class(ggplot2::ggplot_build(empty), "ggplot_built")
+})
