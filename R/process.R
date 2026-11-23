@@ -511,6 +511,20 @@ PhenotypeSummary <- function(object) {
   intersect(markers, available)
 }
 
+# The same for the features of a plot, where at least one must exist.
+.known_features <- function(features, available) {
+  found <- intersect(features, available)
+  if (length(found) == 0L) {
+    stop("No matching features found.", call. = FALSE)
+  }
+  unknown <- setdiff(features, available)
+  if (length(unknown)) {
+    warning("Ignoring features not found in the data: ",
+            paste(unknown, collapse = ", "), ".", call. = FALSE)
+  }
+  found
+}
+
 .marker_columns <- function(dt) {
   meta <- c("sample_id", "cell_id", "x", "y", "cell_area", "nucleus_area",
             "classification", "parent", "source_image", "phenotype", "cluster",

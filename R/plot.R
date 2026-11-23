@@ -86,7 +86,8 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
 #' tissue space.
 #'
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
-#' @param features Character vector. Marker names to plot.
+#' @param features Character vector. Marker names to plot. Names not found in
+#'   the object are ignored with a warning; at least one must be found.
 #' @param slot Character. \code{"data"} or \code{"counts"}.
 #' @param pt_size Numeric. Point size. Default \code{0.3}.
 #' @param ncol Integer. Number of columns in the faceted layout. Default
@@ -111,10 +112,7 @@ FeaturePlot <- function(object, features, slot = "data", pt_size = 0.3,
                          ncol = NULL, palette = NULL, dark_theme = FALSE,
                          y_down = TRUE) {
   mat <- GetData(object, slot = slot)
-  features <- intersect(features, colnames(mat))
-  if (length(features) == 0L) {
-    stop("No matching features found.", call. = FALSE)
-  }
+  features <- .known_features(features, colnames(mat))
 
   df_list <- lapply(features, function(f) {
     data.frame(
@@ -152,7 +150,8 @@ FeaturePlot <- function(object, features, slot = "data", pt_size = 0.3,
 #' phenotypes or other grouping variables.
 #'
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
-#' @param features Character vector. Marker names to plot.
+#' @param features Character vector. Marker names to plot. Names not found in
+#'   the object are ignored with a warning; at least one must be found.
 #' @param group_by Character. Metadata column to group by. Default
 #'   \code{"phenotype"}.
 #' @param slot Character. \code{"data"} or \code{"counts"}.
@@ -181,10 +180,7 @@ ViolinPlot <- function(object, features, group_by = "phenotype",
     stop("Column '", group_by, "' not found in meta_data.", call. = FALSE)
   }
   mat <- GetData(object, slot = slot)
-  features <- intersect(features, colnames(mat))
-  if (length(features) == 0L) {
-    stop("No matching features found.", call. = FALSE)
-  }
+  features <- .known_features(features, colnames(mat))
 
   groups <- object@meta_data[[group_by]]
   df_list <- lapply(features, function(f) {
@@ -231,7 +227,8 @@ ViolinPlot <- function(object, features, group_by = "phenotype",
 #' phenotypes or other grouping variables.
 #'
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
-#' @param features Character vector. Marker names to plot.
+#' @param features Character vector. Marker names to plot. Names not found in
+#'   the object are ignored with a warning; at least one must be found.
 #' @param group_by Character. Metadata column to group by. Default
 #'   \code{"phenotype"}.
 #' @param slot Character. \code{"data"} or \code{"counts"}.
@@ -257,10 +254,7 @@ BoxPlot <- function(object, features, group_by = "phenotype",
     stop("Column '", group_by, "' not found in meta_data.", call. = FALSE)
   }
   mat <- GetData(object, slot = slot)
-  features <- intersect(features, colnames(mat))
-  if (length(features) == 0L) {
-    stop("No matching features found.", call. = FALSE)
-  }
+  features <- .known_features(features, colnames(mat))
 
   groups <- object@meta_data[[group_by]]
   df_list <- lapply(features, function(f) {
@@ -301,7 +295,8 @@ BoxPlot <- function(object, features, group_by = "phenotype",
 #' Analogous to Seurat's \code{DotPlot}.
 #'
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
-#' @param features Character vector. Marker names to plot.
+#' @param features Character vector. Marker names to plot. Names not found in
+#'   the object are ignored with a warning; at least one must be found.
 #' @param group_by Character. Metadata column to group by. Default
 #'   \code{"phenotype"}.
 #' @param slot Character. \code{"data"} or \code{"counts"}.
@@ -329,10 +324,7 @@ DotPlot <- function(object, features, group_by = "phenotype",
     stop("Column '", group_by, "' not found in meta_data.", call. = FALSE)
   }
   mat <- GetData(object, slot = slot)
-  features <- intersect(features, colnames(mat))
-  if (length(features) == 0L) {
-    stop("No matching features found.", call. = FALSE)
-  }
+  features <- .known_features(features, colnames(mat))
 
   groups <- object@meta_data[[group_by]]
   grp_levels <- sort(unique(groups))
@@ -438,7 +430,8 @@ CompositionPlot <- function(object, group_by = "sample_id",
 #' each group. Implemented with overlapping density plots.
 #'
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
-#' @param features Character vector. Marker names to plot.
+#' @param features Character vector. Marker names to plot. Names not found in
+#'   the object are ignored with a warning; at least one must be found.
 #' @param group_by Character. Metadata column to group by. Default
 #'   \code{"phenotype"}.
 #' @param slot Character. \code{"data"} or \code{"counts"}.
@@ -464,10 +457,7 @@ RidgePlot <- function(object, features, group_by = "phenotype",
     stop("Column '", group_by, "' not found in meta_data.", call. = FALSE)
   }
   mat <- GetData(object, slot = slot)
-  features <- intersect(features, colnames(mat))
-  if (length(features) == 0L) {
-    stop("No matching features found.", call. = FALSE)
-  }
+  features <- .known_features(features, colnames(mat))
 
   groups <- object@meta_data[[group_by]]
   df_list <- lapply(features, function(f) {

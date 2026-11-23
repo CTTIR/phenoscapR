@@ -109,3 +109,22 @@ test_that("table import reports empty files and malformed paths", {
   expect_error(read_spatial(1), "path must be one file or directory path")
   expect_error(read_spatial(file.path(tempdir(), "no-such-file.csv")), "Path does not exist")
 })
+
+test_that("feature plots name the features that do not exist", {
+  obj <- contract_object()
+  plots <- list(
+    function(features) FeaturePlot(obj, features = features),
+    function(features) ViolinPlot(obj, features = features),
+    function(features) BoxPlot(obj, features = features),
+    function(features) RidgePlot(obj, features = features),
+    function(features) DotPlot(obj, features = features)
+  )
+  for (plot in plots) {
+    expect_warning(built <- plot(c("CD3", "nope")),
+                   "Ignoring features not found in the data: nope")
+    expect_s3_class(built, "ggplot")
+    expect_no_warning(plot(c("CD3", "CD8")))
+    # Nothing to draw is an error without an additional warning.
+    expect_no_warning(expect_error(plot("nope"), "No matching features found"))
+  }
+})

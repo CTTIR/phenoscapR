@@ -17,7 +17,8 @@ ViolinPlot(
 \arguments{
 \item{object}{An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.}
 
-\item{features}{Character vector. Marker names to plot.}
+\item{features}{Character vector. Marker names to plot. Names not found in
+the object are ignored with a warning; at least one must be found.}
 
 \item{group_by}{Character. Metadata column to group by. Default
 \code{"phenotype"}.}

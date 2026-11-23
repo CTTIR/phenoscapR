@@ -41,7 +41,9 @@
   `plot_heatmap()` used to drop a misspelt marker without any signal, so
   `NormaliseData(obj, markers = "typo")` returned unnormalised data silently.
   They now warn and continue with the markers that were found;
-  `SpatialDomains()` stops when none remains.
+  `SpatialDomains()` stops when none remains. `FeaturePlot()`, `ViolinPlot()`,
+  `BoxPlot()`, `RidgePlot()` and `DotPlot()` warn in the same way about
+  features that do not exist.
 * `QCFilter()` and `qc_filter()` require each threshold to be `NULL` or one
   non-missing number. A missing or non-numeric threshold used to remove every
   cell without a message. `min_intensity = NULL` now applies no lower limit, as
