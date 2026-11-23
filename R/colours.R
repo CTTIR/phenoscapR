@@ -189,11 +189,37 @@ CustomGradient <- function(colours) {
   }
 }
 
+# Discrete colours for a black background: the current palette without its
+# darkest part, so that no category disappears into the background. The
+# lightness floor is a design choice of this package, not a published value:
+# colours below CIE L* = 40 are hard to tell from black at point size.
+.dark_background_min_lightness <- 40
+
+.palette_discrete_dark <- function(n, palette = NULL) {
+  ramp <- PaletteContinuous(256L, palette)
+  lab <- grDevices::convertColor(t(grDevices::col2rgb(ramp)) / 255,
+                                 from = "sRGB", to = "Lab")
+  keep <- ramp[lab[, 1L] >= .dark_background_min_lightness]
+  if (length(keep) < 2L) return(PaletteDiscrete(n, palette))
+  keep[round(seq(1, length(keep), length.out = n))]
+}
+
+# Legend keys for categories drawn as small points: the keys are drawn opaque
+# and at least this large, whatever the size of the plotted points, so that
+# their colours can be told apart (design choice; 'ggplot2' point size).
+.legend_key_point_size <- 3
+
+.point_legend_guide <- function(pt_size) {
+  ggplot2::guides(colour = ggplot2::guide_legend(
+    override.aes = list(size = max(pt_size, .legend_key_point_size), alpha = 1)
+  ))
+}
+
 #' Get ggplot2 discrete colour scale using current palette
 #' @noRd
 #' @importFrom ggplot2 scale_colour_manual scale_fill_manual
-.gg_discrete_scale <- function(aesthetic = "colour", n, palette = NULL, ...) {
-  cols <- PaletteDiscrete(n, palette)
+.gg_discrete_scale <- function(aesthetic = "colour", n, palette = NULL, dark = FALSE, ...) {
+  cols <- if (dark) .palette_discrete_dark(n, palette) else PaletteDiscrete(n, palette)
   if (aesthetic == "fill") {
     ggplot2::scale_fill_manual(values = cols, ...)
   } else {

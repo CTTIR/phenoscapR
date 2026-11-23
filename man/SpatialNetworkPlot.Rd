@@ -10,7 +10,7 @@ SpatialNetworkPlot(
   colour_by = "phenotype",
   colours = NULL,
   pt_size = 2,
-  edge_alpha = 0.15,
+  edge_alpha = 0.5,
   edge_colour = "grey60",
   dark_theme = TRUE,
   y_down = TRUE
@@ -31,11 +31,13 @@ contains \code{delaunay_edges}, those are used.}
 
 \item{pt_size}{Numeric. Node size. Default \code{2}.}
 
-\item{edge_alpha}{Numeric. Edge transparency. Default \code{0.15}.}
+\item{edge_alpha}{Numeric. Edge opacity. Default \code{0.5}.}
 
 \item{edge_colour}{Character. Edge colour. Default \code{"grey60"}.}
 
-\item{dark_theme}{Logical. Default \code{TRUE}.}
+\item{dark_theme}{Logical. Default \code{TRUE}. On the dark background
+the automatic colours leave out the darkest part of the palette, so
+that every category stays visible.}
 
 \item{y_down}{Logical. If \code{TRUE} (default), y increases downward, as in
 image coordinates (origin at the top left; QuPath, cellspecR), so the map

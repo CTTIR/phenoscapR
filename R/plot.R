@@ -73,8 +73,11 @@ CellMap <- function(object, colour_by = "phenotype", colours = NULL,
   } else if (is.numeric(df$colour)) {
     p <- p + .gg_continuous_scale("colour")
   } else {
-    p <- p + .gg_discrete_scale("colour", length(unique(df$colour)))
+    p <- p + .gg_discrete_scale("colour", length(unique(df$colour)),
+                                dark = dark_theme)
   }
+  # Map points are small; their legend keys must still show the colours.
+  if (!is.numeric(df$colour)) p <- p + .point_legend_guide(pt_size)
 
   if (dark_theme) p + .theme_dark_tissue() else p + ggplot2::theme_minimal()
 }
@@ -198,6 +201,9 @@ ViolinPlot <- function(object, features, group_by = "phenotype",
   )) +
     ggplot2::geom_violin(scale = "width", trim = TRUE) +
     ggplot2::theme_minimal() +
+    # Group labels sit side by side in every facet; rotate them as the
+    # heatmaps do so that phenotype names do not run into each other.
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
     ggplot2::labs(x = group_by, y = "Expression", fill = group_by)
 
   if (pt_size > 0) {
@@ -272,6 +278,7 @@ BoxPlot <- function(object, features, group_by = "phenotype",
   )) +
     ggplot2::geom_boxplot(outlier.size = 0.5) +
     ggplot2::theme_minimal() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
     ggplot2::labs(x = group_by, y = "Expression", fill = group_by)
 
   if (length(features) > 1L) {
@@ -702,9 +709,11 @@ MarkerHeatmap <- function(object, markers = NULL, slot = "data",
 #'   \code{"phenotype"}.
 #' @param colours Named character vector or \code{NULL}.
 #' @param pt_size Numeric. Node size. Default \code{2}.
-#' @param edge_alpha Numeric. Edge transparency. Default \code{0.15}.
+#' @param edge_alpha Numeric. Edge opacity. Default \code{0.5}.
 #' @param edge_colour Character. Edge colour. Default \code{"grey60"}.
-#' @param dark_theme Logical. Default \code{TRUE}.
+#' @param dark_theme Logical. Default \code{TRUE}. On the dark background
+#'   the automatic colours leave out the darkest part of the palette, so
+#'   that every category stays visible.
 #'
 #' @return A \code{ggplot} object.
 #'
@@ -723,7 +732,7 @@ MarkerHeatmap <- function(object, markers = NULL, slot = "data",
 #' @importFrom ggplot2 geom_segment
 SpatialNetworkPlot <- function(object, edges = NULL, colour_by = "phenotype",
                                 colours = NULL, pt_size = 2,
-                                edge_alpha = 0.15, edge_colour = "grey60",
+                                edge_alpha = 0.5, edge_colour = "grey60",
                                 dark_theme = TRUE, y_down = TRUE) {
   if (is.null(edges)) {
     edges <- object@spatial$delaunay_edges
@@ -772,8 +781,9 @@ SpatialNetworkPlot <- function(object, edges = NULL, colour_by = "phenotype",
     p <- p + ggplot2::scale_colour_manual(values = colours)
   } else {
     n_vals <- length(unique(node_df$colour))
-    p <- p + .gg_discrete_scale("colour", n_vals)
+    p <- p + .gg_discrete_scale("colour", n_vals, dark = dark_theme)
   }
+  p <- p + .point_legend_guide(pt_size)
 
   if (dark_theme) {
     p <- p + .theme_dark_tissue()
@@ -884,9 +894,12 @@ QCPlot <- function(object, x, y, colour_by = NULL, pt_size = 0.5) {
     ))
   }
 
-  p + ggplot2::geom_point(size = pt_size, alpha = 0.5) +
+  p <- p + ggplot2::geom_point(size = pt_size, alpha = 0.5) +
     ggplot2::theme_minimal() +
     ggplot2::labs(x = x, y = y, colour = colour_by)
+  # Small translucent points give legend keys nobody can read.
+  if (!is.null(df$col) && !is.numeric(df$col)) p <- p + .point_legend_guide(pt_size)
+  p
 }
 
 # --- Internal helpers --------------------------------------------------------

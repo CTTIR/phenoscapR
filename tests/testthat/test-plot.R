@@ -98,3 +98,68 @@ test_that("tissue maps draw y downward like image coordinates by default", {
     expect_equal(drawn_y(maps[[nm]](y_down = FALSE)), y_true, info = nm)
   }
 })
+
+# --- Legibility of the rendered plots ----------------------------------------
+
+legible_object <- function(n = 60) {
+  set.seed(11)
+  counts <- matrix(rnorm(n * 2), nrow = n, dimnames = list(NULL, c("CD3", "CD8")))
+  coords <- data.frame(x = runif(n, 0, 500), y = runif(n, 0, 500))
+  meta <- data.frame(cell_id = seq_len(n), sample_id = "s1",
+                     cell_area = runif(n, 10, 500),
+                     phenotype = rep(c("B cell", "Macrophage", "T cytotoxic"), length.out = n))
+  CreateSpatialObject(counts, coords, meta)
+}
+
+legend_override <- function(p) p$guides$guides$colour$params$override.aes
+
+test_that("point maps draw readable legend keys for small points", {
+  obj <- legible_object()
+  key <- legend_override(CellMap(obj))
+  expect_identical(key$size, 3)
+  expect_identical(key$alpha, 1)
+  # A larger point size is kept in the key.
+  expect_identical(legend_override(CellMap(obj, pt_size = 5))$size, 5)
+  expect_identical(legend_override(QCPlot(obj, "cell_area", "cell_id",
+                                          colour_by = "phenotype"))$alpha, 1)
+  # Continuous colours keep their colour bar.
+  expect_null(CellMap(obj, colour_by = "cell_area")$guides$guides$colour)
+  expect_null(QCPlot(obj, "cell_area", "cell_id")$guides$guides$colour)
+})
+
+test_that("violin and box plots rotate the group labels", {
+  obj <- legible_object()
+  for (p in list(ViolinPlot(obj, c("CD3", "CD8")), BoxPlot(obj, c("CD3", "CD8")))) {
+    expect_identical(p$theme$axis.text.x$angle, 45)
+    expect_identical(p$theme$axis.text.x$hjust, 1)
+  }
+})
+
+test_that("automatic colours stay visible on the dark background", {
+  lightness <- function(cols) {
+    grDevices::convertColor(t(grDevices::col2rgb(cols)) / 255, from = "sRGB", to = "Lab")[, 1L]
+  }
+  obj <- DelaunayNetwork(legible_object())
+  dark <- unique(ggplot2::ggplot_build(SpatialNetworkPlot(obj))$data[[2]]$colour)
+  light <- unique(ggplot2::ggplot_build(SpatialNetworkPlot(obj, dark_theme = FALSE))$data[[2]]$colour)
+  expect_length(dark, 3L)
+  expect_true(all(lightness(dark) >= 40))
+  # The light theme keeps the full palette, including its dark end.
+  expect_setequal(light, PaletteDiscrete(3L))
+  expect_true(min(lightness(light)) < 40)
+  map <- unique(ggplot2::ggplot_build(CellMap(obj, dark_theme = TRUE))$data[[1]]$colour)
+  expect_true(all(lightness(map) >= 40))
+  # Explicit colours are used as given.
+  given <- c(`B cell` = "#000080", Macrophage = "#FF0000", `T cytotoxic` = "#00FF00")
+  own <- unique(ggplot2::ggplot_build(SpatialNetworkPlot(obj, colours = given))$data[[2]]$colour)
+  expect_setequal(own, unname(given))
+  expect_identical(phenoscapR:::.palette_discrete_dark(0L), character(0))
+  expect_length(phenoscapR:::.palette_discrete_dark(1L), 1L)
+})
+
+test_that("network edges are drawn visibly by default", {
+  obj <- DelaunayNetwork(legible_object())
+  expect_identical(formals(SpatialNetworkPlot)$edge_alpha, 0.5)
+  edges <- ggplot2::ggplot_build(SpatialNetworkPlot(obj))$data[[1]]
+  expect_true(all(edges$alpha == 0.5))
+})
