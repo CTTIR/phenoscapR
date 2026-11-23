@@ -30,7 +30,21 @@
   fill followed the package palette or the `colours` argument, so the outlines
   kept the default 'ggplot2' hues.
 * `QCPlot()` colours points with the package palette set by `SetPalette()`,
-  as the other plots do, instead of the default 'ggplot2' colours.
+  as the other plots do, instead of the default 'ggplot2' colours. This
+  applies to numeric columns and to categories (character, factor, logical);
+  other columns, such as dates, keep the scale 'ggplot2' chooses for them.
+* `PairCorrelation()` divides each ring count by the exact area of the ring.
+  A ring around a radius smaller than half the ring width is cut off at zero
+  and is a disc; dividing it by `2 * pi * r * dr` inflated `g(r)` there. This
+  affected the first radius of the automatic grid in every window whose
+  shorter side exceeds about 400 coordinate units (a value near 1.8 instead
+  of 1 for a random pattern, reported as the peak in the printed summary),
+  and user grids with `dr` larger than twice the smallest radius. All other
+  values are unchanged.
+* `SpatialNetworkPlot()` accepts a numeric `colour_by` column and draws it
+  with the continuous palette, as `CellMap()` does, instead of failing.
+* `PhenotypeCells()` and `phenotype_cells()` use the labels of a factor passed
+  as `labels`; its integer codes used to be written as the phenotype.
 * `InteractionPlot()` rotates the phenotype labels on the x axis, as the other
   heatmaps do, so that long signatures no longer overlap.
 * `ViolinPlot()` and `BoxPlot()` rotate the group labels on the x axis as
@@ -44,9 +58,13 @@
 * `SpatialNetworkPlot()` draws its edges visibly: the default `edge_alpha` is
   now `0.5`. The former default of `0.15` left the network almost invisible
   on the dark and on the light background. On the dark background
-  (`dark_theme = TRUE`, also in `CellMap()` and `EmbeddingPlot()`) the
-  automatic colours leave out the darkest part of the palette, which could
-  not be seen against black; colours passed in `colours` are used as given.
+  (`dark_theme = TRUE`, also in `CellMap()` and `EmbeddingPlot()`) automatic
+  colours that could not be seen against black are drawn lighter. Every
+  category keeps its palette colour and hue, so that a dark and a light plot
+  of the same object can be compared: only the colours below a lightness of
+  CIE L* = 40 differ between the two themes (with the default palette the
+  first, dark purple one). Colours passed in `colours` and a vector of
+  discrete colours set with `SetPalette()` are used as given.
 * `PlotAlterationMatrix()` prints the row values of `right_text` right of the
   last tile. The default `right_offset` is now `tile_width / 2 + 0.1` column
   units; the former default of `0.2` put the text on the last tile, where it
@@ -97,14 +115,18 @@
   a whole cluster count between one and the number of cells;
   `ExpressionClusters()` names unknown markers, stops when no marker remains or
   when k-means or a Gaussian mixture meets a missing value, and documents
-  `method = "gmm"`. `DelaunayNetwork()` requires `max_edge` to be `NULL` or one
+  `method = "gmm"`. k-means reports that it needs fewer clusters than cells,
+  and Ward clustering reports cells that share no measured marker with
+  another cell, instead of failing inside 'stats'. `DelaunayNetwork()` requires `max_edge` to be `NULL` or one
   nonnegative number. The help pages state that spatial clustering pools the
   cells of all samples.
 * `PhenotypeCells()` and `phenotype_cells()` require `labels` to carry unique,
   nonblank signature names. An unnamed label vector matched no signature and
   was ignored silently.
-* `RunPCA()` rejects a component count below one, objects with fewer than two
-  cells and missing marker values with a clear message.
+* `RunPCA()` rejects a component count below one or not finite, objects with
+  fewer than two cells and missing marker values with a clear message.
+  `RunUMAP()`, `RunTSNE()` and `RunSONG()` warn about unknown markers in the
+  same way as `RunPCA()`.
 * Cell subsetting (`object[i, ]`) rejects missing indices, which arise from
   comparing a column that holds `NA`, instead of failing in the validity check
   with a message about coordinates.
@@ -121,9 +143,10 @@
 
 ## Packaging
 
-* The minimum 'ggplot2' version is 3.4.0 rather than 3.0.0: plots and themes
-  set line widths through the `linewidth` argument, which older versions do not
-  have.
+* The minimum 'ggplot2' version is 3.5.0 rather than 3.0.0: the manuscript
+  theme and the logarithmic axes use minor axis ticks, which older versions
+  do not have, and plots and themes set line widths through the `linewidth`
+  argument.
 
 # phenoscapR 1.0.0
 
