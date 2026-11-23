@@ -1,5 +1,8 @@
 # phenoscapR 1.0.0
 
+* The minimum 'ggplot2' version is 3.4.0 rather than 3.0.0: plots and themes
+  set line widths through the `linewidth` argument, which older versions do not
+  have.
 * `NeighbourhoodEnrichment()` validates the radius, the permutation count (at
   least two) and the seed before any random draw, and requires a complete,
   nonblank phenotype label for every cell; cells with a missing label used to
