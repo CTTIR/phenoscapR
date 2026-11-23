@@ -13,7 +13,8 @@ QCPlot(object, x, y, colour_by = NULL, pt_size = 0.5)
 
 \item{y}{Character. Metadata column for y-axis.}
 
-\item{colour_by}{Character or \code{NULL}. Metadata column for colour.}
+\item{colour_by}{Character or \code{NULL}. Metadata column for colour. A
+column that does not exist is ignored with a warning.}
 
 \item{pt_size}{Numeric. Default \code{0.5}.}
 }

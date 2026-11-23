@@ -128,3 +128,17 @@ test_that("feature plots name the features that do not exist", {
     expect_no_warning(expect_error(plot("nope"), "No matching features found"))
   }
 })
+
+test_that("optional grouping columns that do not exist are reported", {
+  obj <- contract_object()
+  expect_warning(plot <- HistogramPlot(obj, feature = "CD3", group_by = "nope"),
+                 "Ignoring group_by = \"nope\": column not found in meta_data")
+  expect_s3_class(plot, "ggplot")
+  expect_warning(plot <- QCPlot(obj, x = "cell_area", y = "cell_area", colour_by = "nope"),
+                 "Ignoring colour_by = \"nope\": column not found in meta_data")
+  expect_s3_class(plot, "ggplot")
+  expect_no_warning(HistogramPlot(obj, feature = "CD3", group_by = "phenotype"))
+  expect_no_warning(HistogramPlot(obj, feature = "CD3"))
+  expect_no_warning(QCPlot(obj, x = "cell_area", y = "cell_area", colour_by = "phenotype"))
+  expect_no_warning(QCPlot(obj, x = "cell_area", y = "cell_area"))
+})

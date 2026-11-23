@@ -43,7 +43,9 @@
   They now warn and continue with the markers that were found;
   `SpatialDomains()` stops when none remains. `FeaturePlot()`, `ViolinPlot()`,
   `BoxPlot()`, `RidgePlot()` and `DotPlot()` warn in the same way about
-  features that do not exist.
+  features that do not exist, and `HistogramPlot()` and `QCPlot()` warn when
+  the optional `group_by` or `colour_by` column does not exist instead of
+  drawing an ungrouped plot silently.
 * `QCFilter()` and `qc_filter()` require each threshold to be `NULL` or one
   non-missing number. A missing or non-numeric threshold used to remove every
   cell without a message. `min_intensity = NULL` now applies no lower limit, as

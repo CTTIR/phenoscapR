@@ -785,7 +785,7 @@ SpatialNetworkPlot <- function(object, edges = NULL, colour_by = "phenotype",
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @param feature Character. Single marker name.
 #' @param group_by Character or \code{NULL}. Metadata column for
-#'   fill grouping.
+#'   fill grouping. A column that does not exist is ignored with a warning.
 #' @param slot Character. \code{"data"} or \code{"counts"}.
 #' @param bins Integer. Number of bins. Default \code{50}.
 #' @param colours Named character vector or \code{NULL}.
@@ -809,6 +809,7 @@ HistogramPlot <- function(object, feature, group_by = NULL,
   }
 
   df <- data.frame(value = mat[, feature])
+  .warn_unknown_column(group_by, "group_by", names(object@meta_data))
 
   if (!is.null(group_by) && group_by %in% names(object@meta_data)) {
     df$group <- object@meta_data[[group_by]]
@@ -839,7 +840,8 @@ HistogramPlot <- function(object, feature, group_by = NULL,
 #' @param object An \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @param x Character. Metadata column for x-axis.
 #' @param y Character. Metadata column for y-axis.
-#' @param colour_by Character or \code{NULL}. Metadata column for colour.
+#' @param colour_by Character or \code{NULL}. Metadata column for colour. A
+#'   column that does not exist is ignored with a warning.
 #' @param pt_size Numeric. Default \code{0.5}.
 #'
 #' @return A \code{ggplot} object.
@@ -860,6 +862,7 @@ QCPlot <- function(object, x, y, colour_by = NULL, pt_size = 0.5) {
   if (!y %in% names(md)) stop("Column '", y, "' not found.", call. = FALSE)
 
   df <- data.frame(xval = md[[x]], yval = md[[y]])
+  .warn_unknown_column(colour_by, "colour_by", names(md))
 
   if (!is.null(colour_by) && colour_by %in% names(md)) {
     df$col <- md[[colour_by]]
@@ -878,6 +881,16 @@ QCPlot <- function(object, x, y, colour_by = NULL, pt_size = 0.5) {
 }
 
 # --- Internal helpers --------------------------------------------------------
+
+# An optional grouping column that does not exist used to be ignored without
+# any signal, leaving an ungrouped plot that looks intended.
+.warn_unknown_column <- function(column, argument, available) {
+  if (!is.null(column) && !column %in% available) {
+    warning("Ignoring ", argument, " = \"", column,
+            "\": column not found in meta_data.", call. = FALSE)
+  }
+  invisible(NULL)
+}
 
 #' Orientation of the y axis of a tissue map
 #'

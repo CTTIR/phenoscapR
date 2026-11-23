@@ -19,7 +19,7 @@ HistogramPlot(
 \item{feature}{Character. Single marker name.}
 
 \item{group_by}{Character or \code{NULL}. Metadata column for
-fill grouping.}
+fill grouping. A column that does not exist is ignored with a warning.}
 
 \item{slot}{Character. \code{"data"} or \code{"counts"}.}
 
