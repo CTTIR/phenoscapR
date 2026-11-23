@@ -21,7 +21,9 @@ Recomputing an assignment clears its frozen-label record.
 Recompute spatial assignments to describe the new neighbourhoods. Marker-only
 subsetting does not revalidate expression-dependent cached analyses.}
 
-\item{i}{Cell indices (integer or logical).}
+\item{i}{Cell indices (integer or logical). Missing values are not allowed;
+use \code{which()} or \code{\%in\%} to select cells from a column that
+holds \code{NA}.}
 
 \item{j}{Marker indices (integer, logical, or character).}
 
@@ -32,4 +34,14 @@ A subsetted \code{SpatialCellData} object.
 }
 \description{
 Subset a SpatialCellData Object
+}
+\examples{
+data(phenoscapR_example)
+first <- phenoscapR_example[1:100, ]
+dim(first)
+one_sample <- phenoscapR_example[
+  phenoscapR_example$sample_id == phenoscapR_example$sample_id[1], ]
+NCells(one_sample)
+two_markers <- phenoscapR_example[, Markers(phenoscapR_example)[1:2]]
+Markers(two_markers)
 }

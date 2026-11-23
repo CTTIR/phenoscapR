@@ -15,3 +15,7 @@ Integer vector: number of cells, number of markers.
 \description{
 Get Dimensions of a SpatialCellData Object
 }
+\examples{
+data(phenoscapR_example)
+dim(phenoscapR_example)
+}

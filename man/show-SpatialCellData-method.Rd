@@ -15,3 +15,8 @@ Invisibly \code{NULL}; called for printing a summary of the object.
 \description{
 Show a SpatialCellData Object
 }
+\examples{
+data(phenoscapR_example)
+phenoscapR_example
+
+}

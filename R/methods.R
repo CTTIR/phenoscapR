@@ -4,6 +4,10 @@
 #'
 #' @return Invisibly \code{NULL}; called for printing a summary of the object.
 #'
+#' @examples
+#' data(phenoscapR_example)
+#' phenoscapR_example
+#'
 #' @export
 #' @importFrom methods setMethod show
 setMethod("show", "SpatialCellData", function(object) {
@@ -188,10 +192,21 @@ setMethod("Idents", "SpatialCellData", function(object) {
 #' Recompute spatial assignments to describe the new neighbourhoods. Marker-only
 #' subsetting does not revalidate expression-dependent cached analyses.
 #'
-#' @param i Cell indices (integer or logical).
+#' @param i Cell indices (integer or logical). Missing values are not allowed;
+#'   use \code{which()} or \code{\%in\%} to select cells from a column that
+#'   holds \code{NA}.
 #' @param j Marker indices (integer, logical, or character).
 #' @param drop Ignored.
 #' @return A subsetted \code{SpatialCellData} object.
+#' @examples
+#' data(phenoscapR_example)
+#' first <- phenoscapR_example[1:100, ]
+#' dim(first)
+#' one_sample <- phenoscapR_example[
+#'   phenoscapR_example$sample_id == phenoscapR_example$sample_id[1], ]
+#' NCells(one_sample)
+#' two_markers <- phenoscapR_example[, Markers(phenoscapR_example)[1:2]]
+#' Markers(two_markers)
 #' @export
 setMethod("[", signature(x = "SpatialCellData"), function(x, i, j, drop = FALSE) {
   if (!missing(i)) {
@@ -236,6 +251,9 @@ setMethod("[", signature(x = "SpatialCellData"), function(x, i, j, drop = FALSE)
 #' @param x A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @param i Column name (character).
 #' @return The requested metadata column.
+#' @examples
+#' data(phenoscapR_example)
+#' table(phenoscapR_example[["sample_id"]])
 #' @export
 setMethod("[[", signature(x = "SpatialCellData"), function(x, i) {
   x@meta_data[[i]]
@@ -246,6 +264,9 @@ setMethod("[[", signature(x = "SpatialCellData"), function(x, i) {
 #' @param x A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @param name Column name.
 #' @return The requested metadata column.
+#' @examples
+#' data(phenoscapR_example)
+#' table(phenoscapR_example$sample_id)
 #' @export
 setMethod("$", signature(x = "SpatialCellData"), function(x, name) {
   x@meta_data[[name]]
@@ -255,6 +276,9 @@ setMethod("$", signature(x = "SpatialCellData"), function(x, name) {
 #'
 #' @param x A \code{\link[=SpatialCellData-class]{SpatialCellData}} object.
 #' @return Integer vector: number of cells, number of markers.
+#' @examples
+#' data(phenoscapR_example)
+#' dim(phenoscapR_example)
 #' @export
 setMethod("dim", "SpatialCellData", function(x) {
   dim(x@counts)

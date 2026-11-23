@@ -17,3 +17,7 @@ The requested metadata column.
 \description{
 Access Metadata Columns with $
 }
+\examples{
+data(phenoscapR_example)
+table(phenoscapR_example$sample_id)
+}
