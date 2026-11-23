@@ -119,6 +119,13 @@ test_that("alteration matrices fill missing tiles and print row shares", {
   expect_identical(sum(tiles$fill == "#F0F0F0"), 3L)
   expect_identical(b$data[[2]]$label, c("33%", "67%"))
   tr <- data.frame(track = "T", id = c("a", "b"), colour = c("#111111", "#999999"))
+  # By default the row values start right of the last tile, not on it.
+  for (w in c(0.8, 0.5)) {
+    r <- PlotAlterationMatrix(d, colours = c(Missense = "#008300", Truncating = "#222222", Deletion = "#2a78d6"),
+                              right_text = "share", tile_width = w)
+    rb <- ggplot2::ggplot_build(r)
+    expect_gt(min(rb$data[[2]]$x), max(rb$data[[1]]$x))
+  }
   q <- PlotAlterationMatrix(tr, row = "track", column = "id", value = "colour", fill_column = "colour", radius = 0)
   expect_identical(unique(ggplot2::ggplot_build(q)$data[[1]]$fill), c("#111111", "#999999"))
 })

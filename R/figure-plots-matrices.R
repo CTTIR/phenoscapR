@@ -362,7 +362,8 @@ PlotDotMatrix <- function(data, row = "row", column = "column", size = "size", s
 #' @param right_text Optional column with one numeric value per row, printed
 #'   right of the matrix with `right_format`.
 #' @param right_format,right_size,right_colour,right_offset Format, size,
-#'   colour and position (column units beyond the last column centre).
+#'   colour and position (column units beyond the last column centre; by
+#'   default just right of the last tile).
 #' @param legends Optional list of legends, each as the `legend` of
 #'   [PlotEmbedding()] (shape `"rect"` gives patches); colours default to
 #'   `colours`.
@@ -371,9 +372,12 @@ PlotDotMatrix <- function(data, row = "row", column = "column", size = "size", s
 #' d <- data.frame(row = rep(c("g1", "g2"), each = 3), column = rep(c("s1", "s2", "s3"), 2),
 #'                 value = c("Missense", NA, "Deletion", NA, "Truncating", NA),
 #'                 share = rep(c(67, 33), each = 3))
-#' PlotAlterationMatrix(d, colours = c(Missense = "#008300", Truncating = "#222222",
-#'                                     Deletion = "#2a78d6"), right_text = "share",
-#'                      row_italic = TRUE)
+#' p <- PlotAlterationMatrix(d, colours = c(Missense = "#008300", Truncating = "#222222",
+#'                                          Deletion = "#2a78d6"), right_text = "share",
+#'                           row_italic = TRUE)
+#' # Row labels and row values lie outside the panel: outside ComposeFigure()
+#' # they need a margin.
+#' p + ggplot2::theme(plot.margin = ggplot2::margin(5, 30, 5, 30))
 #' @export
 PlotAlterationMatrix <- function(data, row = "row", column = "column", value = "value", fill_column = NULL,
                                  rows = NULL, columns = NULL, row_order_by = NULL, column_order_by = NULL,
@@ -383,7 +387,8 @@ PlotAlterationMatrix <- function(data, row = "row", column = "column", value = "
                                  show_rows = TRUE, show_columns = FALSE, column_angle = 55, column_size = 5,
                                  column_pad = 3.5, column_colours = NULL, right_text = NULL,
                                  right_format = "%.0f%%", right_size = 4.6, right_colour = "muted",
-                                 right_offset = 0.2, legends = NULL, texts = NULL, values = NULL,
+                                 right_offset = tile_width / 2 + 0.1, legends = NULL, texts = NULL,
+                                 values = NULL,
                                  style = ManuscriptStyle()) {
   style <- .fig_check_style(style)
   .fig_require_columns(data, c(row, column, value, fill_column, right_text))
