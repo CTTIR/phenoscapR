@@ -1,6 +1,6 @@
 # SONG Embedding
 
-Computes a 2-D SONG (Self-Organising Nebulous Growths) embedding via the
+Computes a 2-D SONG (Self-Organizing Nebulous Growths) embedding via the
 songR package and stores it under `"song"`. SONG is incremental,
 noise-robust, and preserves global structure. By default the embedding
 is computed on the top principal components (see `use_pca`).

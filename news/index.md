@@ -239,6 +239,12 @@
   [`print()`](https://rdrr.io/r/base/print.html) and
   [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
   methods.
+- Help pages and the README use British spelling throughout
+  (“summarise”, “normalised”, “authorise”, “licence”); function names
+  such as
+  [`SummarizeFixedGrid()`](https://cttir.github.io/phenoscapR/reference/SummarizeFixedGrid.md)
+  are unchanged. The Self-Organizing Nebulous Growths algorithm keeps
+  the name under which Senanayake et al. (2021) published it.
 
 ### Packaging
 
@@ -246,6 +252,9 @@
   manuscript theme and the logarithmic axes use minor axis ticks, which
   older versions do not have, and plots and themes set line widths
   through the `linewidth` argument.
+- `.zenodo.json` gives the creators in the “family name, initial” form
+  that Zenodo expects (“Heller, R.”), matching the author names of
+  `inst/CITATION` and `CITATION.cff`.
 
 ## phenoscapR 1.0.0
 

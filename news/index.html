@@ -106,10 +106,13 @@
 <h3 id="documentation-1-0-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-0-1"></a></h3>
 <ul><li>
 <code><a href="../reference/RipleysK.html">RipleysK()</a></code> and <code><a href="../reference/MoransI.html">MoransI()</a></code> cite their primary sources in the help pages, and <code><a href="../reference/RipleysK.html">RipleysK()</a></code> and <code><a href="../reference/PairCorrelation.html">PairCorrelation()</a></code> state the estimators as implemented (intensity estimate, edge handling). The new help topic <code><a href="../reference/phenoscapR-results.html">?"phenoscapR-results"</a></code> documents the result classes of the spatial statistics and their <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> methods.</li>
+<li>Help pages and the README use British spelling throughout (“summarise”, “normalised”, “authorise”, “licence”); function names such as <code><a href="../reference/SummarizeFixedGrid.html">SummarizeFixedGrid()</a></code> are unchanged. The Self-Organizing Nebulous Growths algorithm keeps the name under which Senanayake et al. (2021) published it.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="packaging-1-0-1">Packaging<a class="anchor" aria-label="anchor" href="#packaging-1-0-1"></a></h3>
 <ul><li>The minimum ‘ggplot2’ version is 3.5.0 rather than 3.0.0: the manuscript theme and the logarithmic axes use minor axis ticks, which older versions do not have, and plots and themes set line widths through the <code>linewidth</code> argument.</li>
+<li>
+<code>.zenodo.json</code> gives the creators in the “family name, initial” form that Zenodo expects (“Heller, R.”), matching the author names of <code>inst/CITATION</code> and <code>CITATION.cff</code>.</li>
 </ul></div>
 </div>
     <div class="section level2">

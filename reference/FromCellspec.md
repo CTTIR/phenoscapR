@@ -40,7 +40,7 @@ Feature identifiers retain their complete compartment/marker/statistic
 names. No marker guessing, normalisation, filtering, imputation or
 removal of all-NA features occurs. Functions requiring complete
 intensities need an explicit downstream missing-feature policy. Existing
-phenotype metadata is preserved; import does not verify or authorize
+phenotype metadata is preserved; import does not verify or authorise
 review decisions.
 
 The metadata attribute cellspec_import holds an original-import snapshot

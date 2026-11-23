@@ -137,9 +137,9 @@ and expression-based clustering.
 - [`AssignFixedGrid()`](https://cttir.github.io/phenoscapR/reference/AssignFixedGrid.md)
   : Assign Physical Cell Coordinates to Fixed Square Grids
 - [`SummarizeFixedGrid()`](https://cttir.github.io/phenoscapR/reference/SummarizeFixedGrid.md)
-  : Summarize Cell Annotations Within Fixed Grids
+  : Summarise Cell Annotations Within Fixed Grids
 - [`SummarizeGroupedCountFractions()`](https://cttir.github.io/phenoscapR/reference/SummarizeGroupedCountFractions.md)
-  : Summarize Grouped Subset Counts as Fractions
+  : Summarise Grouped Subset Counts as Fractions
 - [`CompleteRegisteredValues()`](https://cttir.github.io/phenoscapR/reference/CompleteRegisteredValues.md)
   : Complete Numeric Observations Against an Explicit Registry
 - [`ProjectSpatialTable()`](https://cttir.github.io/phenoscapR/reference/ProjectSpatialTable.md)
@@ -147,7 +147,7 @@ and expression-based clustering.
 - [`ApplyGroupedThresholds()`](https://cttir.github.io/phenoscapR/reference/ApplyGroupedThresholds.md)
   : Apply Supplied Group Thresholds to Observations
 - [`SummarizeGroupedValues()`](https://cttir.github.io/phenoscapR/reference/SummarizeGroupedValues.md)
-  : Summarize Continuous Observations in Explicit Groups
+  : Summarise Continuous Observations in Explicit Groups
 - [`AssemblePairedSummaries()`](https://cttir.github.io/phenoscapR/reference/AssemblePairedSummaries.md)
   : Assemble Registered Paired Summaries
 - [`CorrelateGroupedRanks()`](https://cttir.github.io/phenoscapR/reference/CorrelateGroupedRanks.md)

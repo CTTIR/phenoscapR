@@ -15,7 +15,7 @@ tests; Pitman (1937)
 unavailable hypotheses when adjusting for multiple testing. Grouped
 summaries expose missingness, eligibility, and denominator provenance.
 Optional canonical cell-table import uses 'cellspecR'
-<https://github.com/CTTIR/cellspecR>; optional Self-Organising Nebulous
+<https://github.com/CTTIR/cellspecR>; optional Self-Organizing Nebulous
 Growths (SONG) embeddings (Senanayake et al. (2021)
 [doi:10.1109/TNNLS.2020.3023941](https://doi.org/10.1109/TNNLS.2020.3023941)
 ) use 'songR' <https://github.com/CTTIR/songR>. Both optional packages

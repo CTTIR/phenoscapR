@@ -1,4 +1,4 @@
-# Summarize Grouped Subset Counts as Fractions
+# Summarise Grouped Subset Counts as Fractions
 
 Computes sum(numerator) / sum(denominator) from supplied subset counts,
 without averaging observation fractions or manufacturing absent groups.

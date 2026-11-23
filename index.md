@@ -171,7 +171,7 @@ different Image labels collapse to the same legacy sample identifier,
 import stops so you can supply distinct identities explicitly.
 
 [`as_SpatialCellData()`](https://cttir.github.io/phenoscapR/reference/as_SpatialCellData.md)
-retains available normalized assays when importing from Seurat or
+retains available normalised assays when importing from Seurat or
 SpatialExperiment. Seurat’s marker-name rewriting is refused on export;
 use SpatialExperiment when those exact names must be preserved.
 
@@ -267,7 +267,7 @@ citation("phenoscapR")
 }
 ```
 
-## License
+## Licence
 
 MIT © R. Heller, E. Chteinberg and H. Witte
 

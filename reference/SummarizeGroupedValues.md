@@ -1,4 +1,4 @@
-# Summarize Continuous Observations in Explicit Groups
+# Summarise Continuous Observations in Explicit Groups
 
 Computes arithmetic means, medians and optional threshold fractions or
 weighted means over supplied observations. No unobserved groups or zeros
