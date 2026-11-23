@@ -15,10 +15,13 @@ PairCorrelation(
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{r_seq}{Numeric vector of radii, or \code{NULL} for automatic.}
+\item{r_seq}{Numeric vector of finite, positive radii in coordinate units,
+or \code{NULL} for 50 radii up to a quarter of the shorter side of the
+bounding box. The automatic grid starts at one coordinate unit, or at one
+fiftieth of its upper limit when that limit is not larger than one unit.}
 
-\item{dr}{Numeric or \code{NULL}. Ring width. Default is derived from
-\code{r_seq}.}
+\item{dr}{Numeric or \code{NULL}. Ring width, one finite positive number.
+Default is the spacing of the first two radii of \code{r_seq}.}
 
 \item{target}{Character or \code{NULL}. Restrict to a phenotype.}
 

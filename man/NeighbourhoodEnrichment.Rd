@@ -13,11 +13,15 @@ NeighbourhoodEnrichment(
 )
 }
 \arguments{
-\item{object}{An \code{\link{SpatialCellData-class}} object.}
+\item{object}{An \code{\link{SpatialCellData-class}} object. Every cell
+needs a complete, nonblank \code{phenotype} label.}
 
-\item{radius}{Numeric. Neighbourhood radius.}
+\item{radius}{Numeric. Neighbourhood radius: one finite nonnegative number
+in coordinate units.}
 
-\item{n_perm}{Integer. Number of permutations. Default \code{100}.}
+\item{n_perm}{Integer. Number of permutations, at least \code{2} (the
+permutation standard deviation is undefined otherwise). Default
+\code{100}.}
 
 \item{seed}{Integer or \code{NULL}. Random seed.}
 
@@ -27,11 +31,19 @@ the statistic is computed per sample and returned as a named list. Default
 }
 \value{
 A data frame with columns \code{from}, \code{to}, \code{observed},
-\code{mean_expected}, \code{z_score}, and \code{p_value}.
+\code{mean_expected}, \code{z_score}, and \code{p_value}. When the
+permuted counts of a pair do not vary, the z-score and p-value are
+\code{0} and \code{1} if the observed count equals the permuted count and
+\code{NA} otherwise, as for
+\code{InteractionMatrix(method = "permutation")}.
 }
 \description{
 Tests whether specific phenotype pairs are spatially enriched or depleted
-relative to a random permutation baseline.
+relative to a random permutation baseline. Phenotype labels are permuted
+over the fixed neighbour graph; the z-score compares the observed pair count
+with the mean and standard deviation of the permuted counts, and the p-value
+is the two-sided normal approximation of that z-score (it is not a
+permutation tail probability).
 }
 \examples{
 set.seed(1)

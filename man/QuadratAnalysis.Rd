@@ -9,11 +9,14 @@ QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL, by_sample = FALSE)
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{nx}{Integer. Number of columns in the grid. Default \code{5}.}
+\item{nx}{Integer. Number of columns in the grid, at least \code{1}.
+Default \code{5}.}
 
-\item{ny}{Integer. Number of rows in the grid. Default \code{5}.}
+\item{ny}{Integer. Number of rows in the grid, at least \code{1}. Default
+\code{5}.}
 
-\item{target}{Character or \code{NULL}. Restrict to a phenotype.}
+\item{target}{Character or \code{NULL}. Restrict to a phenotype. At least
+one cell must be retained.}
 
 \item{by_sample}{Logical. If \code{TRUE} and the object holds several samples,
 the statistic is computed per sample and returned as a named list. Default

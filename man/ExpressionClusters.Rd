@@ -15,20 +15,26 @@ ExpressionClusters(
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{k}{Integer. Number of clusters.}
+\item{k}{Integer. Number of clusters, between 1 and the number of cells.}
 
-\item{method}{Character. \code{"kmeans"} (default) or \code{"hierarchical"}.}
+\item{method}{Character. \code{"kmeans"} (default), \code{"hierarchical"}
+(Ward linkage on Euclidean distances) or \code{"gmm"} (a Gaussian mixture
+with \code{k} components; requires the \pkg{mclust} package).}
 
 \item{slot}{Character. \code{"data"} (default) or \code{"counts"}.}
 
-\item{markers}{Character vector or \code{NULL}. Markers to use.}
+\item{markers}{Character vector or \code{NULL}. Markers to use. Names not
+found in the object are ignored with a warning. The selected values must
+not contain missing intensities.}
 }
 \value{
 An \code{\link{SpatialCellData-class}} with an \code{expr_cluster}
 column in \code{meta_data}.
 }
 \description{
-Clusters cells based on marker expression profiles.
+Clusters cells based on marker expression profiles. k-means and Gaussian
+mixtures start from random or data-dependent initial values, so call
+\code{\link{set.seed}()} first for reproducible labels.
 }
 \examples{
 counts <- matrix(c(rnorm(50, 10), rnorm(50, 0)), nrow = 50,

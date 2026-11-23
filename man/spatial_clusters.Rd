@@ -7,9 +7,9 @@
 spatial_clusters(dt, k, method = c("kmeans", "hierarchical"))
 }
 \arguments{
-\item{dt}{A \code{data.table} with columns \code{x} and \code{y}.}
+\item{dt}{A \code{data.table} with finite numeric columns \code{x} and \code{y}.}
 
-\item{k}{Integer. Number of clusters.}
+\item{k}{Integer. Number of clusters, between 1 and the number of cells.}
 
 \item{method}{Character string. Clustering method: \code{"kmeans"} (default) or
 \code{"hierarchical"}.}
@@ -19,7 +19,10 @@ The input \code{data.table} with an added \code{cluster} column.
 }
 \description{
 Clusters cells based on their spatial coordinates using k-means or
-hierarchical clustering.
+hierarchical clustering. All rows are clustered together, whatever their
+\code{sample_id}: cluster one sample at a time when samples have separate
+coordinate frames. k-means starts from random centres, so call
+\code{\link[=set.seed]{set.seed()}} first for reproducible labels.
 }
 \examples{
 dt <- data.table::data.table(

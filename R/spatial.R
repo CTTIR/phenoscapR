@@ -644,10 +644,13 @@ interaction_matrix <- function(dt, radius) {
 #' Spatial Cell Clustering
 #'
 #' Clusters cells based on their spatial coordinates using k-means or
-#' hierarchical clustering.
+#' hierarchical clustering. All rows are clustered together, whatever their
+#' `sample_id`: cluster one sample at a time when samples have separate
+#' coordinate frames. k-means starts from random centres, so call
+#' [set.seed()] first for reproducible labels.
 #'
-#' @param dt A `data.table` with columns `x` and `y`.
-#' @param k Integer. Number of clusters.
+#' @param dt A `data.table` with finite numeric columns `x` and `y`.
+#' @param k Integer. Number of clusters, between 1 and the number of cells.
 #' @param method Character string. Clustering method: `"kmeans"` (default) or
 #'   `"hierarchical"`.
 #'
@@ -665,9 +668,17 @@ interaction_matrix <- function(dt, radius) {
 #' @export
 spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
   method <- match.arg(method)
-  dt <- data.table::copy(dt)
+  if (!is.data.frame(dt) || !all(c("x", "y") %in% names(dt))) {
+    stop("dt must be a data.table with x and y columns.", call. = FALSE)
+  }
+  dt <- data.table::as.data.table(data.table::copy(dt))
 
   coords <- as.matrix(dt[, c("x", "y")])
+  if (!is.numeric(coords) || any(!is.finite(coords))) {
+    stop("x and y must be finite numeric vectors with one value per cell.",
+         call. = FALSE)
+  }
+  .validate_cluster_count(k, nrow(coords))
 
   cluster_ids <- switch(method,
     kmeans = {
@@ -682,6 +693,19 @@ spatial_clusters <- function(dt, k, method = c("kmeans", "hierarchical")) {
 
   dt[, cluster := as.character(cluster_ids)]
   dt
+}
+
+# A cluster count is one whole number between 1 and the number of cells.
+.validate_cluster_count <- function(k, n) {
+  if (!typeof(k) %in% c("integer", "double") || is.object(k) ||
+      length(k) != 1L || !is.null(dim(k)) || !is.finite(k) || k < 1 ||
+      k != floor(k)) {
+    stop("k must be one whole number of at least 1.", call. = FALSE)
+  }
+  if (k > n) {
+    stop("k (", k, ") exceeds the number of cells (", n, ").", call. = FALSE)
+  }
+  invisible(NULL)
 }
 
 # ---------------------------------------------------------------------------
@@ -921,10 +945,13 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
 
 #' Spatial Clusters (SpatialCellData)
 #'
-#' Clusters cells based on spatial coordinates.
+#' Clusters cells based on spatial coordinates. The cells of all samples are
+#' clustered together: subset to one sample first when samples have separate
+#' coordinate frames. k-means starts from random centres, so call
+#' \code{\link{set.seed}()} first for reproducible labels.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param k Integer. Number of clusters.
+#' @param k Integer. Number of clusters, between 1 and the number of cells.
 #' @param method Character. \code{"kmeans"} (default) or \code{"hierarchical"}.
 #'
 #' @return An \code{\link{SpatialCellData-class}} with a \code{cluster}
@@ -944,6 +971,7 @@ InteractionMatrix <- function(object, radius, method = c("analytic",
 SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
   method <- match.arg(method)
   coords <- .spatial_xy(object)
+  .validate_cluster_count(k, nrow(coords))
 
   cluster_ids <- switch(method,
     kmeans = {
@@ -972,7 +1000,8 @@ SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
 #' edges.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param max_edge Numeric or \code{NULL}. Maximum edge length to retain.
+#' @param max_edge One nonnegative number or \code{NULL}. Maximum edge length
+#'   to retain, in coordinate units.
 #'
 #' @return An \code{\link{SpatialCellData-class}} with \code{delaunay_edges}
 #'   stored in the \code{spatial} slot.
@@ -986,6 +1015,12 @@ SpatialClusters <- function(object, k, method = c("kmeans", "hierarchical")) {
 #'
 #' @export
 DelaunayNetwork <- function(object, max_edge = NULL) {
+  if (!is.null(max_edge) &&
+      (!typeof(max_edge) %in% c("integer", "double") || is.object(max_edge) ||
+       length(max_edge) != 1L || !is.null(dim(max_edge)) || is.na(max_edge) ||
+       max_edge < 0)) {
+    stop("max_edge must be NULL or one nonnegative number.", call. = FALSE)
+  }
   xy <- .spatial_xy(object)
   n <- nrow(xy)
   if (n < 3L) stop("Need at least 3 cells for triangulation.", call. = FALSE)
@@ -1058,18 +1093,30 @@ DelaunayNetwork <- function(object, max_edge = NULL) {
 #' Neighbourhood Enrichment Analysis
 #'
 #' Tests whether specific phenotype pairs are spatially enriched or depleted
-#' relative to a random permutation baseline.
+#' relative to a random permutation baseline. Phenotype labels are permuted
+#' over the fixed neighbour graph; the z-score compares the observed pair count
+#' with the mean and standard deviation of the permuted counts, and the p-value
+#' is the two-sided normal approximation of that z-score (it is not a
+#' permutation tail probability).
 #'
-#' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param radius Numeric. Neighbourhood radius.
-#' @param n_perm Integer. Number of permutations. Default \code{100}.
+#' @param object An \code{\link{SpatialCellData-class}} object. Every cell
+#'   needs a complete, nonblank \code{phenotype} label.
+#' @param radius Numeric. Neighbourhood radius: one finite nonnegative number
+#'   in coordinate units.
+#' @param n_perm Integer. Number of permutations, at least \code{2} (the
+#'   permutation standard deviation is undefined otherwise). Default
+#'   \code{100}.
 #' @param seed Integer or \code{NULL}. Random seed.
 #' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
 #'   the statistic is computed per sample and returned as a named list. Default
 #'   \code{FALSE}; otherwise a single sample is required.
 #'
 #' @return A data frame with columns \code{from}, \code{to}, \code{observed},
-#'   \code{mean_expected}, \code{z_score}, and \code{p_value}.
+#'   \code{mean_expected}, \code{z_score}, and \code{p_value}. When the
+#'   permuted counts of a pair do not vary, the z-score and p-value are
+#'   \code{0} and \code{1} if the observed count equals the permuted count and
+#'   \code{NA} otherwise, as for
+#'   \code{InteractionMatrix(method = "permutation")}.
 #'
 #' @examples
 #' set.seed(1)
@@ -1090,13 +1137,20 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
     }))
   }
   .assert_single_sample(object, "Neighbourhood enrichment")
-  if (!is.null(seed)) set.seed(seed)
-
+  # Validate every control and label before the random stream is touched.
+  .validate_interaction_controls(radius, n_perm, seed, permutation = TRUE)
   xy <- .spatial_xy(object)
   pheno <- object@meta_data$phenotype
   if (is.null(pheno)) {
     stop("No phenotype column. Run PhenotypeCells() first.", call. = FALSE)
   }
+  if (!is.atomic(pheno) || !is.null(dim(pheno)) || length(pheno) != nrow(xy) ||
+      anyNA(pheno) || any(!nzchar(trimws(as.character(pheno))))) {
+    stop("phenotype must be a complete, nonblank vector with one label per cell.",
+         call. = FALSE)
+  }
+  n_perm <- as.integer(n_perm)
+  if (!is.null(seed)) set.seed(seed)
 
   phenotypes <- sort(unique(pheno))
   n_pheno <- length(phenotypes)
@@ -1130,10 +1184,32 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
   results$observed <- as.vector(obs_mat)
   results$mean_expected <- apply(perm_array, c(1, 2), mean) |> as.vector()
   perm_sd <- apply(perm_array, c(1, 2), sd) |> as.vector()
-  results$z_score <- ifelse(perm_sd > 0,
-    (results$observed - results$mean_expected) / perm_sd, 0)
-  results$p_value <- 2 * stats::pnorm(-abs(results$z_score))
+  # A constant permutation distribution has no z-score. It is neutral only
+  # when the observation equals it; any other observation is undefined under
+  # the normal approximation, as in .interaction_permutation().
+  z <- rep(NA_real_, nrow(results))
+  varying <- is.finite(perm_sd) & perm_sd > 0
+  z[varying] <- (results$observed[varying] - results$mean_expected[varying]) /
+    perm_sd[varying]
+  matching <- is.finite(perm_sd) & perm_sd == 0 &
+    results$observed == results$mean_expected
+  z[matching] <- 0
+  results$z_score <- z
+  results$p_value <- 2 * stats::pnorm(-abs(z))
   .as_result(results, "phenoscapR_enrichment")
+}
+
+# Radii are distances: reject values that would otherwise be recycled, sorted
+# with missing entries dropped, or evaluated as if a negative distance existed.
+.validate_radius_grid <- function(r_seq, positive = FALSE) {
+  if (is.null(r_seq)) return(invisible(NULL))
+  if (!typeof(r_seq) %in% c("integer", "double") || is.object(r_seq) ||
+      !is.null(dim(r_seq)) || !length(r_seq) || any(!is.finite(r_seq)) ||
+      any(if (positive) r_seq <= 0 else r_seq < 0)) {
+    stop("r_seq must be NULL or a nonempty vector of finite ",
+         if (positive) "positive" else "nonnegative", " radii.", call. = FALSE)
+  }
+  invisible(NULL)
 }
 
 # The current estimators infer their rectangular window from retained points.
@@ -1163,7 +1239,9 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #' required, including within each sample when computing by sample.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param r_seq Numeric vector of radii, or \code{NULL} for automatic.
+#' @param r_seq Numeric vector of finite, nonnegative radii in coordinate
+#'   units, or \code{NULL} for 50 radii from zero to a quarter of the shorter
+#'   side of the bounding box.
 #' @param target Character or \code{NULL}. Restrict to a phenotype.
 #' @param correction Character. Edge correction: \code{"none"} (default),
 #'   \code{"border"} (reduced-sample), or \code{"translation"} (each pair
@@ -1177,6 +1255,11 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #'
 #' @return A data frame with columns \code{r}, \code{K}, \code{L}, and
 #'   \code{expected}.
+#'
+#' @references
+#' Ripley, B. D. (1977). Modelling spatial patterns. \emph{Journal of the
+#' Royal Statistical Society: Series B (Methodological)}, 39(2), 172-192.
+#' \doi{10.1111/j.2517-6161.1977.tb01615.x}
 #'
 #' @examples
 #' counts <- matrix(rnorm(100), nrow = 50,
@@ -1197,6 +1280,7 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
   }
   .assert_single_sample(object, "Ripley's K")
   xy <- .spatial_xy(object)
+  .validate_radius_grid(r_seq)
 
   if (!is.null(target)) {
     idx <- which(object@meta_data$phenotype == target)
@@ -1318,6 +1402,10 @@ RipleysK <- function(object, r_seq = NULL, target = NULL,
 #' @return A list with \code{I}, \code{expected}, \code{variance},
 #'   \code{z_score}, \code{p_value}, and \code{method} (\code{"analytic"} or
 #'   \code{"permutation"}).
+#'
+#' @references
+#' Moran, P. A. P. (1950). Notes on continuous stochastic phenomena.
+#' \emph{Biometrika}, 37(1/2), 17-23. \doi{10.2307/2332142}
 #'
 #' @examples
 #' counts <- matrix(rnorm(100), nrow = 50,
@@ -1441,9 +1529,12 @@ MoransI <- function(object, feature, radius, slot = "data",
 #' Tests for Complete Spatial Randomness using a chi-squared test.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param nx Integer. Number of columns in the grid. Default \code{5}.
-#' @param ny Integer. Number of rows in the grid. Default \code{5}.
-#' @param target Character or \code{NULL}. Restrict to a phenotype.
+#' @param nx Integer. Number of columns in the grid, at least \code{1}.
+#'   Default \code{5}.
+#' @param ny Integer. Number of rows in the grid, at least \code{1}. Default
+#'   \code{5}.
+#' @param target Character or \code{NULL}. Restrict to a phenotype. At least
+#'   one cell must be retained.
 #' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
 #'   the statistic is computed per sample and returned as a named list. Default
 #'   \code{FALSE}; otherwise a single sample is required.
@@ -1461,6 +1552,8 @@ MoransI <- function(object, feature, radius, slot = "data",
 #' @export
 QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
                             by_sample = FALSE) {
+  .spatial_whole_scalar(nx, "nx")
+  .spatial_whole_scalar(ny, "ny")
   if (isTRUE(by_sample) && length(unique(object@meta_data$sample_id)) > 1L) {
     return(.by_sample_apply(object, function(o) {
       QuadratAnalysis(o, nx = nx, ny = ny, target = target)
@@ -1468,10 +1561,17 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
   }
   .assert_single_sample(object, "Quadrat analysis")
   xy <- .spatial_xy(object)
+  nx <- as.integer(nx)
+  ny <- as.integer(ny)
 
   if (!is.null(target)) {
     idx <- which(object@meta_data$phenotype == target)
     xy <- xy[idx, , drop = FALSE]
+  }
+  if (!nrow(xy)) {
+    stop("Quadrat analysis requires at least one retained cell",
+         if (!is.null(target)) "; no cell has the target phenotype",
+         ".", call. = FALSE)
   }
 
   x_breaks <- seq(min(xy[, 1]), max(xy[, 1]), length.out = nx + 1L)
@@ -1480,10 +1580,9 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
   x_bin <- findInterval(xy[, 1], x_breaks, all.inside = TRUE)
   y_bin <- findInterval(xy[, 2], y_breaks, all.inside = TRUE)
 
-  count_mat <- matrix(0L, nrow = ny, ncol = nx)
-  for (i in seq_len(nrow(xy))) {
-    count_mat[y_bin[i], x_bin[i]] <- count_mat[y_bin[i], x_bin[i]] + 1L
-  }
+  # One pass over the column-major cell index instead of a per-cell loop.
+  count_mat <- matrix(tabulate((x_bin - 1L) * ny + y_bin, nbins = nx * ny),
+                      nrow = ny, ncol = nx)
 
   counts_vec <- as.vector(count_mat)
   expected <- mean(counts_vec)
@@ -1506,9 +1605,12 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
 #' The retained points must define a positive finite bounding-box area.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param r_seq Numeric vector of radii, or \code{NULL} for automatic.
-#' @param dr Numeric or \code{NULL}. Ring width. Default is derived from
-#'   \code{r_seq}.
+#' @param r_seq Numeric vector of finite, positive radii in coordinate units,
+#'   or \code{NULL} for 50 radii up to a quarter of the shorter side of the
+#'   bounding box. The automatic grid starts at one coordinate unit, or at one
+#'   fiftieth of its upper limit when that limit is not larger than one unit.
+#' @param dr Numeric or \code{NULL}. Ring width, one finite positive number.
+#'   Default is the spacing of the first two radii of \code{r_seq}.
 #' @param target Character or \code{NULL}. Restrict to a phenotype.
 #' @param by_sample Logical. If \code{TRUE} and the object holds several samples,
 #'   the statistic is computed per sample and returned as a named list. Default
@@ -1533,6 +1635,7 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
   }
   .assert_single_sample(object, "The pair correlation function")
   xy <- .spatial_xy(object)
+  .validate_radius_grid(r_seq, positive = TRUE)
 
   if (!is.null(target)) {
     idx <- which(object@meta_data$phenotype == target)
@@ -1548,10 +1651,17 @@ PairCorrelation <- function(object, r_seq = NULL, dr = NULL,
 
   if (is.null(r_seq)) {
     max_r <- min(diff(x_range), diff(y_range)) / 4
-    r_seq <- seq(1, max_r, length.out = 50)
+    # The grid starts at one coordinate unit. A window whose quarter side is
+    # not larger than that would give a descending grid beyond the supported
+    # radii, so such windows use a grid scaled to the window instead.
+    r_seq <- seq(if (max_r > 1) 1 else max_r / 50, max_r, length.out = 50)
   }
   if (is.null(dr)) {
-    dr <- if (length(r_seq) > 1) r_seq[2] - r_seq[1] else 1
+    dr <- if (length(r_seq) > 1) abs(r_seq[2] - r_seq[1]) else 1
+  }
+  if (!typeof(dr) %in% c("integer", "double") || is.object(dr) ||
+      length(dr) != 1L || !is.null(dim(dr)) || !is.finite(dr) || dr <= 0) {
+    stop("dr must be NULL or one finite positive ring width.", call. = FALSE)
   }
 
   # Ring counts come from differences of cumulative neighbour counts at the
@@ -1628,13 +1738,19 @@ CrossNNDistance <- function(object, from, to, by_sample = FALSE) {
 
 #' Expression-Based Cell Clustering
 #'
-#' Clusters cells based on marker expression profiles.
+#' Clusters cells based on marker expression profiles. k-means and Gaussian
+#' mixtures start from random or data-dependent initial values, so call
+#' \code{\link{set.seed}()} first for reproducible labels.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
-#' @param k Integer. Number of clusters.
-#' @param method Character. \code{"kmeans"} (default) or \code{"hierarchical"}.
+#' @param k Integer. Number of clusters, between 1 and the number of cells.
+#' @param method Character. \code{"kmeans"} (default), \code{"hierarchical"}
+#'   (Ward linkage on Euclidean distances) or \code{"gmm"} (a Gaussian mixture
+#'   with \code{k} components; requires the \pkg{mclust} package).
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
-#' @param markers Character vector or \code{NULL}. Markers to use.
+#' @param markers Character vector or \code{NULL}. Markers to use. Names not
+#'   found in the object are ignored with a warning. The selected values must
+#'   not contain missing intensities.
 #'
 #' @return An \code{\link{SpatialCellData-class}} with an \code{expr_cluster}
 #'   column in \code{meta_data}.
@@ -1655,8 +1771,16 @@ ExpressionClusters <- function(object, k,
   mat <- methods::slot(object, match.arg(slot, c("data", "counts")))
 
   if (!is.null(markers)) {
-    mat <- mat[, intersect(markers, colnames(mat)), drop = FALSE]
+    mat <- mat[, .known_markers(markers, colnames(mat)), drop = FALSE]
   }
+  if (ncol(mat) < 1L) {
+    stop("No markers available for expression clustering.", call. = FALSE)
+  }
+  if (anyNA(mat)) {
+    stop("Expression clustering requires complete marker values; ",
+         "remove or impute missing intensities first.", call. = FALSE)
+  }
+  .validate_cluster_count(k, nrow(mat))
 
   cluster_ids <- switch(method,
     kmeans = {

@@ -9,7 +9,8 @@ DelaunayNetwork(object, max_edge = NULL)
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{max_edge}{Numeric or \code{NULL}. Maximum edge length to retain.}
+\item{max_edge}{One nonnegative number or \code{NULL}. Maximum edge length
+to retain, in coordinate units.}
 }
 \value{
 An \code{\link{SpatialCellData-class}} with \code{delaunay_edges}

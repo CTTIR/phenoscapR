@@ -9,7 +9,7 @@ SpatialClusters(object, k, method = c("kmeans", "hierarchical"))
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{k}{Integer. Number of clusters.}
+\item{k}{Integer. Number of clusters, between 1 and the number of cells.}
 
 \item{method}{Character. \code{"kmeans"} (default) or \code{"hierarchical"}.}
 }
@@ -18,7 +18,10 @@ An \code{\link{SpatialCellData-class}} with a \code{cluster}
 column in \code{meta_data}.
 }
 \description{
-Clusters cells based on spatial coordinates.
+Clusters cells based on spatial coordinates. The cells of all samples are
+clustered together: subset to one sample first when samples have separate
+coordinate frames. k-means starts from random centres, so call
+\code{\link{set.seed}()} first for reproducible labels.
 }
 \examples{
 counts <- matrix(rnorm(100), nrow = 50,

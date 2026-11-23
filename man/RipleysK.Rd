@@ -15,7 +15,9 @@ RipleysK(
 \arguments{
 \item{object}{An \code{\link{SpatialCellData-class}} object.}
 
-\item{r_seq}{Numeric vector of radii, or \code{NULL} for automatic.}
+\item{r_seq}{Numeric vector of finite, nonnegative radii in coordinate
+units, or \code{NULL} for 50 radii from zero to a quarter of the shorter
+side of the bounding box.}
 
 \item{target}{Character or \code{NULL}. Restrict to a phenotype.}
 
@@ -48,4 +50,9 @@ coords <- data.frame(x = runif(50, 0, 200), y = runif(50, 0, 200))
 obj <- CreateSpatialObject(counts, coords)
 RipleysK(obj)
 
+}
+\references{
+Ripley, B. D. (1977). Modelling spatial patterns. \emph{Journal of the
+Royal Statistical Society: Series B (Methodological)}, 39(2), 172-192.
+\doi{10.1111/j.2517-6161.1977.tb01615.x}
 }

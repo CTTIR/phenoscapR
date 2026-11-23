@@ -1,5 +1,38 @@
 # phenoscapR 1.0.0
 
+* `NeighbourhoodEnrichment()` validates the radius, the permutation count (at
+  least two) and the seed before any random draw, and requires a complete,
+  nonblank phenotype label for every cell; cells with a missing label used to
+  be dropped from the counts while still being permuted. When the permuted
+  counts of a phenotype pair do not vary, its z-score and p-value are now
+  unavailable (`NA`) if the observed count differs from them, instead of the
+  neutral `z = 0`, `p = 1`; a matching count stays neutral. This is the
+  convention `InteractionMatrix(method = "permutation")` already follows. The
+  help page states that the p-value is a normal approximation of the z-score.
+* `RipleysK()` and `PairCorrelation()` reject empty, missing, infinite and
+  negative radii (the pair correlation function also zero) and
+  `PairCorrelation()` requires one positive ring width, instead of returning
+  values for distances that do not exist. The automatic pair-correlation grid
+  started at one coordinate unit even when a quarter of the shorter window side
+  was not larger than that, which gave a descending grid beyond the supported
+  radii; such windows now get an ascending grid scaled to the window. Larger
+  windows keep their grid.
+* `QuadratAnalysis()` validates `nx` and `ny`, reports that no cell is retained
+  (for example for an absent target phenotype) instead of failing in `seq()`,
+  and counts cells in one vectorised pass. Its summary no longer calls a
+  variance-to-mean ratio of one "regular" because of rounding.
+* `SpatialClusters()`, `spatial_clusters()` and `ExpressionClusters()` require
+  a whole cluster count between one and the number of cells;
+  `ExpressionClusters()` names unknown markers, stops when no marker or a
+  missing value remains, and documents `method = "gmm"`. `DelaunayNetwork()`
+  requires `max_edge` to be `NULL` or one nonnegative number. The help pages
+  state that spatial clustering pools the cells of all samples.
+* Summaries of Ripley's K, the pair correlation function and cross
+  nearest-neighbour distances print without warnings when values are
+  unavailable, the per-sample summary accepts an empty result, and the
+  enrichment heatmap keeps finite colour limits when z-scores are unavailable.
+* `RipleysK()` and `MoransI()` cite their primary sources in the help pages.
+
 * Marker selections name the markers that do not exist. `NormaliseData()`,
   `normalise_markers()`, `RunPCA()`, `SpatialDomains()`, `MarkerHeatmap()` and
   `plot_heatmap()` used to drop a misspelt marker without any signal, so

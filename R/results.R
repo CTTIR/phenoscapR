@@ -36,9 +36,13 @@ print.phenoscapR_ripley <- function(x, ...) {
       "correction\n")
   cat(sprintf("  %d radii from %.3g to %.3g\n", nrow(x),
               min(x$r), max(x$r)))
-  rng <- range(x$L, na.rm = TRUE)
-  cat(sprintf("  L(r) range: [%.3g, %.3g]  (>0 clustered, <0 dispersed)\n",
-              rng[1L], rng[2L]))
+  if (any(is.finite(x$L))) {
+    rng <- range(x$L[is.finite(x$L)])
+    cat(sprintf("  L(r) range: [%.3g, %.3g]  (>0 clustered, <0 dispersed)\n",
+                rng[1L], rng[2L]))
+  } else {
+    cat("  L(r) is not available at any radius\n")
+  }
   print(utils::head(as.data.frame(x), 4L))
   invisible(x)
 }
@@ -59,9 +63,13 @@ autoplot.phenoscapR_ripley <- function(object, ...) {
 print.phenoscapR_pcf <- function(x, ...) {
   if (.print_partial_result(x, c("r", "g"), ...)) return(invisible(x))
   cat("<phenoscapR> Pair correlation function g(r)\n")
-  cat(sprintf("  %d radii from %.3g to %.3g; peak g = %.3g at r = %.3g\n",
-              nrow(x), min(x$r), max(x$r), max(x$g, na.rm = TRUE),
-              x$r[which.max(x$g)]))
+  if (any(is.finite(x$g))) {
+    peak <- which.max(replace(x$g, !is.finite(x$g), -Inf))
+    cat(sprintf("  %d radii from %.3g to %.3g; peak g = %.3g at r = %.3g\n",
+                nrow(x), min(x$r), max(x$r), x$g[peak], x$r[peak]))
+  } else {
+    cat(sprintf("  %d radii; g(r) is not available at any radius\n", nrow(x)))
+  }
   print(utils::head(as.data.frame(x), 4L))
   invisible(x)
 }
@@ -104,9 +112,11 @@ print.phenoscapR_quadrat <- function(x, ...) {
   cat("<phenoscapR> Quadrat analysis (chi-squared test of CSR)\n")
   cat(sprintf("  grid %d x %d; chi-sq = %.1f, p = %.3g; VMR = %.2f\n",
               nrow(x$counts), ncol(x$counts), x$chi_sq, x$p_value, x$VMR))
-  cat("  ", if (isTRUE(x$VMR > 1)) "clustered (VMR > 1)" else
-              if (isTRUE(x$VMR < 1)) "regular (VMR < 1)" else
-              if (isTRUE(x$VMR == 1)) "random" else "not evaluable",
+  # Rounding in var()/mean() must not turn a ratio of one into a verdict.
+  unit <- isTRUE(abs(x$VMR - 1) <= sqrt(.Machine$double.eps))
+  cat("  ", if (unit) "random (VMR = 1)" else
+              if (isTRUE(x$VMR > 1)) "clustered (VMR > 1)" else
+              if (isTRUE(x$VMR < 1)) "regular (VMR < 1)" else "not evaluable",
       "\n", sep = "")
   invisible(x)
 }
@@ -143,7 +153,10 @@ print.phenoscapR_enrichment <- function(x, ...) {
 #' @exportS3Method ggplot2::autoplot
 autoplot.phenoscapR_enrichment <- function(object, ...) {
   d <- as.data.frame(object)
-  lim <- max(abs(d$z_score), na.rm = TRUE)
+  # Undefined z-scores (NA) draw as missing tiles; the colour limits stay
+  # finite and nondegenerate when no z-score is available or all are zero.
+  finite <- abs(d$z_score[is.finite(d$z_score)])
+  lim <- if (length(finite) && max(finite) > 0) max(finite) else 1
   ggplot2::ggplot(d, ggplot2::aes(.data$to, .data$from, fill = .data$z_score)) +
     ggplot2::geom_tile(colour = "white") +
     ggplot2::scale_fill_gradient2(low = "#3b4cc0", mid = "white",
@@ -183,8 +196,15 @@ print.phenoscapR_crossnn <- function(x, ...) {
   cat("<phenoscapR> Cross nearest-neighbour distances\n")
   cat(sprintf("  %s -> %s : %d cells\n", attr(x, "from") %||% "?",
               attr(x, "to") %||% "?", length(x)))
-  cat(sprintf("  median %.3g, mean %.3g, range [%.3g, %.3g]\n",
-              stats::median(x), mean(x), min(x), max(x)))
+  d <- as.numeric(x)
+  d <- d[!is.na(d)]
+  if (length(d) < length(x)) {
+    cat(sprintf("  %d without another target cell (NA)\n", length(x) - length(d)))
+  }
+  if (length(d)) {
+    cat(sprintf("  median %.3g, mean %.3g, range [%.3g, %.3g]\n",
+                stats::median(d), mean(d), min(d), max(d)))
+  }
   invisible(x)
 }
 
@@ -205,6 +225,7 @@ autoplot.phenoscapR_crossnn <- function(object, ...) {
 #' @export
 print.phenoscapR_by_sample <- function(x, ...) {
   cat("<phenoscapR> per-sample results (", length(x), " samples)\n", sep = "")
+  if (!length(x)) return(invisible(x))
   inner <- setdiff(class(x[[1L]]), c("data.frame", "list", "numeric"))[1L]
   if (!is.na(inner)) cat("  each element: ", inner, "\n", sep = "")
   for (nm in names(x)) cat("  - ", nm, "\n", sep = "")

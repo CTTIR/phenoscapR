@@ -75,3 +75,7 @@ MoransI(obj, feature = "CD3", radius = 30)
 MoransI(obj, feature = "CD3", radius = 30, weights = "idw", n_perm = 199)
 
 }
+\references{
+Moran, P. A. P. (1950). Notes on continuous stochastic phenomena.
+\emph{Biometrika}, 37(1/2), 17-23. \doi{10.2307/2332142}
+}
