@@ -2,35 +2,35 @@
 
 - Cap radius-search neighbour estimates before integer conversion so large valid radii remain usable. Ripley and pair-correlation calculations now reject undefined zero-area planar windows rather than report artificial dispersion; the existing target-filtered bounding-box window convention is documented.
 
-- Treat machine-precision Moran permutation ties consistently, preserving two-sided theoretical-expectation centering and the Monte Carlo correction. Numerically constant sampled nulls no longer produce artificial z-scores or scale-dependent tail probabilities.
+- Treat machine-precision Moran permutation ties consistently, preserving two-sided theoretical-expectation centring and the Monte Carlo correction. Numerically constant sampled nulls no longer produce artificial z-scores or scale-dependent tail probabilities.
 
-- Preserve extra Seurat coordinate annotations by cell-name mapping while exporting only named x/y to the spatial reduction; refuse conflicting metadata instead of overwriting it. SpatialExperiment retains named numeric dimensions across reordered columns and rejects ambiguous names or nonnumeric coordinate annotations explicitly.
+- Preserve extra Seurat coordinate annotations by cell-name mapping while exporting only named x/y to the spatial reduction; refuse conflicting metadata instead of overwriting it. SpatialExperiment retains named numeric dimensions across reordered columns and rejects ambiguous names or non-numeric coordinate annotations explicitly.
 
-- Two-dimensional object analyses now project only the named x/y axes. Extra coordinate metadata and column order no longer alter neighbor geometry, weighting, clustering or graph calculations across native and fallback search engines; the original coordinate table remains stored unchanged.
+- Two-dimensional object analyses now project only the named x/y axes. Extra coordinate metadata and column order no longer alter neighbour geometry, weighting, clustering or graph calculations across native and fallback search engines; the original coordinate table remains stored unchanged.
 
 - Differential abundance rejects incomplete or dimensioned labels instead of silently excluding unknown phenotypes from denominators. Its declared replication unit remains the sample; descriptive summaries retain unknown categories. Section composition rejects malformed cell/area/flag columns, invalid area divisors and undefined aggregate density areas, and enforces registered subset membership. Missing areas remain unsupported; no imputation is introduced.
 
-- Singleton samples no longer contribute zero vectors to neighborhood clustering. Their cells retain NA neighborhood labels and explicit availability records; centers use only defined cell compositions. Empty/all-singleton inputs return zero-row centers without RNG use, and the app reports unavailable compositions explicitly.
+- Singleton samples no longer contribute zero vectors to neighbourhood clustering. Their cells retain NA neighbourhood labels and explicit availability records; centres use only defined cell compositions. Empty/all-singleton inputs return zero-row centres without RNG use, and the app reports unavailable compositions explicitly.
 
 * Phenotyping requires unique named, finite scalar thresholds. Reject recycled,
   missing, coerced and duplicate threshold definitions before assigning labels;
   selected marker columns must be unambiguous. Valid named numeric vectors and
-  the existing empty-threshold behavior remain supported.
+  the existing empty-threshold behaviour remain supported.
 
-- Neighborhood and Moran analyses reject malformed sample/phenotype vectors and invalid integer controls before computation or RNG changes. Moran features must be finite real numeric vectors, and inverse-distance weighting explicitly rejects coincident neighbors rather than returning undefined values from infinite weights.
+- Neighbourhood and Moran analyses reject malformed sample/phenotype vectors and invalid integer controls before computation or RNG changes. Moran features must be finite real numeric vectors, and inverse-distance weighting explicitly rejects coincident neighbours rather than returning undefined values from infinite weights.
 
 * Interaction tables reject missing phenotype labels and malformed coordinates
   before computing counts or changing RNG state. Previously, missing labels
   could disappear from observed counts while remaining in frequency denominators.
   Density and nearest-neighbour tables also reject complex coordinates.
 
-- Permutation interaction results no longer report neutral z=0/p=1 when sampled null counts have zero variance but differ from the observation: those undefined normal-approximation statistics are now NA. Matching zero-variance sampled nulls and positive-variance formulas retain their existing behavior.
+- Permutation interaction results no longer report neutral z=0/p=1 when sampled null counts have zero variance but differ from the observation: those undefined normal-approximation statistics are now NA. Matching zero-variance sampled nulls and positive-variance formulas retain their existing behaviour.
 
 - Interaction calculations now validate nonnegative finite radii before geometry shortcuts and validate permutation counts and signed integer seeds before coercion or RNG changes. At least two permutations are required for the reported variance; analytic methods continue to ignore unused permutation controls.
 
 - Interaction scores now preserve complete avoidance as negative infinity when observed counts are zero and expected counts are positive, in both analytic and permutation methods. Present sample identifiers must be complete and nonblank; the optional missing-column single-sample convention is retained. Heatmaps identify infinite scores at colour scale endpoints while retaining the raw values. Permutation calculations now return zero counts for samples with no eligible neighbour edges.
 
-- Standalone nearest-neighbour and density tables now require explicit complete sample identifiers and finite coordinates, rejecting malformed columns before any rows can disappear. Empty tables preserve their schema and receive typed empty results.
+- Stand-alone nearest-neighbour and density tables now require explicit complete sample identifiers and finite coordinates, rejecting malformed columns before any rows can disappear. Empty tables preserve their schema and receive typed empty results.
 
 * Patient-level inference rejects matrix and array columns before indexing or
   coercion, preventing malformed patient identifiers from duplicating

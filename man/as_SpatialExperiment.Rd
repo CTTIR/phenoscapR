@@ -16,7 +16,7 @@ A \code{SpatialExperiment} object.
 Builds a \pkg{SpatialExperiment} with \code{counts} and \code{logcounts}
 assays (markers x cells), the metadata as \code{colData}, and the
 coordinates as \code{spatialCoords}. All numeric coordinate dimensions and
-their names are retained. Nonnumeric coordinate annotations are refused;
+their names are retained. Non-numeric coordinate annotations are refused;
 move them to metadata explicitly before export.
 }
 \examples{

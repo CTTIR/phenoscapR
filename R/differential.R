@@ -11,7 +11,7 @@
 #' Sample IDs define the replication unit; patient IDs are not inferred or
 #' aggregated automatically. The caller must supply independent sampling units.
 #' Incomplete phenotype labels are rejected rather than silently changing the
-#' denominator to only labeled cells.
+#' denominator to only labelled cells.
 #'
 #' @param object A \code{\link{SpatialCellData-class}} object with several
 #'   samples.

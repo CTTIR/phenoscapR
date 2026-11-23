@@ -39,7 +39,7 @@ sample-level design rather than treating individual cells as independent.
 Sample IDs define the replication unit; patient IDs are not inferred or
 aggregated automatically. The caller must supply independent sampling units.
 Incomplete phenotype labels are rejected rather than silently changing the
-denominator to only labeled cells.
+denominator to only labelled cells.
 }
 \examples{
 data(phenoscapR_example)
