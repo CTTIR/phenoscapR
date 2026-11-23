@@ -27,7 +27,7 @@ are not suitable for replicated group inference.
 }
 \details{
 The app ships in \code{inst/app}. It depends on optional packages (Shiny,
-bslib, sass, reactable, bsicons, brand.yml); \code{run_app()} checks for them
+bslib, sass, reactable, bsicons, \code{brand.yml}); \code{run_app()} checks for them
 and reports any that are missing. Branding requires bslib >= 0.9.0.
 The optional UMAP view requires uwot; PCA remains available without it.
 If QC removes every cell, widen or reset the cell-area filter.
