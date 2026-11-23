@@ -177,13 +177,13 @@ as_SpatialExperiment <- function(object) {
 #'
 #' Imports an object from the wider ecosystem. Coordinates are taken from
 #' \code{spatialCoords} (SpatialExperiment) or from \code{x}/\code{y} metadata
-#' columns or a \code{"spatial"} reduction (Seurat). The normalized `logcounts`
+#' columns or a \code{"spatial"} reduction (Seurat). The normalised `logcounts`
 #' assay (SpatialExperiment) or `data` layer (Seurat) is retained when present;
-#' raw counts are used as data only when it is absent. Normalized assays must
+#' raw counts are used as data only when it is absent. Normalised assays must
 #' contain the same cells and features as counts; named axes are aligned, and
 #' incompatible partial assays are refused. All-missing features are retained.
 #' Existing cell identifiers are kept; absent `cell_id` metadata use the source
-#' cell names when available. No normalization method is inferred or applied.
+#' cell names when available. No normalisation method is inferred or applied.
 #' SpatialExperiment coordinates retain named x/y regardless of column order;
 #' when neither name exists, the first two dimensions become x/y. Partial or
 #' duplicate coordinate names are refused. Seurat exports from this package

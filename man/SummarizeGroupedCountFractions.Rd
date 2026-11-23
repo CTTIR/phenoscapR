@@ -2,7 +2,7 @@
 % Please edit documentation in R/grouped-count-fractions.R
 \name{SummarizeGroupedCountFractions}
 \alias{SummarizeGroupedCountFractions}
-\title{Summarize Grouped Subset Counts as Fractions}
+\title{Summarise Grouped Subset Counts as Fractions}
 \usage{
 SummarizeGroupedCountFractions(data, groups, id, numerator, denominator)
 }

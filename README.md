@@ -147,7 +147,7 @@ declared and reserved identifier columns: `001` and `1` remain distinct. QuPath 
 `source_image`. If different Image labels collapse to the same legacy sample
 identifier, import stops so you can supply distinct identities explicitly.
 
-`as_SpatialCellData()` retains available normalized assays when importing from
+`as_SpatialCellData()` retains available normalised assays when importing from
 Seurat or SpatialExperiment. Seurat's marker-name rewriting is refused on
 export; use SpatialExperiment when those exact names must be preserved.
 
@@ -234,7 +234,7 @@ citation("phenoscapR")
 }
 ```
 
-## License
+## Licence
 
 MIT © R. Heller, E. Chteinberg and H. Witte
 

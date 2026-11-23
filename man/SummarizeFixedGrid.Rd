@@ -2,7 +2,7 @@
 % Please edit documentation in R/fixed-grid-summary.R
 \name{SummarizeFixedGrid}
 \alias{SummarizeFixedGrid}
-\title{Summarize Cell Annotations Within Fixed Grids}
+\title{Summarise Cell Annotations Within Fixed Grids}
 \usage{
 SummarizeFixedGrid(
   membership,

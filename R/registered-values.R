@@ -7,7 +7,7 @@
 #'
 #' Both tables require unique composite keys. Unknown data keys fail rather than
 #' being discarded. Registry metadata is authoritative and carried unchanged;
-#' extra data columns are ignored. Inputs are not mutated. Values are normalized
+#' extra data columns are ignored. Inputs are not mutated. Values are normalised
 #' to double; no arithmetic or aggregation is performed.
 #'
 #' @param data Data frame containing the selected keys and numeric value column.

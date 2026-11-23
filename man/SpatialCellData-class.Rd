@@ -11,7 +11,7 @@ intensities, spatial coordinates, cell-level metadata, and results from
 spatial analyses in a single container.
 }
 \details{
-Raw and normalized matrices must have identical dimensions and
+Raw and normalised matrices must have identical dimensions and
 row/marker names. They contain real numeric values; \code{NA} and \code{NaN} are
 allowed, infinity is not. Coordinates are finite real numeric vectors, and
 coordinate/metadata row counts must agree even for empty objects.

@@ -140,6 +140,10 @@
   (intensity estimate, edge handling). The new help topic
   `?"phenoscapR-results"` documents the result classes of the spatial
   statistics and their `print()` and `autoplot()` methods.
+* Help pages and the README use British spelling throughout ("summarise",
+  "normalised", "authorise", "licence"); function names such as
+  `SummarizeFixedGrid()` are unchanged. The Self-Organizing Nebulous Growths
+  algorithm keeps the name under which Senanayake et al. (2021) published it.
 
 ## Packaging
 

@@ -1,4 +1,4 @@
-#' Summarize Cell Annotations Within Fixed Grids
+#' Summarise Cell Annotations Within Fixed Grids
 #'
 #' Joins annotations by sample and cell key, never by row position or coordinates.
 #' Counts only supplied memberships, retaining each sample separately. Unobserved

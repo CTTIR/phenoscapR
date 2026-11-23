@@ -2,7 +2,7 @@
 % Please edit documentation in R/grouped-values.R
 \name{SummarizeGroupedValues}
 \alias{SummarizeGroupedValues}
-\title{Summarize Continuous Observations in Explicit Groups}
+\title{Summarise Continuous Observations in Explicit Groups}
 \usage{
 SummarizeGroupedValues(
   data,
