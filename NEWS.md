@@ -32,7 +32,7 @@
   help page, the printed summary and the spatial-analysis vignette state that
   the p-value is a normal approximation of the z-score.
 * `RipleysK()` and `PairCorrelation()` reject empty, missing, infinite and
-  negative radii (the pair correlation function also zero) and
+  negative radii, `PairCorrelation()` also a radius of zero, and
   `PairCorrelation()` requires one positive ring width, instead of returning
   values for distances that do not exist. The automatic pair-correlation grid
   started at one coordinate unit even when a quarter of the shorter window side
@@ -49,19 +49,18 @@
   a whole cluster count between one and the number of cells;
   `ExpressionClusters()` names unknown markers, stops when no marker remains or
   when k-means or a Gaussian mixture meets a missing value, and documents
-  `method = "gmm"`. `DelaunayNetwork()`
-  requires `max_edge` to be `NULL` or one nonnegative number. The help pages
-  state that spatial clustering pools the cells of all samples.
+  `method = "gmm"`. `DelaunayNetwork()` requires `max_edge` to be `NULL` or one
+  nonnegative number. The help pages state that spatial clustering pools the
+  cells of all samples.
 * Summaries of Ripley's K, the pair correlation function and cross
   nearest-neighbour distances print without warnings when values are
   unavailable, the per-sample summary accepts an empty result, and the
   enrichment heatmap keeps finite colour limits when z-scores are unavailable.
 * `RipleysK()` and `MoransI()` cite their primary sources in the help pages,
   and `RipleysK()` and `PairCorrelation()` state the estimators as implemented
-  (intensity estimate, edge handling).
-  The new help topic `?"phenoscapR-results"` documents the result classes of
-  the spatial statistics and their `print()` and `autoplot()` methods.
-
+  (intensity estimate, edge handling). The new help topic
+  `?"phenoscapR-results"` documents the result classes of the spatial
+  statistics and their `print()` and `autoplot()` methods.
 * Marker selections name the markers that do not exist. `NormaliseData()`,
   `normalise_markers()`, `RunPCA()`, `SpatialDomains()`, `MarkerHeatmap()` and
   `plot_heatmap()` used to drop a misspelt marker without any signal, so
