@@ -14,7 +14,9 @@ marker names and one finite numeric threshold per marker. An empty list
 selects no positive markers.}
 
 \item{labels}{Named character vector mapping signatures to labels, or
-\code{NULL} for automatic labelling.}
+\code{NULL} for automatic labelling. Signature names must be unique and
+nonblank, for example \code{c("CD3+" = "T cell")}; signatures without a
+label keep their automatic name.}
 }
 \value{
 An \code{\link{SpatialCellData-class}} with a \code{phenotype}

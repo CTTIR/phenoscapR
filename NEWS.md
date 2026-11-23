@@ -1,5 +1,10 @@
 # phenoscapR 1.0.0
 
+* `PhenotypeCells()` and `phenotype_cells()` require `labels` to carry unique,
+  nonblank signature names. An unnamed label vector matched no signature and
+  was ignored silently.
+* `InteractionPlot()` rotates the phenotype labels on the x axis, as the other
+  heatmaps do, so that long signatures no longer overlap.
 * `RidgePlot()` draws each density outline in the colour of its fill. Only the
   fill followed the package palette or the `colours` argument, so the outlines
   kept the default 'ggplot2' hues.

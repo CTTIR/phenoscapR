@@ -166,3 +166,31 @@ test_that("QC scatter plots use the package palette", {
   ends <- PaletteContinuous(256L)[c(1L, 256L)]
   expect_identical(toupper(built$colour[c(1L, NCells(obj))]), toupper(ends))
 })
+
+test_that("phenotype labels must be named by signature", {
+  obj <- contract_object()
+  thresholds <- list(CD3 = 0.5)
+  for (bad in list("T", c("T", "B"), stats::setNames("T", ""), stats::setNames("T", NA),
+                   c("CD3+" = "T", "CD3+" = "B"), c("CD3+" = NA_character_),
+                   list("CD3+" = "T"))) {
+    expect_error(PhenotypeCells(obj, thresholds, labels = bad),
+                 "labels must be NULL or a vector of non-missing labels")
+  }
+  dt <- data.table::data.table(sample_id = "s1", cell_id = 1:3, x = 1:3, y = 1:3,
+                               CD3 = c(0, 1, 2))
+  expect_error(phenotype_cells(dt, thresholds, labels = "T"),
+               "labels must be NULL or a vector of non-missing labels")
+  labelled <- PhenotypeCells(obj, thresholds, labels = c("CD3+" = "T cell"))
+  expect_setequal(unique(labelled$phenotype), c("T cell", "Negative"))
+  expect_identical(phenotype_cells(dt, thresholds, labels = c("CD3+" = "T"))$phenotype,
+                   c("Negative", "T", "T"))
+  expect_setequal(unique(PhenotypeCells(obj, thresholds)$phenotype), c("CD3+", "Negative"))
+})
+
+test_that("interaction heatmaps rotate the phenotype labels", {
+  obj <- contract_object()
+  plot <- InteractionPlot(InteractionMatrix(obj, radius = 20))
+  expect_identical(plot$theme$axis.text.x$angle, 45)
+  expect_identical(plot_interactions(as.data.frame(InteractionMatrix(obj, radius = 20)))$theme$
+                     axis.text.x$angle, 45)
+})

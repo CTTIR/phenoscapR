@@ -209,7 +209,9 @@ normalise_markers <- function(dt, method = c("zscore", "minmax", "quantile"),
 #'   `list(CD3 = 0.5, CD8 = 0.3)`.
 #' @param labels A named character vector mapping phenotype signatures to
 #'   labels, or `NULL` for automatic labelling. When `NULL`, phenotypes are
-#'   labelled by concatenating positive marker names with `"+"`.
+#'   labelled by concatenating positive marker names with `"+"`. Signature
+#'   names must be unique and nonblank, for example `c("CD3+" = "T cell")`;
+#'   signatures without a label keep their automatic name.
 #'
 #' @return The input `data.table` with an added `phenotype` column.
 #'
@@ -276,6 +278,18 @@ phenotype_cells <- function(dt, thresholds, labels = NULL) {
 #' @noRd
 .assign_phenotypes <- function(mat, thresholds, labels = NULL) {
   .validate_phenotype_thresholds(thresholds)
+  # Labels are looked up by signature name; an unnamed vector matches nothing
+  # and used to be ignored without any signal.
+  if (!is.null(labels)) {
+    signatures <- names(labels)
+    if (!is.atomic(labels) || !is.null(dim(labels)) || is.null(signatures) ||
+        anyNA(signatures) || any(!nzchar(signatures)) ||
+        anyDuplicated(signatures) || anyNA(labels)) {
+      stop("labels must be NULL or a vector of non-missing labels with unique, ",
+           "nonblank signature names such as c(\"CD3+\" = \"T cell\").",
+           call. = FALSE)
+    }
+  }
   if (!typeof(mat) %in% c("integer", "double") || any(is.infinite(mat))) {
     stop("Marker intensities must be real numeric values without infinity; missing values are allowed.",
          call. = FALSE)
@@ -452,7 +466,9 @@ NormaliseData <- function(object, method = c("zscore", "minmax", "quantile"),
 #'   marker names and one finite numeric threshold per marker. An empty list
 #'   selects no positive markers.
 #' @param labels Named character vector mapping signatures to labels, or
-#'   \code{NULL} for automatic labelling.
+#'   \code{NULL} for automatic labelling. Signature names must be unique and
+#'   nonblank, for example \code{c("CD3+" = "T cell")}; signatures without a
+#'   label keep their automatic name.
 #'
 #' @return An \code{\link{SpatialCellData-class}} with a \code{phenotype}
 #'   column in \code{meta_data}.

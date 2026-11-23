@@ -17,7 +17,9 @@ selects no positive markers. Example:
 
 \item{labels}{A named character vector mapping phenotype signatures to
 labels, or \code{NULL} for automatic labelling. When \code{NULL}, phenotypes are
-labelled by concatenating positive marker names with \code{"+"}.}
+labelled by concatenating positive marker names with \code{"+"}. Signature
+names must be unique and nonblank, for example \code{c("CD3+" = "T cell")};
+signatures without a label keep their automatic name.}
 }
 \value{
 The input \code{data.table} with an added \code{phenotype} column.

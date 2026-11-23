@@ -597,7 +597,9 @@ InteractionPlot <- function(interactions, title = NULL) {
       name = "log2(obs/exp)", limits = limits, oob = colour_oob
     ) +
     ggplot2::theme_minimal() +
-    ggplot2::labs(x = "To", y = "From", title = title, caption = caption)
+    ggplot2::labs(x = "To", y = "From", title = title, caption = caption) +
+    # Phenotype signatures are long; horizontal labels overlap each other.
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 }
 
 #' Plot Marker Heatmap
