@@ -142,3 +142,15 @@ test_that("optional grouping columns that do not exist are reported", {
   expect_no_warning(QCPlot(obj, x = "cell_area", y = "cell_area", colour_by = "phenotype"))
   expect_no_warning(QCPlot(obj, x = "cell_area", y = "cell_area"))
 })
+
+test_that("ridge densities are outlined in the colour of their fill", {
+  obj <- contract_object()
+  built <- ggplot2::ggplot_build(RidgePlot(obj, features = "CD3"))$data[[1L]]
+  expect_identical(built$colour, built$fill)
+  expect_identical(sort(unique(built$fill)), sort(PaletteDiscrete(3L)))
+  chosen <- c(A = "#AA0000", B = "#00AA00", C = "#0000AA")
+  built <- ggplot2::ggplot_build(RidgePlot(obj, features = c("CD3", "CD8"),
+                                           colours = chosen))$data[[1L]]
+  expect_identical(built$colour, built$fill)
+  expect_setequal(unique(built$fill), unname(chosen))
+})

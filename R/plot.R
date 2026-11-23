@@ -484,14 +484,10 @@ RidgePlot <- function(object, features, group_by = "phenotype",
     p <- p + ggplot2::facet_wrap(~ feature, ncol = ncol, scales = "free_x")
   }
 
-  if (!is.null(colours)) {
-    p <- p + ggplot2::scale_fill_manual(values = colours)
-  } else {
-    n_groups <- length(unique(groups))
-    p <- p + .gg_discrete_scale("fill", n_groups)
-  }
-
-  p
+  # The density outline and its fill show the same group: one scale for both,
+  # otherwise the outlines keep the default hue palette.
+  values <- if (!is.null(colours)) colours else PaletteDiscrete(length(unique(groups)))
+  p + ggplot2::scale_fill_manual(values = values, aesthetics = c("fill", "colour"))
 }
 
 #' Plot Cell Density

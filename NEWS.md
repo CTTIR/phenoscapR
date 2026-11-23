@@ -1,5 +1,8 @@
 # phenoscapR 1.0.0
 
+* `RidgePlot()` draws each density outline in the colour of its fill. Only the
+  fill followed the package palette or the `colours` argument, so the outlines
+  kept the default 'ggplot2' hues.
 * `AnnotateClusters()` writes every enriched marker with its own plus sign
   (`"CD3+CD8+"`). It used to join the marker names without a separator
   (`"CD3CD8+"`), which cannot be read back unambiguously and differed from the
