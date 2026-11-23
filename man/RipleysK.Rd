@@ -43,6 +43,17 @@ of the retained points, after optional phenotype selection; it is not an
 independently measured tissue frame. A positive finite bounding-box area is
 required, including within each sample when computing by sample.
 }
+\details{
+With \code{n} retained points in a window of area \code{A}, the
+uncorrected and translation-corrected estimates scale the (weighted) count
+of ordered point pairs within distance \code{r} by \code{A / n^2} and
+\code{A^2 / n^2}; the squared intensity is thus estimated by
+\code{n^2 / A^2}, not by \code{n (n - 1) / A^2}. The border estimate
+divides the pair count of the centres at least \code{r} from the window
+edge by their number and by the intensity \code{n / A}.
+Under complete spatial randomness \code{K} equals
+\code{expected = pi r^2} and \code{L = sqrt(K / pi) - r} is zero.
+}
 \examples{
 counts <- matrix(rnorm(100), nrow = 50,
                  dimnames = list(NULL, c("CD3", "CD8")))

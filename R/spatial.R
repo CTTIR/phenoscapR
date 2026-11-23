@@ -1253,6 +1253,16 @@ NeighbourhoodEnrichment <- function(object, radius, n_perm = 100L,
 #'   entry per sample). Default \code{FALSE}; otherwise a single sample is
 #'   required.
 #'
+#' @details With \code{n} retained points in a window of area \code{A}, the
+#' uncorrected and translation-corrected estimates scale the (weighted) count
+#' of ordered point pairs within distance \code{r} by \code{A / n^2} and
+#' \code{A^2 / n^2}; the squared intensity is thus estimated by
+#' \code{n^2 / A^2}, not by \code{n (n - 1) / A^2}. The border estimate
+#' divides the pair count of the centres at least \code{r} from the window
+#' edge by their number and by the intensity \code{n / A}.
+#' Under complete spatial randomness \code{K} equals
+#' \code{expected = pi r^2} and \code{L = sqrt(K / pi) - r} is zero.
+#'
 #' @return A data frame with columns \code{r}, \code{K}, \code{L}, and
 #'   \code{expected}.
 #'
@@ -1603,6 +1613,13 @@ QuadratAnalysis <- function(object, nx = 5L, ny = 5L, target = NULL,
 #' rectangular observation window is the bounding box of retained points after
 #' optional phenotype selection, rather than a separately measured sample frame.
 #' The retained points must define a positive finite bounding-box area.
+#'
+#' @details For each radius, ordered point pairs at a distance within
+#' \code{dr / 2} of \code{r} are counted and divided by
+#' \code{n * lambda * 2 * pi * r * dr}, with \code{n} retained points and
+#' intensity \code{lambda = n / A}. No edge correction is applied, so
+#' \code{g(r)} is biased downward as \code{r} approaches the size of the
+#' window; the automatic radii stop at a quarter of its shorter side.
 #'
 #' @param object An \code{\link{SpatialCellData-class}} object.
 #' @param r_seq Numeric vector of finite, positive radii in coordinate units,

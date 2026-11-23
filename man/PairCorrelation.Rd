@@ -39,6 +39,14 @@ rectangular observation window is the bounding box of retained points after
 optional phenotype selection, rather than a separately measured sample frame.
 The retained points must define a positive finite bounding-box area.
 }
+\details{
+For each radius, ordered point pairs at a distance within
+\code{dr / 2} of \code{r} are counted and divided by
+\code{n * lambda * 2 * pi * r * dr}, with \code{n} retained points and
+intensity \code{lambda = n / A}. No edge correction is applied, so
+\code{g(r)} is biased downward as \code{r} approaches the size of the
+window; the automatic radii stop at a quarter of its shorter side.
+}
 \examples{
 counts <- matrix(rnorm(100), nrow = 50,
                  dimnames = list(NULL, c("CD3", "CD8")))

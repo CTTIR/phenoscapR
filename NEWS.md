@@ -40,7 +40,9 @@
   nearest-neighbour distances print without warnings when values are
   unavailable, the per-sample summary accepts an empty result, and the
   enrichment heatmap keeps finite colour limits when z-scores are unavailable.
-* `RipleysK()` and `MoransI()` cite their primary sources in the help pages.
+* `RipleysK()` and `MoransI()` cite their primary sources in the help pages,
+  and `RipleysK()` and `PairCorrelation()` state the estimators as implemented
+  (intensity estimate, edge handling).
   The new help topic `?"phenoscapR-results"` documents the result classes of
   the spatial statistics and their `print()` and `autoplot()` methods.
 
