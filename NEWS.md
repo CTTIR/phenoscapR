@@ -27,7 +27,9 @@
 * `QuadratAnalysis()` validates `nx` and `ny`, reports that no cell is retained
   (for example for an absent target phenotype) instead of failing in `seq()`,
   and counts cells in one vectorised pass. Its summary no longer calls a
-  variance-to-mean ratio of one "regular" because of rounding.
+  variance-to-mean ratio of one "regular" because of rounding. Its `autoplot()`
+  heatmap draws the rows downward, with the orientation of `CellMap()` for the
+  same cells; `autoplot(x, y_down = FALSE)` restores the upward rows.
 * `SpatialClusters()`, `spatial_clusters()` and `ExpressionClusters()` require
   a whole cluster count between one and the number of cells;
   `ExpressionClusters()` names unknown markers, stops when no marker or a

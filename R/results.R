@@ -122,14 +122,17 @@ print.phenoscapR_quadrat <- function(x, ...) {
 }
 
 #' @exportS3Method ggplot2::autoplot
-autoplot.phenoscapR_quadrat <- function(object, ...) {
+autoplot.phenoscapR_quadrat <- function(object, ..., y_down = TRUE) {
   m <- object$counts
   df <- data.frame(
     col = as.vector(col(m)), row = as.vector(row(m)),
     count = as.vector(m)
   )
+  # Rows are bins of increasing y; draw them downward like the tissue maps,
+  # so the grid has the orientation of CellMap() for the same cells.
   ggplot2::ggplot(df, ggplot2::aes(.data$col, .data$row, fill = .data$count)) +
     ggplot2::geom_tile(colour = "white") +
+    .tissue_y_scale(y_down) +
     ggplot2::scale_fill_gradientn(colours = PaletteContinuous(256L)) +
     ggplot2::coord_equal() +
     ggplot2::labs(x = "quadrat column", y = "quadrat row", fill = "cells",

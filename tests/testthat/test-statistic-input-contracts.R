@@ -217,3 +217,17 @@ test_that("cluster counts and edge limits are validated", {
   edges <- DelaunayNetwork(obj, max_edge = 20)@spatial$delaunay_edges
   expect_true(all(edges$distance <= 20))
 })
+
+test_that("the quadrat heatmap has the orientation of the tissue maps", {
+  obj <- contract_object(100L)
+  qa <- QuadratAnalysis(obj, nx = 3, ny = 4)
+  y_transform <- function(plot) {
+    scale <- ggplot2::ggplot_build(plot)$layout$panel_scales_y[[1L]]
+    transformation <- if (is.null(scale$transformation)) scale$trans else scale$transformation
+    transformation$name
+  }
+  expect_identical(y_transform(ggplot2::autoplot(qa)), "reverse")
+  expect_identical(y_transform(ggplot2::autoplot(qa, y_down = FALSE)), "identity")
+  expect_identical(y_transform(CellMap(obj)), "reverse")
+  expect_identical(nrow(ggplot2::autoplot(qa)$data), 12L)
+})
