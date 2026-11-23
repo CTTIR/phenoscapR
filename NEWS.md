@@ -1,26 +1,7 @@
-# phenoscapR 1.0.0
+# phenoscapR 1.0.1
 
-* `PhenotypeCells()` and `phenotype_cells()` require `labels` to carry unique,
-  nonblank signature names. An unnamed label vector matched no signature and
-  was ignored silently.
-* `InteractionPlot()` rotates the phenotype labels on the x axis, as the other
-  heatmaps do, so that long signatures no longer overlap.
-* `RidgePlot()` draws each density outline in the colour of its fill. Only the
-  fill followed the package palette or the `colours` argument, so the outlines
-  kept the default 'ggplot2' hues.
-* `QCPlot()` colours points with the package palette set by `SetPalette()`,
-  as the other plots do, instead of the default 'ggplot2' colours.
-* `AnnotateClusters()` writes every enriched marker with its own plus sign
-  (`"CD3+CD8+"`). It used to join the marker names without a separator
-  (`"CD3CD8+"`), which cannot be read back unambiguously and differed from the
-  documented form.
-* `EmbeddingPlot()` and `DimPlot()` draw the second embedding axis increasing
-  upward again. They share the drawing code of the tissue maps and had picked
-  up its downward image-coordinate y axis, which mirrored every embedding
-  vertically.
-* The minimum 'ggplot2' version is 3.4.0 rather than 3.0.0: plots and themes
-  set line widths through the `linewidth` argument, which older versions do not
-  have.
+## Bug fixes
+
 * `NeighbourhoodEnrichment()` validates the radius, the permutation count (at
   least two) and the seed before any random draw, and requires a complete,
   nonblank phenotype label for every cell; cells with a missing label used to
@@ -31,36 +12,38 @@
   convention `InteractionMatrix(method = "permutation")` already follows. The
   help page, the printed summary and the spatial-analysis vignette state that
   the p-value is a normal approximation of the z-score.
-* `RipleysK()` and `PairCorrelation()` reject empty, missing, infinite and
-  negative radii, `PairCorrelation()` also a radius of zero, and
-  `PairCorrelation()` requires one positive ring width, instead of returning
-  values for distances that do not exist. The automatic pair-correlation grid
-  started at one coordinate unit even when a quarter of the shorter window side
-  was not larger than that, which gave a descending grid beyond the supported
-  radii; such windows now get an ascending grid scaled to the window. Larger
-  windows keep their grid.
+* `EmbeddingPlot()` and `DimPlot()` draw the second embedding axis increasing
+  upward again. They share the drawing code of the tissue maps and had picked
+  up its downward image-coordinate y axis, which mirrored every embedding
+  vertically.
+* `AnnotateClusters()` writes every enriched marker with its own plus sign
+  (`"CD3+CD8+"`). It used to join the marker names without a separator
+  (`"CD3CD8+"`), which cannot be read back unambiguously and differed from the
+  documented form.
 * `QuadratAnalysis()` validates `nx` and `ny`, reports that no cell is retained
   (for example for an absent target phenotype) instead of failing in `seq()`,
   and counts cells in one vectorised pass. Its summary no longer calls a
   variance-to-mean ratio of one "regular" because of rounding. Its `autoplot()`
   heatmap draws the rows downward, with the orientation of `CellMap()` for the
   same cells; `autoplot(x, y_down = FALSE)` restores the upward rows.
-* `SpatialClusters()`, `spatial_clusters()` and `ExpressionClusters()` require
-  a whole cluster count between one and the number of cells;
-  `ExpressionClusters()` names unknown markers, stops when no marker remains or
-  when k-means or a Gaussian mixture meets a missing value, and documents
-  `method = "gmm"`. `DelaunayNetwork()` requires `max_edge` to be `NULL` or one
-  nonnegative number. The help pages state that spatial clustering pools the
-  cells of all samples.
+* `RidgePlot()` draws each density outline in the colour of its fill. Only the
+  fill followed the package palette or the `colours` argument, so the outlines
+  kept the default 'ggplot2' hues.
+* `QCPlot()` colours points with the package palette set by `SetPalette()`,
+  as the other plots do, instead of the default 'ggplot2' colours.
+* `InteractionPlot()` rotates the phenotype labels on the x axis, as the other
+  heatmaps do, so that long signatures no longer overlap.
+* `FeaturePlot()`, `ViolinPlot()`, `BoxPlot()`, `RidgePlot()` and `DotPlot()`
+  build an empty plot for an object without cells instead of failing while
+  assembling their data; `MarkerHeatmap()` reports that there is no phenotype
+  to summarise.
 * Summaries of Ripley's K, the pair correlation function and cross
   nearest-neighbour distances print without warnings when values are
   unavailable, the per-sample summary accepts an empty result, and the
   enrichment heatmap keeps finite colour limits when z-scores are unavailable.
-* `RipleysK()` and `MoransI()` cite their primary sources in the help pages,
-  and `RipleysK()` and `PairCorrelation()` state the estimators as implemented
-  (intensity estimate, edge handling). The new help topic
-  `?"phenoscapR-results"` documents the result classes of the spatial
-  statistics and their `print()` and `autoplot()` methods.
+
+## Input validation
+
 * Marker selections name the markers that do not exist. `NormaliseData()`,
   `normalise_markers()`, `RunPCA()`, `SpatialDomains()`, `MarkerHeatmap()` and
   `plot_heatmap()` used to drop a misspelt marker without any signal, so
@@ -75,17 +58,47 @@
   non-missing number. A missing or non-numeric threshold used to remove every
   cell without a message. `min_intensity = NULL` now applies no lower limit, as
   for the other thresholds, instead of returning no cells.
+* `RipleysK()` and `PairCorrelation()` reject empty, missing, infinite and
+  negative radii, `PairCorrelation()` also a radius of zero, and
+  `PairCorrelation()` requires one positive ring width, instead of returning
+  values for distances that do not exist. The automatic pair-correlation grid
+  started at one coordinate unit even when a quarter of the shorter window side
+  was not larger than that, which gave a descending grid beyond the supported
+  radii; such windows now get an ascending grid scaled to the window. Larger
+  windows keep their grid.
+* `SpatialClusters()`, `spatial_clusters()` and `ExpressionClusters()` require
+  a whole cluster count between one and the number of cells;
+  `ExpressionClusters()` names unknown markers, stops when no marker remains or
+  when k-means or a Gaussian mixture meets a missing value, and documents
+  `method = "gmm"`. `DelaunayNetwork()` requires `max_edge` to be `NULL` or one
+  nonnegative number. The help pages state that spatial clustering pools the
+  cells of all samples.
+* `PhenotypeCells()` and `phenotype_cells()` require `labels` to carry unique,
+  nonblank signature names. An unnamed label vector matched no signature and
+  was ignored silently.
 * `RunPCA()` rejects a component count below one, objects with fewer than two
   cells and missing marker values with a clear message.
 * Cell subsetting (`object[i, ]`) rejects missing indices, which arise from
   comparing a column that holds `NA`, instead of failing in the validity check
   with a message about coordinates.
-* `FeaturePlot()`, `ViolinPlot()`, `BoxPlot()`, `RidgePlot()` and `DotPlot()`
-  build an empty plot for an object without cells instead of failing while
-  assembling their data; `MarkerHeatmap()` reports that there is no phenotype
-  to summarise.
 * `read_spatial()` and `ReadSpatial()` report an empty file and a path that is
   not one character string with a clear message.
+
+## Documentation
+
+* `RipleysK()` and `MoransI()` cite their primary sources in the help pages,
+  and `RipleysK()` and `PairCorrelation()` state the estimators as implemented
+  (intensity estimate, edge handling). The new help topic
+  `?"phenoscapR-results"` documents the result classes of the spatial
+  statistics and their `print()` and `autoplot()` methods.
+
+## Packaging
+
+* The minimum 'ggplot2' version is 3.4.0 rather than 3.0.0: plots and themes
+  set line widths through the `linewidth` argument, which older versions do not
+  have.
+
+# phenoscapR 1.0.0
 
 - Cap radius-search neighbour estimates before integer conversion so large valid radii remain usable. Ripley and pair-correlation calculations now reject undefined zero-area planar windows rather than report artificial dispersion; the existing target-filtered bounding-box window convention is documented.
 

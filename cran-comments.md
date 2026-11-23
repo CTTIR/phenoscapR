@@ -1,6 +1,6 @@
 ## Submission
 
-This is a new submission (phenoscapR 1.0.0).
+This is a new submission (phenoscapR 1.0.1).
 
 ## Test environments
 
