@@ -1766,8 +1766,8 @@ CrossNNDistance <- function(object, from, to, by_sample = FALSE) {
 #'   with \code{k} components; requires the \pkg{mclust} package).
 #' @param slot Character. \code{"data"} (default) or \code{"counts"}.
 #' @param markers Character vector or \code{NULL}. Markers to use. Names not
-#'   found in the object are ignored with a warning. The selected values must
-#'   not contain missing intensities.
+#'   found in the object are ignored with a warning. For \code{"kmeans"} and
+#'   \code{"gmm"} the selected values must not contain missing intensities.
 #'
 #' @return An \code{\link{SpatialCellData-class}} with an \code{expr_cluster}
 #'   column in \code{meta_data}.
@@ -1793,8 +1793,10 @@ ExpressionClusters <- function(object, k,
   if (ncol(mat) < 1L) {
     stop("No markers available for expression clustering.", call. = FALSE)
   }
-  if (anyNA(mat)) {
-    stop("Expression clustering requires complete marker values; ",
+  # Ward clustering on dist() tolerates missing values (pairwise omission);
+  # k-means and Gaussian mixtures cannot use them.
+  if (method != "hierarchical" && anyNA(mat)) {
+    stop("method = \"", method, "\" requires complete marker values; ",
          "remove or impute missing intensities first.", call. = FALSE)
   }
   .validate_cluster_count(k, nrow(mat))

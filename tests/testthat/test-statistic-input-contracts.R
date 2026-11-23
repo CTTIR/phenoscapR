@@ -191,6 +191,9 @@ test_that("cluster counts and edge limits are validated", {
   incomplete@counts[1L, 1L] <- NA
   incomplete@data[1L, 1L] <- NA
   expect_error(ExpressionClusters(incomplete, k = 2), "complete marker values")
+  # Ward linkage keeps working on distances with pairwise omission.
+  ward <- ExpressionClusters(incomplete, k = 2, method = "hierarchical")
+  expect_setequal(unique(ward$expr_cluster), c("1", "2"))
   expect_warning(
     expect_error(ExpressionClusters(obj, k = 2, markers = "nope"),
                  "No markers available for expression clustering"),

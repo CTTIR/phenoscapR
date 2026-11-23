@@ -47,8 +47,9 @@
   same cells; `autoplot(x, y_down = FALSE)` restores the upward rows.
 * `SpatialClusters()`, `spatial_clusters()` and `ExpressionClusters()` require
   a whole cluster count between one and the number of cells;
-  `ExpressionClusters()` names unknown markers, stops when no marker or a
-  missing value remains, and documents `method = "gmm"`. `DelaunayNetwork()`
+  `ExpressionClusters()` names unknown markers, stops when no marker remains or
+  when k-means or a Gaussian mixture meets a missing value, and documents
+  `method = "gmm"`. `DelaunayNetwork()`
   requires `max_edge` to be `NULL` or one nonnegative number. The help pages
   state that spatial clustering pools the cells of all samples.
 * Summaries of Ripley's K, the pair correlation function and cross

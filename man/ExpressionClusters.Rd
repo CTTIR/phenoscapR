@@ -24,8 +24,8 @@ with \code{k} components; requires the \pkg{mclust} package).}
 \item{slot}{Character. \code{"data"} (default) or \code{"counts"}.}
 
 \item{markers}{Character vector or \code{NULL}. Markers to use. Names not
-found in the object are ignored with a warning. The selected values must
-not contain missing intensities.}
+found in the object are ignored with a warning. For \code{"kmeans"} and
+\code{"gmm"} the selected values must not contain missing intensities.}
 }
 \value{
 An \code{\link{SpatialCellData-class}} with an \code{expr_cluster}
