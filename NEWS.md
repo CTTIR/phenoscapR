@@ -33,6 +33,32 @@
   as the other plots do, instead of the default 'ggplot2' colours.
 * `InteractionPlot()` rotates the phenotype labels on the x axis, as the other
   heatmaps do, so that long signatures no longer overlap.
+* `ViolinPlot()` and `BoxPlot()` rotate the group labels on the x axis as
+  well; with more than a few phenotypes the labels of neighbouring groups ran
+  into each other in every facet.
+* `CellMap()`, `EmbeddingPlot()`, `DimPlot()`, `plot_cell_map()`, `QCPlot()`
+  and `SpatialNetworkPlot()` draw the legend keys of categories opaque and at
+  a readable size. The keys used to copy the small, partly translucent map
+  points, so that the colours of the categories could not be told apart in
+  the legend.
+* `SpatialNetworkPlot()` draws its edges visibly: the default `edge_alpha` is
+  now `0.5`. The former default of `0.15` left the network almost invisible
+  on the dark and on the light background. On the dark background
+  (`dark_theme = TRUE`, also in `CellMap()` and `EmbeddingPlot()`) the
+  automatic colours leave out the darkest part of the palette, which could
+  not be seen against black; colours passed in `colours` are used as given.
+* `PlotAlterationMatrix()` prints the row values of `right_text` right of the
+  last tile. The default `right_offset` is now `tile_width / 2 + 0.1` column
+  units; the former default of `0.2` put the text on the last tile, where it
+  could not be read on a dark fill.
+* The Shiny app shows axis tick labels again and draws plot text at its
+  normal size. Automatic re-theming of the plots is no longer used, because
+  it removed the tick labels of plots that set a complete 'ggplot2' theme;
+  'thematic' is no longer needed by `run_app()`. The plots keep their light
+  background in both colour modes.
+* The example of `PlotTerritories()` uses a scale bar that fits its field, and
+  the help page of `ThemeManuscript()` explains that panels printed outside
+  `ComposeFigure()` need a margin for their outer labels.
 * `FeaturePlot()`, `ViolinPlot()`, `BoxPlot()`, `RidgePlot()` and `DotPlot()`
   build an empty plot for an object without cells instead of failing while
   assembling their data; `MarkerHeatmap()` reports that there is no phenotype
