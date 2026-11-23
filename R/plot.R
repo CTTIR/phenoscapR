@@ -779,11 +779,13 @@ SpatialNetworkPlot <- function(object, edges = NULL, colour_by = "phenotype",
 
   if (!is.null(colours)) {
     p <- p + ggplot2::scale_colour_manual(values = colours)
+  } else if (is.numeric(node_df$colour)) {
+    p <- p + .gg_continuous_scale("colour")
   } else {
     n_vals <- length(unique(node_df$colour))
     p <- p + .gg_discrete_scale("colour", n_vals, dark = dark_theme)
   }
-  p <- p + .point_legend_guide(pt_size)
+  if (!is.numeric(node_df$colour)) p <- p + .point_legend_guide(pt_size)
 
   if (dark_theme) {
     p <- p + .theme_dark_tissue()
@@ -883,10 +885,13 @@ QCPlot <- function(object, x, y, colour_by = NULL, pt_size = 0.5) {
     # The package palette, as in the cell maps (see SetPalette()).
     p <- ggplot2::ggplot(df, ggplot2::aes(
       x = .data[["xval"]], y = .data[["yval"]], colour = .data[["col"]]
-    )) + if (is.numeric(df$col)) {
-      .gg_continuous_scale("colour")
-    } else {
-      .gg_discrete_scale("colour", length(unique(df$col)))
+    ))
+    # Numbers and categories use the package scales; other classes (dates,
+    # date-times) keep the scale 'ggplot2' chooses for them.
+    if (is.numeric(df$col)) {
+      p <- p + .gg_continuous_scale("colour")
+    } else if (.is_categorical(df$col)) {
+      p <- p + .gg_discrete_scale("colour", length(unique(df$col)))
     }
   } else {
     p <- ggplot2::ggplot(df, ggplot2::aes(
@@ -898,9 +903,12 @@ QCPlot <- function(object, x, y, colour_by = NULL, pt_size = 0.5) {
     ggplot2::theme_minimal() +
     ggplot2::labs(x = x, y = y, colour = colour_by)
   # Small translucent points give legend keys nobody can read.
-  if (!is.null(df$col) && !is.numeric(df$col)) p <- p + .point_legend_guide(pt_size)
+  if (!is.null(df$col) && .is_categorical(df$col)) p <- p + .point_legend_guide(pt_size)
   p
 }
+
+# Columns drawn with a discrete colour scale.
+.is_categorical <- function(x) is.character(x) || is.factor(x) || is.logical(x)
 
 # --- Internal helpers --------------------------------------------------------
 

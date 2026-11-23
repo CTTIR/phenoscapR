@@ -189,19 +189,35 @@ CustomGradient <- function(colours) {
   }
 }
 
-# Discrete colours for a black background: the current palette without its
-# darkest part, so that no category disappears into the background. The
-# lightness floor is a design choice of this package, not a published value:
-# colours below CIE L* = 40 are hard to tell from black at point size.
+# Discrete colours for a black background. Every category keeps the colour it
+# has on a light background (same palette position, same hue), so that maps
+# of both themes can be read side by side; only colours too dark to be seen
+# against black are drawn lighter. The lightness floor is a design choice of
+# this package, not a published value: colours below CIE L* = 40 are hard to
+# tell from black at point size. Colours are raised one unit above the floor
+# so that rounding to 8-bit colour values cannot push them below it.
 .dark_background_min_lightness <- 40
 
 .palette_discrete_dark <- function(n, palette = NULL) {
-  ramp <- PaletteContinuous(256L, palette)
-  lab <- grDevices::convertColor(t(grDevices::col2rgb(ramp)) / 255,
+  if (is.null(palette)) palette <- GetPalette()
+  cols <- PaletteDiscrete(n, palette)
+  # A vector of more than three colours is a set of discrete colours chosen
+  # by the user (see .make_continuous_colours()); it is used as given.
+  is_ramp <- is.character(palette) && length(palette) <= 3L
+  if (!length(cols) || !is_ramp) return(cols)
+  lab <- grDevices::convertColor(t(grDevices::col2rgb(cols)) / 255,
                                  from = "sRGB", to = "Lab")
-  keep <- ramp[lab[, 1L] >= .dark_background_min_lightness]
-  if (length(keep) < 2L) return(PaletteDiscrete(n, palette))
-  keep[round(seq(1, length(keep), length.out = n))]
+  low <- lab[, 1L] < .dark_background_min_lightness
+  if (!any(low)) return(cols)
+  lab[low, 1L] <- .dark_background_min_lightness + 1
+  lifted <- grDevices::convertColor(lab[low, , drop = FALSE],
+                                    from = "Lab", to = "sRGB")
+  out <- cols
+  out[low] <- grDevices::rgb(lifted[, 1L], lifted[, 2L], lifted[, 3L])
+  # Dark colours without a hue of their own (a ramp ending in black) would
+  # become one grey; such a palette is kept as it is.
+  if (anyDuplicated(out) && !anyDuplicated(cols)) return(cols)
+  out
 }
 
 # Legend keys for categories drawn as small points: the keys are drawn opaque

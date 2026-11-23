@@ -74,8 +74,8 @@ test_that("cell subsetting rejects missing indices", {
 
 test_that("principal components validate their inputs", {
   obj <- contract_object()
-  for (bad in list(0, NA, "2", c(1, 2), -1)) {
-    expect_error(RunPCA(obj, n_pcs = bad), "n_pcs must be one number of at least 1")
+  for (bad in list(0, NA, "2", c(1, 2), -1, Inf)) {
+    expect_error(RunPCA(obj, n_pcs = bad), "n_pcs must be one finite number of at least 1")
   }
   expect_error(RunPCA(obj[1L, ]), "PCA requires at least two cells")
   incomplete <- obj
@@ -165,6 +165,20 @@ test_that("QC scatter plots use the package palette", {
     QCPlot(obj, x = "cell_area", y = "cell_area", colour_by = "score"))$data[[1L]]
   ends <- PaletteContinuous(256L)[c(1L, 256L)]
   expect_identical(toupper(built$colour[c(1L, NCells(obj))]), toupper(ends))
+  # Logical columns are categories.
+  obj@meta_data$large <- obj@meta_data$cell_area > 50
+  built <- ggplot2::ggplot_build(
+    QCPlot(obj, x = "cell_area", y = "cell_area", colour_by = "large"))$data[[1L]]
+  expect_identical(sort(unique(built$colour)), sort(PaletteDiscrete(2L)))
+  # Dates and date-times keep the scale 'ggplot2' chooses for them.
+  obj@meta_data$day <- as.Date("2020-01-01") + seq_len(NCells(obj))
+  obj@meta_data$time <- as.POSIXct("2020-01-01", tz = "UTC") + 3600 * seq_len(NCells(obj))
+  for (column in c("day", "time")) {
+    built <- ggplot2::ggplot_build(
+      QCPlot(obj, x = "cell_area", y = "cell_area", colour_by = column))$data[[1L]]
+    expect_gt(length(unique(built$colour)), 2L)
+    expect_false(anyNA(built$colour))
+  }
 })
 
 test_that("phenotype labels must be named by signature", {
@@ -182,6 +196,9 @@ test_that("phenotype labels must be named by signature", {
                "labels must be NULL or a vector of non-missing labels")
   labelled <- PhenotypeCells(obj, thresholds, labels = c("CD3+" = "T cell"))
   expect_setequal(unique(labelled$phenotype), c("T cell", "Negative"))
+  # A factor gives its labels, not its integer codes.
+  as_factor <- PhenotypeCells(obj, thresholds, labels = factor(c("CD3+" = "T cell")))
+  expect_identical(as_factor$phenotype, labelled$phenotype)
   expect_identical(phenotype_cells(dt, thresholds, labels = c("CD3+" = "T"))$phenotype,
                    c("Negative", "T", "T"))
   expect_setequal(unique(PhenotypeCells(obj, thresholds)$phenotype), c("CD3+", "Negative"))

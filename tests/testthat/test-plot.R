@@ -136,6 +136,7 @@ test_that("violin and box plots rotate the group labels", {
 })
 
 test_that("automatic colours stay visible on the dark background", {
+  skip_if_not_installed("deldir")
   lightness <- function(cols) {
     grDevices::convertColor(t(grDevices::col2rgb(cols)) / 255, from = "sRGB", to = "Lab")[, 1L]
   }
@@ -157,7 +158,81 @@ test_that("automatic colours stay visible on the dark background", {
   expect_length(phenoscapR:::.palette_discrete_dark(1L), 1L)
 })
 
+test_that("categories keep their colours between the light and the dark theme", {
+  skip_if_not_installed("deldir")
+  lab <- function(cols) {
+    grDevices::convertColor(t(grDevices::col2rgb(cols)) / 255, from = "sRGB", to = "Lab")
+  }
+  category_colours <- function(p, layer) {
+    built <- ggplot2::ggplot_build(p)$data[[layer]]
+    tapply(built$colour, obj$phenotype, unique)
+  }
+  set.seed(3)
+  n <- 100L
+  obj <- CreateSpatialObject(
+    matrix(rnorm(n), nrow = n, dimnames = list(NULL, "CD3")),
+    data.frame(x = runif(n, 0, 500), y = runif(n, 0, 500)),
+    data.frame(cell_id = seq_len(n), sample_id = "s1",
+               phenotype = rep(c("B cell", "Macrophage", "T cytotoxic", "T helper", "Tumour"),
+                               length.out = n)))
+  obj <- DelaunayNetwork(obj)
+  light <- category_colours(CellMap(obj), 1L)
+  dark <- category_colours(SpatialNetworkPlot(obj), 2L)
+  expect_identical(names(dark), names(light))
+  expect_identical(anyDuplicated(dark), 0L)
+  # Colours that can be seen against black are the same in both plots.
+  visible <- lab(light)[, 1L] >= 40
+  expect_true(sum(visible) >= 3L)
+  expect_identical(dark[visible], light[visible])
+  # A colour too dark for the black background is only drawn lighter: it
+  # keeps its hue and stays closest to its own category.
+  dark_lab <- lab(dark)
+  light_lab <- lab(light)
+  expect_true(all(dark_lab[!visible, 1L] >= 40))
+  hue <- function(m) atan2(m[, 3L], m[, 2L])
+  expect_equal(hue(dark_lab)[!visible], hue(light_lab)[!visible], tolerance = 0.1)
+  nearest <- vapply(seq_len(nrow(dark_lab)), function(i) {
+    which.min(colSums((t(light_lab) - dark_lab[i, ])^2))
+  }, integer(1L))
+  expect_identical(nearest, seq_len(nrow(dark_lab)))
+  expect_identical(category_colours(CellMap(obj, dark_theme = TRUE), 1L), dark)
+})
+
+test_that("discrete colour vectors set with SetPalette() are used as given on dark maps", {
+  skip_if_not_installed("deldir")
+  okabe_ito <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
+                 "#D55E00", "#CC79A7", "#000000")
+  old <- SetPalette(okabe_ito)
+  on.exit(SetPalette(old), add = TRUE)
+  expect_identical(phenoscapR:::.palette_discrete_dark(5L), okabe_ito[1:5])
+  obj <- DelaunayNetwork(legible_object())
+  for (p in list(CellMap(obj, dark_theme = TRUE), SpatialNetworkPlot(obj))) {
+    built <- ggplot2::ggplot_build(p)$data
+    expect_setequal(unique(built[[length(built)]]$colour), okabe_ito[1:3])
+  }
+  named <- c(`B cell` = "#0072B2", Macrophage = "#D55E00", `T cytotoxic` = "#009E73",
+             Other = "#CC79A7")
+  SetPalette(named)
+  built <- ggplot2::ggplot_build(CellMap(obj, dark_theme = TRUE))$data[[1L]]
+  expect_identical(as.vector(tapply(built$colour, obj$phenotype, unique)),
+                   unname(named[1:3]))
+  expect_identical(built$colour, ggplot2::ggplot_build(CellMap(obj))$data[[1L]]$colour)
+  # A gradient ending in black cannot be lightened without merging colours.
+  expect_identical(phenoscapR:::.palette_discrete_dark(6L, c("white", "black")),
+                   PaletteDiscrete(6L, c("white", "black")))
+})
+
+test_that("network plots colour nodes by numeric columns", {
+  skip_if_not_installed("deldir")
+  obj <- DelaunayNetwork(legible_object())
+  p <- SpatialNetworkPlot(obj, colour_by = "cell_area")
+  built <- ggplot2::ggplot_build(p)$data[[2L]]
+  expect_gt(length(unique(built$colour)), 3L)
+  expect_null(p$guides$guides$colour)
+})
+
 test_that("network edges are drawn visibly by default", {
+  skip_if_not_installed("deldir")
   obj <- DelaunayNetwork(legible_object())
   expect_identical(formals(SpatialNetworkPlot)$edge_alpha, 0.5)
   edges <- ggplot2::ggplot_build(SpatialNetworkPlot(obj))$data[[1]]
