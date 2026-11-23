@@ -40,7 +40,7 @@ PlotAlterationMatrix(
   right_format = "%.0f%%",
   right_size = 4.6,
   right_colour = "muted",
-  right_offset = 0.2,
+  right_offset = tile_width/2 + 0.1,
   legends = NULL,
   texts = NULL,
   values = NULL,
@@ -121,7 +121,7 @@ PlotAlterationMatrix(
 - right_format, right_size, right_colour, right_offset:
 
   Format, size, colour and position (column units beyond the last column
-  centre).
+  centre; by default just right of the last tile).
 
 - legends:
 
@@ -156,7 +156,10 @@ A 'ggplot2' object.
 d <- data.frame(row = rep(c("g1", "g2"), each = 3), column = rep(c("s1", "s2", "s3"), 2),
                 value = c("Missense", NA, "Deletion", NA, "Truncating", NA),
                 share = rep(c(67, 33), each = 3))
-PlotAlterationMatrix(d, colours = c(Missense = "#008300", Truncating = "#222222",
-                                    Deletion = "#2a78d6"), right_text = "share",
-                     row_italic = TRUE)
+p <- PlotAlterationMatrix(d, colours = c(Missense = "#008300", Truncating = "#222222",
+                                         Deletion = "#2a78d6"), right_text = "share",
+                          row_italic = TRUE)
+# Row labels and row values lie outside the panel: outside ComposeFigure()
+# they need a margin.
+p + ggplot2::theme(plot.margin = ggplot2::margin(5, 30, 5, 30))
 ```

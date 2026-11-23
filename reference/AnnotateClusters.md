@@ -2,7 +2,8 @@
 
 Labels each cluster (or any categorical grouping) by the markers most
 enriched in it relative to the global mean, producing human-readable
-names such as `"CD3+CD8"`.
+names such as `"CD3+CD8+"`. A group in which no marker exceeds the
+global mean is named `"mixed"`.
 
 ## Usage
 
@@ -55,6 +56,8 @@ data(phenoscapR_example)
 obj <- NormaliseData(phenoscapR_example, "zscore")
 obj <- ExpressionClusters(obj, k = 6)
 AnnotateClusters(obj, add_column = FALSE)
-#>            1            2            3            4            5            6 
-#>    "CD8CD3+"    "CD4CD3+"  "CD20Ki67+"      "CD68+" "PanCKKi67+"  "FoxP3CD4+" 
+#>             1             2             3             4             5 
+#>    "CD8+CD3+"    "CD4+CD3+"  "CD20+Ki67+"       "CD68+" "PanCK+Ki67+" 
+#>             6 
+#>  "FoxP3+CD4+" 
 ```

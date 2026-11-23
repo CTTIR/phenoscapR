@@ -20,3 +20,11 @@ dim(x)
 ## Value
 
 Integer vector: number of cells, number of markers.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+dim(phenoscapR_example)
+#> [1] 640   8
+```

@@ -29,11 +29,16 @@ PairCorrelation(
 
 - r_seq:
 
-  Numeric vector of radii, or `NULL` for automatic.
+  Numeric vector of finite, positive radii in coordinate units, or
+  `NULL` for 50 radii up to a quarter of the shorter side of the
+  bounding box. The automatic grid starts at one coordinate unit, or at
+  one fiftieth of its upper limit when that limit is not larger than one
+  unit.
 
 - dr:
 
-  Numeric or `NULL`. Ring width. Default is derived from `r_seq`.
+  Numeric or `NULL`. Ring width, one finite positive number. Default is
+  the spacing of the first two radii of `r_seq`.
 
 - target:
 
@@ -48,6 +53,16 @@ PairCorrelation(
 ## Value
 
 A data frame with columns `r` and `g`.
+
+## Details
+
+For each radius, ordered point pairs at a distance within `dr / 2` of
+`r` are counted and divided by `n * lambda * a`, with `n` retained
+points, intensity `lambda = n / A` and the area `a` of the ring, which
+is `2 * pi * r * dr` unless the ring is cut off at zero (`r < dr / 2`),
+where it is the disc of radius `r + dr / 2`. No edge correction is
+applied, so `g(r)` is biased downward as `r` approaches the size of the
+window; the automatic radii stop at a quarter of its shorter side.
 
 ## Examples
 

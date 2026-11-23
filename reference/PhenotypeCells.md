@@ -26,7 +26,9 @@ PhenotypeCells(object, thresholds, labels = NULL)
 - labels:
 
   Named character vector mapping signatures to labels, or `NULL` for
-  automatic labelling.
+  automatic labelling. Signature names must be unique and nonblank, for
+  example `c("CD3+" = "T cell")`; signatures without a label keep their
+  automatic name.
 
 ## Value
 

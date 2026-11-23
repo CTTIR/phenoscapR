@@ -38,7 +38,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -249,8 +249,10 @@ regions.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExpressionClusters.html">ExpressionClusters</a></span><span class="op">(</span><span class="va">obj</span>, k <span class="op">=</span> <span class="fl">6</span>, method <span class="op">=</span> <span class="st">"gmm"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/AnnotateClusters.html">AnnotateClusters</a></span><span class="op">(</span><span class="va">obj</span>, add_column <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            1            2            3            4            5            6 </span></span>
-<span><span class="co">#&gt;  "CD20Ki67+"    "CD8CD3+" "PanCKKi67+"      "CD68+"    "CD4CD3+"  "FoxP3CD4+"</span></span></code></pre></div>
+<span><span class="co">#&gt;             1             2             3             4             5 </span></span>
+<span><span class="co">#&gt;  "CD20+Ki67+"    "CD8+CD3+" "PanCK+Ki67+"       "CD68+"    "CD4+CD3+" </span></span>
+<span><span class="co">#&gt;             6 </span></span>
+<span><span class="co">#&gt;  "FoxP3+CD4+"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="differential-abundance">Differential abundance<a class="anchor" aria-label="anchor" href="#differential-abundance"></a>

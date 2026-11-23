@@ -192,8 +192,10 @@ names clusters by their top markers.
 
 obj <- ExpressionClusters(obj, k = 6, method = "gmm")
 AnnotateClusters(obj, add_column = FALSE)
-#>            1            2            3            4            5            6 
-#>  "CD20Ki67+"    "CD8CD3+" "PanCKKi67+"      "CD68+"    "CD4CD3+"  "FoxP3CD4+"
+#>             1             2             3             4             5 
+#>  "CD20+Ki67+"    "CD8+CD3+" "PanCK+Ki67+"       "CD68+"    "CD4+CD3+" 
+#>             6 
+#>  "FoxP3+CD4+"
 ```
 
 ## Differential abundance

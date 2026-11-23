@@ -23,7 +23,7 @@ The retained points must define a positive finite bounding-box area."><meta prop
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,12 +84,15 @@ The retained points must define a positive finite bounding-box area.</p>
 
 
 <dt id="arg-r-seq">r_seq<a class="anchor" aria-label="anchor" href="#arg-r-seq"></a></dt>
-<dd><p>Numeric vector of radii, or <code>NULL</code> for automatic.</p></dd>
+<dd><p>Numeric vector of finite, positive radii in coordinate units,
+or <code>NULL</code> for 50 radii up to a quarter of the shorter side of the
+bounding box. The automatic grid starts at one coordinate unit, or at one
+fiftieth of its upper limit when that limit is not larger than one unit.</p></dd>
 
 
 <dt id="arg-dr">dr<a class="anchor" aria-label="anchor" href="#arg-dr"></a></dt>
-<dd><p>Numeric or <code>NULL</code>. Ring width. Default is derived from
-<code>r_seq</code>.</p></dd>
+<dd><p>Numeric or <code>NULL</code>. Ring width, one finite positive number.
+Default is the spacing of the first two radii of <code>r_seq</code>.</p></dd>
 
 
 <dt id="arg-target">target<a class="anchor" aria-label="anchor" href="#arg-target"></a></dt>
@@ -105,6 +108,18 @@ the statistic is computed per sample and returned as a named list. Default
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data frame with columns <code>r</code> and <code>g</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>For each radius, ordered point pairs at a distance within
+<code>dr / 2</code> of <code>r</code> are counted and divided by
+<code>n * lambda * a</code>, with <code>n</code> retained points, intensity
+<code>lambda = n / A</code> and the area <code>a</code> of the ring, which is
+<code>2 * pi * r * dr</code> unless the ring is cut off at zero
+(<code>r &lt; dr / 2</code>), where it is the disc of radius <code>r + dr / 2</code>. No
+edge correction is applied, so
+<code>g(r)</code> is biased downward as <code>r</code> approaches the size of the
+window; the automatic radii stop at a quarter of its shorter side.</p>
     </div>
 
     <div class="section level2">

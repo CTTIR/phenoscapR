@@ -13,7 +13,7 @@ SpatialNetworkPlot(
   colour_by = "phenotype",
   colours = NULL,
   pt_size = 2,
-  edge_alpha = 0.15,
+  edge_alpha = 0.5,
   edge_colour = "grey60",
   dark_theme = TRUE,
   y_down = TRUE
@@ -51,7 +51,7 @@ SpatialNetworkPlot(
 
 - edge_alpha:
 
-  Numeric. Edge transparency. Default `0.15`.
+  Numeric. Edge opacity. Default `0.5`.
 
 - edge_colour:
 
@@ -59,7 +59,9 @@ SpatialNetworkPlot(
 
 - dark_theme:
 
-  Logical. Default `TRUE`.
+  Logical. Default `TRUE`. On the dark background the automatic colours
+  leave out the darkest part of the palette, so that every category
+  stays visible.
 
 - y_down:
 

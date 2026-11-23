@@ -23,7 +23,8 @@ DelaunayNetwork(object, max_edge = NULL)
 
 - max_edge:
 
-  Numeric or `NULL`. Maximum edge length to retain.
+  One nonnegative number or `NULL`. Maximum edge length to retain, in
+  coordinate units.
 
 ## Value
 

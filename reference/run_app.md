@@ -32,10 +32,11 @@ Called for its side effect of launching the app; returns the value of
 ## Details
 
 The app ships in `inst/app`. It depends on optional packages (Shiny,
-bslib, sass, thematic, reactable, bsicons); `run_app()` checks for them
-and reports any that are missing. Branding requires bslib \>= 0.9.0. The
-optional UMAP view requires uwot; PCA remains available without it. If
-QC removes every cell, widen or reset the cell-area filter.
+bslib, sass, reactable, bsicons, `brand.yml`); `run_app()` checks for
+them and reports any that are missing. Branding requires bslib \>=
+0.9.0. The optional UMAP view requires uwot; PCA remains available
+without it. If QC removes every cell, widen or reset the cell-area
+filter.
 
 ## Examples
 

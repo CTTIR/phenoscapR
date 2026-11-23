@@ -26,7 +26,8 @@ QCPlot(object, x, y, colour_by = NULL, pt_size = 0.5)
 
 - colour_by:
 
-  Character or `NULL`. Metadata column for colour.
+  Character or `NULL`. Metadata column for colour. A column that does
+  not exist is ignored with a warning.
 
 - pt_size:
 

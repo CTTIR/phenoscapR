@@ -17,7 +17,7 @@ plot_heatmap(dt, markers = NULL, title = NULL)
 - markers:
 
   Character vector or `NULL`. Markers to include. If `NULL`, all marker
-  columns are used.
+  columns are used. Names not found in `dt` are ignored with a warning.
 
 - title:
 

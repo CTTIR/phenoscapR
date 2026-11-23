@@ -29,7 +29,8 @@ HistogramPlot(
 
 - group_by:
 
-  Character or `NULL`. Metadata column for fill grouping.
+  Character or `NULL`. Metadata column for fill grouping. A column that
+  does not exist is ignored with a warning.
 
 - slot:
 

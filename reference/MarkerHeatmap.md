@@ -26,7 +26,7 @@ MarkerHeatmap(
 - markers:
 
   Character vector or `NULL`. Markers to include. If `NULL`, all markers
-  are shown.
+  are shown. Names not found in the object are ignored with a warning.
 
 - slot:
 

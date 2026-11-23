@@ -1,6 +1,10 @@
 # Spatial Clusters (SpatialCellData)
 
-Clusters cells based on spatial coordinates.
+Clusters cells based on spatial coordinates. The cells of all samples
+are clustered together: subset to one sample first when samples have
+separate coordinate frames. k-means starts from random centres, so call
+[`set.seed()`](https://rdrr.io/r/base/Random.html) first for
+reproducible labels.
 
 ## Usage
 
@@ -18,7 +22,8 @@ SpatialClusters(object, k, method = c("kmeans", "hierarchical"))
 
 - k:
 
-  Integer. Number of clusters.
+  Integer. Number of clusters, between 1 and the number of cells;
+  k-means needs fewer clusters than cells.
 
 - method:
 

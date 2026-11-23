@@ -26,7 +26,8 @@ BoxPlot(
 
 - features:
 
-  Character vector. Marker names to plot.
+  Character vector. Marker names to plot. Names not found in the object
+  are ignored with a warning; at least one must be found.
 
 - group_by:
 

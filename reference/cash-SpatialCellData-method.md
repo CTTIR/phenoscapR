@@ -24,3 +24,13 @@ x$name
 ## Value
 
 The requested metadata column.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+table(phenoscapR_example$sample_id)
+#> 
+#> tonsil_A tonsil_B 
+#>      320      320 
+```

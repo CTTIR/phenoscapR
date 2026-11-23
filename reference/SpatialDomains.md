@@ -40,7 +40,8 @@ SpatialDomains(
 
 - markers:
 
-  Character vector or `NULL`. Markers to use; `NULL` uses all.
+  Character vector or `NULL`. Markers to use; `NULL` uses all. Names not
+  found in the object are ignored with a warning.
 
 - seed:
 

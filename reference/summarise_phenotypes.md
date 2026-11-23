@@ -33,7 +33,7 @@ dt <- data.table::data.table(
 summarise_phenotypes(dt)
 #>    sample_id phenotype count proportion
 #>       <char>    <char> <int>      <num>
-#> 1:        s1  Negative    34       0.34
-#> 2:        s1      CD3+    24       0.24
-#> 3:        s1      CD8+    42       0.42
+#> 1:        s1      CD8+    34       0.34
+#> 2:        s1      CD3+    34       0.34
+#> 3:        s1  Negative    32       0.32
 ```

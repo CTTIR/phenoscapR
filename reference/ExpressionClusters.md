@@ -1,6 +1,9 @@
 # Expression-Based Cell Clustering
 
-Clusters cells based on marker expression profiles.
+Clusters cells based on marker expression profiles. k-means and Gaussian
+mixtures start from random or data-dependent initial values, so call
+[`set.seed()`](https://rdrr.io/r/base/Random.html) first for
+reproducible labels.
 
 ## Usage
 
@@ -24,11 +27,14 @@ ExpressionClusters(
 
 - k:
 
-  Integer. Number of clusters.
+  Integer. Number of clusters, between 1 and the number of cells;
+  k-means needs fewer clusters than cells.
 
 - method:
 
-  Character. `"kmeans"` (default) or `"hierarchical"`.
+  Character. `"kmeans"` (default), `"hierarchical"` (Ward linkage on
+  Euclidean distances) or `"gmm"` (a Gaussian mixture with `k`
+  components; requires the mclust package).
 
 - slot:
 
@@ -36,7 +42,15 @@ ExpressionClusters(
 
 - markers:
 
-  Character vector or `NULL`. Markers to use.
+  Character vector or `NULL`. Markers to use. Names not found in the
+  object are ignored with a warning. For `"kmeans"` and `"gmm"` the
+  selected values must not contain missing intensities. `"hierarchical"`
+  accepts them as long as every pair of cells shares at least one
+  measured marker: [`dist()`](https://rdrr.io/r/stats/dist.html) then
+  leaves out the markers missing in either cell and rescales the sum to
+  the number of markers, so the dissimilarities are only approximately
+  Euclidean and the Ward clusters of incomplete data should be read with
+  that in mind.
 
 ## Value
 

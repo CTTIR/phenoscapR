@@ -86,6 +86,12 @@ otherwise z is unavailable (`NA`). The empirical p-value remains defined
 independently of z. Constant features and graphs without any edges yield
 unavailable statistics and inference.
 
+## References
+
+Moran, P. A. P. (1950). Notes on continuous stochastic phenomena.
+*Biometrika*, 37(1/2), 17-23.
+[doi:10.2307/2332142](https://doi.org/10.2307/2332142)
+
 ## Examples
 
 ``` r

@@ -1,7 +1,11 @@
 # Spatial Cell Clustering
 
 Clusters cells based on their spatial coordinates using k-means or
-hierarchical clustering.
+hierarchical clustering. All rows are clustered together, whatever their
+`sample_id`: cluster one sample at a time when samples have separate
+coordinate frames. k-means starts from random centres, so call
+[`set.seed()`](https://rdrr.io/r/base/Random.html) first for
+reproducible labels.
 
 ## Usage
 
@@ -13,11 +17,12 @@ spatial_clusters(dt, k, method = c("kmeans", "hierarchical"))
 
 - dt:
 
-  A `data.table` with columns `x` and `y`.
+  A `data.table` with finite numeric columns `x` and `y`.
 
 - k:
 
-  Integer. Number of clusters.
+  Integer. Number of clusters, between 1 and the number of cells;
+  k-means needs fewer clusters than cells.
 
 - method:
 

@@ -38,7 +38,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -171,11 +171,15 @@ sample-aware and need no subsetting.)</p>
 <p>A permutation test: it shuffles phenotype labels many times and asks
 whether each phenotype pair is observed as neighbours more (positive z)
 or less (negative z) often than the shuffles. The planted B-cell
-follicle shows up as strong B–B self-enrichment.</p>
+follicle shows up as strong B–B self-enrichment. The reported p-value is
+the two-sided normal approximation of the z-score, not a permutation
+tail probability, so it can be far smaller than one over the number of
+shuffles.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ne</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NeighbourhoodEnrichment.html">NeighbourhoodEnrichment</a></span><span class="op">(</span><span class="va">a</span>, radius <span class="op">=</span> <span class="fl">40</span>, n_perm <span class="op">=</span> <span class="fl">199</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">ne</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">ne</span><span class="op">$</span><span class="va">z_score</span><span class="op">)</span>, <span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; &lt;phenoscapR&gt; Neighbourhood enrichment (permutation test)</span></span>
+<span><span class="co">#&gt; &lt;phenoscapR&gt; Neighbourhood enrichment (label permutation)</span></span>
+<span><span class="co">#&gt;   z-scores against permuted labels; p-values from the normal approximation</span></span>
 <span><span class="co">#&gt;   top co-localised pairs (by z-score):</span></span>
 <span><span class="co">#&gt;         from          to   z_score       p_value</span></span>
 <span><span class="co">#&gt;       B cell      B cell 24.996390 6.691699e-138</span></span>

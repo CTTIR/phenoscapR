@@ -117,6 +117,23 @@ and expression-based clustering.
   : Moran's I Spatial Autocorrelation
 - [`QuadratAnalysis()`](https://cttir.github.io/phenoscapR/reference/QuadratAnalysis.md)
   : Quadrat Analysis
+- [`phenoscapR-results`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_ripley`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_ripley`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_pcf`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_pcf`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_moran`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_quadrat`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_quadrat`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_enrichment`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_enrichment`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_interaction`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_interaction`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_crossnn`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_crossnn`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_diffabund`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_by_sample`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  : Classed Results of the Spatial Statistics
 - [`AssignFixedGrid()`](https://cttir.github.io/phenoscapR/reference/AssignFixedGrid.md)
   : Assign Physical Cell Coordinates to Fixed Square Grids
 - [`SummarizeFixedGrid()`](https://cttir.github.io/phenoscapR/reference/SummarizeFixedGrid.md)

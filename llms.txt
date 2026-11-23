@@ -102,7 +102,7 @@ These packages are optional. Calling the corresponding function without
 its dependency reports an error; phenoscapR does not install packages
 automatically.
 
-## Quick Start
+## Quick start
 
 The package ships a synthetic two-sample example dataset, so you can run
 the whole workflow without any files of your own:
@@ -204,8 +204,8 @@ replicated group inference.
 ``` r
 
 # one-time: install the optional app dependencies
-install.packages(c("shiny", "bslib", "sass", "thematic", "reactable",
-                   "bsicons", "brand.yml"))
+install.packages(c("shiny", "bslib", "sass", "reactable", "bsicons",
+                   "brand.yml"))
 
 phenoscapR::run_app()
 ```
@@ -255,14 +255,14 @@ citation("phenoscapR")
 
 > R. Heller, E. Chteinberg, H. Witte (2026). phenoscapR: Read, Analyse,
 > and Visualise Single-Cell Spatial Biology Data. R package version
-> 1.0.0. <https://cttir.github.io/phenoscapR/>
+> 1.0.1. <https://cttir.github.io/phenoscapR/>
 
 ``` bibtex
 @Manual{,
   title = {phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data},
   author = {R. Heller and E. Chteinberg and H. Witte},
   year = {2026},
-  note = {R package version 1.0.0},
+  note = {R package version 1.0.1},
   url = {https://cttir.github.io/phenoscapR/},
 }
 ```
@@ -395,6 +395,23 @@ and expression-based clustering.
   : Moran's I Spatial Autocorrelation
 - [`QuadratAnalysis()`](https://cttir.github.io/phenoscapR/reference/QuadratAnalysis.md)
   : Quadrat Analysis
+- [`phenoscapR-results`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_ripley`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_ripley`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_pcf`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_pcf`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_moran`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_quadrat`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_quadrat`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_enrichment`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_enrichment`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_interaction`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_interaction`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_crossnn`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`autoplot.phenoscapR_crossnn`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_diffabund`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  [`print.phenoscapR_by_sample`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  : Classed Results of the Spatial Statistics
 - [`AssignFixedGrid()`](https://cttir.github.io/phenoscapR/reference/AssignFixedGrid.md)
   : Assign Physical Cell Coordinates to Fixed Square Grids
 - [`SummarizeFixedGrid()`](https://cttir.github.io/phenoscapR/reference/SummarizeFixedGrid.md)

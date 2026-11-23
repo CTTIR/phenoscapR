@@ -29,7 +29,9 @@ RipleysK(
 
 - r_seq:
 
-  Numeric vector of radii, or `NULL` for automatic.
+  Numeric vector of finite, nonnegative radii in coordinate units, or
+  `NULL` for 50 radii from zero to a quarter of the shorter side of the
+  bounding box.
 
 - target:
 
@@ -52,6 +54,23 @@ RipleysK(
 ## Value
 
 A data frame with columns `r`, `K`, `L`, and `expected`.
+
+## Details
+
+With `n` retained points in a window of area `A`, the uncorrected and
+translation-corrected estimates scale the (weighted) count of ordered
+point pairs within distance `r` by `A / n^2` and `A^2 / n^2`; the
+squared intensity is thus estimated by `n^2 / A^2`, not by
+`n (n - 1) / A^2`. The border estimate divides the pair count of the
+centres at least `r` from the window edge by their number and by the
+intensity `n / A`. Under complete spatial randomness `K` equals
+`expected = pi r^2` and `L = sqrt(K / pi) - r` is zero.
+
+## References
+
+Ripley, B. D. (1977). Modelling spatial patterns. *Journal of the Royal
+Statistical Society: Series B (Methodological)*, 39(2), 172-192.
+[doi:10.1111/j.2517-6161.1977.tb01615.x](https://doi.org/10.1111/j.2517-6161.1977.tb01615.x)
 
 ## Examples
 

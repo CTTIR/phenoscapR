@@ -17,7 +17,7 @@ Tests for Complete Spatial Randomness using a chi-squared test."><meta property=
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,15 +69,18 @@ Tests for Complete Spatial Randomness using a chi-squared test.</p>
 
 
 <dt id="arg-nx">nx<a class="anchor" aria-label="anchor" href="#arg-nx"></a></dt>
-<dd><p>Integer. Number of columns in the grid. Default <code>5</code>.</p></dd>
+<dd><p>Integer. Number of columns in the grid, at least <code>1</code>.
+Default <code>5</code>.</p></dd>
 
 
 <dt id="arg-ny">ny<a class="anchor" aria-label="anchor" href="#arg-ny"></a></dt>
-<dd><p>Integer. Number of rows in the grid. Default <code>5</code>.</p></dd>
+<dd><p>Integer. Number of rows in the grid, at least <code>1</code>. Default
+<code>5</code>.</p></dd>
 
 
 <dt id="arg-target">target<a class="anchor" aria-label="anchor" href="#arg-target"></a></dt>
-<dd><p>Character or <code>NULL</code>. Restrict to a phenotype.</p></dd>
+<dd><p>Character or <code>NULL</code>. Restrict to a phenotype. At least
+one cell must be retained.</p></dd>
 
 
 <dt id="arg-by-sample">by_sample<a class="anchor" aria-label="anchor" href="#arg-by-sample"></a></dt>

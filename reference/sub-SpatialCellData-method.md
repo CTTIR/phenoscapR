@@ -31,7 +31,9 @@ x[i, j, drop = FALSE]
 
 - i:
 
-  Cell indices (integer or logical).
+  Cell indices (integer or logical). Missing values are not allowed; use
+  [`which()`](https://rdrr.io/r/base/which.html) or `%in%` to select
+  cells from a column that holds `NA`.
 
 - j:
 
@@ -44,3 +46,19 @@ x[i, j, drop = FALSE]
 ## Value
 
 A subsetted `SpatialCellData` object.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+first <- phenoscapR_example[1:100, ]
+dim(first)
+#> [1] 100   8
+one_sample <- phenoscapR_example[
+  phenoscapR_example$sample_id == phenoscapR_example$sample_id[1], ]
+NCells(one_sample)
+#> [1] 320
+two_markers <- phenoscapR_example[, Markers(phenoscapR_example)[1:2]]
+Markers(two_markers)
+#> [1] "CD3" "CD4"
+```

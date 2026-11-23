@@ -102,7 +102,7 @@ These packages are optional. Calling the corresponding function without
 its dependency reports an error; phenoscapR does not install packages
 automatically.
 
-## Quick Start
+## Quick start
 
 The package ships a synthetic two-sample example dataset, so you can run
 the whole workflow without any files of your own:
@@ -204,8 +204,8 @@ replicated group inference.
 ``` r
 
 # one-time: install the optional app dependencies
-install.packages(c("shiny", "bslib", "sass", "thematic", "reactable",
-                   "bsicons", "brand.yml"))
+install.packages(c("shiny", "bslib", "sass", "reactable", "bsicons",
+                   "brand.yml"))
 
 phenoscapR::run_app()
 ```
@@ -255,14 +255,14 @@ citation("phenoscapR")
 
 > R. Heller, E. Chteinberg, H. Witte (2026). phenoscapR: Read, Analyse,
 > and Visualise Single-Cell Spatial Biology Data. R package version
-> 1.0.0. <https://cttir.github.io/phenoscapR/>
+> 1.0.1. <https://cttir.github.io/phenoscapR/>
 
 ``` bibtex
 @Manual{,
   title = {phenoscapR: Read, Analyse, and Visualise Single-Cell Spatial Biology Data},
   author = {R. Heller and E. Chteinberg and H. Witte},
   year = {2026},
-  note = {R package version 1.0.0},
+  note = {R package version 1.0.1},
   url = {https://cttir.github.io/phenoscapR/},
 }
 ```

@@ -34,7 +34,8 @@ normalise_markers(
 - markers:
 
   Character vector or `NULL`. Marker columns to normalise. If `NULL`,
-  all detected marker columns are normalised.
+  all detected marker columns are normalised. Names not found in `dt`
+  are ignored with a warning.
 
 ## Value
 

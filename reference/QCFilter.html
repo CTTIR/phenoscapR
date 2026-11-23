@@ -17,7 +17,7 @@ and/or total marker intensity."><meta property="og:image" content="https://cttir
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,8 @@ missing area fail area thresholds.</p></dd>
 
 
 <dt id="arg-min-intensity">min_intensity<a class="anchor" aria-label="anchor" href="#arg-min-intensity"></a></dt>
-<dd><p>Numeric. Minimum total marker intensity. Default <code>0</code>.</p></dd>
+<dd><p>Numeric or <code>NULL</code>. Minimum total marker
+intensity. Default <code>0</code>; <code>NULL</code> applies no lower limit.</p></dd>
 
 
 <dt id="arg-max-intensity">max_intensity<a class="anchor" aria-label="anchor" href="#arg-max-intensity"></a></dt>
@@ -94,6 +95,12 @@ missing area fail area thresholds.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A filtered <code><a href="SpatialCellData-class.html">SpatialCellData-class</a></code> object.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Each threshold is <code>NULL</code> or one non-missing number. A missing
+or non-numeric threshold is an error, because it would otherwise remove
+every cell.</p>
     </div>
 
     <div class="section level2">

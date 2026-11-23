@@ -34,8 +34,9 @@ qc_filter(
 
 - min_intensity:
 
-  Numeric. Minimum total marker intensity. Cells with total intensity
-  below this value are removed. Default `0`.
+  Numeric or `NULL`. Minimum total marker intensity. Cells with total
+  intensity below this value are removed. Default `0`; `NULL` applies no
+  lower limit.
 
 - max_intensity:
 
@@ -44,6 +45,12 @@ qc_filter(
 ## Value
 
 A filtered `data.table`.
+
+## Details
+
+Each threshold is `NULL` or one non-missing number. A missing or
+non-numeric threshold is an error, because it would otherwise remove
+every cell.
 
 ## Examples
 

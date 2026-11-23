@@ -15,7 +15,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,9 @@ subsetting does not revalidate expression-dependent cached analyses.</p></dd>
 
 
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
-<dd><p>Cell indices (integer or logical).</p></dd>
+<dd><p>Cell indices (integer or logical). Missing values are not allowed;
+use <code><a href="https://rdrr.io/r/base/which.html" class="external-link">which()</a></code> or <code>%in%</code> to select cells from a column that
+holds <code>NA</code>.</p></dd>
 
 
 <dt id="arg-j">j<a class="anchor" aria-label="anchor" href="#arg-j"></a></dt>
@@ -95,6 +97,21 @@ subsetting does not revalidate expression-dependent cached analyses.</p></dd>
     <p>A subsetted <code>SpatialCellData</code> object.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">phenoscapR_example</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">first</span> <span class="op">&lt;-</span> <span class="va">phenoscapR_example</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">first</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100   8</span>
+<span class="r-in"><span><span class="va">one_sample</span> <span class="op">&lt;-</span> <span class="va">phenoscapR_example</span><span class="op">[</span></span></span>
+<span class="r-in"><span>  <span class="va">phenoscapR_example</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">==</span> <span class="va">phenoscapR_example</span><span class="op">$</span><span class="va">sample_id</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="NCells.html">NCells</a></span><span class="op">(</span><span class="va">one_sample</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 320</span>
+<span class="r-in"><span><span class="va">two_markers</span> <span class="op">&lt;-</span> <span class="va">phenoscapR_example</span><span class="op">[</span>, <span class="fu"><a href="Markers.html">Markers</a></span><span class="op">(</span><span class="va">phenoscapR_example</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="Markers.html">Markers</a></span><span class="op">(</span><span class="va">two_markers</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CD3" "CD4"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

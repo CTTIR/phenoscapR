@@ -25,7 +25,7 @@ italics (gene symbols)."><meta property="og:image" content="https://cttir.github
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,7 @@ italics (gene symbols).</p>
 <span>  right_format <span class="op">=</span> <span class="st">"%.0f%%"</span>,</span>
 <span>  right_size <span class="op">=</span> <span class="fl">4.6</span>,</span>
 <span>  right_colour <span class="op">=</span> <span class="st">"muted"</span>,</span>
-<span>  right_offset <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  right_offset <span class="op">=</span> <span class="va">tile_width</span><span class="op">/</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">0.1</span>,</span>
 <span>  legends <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  texts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  values <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -183,7 +183,8 @@ right of the matrix with <code>right_format</code>.</p></dd>
 
 <dt id="arg-right-format-right-size-right-colour-right-offset">right_format, right_size, right_colour, right_offset<a class="anchor" aria-label="anchor" href="#arg-right-format-right-size-right-colour-right-offset"></a></dt>
 <dd><p>Format, size,
-colour and position (column units beyond the last column centre).</p></dd>
+colour and position (column units beyond the last column centre; by
+default just right of the last tile).</p></dd>
 
 
 <dt id="arg-legends">legends<a class="anchor" aria-label="anchor" href="#arg-legends"></a></dt>
@@ -216,9 +217,12 @@ colour and position (column units beyond the last column centre).</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"g1"</span>, <span class="st">"g2"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, column <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s1"</span>, <span class="st">"s2"</span>, <span class="st">"s3"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Missense"</span>, <span class="cn">NA</span>, <span class="st">"Deletion"</span>, <span class="cn">NA</span>, <span class="st">"Truncating"</span>, <span class="cn">NA</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                share <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">67</span>, <span class="fl">33</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">PlotAlterationMatrix</span><span class="op">(</span><span class="va">d</span>, colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Missense <span class="op">=</span> <span class="st">"#008300"</span>, Truncating <span class="op">=</span> <span class="st">"#222222"</span>,</span></span>
-<span class="r-in"><span>                                    Deletion <span class="op">=</span> <span class="st">"#2a78d6"</span><span class="op">)</span>, right_text <span class="op">=</span> <span class="st">"share"</span>,</span></span>
-<span class="r-in"><span>                     row_italic <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">PlotAlterationMatrix</span><span class="op">(</span><span class="va">d</span>, colours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Missense <span class="op">=</span> <span class="st">"#008300"</span>, Truncating <span class="op">=</span> <span class="st">"#222222"</span>,</span></span>
+<span class="r-in"><span>                                         Deletion <span class="op">=</span> <span class="st">"#2a78d6"</span><span class="op">)</span>, right_text <span class="op">=</span> <span class="st">"share"</span>,</span></span>
+<span class="r-in"><span>                          row_italic <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Row labels and row values lie outside the panel: outside ComposeFigure()</span></span></span>
+<span class="r-in"><span><span class="co"># they need a margin.</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.margin <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">30</span>, <span class="fl">5</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="PlotAlterationMatrix-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

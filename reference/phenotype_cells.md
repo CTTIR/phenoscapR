@@ -29,7 +29,9 @@ phenotype_cells(dt, thresholds, labels = NULL)
 
   A named character vector mapping phenotype signatures to labels, or
   `NULL` for automatic labelling. When `NULL`, phenotypes are labelled
-  by concatenating positive marker names with `"+"`.
+  by concatenating positive marker names with `"+"`. Signature names
+  must be unique and nonblank, for example `c("CD3+" = "T cell")`;
+  signatures without a label keep their automatic name.
 
 ## Value
 

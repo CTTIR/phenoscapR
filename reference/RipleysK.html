@@ -23,7 +23,7 @@ required, including within each sample when computing by sample."><meta property
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,9 @@ required, including within each sample when computing by sample.</p>
 
 
 <dt id="arg-r-seq">r_seq<a class="anchor" aria-label="anchor" href="#arg-r-seq"></a></dt>
-<dd><p>Numeric vector of radii, or <code>NULL</code> for automatic.</p></dd>
+<dd><p>Numeric vector of finite, nonnegative radii in coordinate
+units, or <code>NULL</code> for 50 radii from zero to a quarter of the shorter
+side of the bounding box.</p></dd>
 
 
 <dt id="arg-target">target<a class="anchor" aria-label="anchor" href="#arg-target"></a></dt>
@@ -110,6 +112,24 @@ required.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data frame with columns <code>r</code>, <code>K</code>, <code>L</code>, and
 <code>expected</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>With <code>n</code> retained points in a window of area <code>A</code>, the
+uncorrected and translation-corrected estimates scale the (weighted) count
+of ordered point pairs within distance <code>r</code> by <code>A / n^2</code> and
+<code>A^2 / n^2</code>; the squared intensity is thus estimated by
+<code>n^2 / A^2</code>, not by <code>n (n - 1) / A^2</code>. The border estimate
+divides the pair count of the centres at least <code>r</code> from the window
+edge by their number and by the intensity <code>n / A</code>.
+Under complete spatial randomness <code>K</code> equals
+<code>expected = pi r^2</code> and <code>L = sqrt(K / pi) - r</code> is zero.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Ripley, B. D. (1977). Modelling spatial patterns. <em>Journal of the
+Royal Statistical Society: Series B (Methodological)</em>, 39(2), 172-192.
+<a href="https://doi.org/10.1111/j.2517-6161.1977.tb01615.x" class="external-link">doi:10.1111/j.2517-6161.1977.tb01615.x</a></p>
     </div>
 
     <div class="section level2">

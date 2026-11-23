@@ -34,7 +34,8 @@ NormaliseData(
 - markers:
 
   Character vector or `NULL`. Markers to normalise. If `NULL`, all
-  markers are normalised.
+  markers are normalised. Names not found in the object are ignored with
+  a warning.
 
 ## Value
 

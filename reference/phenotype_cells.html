@@ -19,7 +19,7 @@ exceeds the given threshold."><meta property="og:image" content="https://cttir.g
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">phenoscapR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,9 @@ selects no positive markers. Example:
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
 <dd><p>A named character vector mapping phenotype signatures to
 labels, or <code>NULL</code> for automatic labelling. When <code>NULL</code>, phenotypes are
-labelled by concatenating positive marker names with <code>"+"</code>.</p></dd>
+labelled by concatenating positive marker names with <code>"+"</code>. Signature
+names must be unique and nonblank, for example <code>c("CD3+" = "T cell")</code>;
+signatures without a label keep their automatic name.</p></dd>
 
 </dl></div>
     <div class="section level2">

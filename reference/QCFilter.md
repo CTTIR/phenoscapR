@@ -34,7 +34,8 @@ QCFilter(
 
 - min_intensity:
 
-  Numeric. Minimum total marker intensity. Default `0`.
+  Numeric or `NULL`. Minimum total marker intensity. Default `0`; `NULL`
+  applies no lower limit.
 
 - max_intensity:
 
@@ -45,6 +46,12 @@ QCFilter(
 A filtered
 [`SpatialCellData-class`](https://cttir.github.io/phenoscapR/reference/SpatialCellData-class.md)
 object.
+
+## Details
+
+Each threshold is `NULL` or one non-missing number. A missing or
+non-numeric threshold is an error, because it would otherwise remove
+every cell.
 
 ## Examples
 

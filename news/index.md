@@ -1,5 +1,252 @@
 # Changelog
 
+## phenoscapR 1.0.1
+
+### Bug fixes
+
+- [`NeighbourhoodEnrichment()`](https://cttir.github.io/phenoscapR/reference/NeighbourhoodEnrichment.md)
+  validates the radius, the permutation count (at least two) and the
+  seed before any random draw, and requires a complete, nonblank
+  phenotype label for every cell; cells with a missing label used to be
+  dropped from the counts while still being permuted. When the permuted
+  counts of a phenotype pair do not vary, its z-score and p-value are
+  now unavailable (`NA`) if the observed count differs from them,
+  instead of the neutral `z = 0`, `p = 1`; a matching count stays
+  neutral. This is the convention
+  `InteractionMatrix(method = "permutation")` already follows. The help
+  page, the printed summary and the spatial-analysis vignette state that
+  the p-value is a normal approximation of the z-score.
+- [`EmbeddingPlot()`](https://cttir.github.io/phenoscapR/reference/EmbeddingPlot.md)
+  and
+  [`DimPlot()`](https://cttir.github.io/phenoscapR/reference/EmbeddingPlot.md)
+  draw the second embedding axis increasing upward again. They share the
+  drawing code of the tissue maps and had picked up its downward
+  image-coordinate y axis, which mirrored every embedding vertically.
+- [`AnnotateClusters()`](https://cttir.github.io/phenoscapR/reference/AnnotateClusters.md)
+  writes every enriched marker with its own plus sign (`"CD3+CD8+"`). It
+  used to join the marker names without a separator (`"CD3CD8+"`), which
+  cannot be read back unambiguously and differed from the documented
+  form.
+- [`QuadratAnalysis()`](https://cttir.github.io/phenoscapR/reference/QuadratAnalysis.md)
+  validates `nx` and `ny`, reports that no cell is retained (for example
+  for an absent target phenotype) instead of failing in
+  [`seq()`](https://rdrr.io/r/base/seq.html), and counts cells in one
+  vectorised pass. Its summary no longer calls a variance-to-mean ratio
+  of one “regular” because of rounding. Its
+  [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  heatmap draws the rows downward, with the orientation of
+  [`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md)
+  for the same cells; `autoplot(x, y_down = FALSE)` restores the upward
+  rows.
+- [`RidgePlot()`](https://cttir.github.io/phenoscapR/reference/RidgePlot.md)
+  draws each density outline in the colour of its fill. Only the fill
+  followed the package palette or the `colours` argument, so the
+  outlines kept the default ‘ggplot2’ hues.
+- [`QCPlot()`](https://cttir.github.io/phenoscapR/reference/QCPlot.md)
+  colours points with the package palette set by
+  [`SetPalette()`](https://cttir.github.io/phenoscapR/reference/SetPalette.md),
+  as the other plots do, instead of the default ‘ggplot2’ colours. This
+  applies to numeric columns and to categories (character, factor,
+  logical); other columns, such as dates, keep the scale ‘ggplot2’
+  chooses for them.
+- [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
+  divides each ring count by the exact area of the ring. A ring around a
+  radius smaller than half the ring width is cut off at zero and is a
+  disc; dividing it by `2 * pi * r * dr` inflated `g(r)` there. This
+  affected the first radius of the automatic grid in every window whose
+  shorter side exceeds about 400 coordinate units (a value near 1.8
+  instead of 1 for a random pattern, reported as the peak in the printed
+  summary), and user grids with `dr` larger than twice the smallest
+  radius. All other values are unchanged.
+- [`SpatialNetworkPlot()`](https://cttir.github.io/phenoscapR/reference/SpatialNetworkPlot.md)
+  accepts a numeric `colour_by` column and draws it with the continuous
+  palette, as
+  [`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md)
+  does, instead of failing.
+- [`PhenotypeCells()`](https://cttir.github.io/phenoscapR/reference/PhenotypeCells.md)
+  and
+  [`phenotype_cells()`](https://cttir.github.io/phenoscapR/reference/phenotype_cells.md)
+  use the labels of a factor passed as `labels`; its integer codes used
+  to be written as the phenotype.
+- [`InteractionPlot()`](https://cttir.github.io/phenoscapR/reference/InteractionPlot.md)
+  rotates the phenotype labels on the x axis, as the other heatmaps do,
+  so that long signatures no longer overlap.
+- [`ViolinPlot()`](https://cttir.github.io/phenoscapR/reference/ViolinPlot.md)
+  and
+  [`BoxPlot()`](https://cttir.github.io/phenoscapR/reference/BoxPlot.md)
+  rotate the group labels on the x axis as well; with more than a few
+  phenotypes the labels of neighbouring groups ran into each other in
+  every facet.
+- [`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md),
+  [`EmbeddingPlot()`](https://cttir.github.io/phenoscapR/reference/EmbeddingPlot.md),
+  [`DimPlot()`](https://cttir.github.io/phenoscapR/reference/EmbeddingPlot.md),
+  [`plot_cell_map()`](https://cttir.github.io/phenoscapR/reference/plot_cell_map.md),
+  [`QCPlot()`](https://cttir.github.io/phenoscapR/reference/QCPlot.md)
+  and
+  [`SpatialNetworkPlot()`](https://cttir.github.io/phenoscapR/reference/SpatialNetworkPlot.md)
+  draw the legend keys of categories opaque and at a readable size. The
+  keys used to copy the small, partly translucent map points, so that
+  the colours of the categories could not be told apart in the legend.
+- [`SpatialNetworkPlot()`](https://cttir.github.io/phenoscapR/reference/SpatialNetworkPlot.md)
+  draws its edges visibly: the default `edge_alpha` is now `0.5`. The
+  former default of `0.15` left the network almost invisible on the dark
+  and on the light background. On the dark background
+  (`dark_theme = TRUE`, also in
+  [`CellMap()`](https://cttir.github.io/phenoscapR/reference/CellMap.md)
+  and
+  [`EmbeddingPlot()`](https://cttir.github.io/phenoscapR/reference/EmbeddingPlot.md))
+  automatic colours that could not be seen against black are drawn
+  lighter. Every category keeps its palette colour and hue, so that a
+  dark and a light plot of the same object can be compared: only the
+  colours below a lightness of CIE L\* = 40 differ between the two
+  themes (with the default palette the first, dark purple one). Colours
+  passed in `colours` and a vector of discrete colours set with
+  [`SetPalette()`](https://cttir.github.io/phenoscapR/reference/SetPalette.md)
+  are used as given.
+- [`PlotAlterationMatrix()`](https://cttir.github.io/phenoscapR/reference/PlotAlterationMatrix.md)
+  prints the row values of `right_text` right of the last tile. The
+  default `right_offset` is now `tile_width / 2 + 0.1` column units; the
+  former default of `0.2` put the text on the last tile, where it could
+  not be read on a dark fill.
+- The Shiny app shows axis tick labels again and draws plot text at its
+  normal size. Automatic re-theming of the plots is no longer used,
+  because it removed the tick labels of plots that set a complete
+  ‘ggplot2’ theme; ‘thematic’ is no longer needed by
+  [`run_app()`](https://cttir.github.io/phenoscapR/reference/run_app.md).
+  The plots keep their light background in both colour modes and are
+  rendered at 96 dpi, so that their text is no longer much smaller than
+  the text of the page.
+- The example of
+  [`PlotTerritories()`](https://cttir.github.io/phenoscapR/reference/PlotTerritories.md)
+  uses a scale bar that fits its field, and the help page of
+  [`ThemeManuscript()`](https://cttir.github.io/phenoscapR/reference/ThemeManuscript.md)
+  explains that panels printed outside
+  [`ComposeFigure()`](https://cttir.github.io/phenoscapR/reference/ComposeFigure.md)
+  need a margin for their outer labels.
+- [`FeaturePlot()`](https://cttir.github.io/phenoscapR/reference/FeaturePlot.md),
+  [`ViolinPlot()`](https://cttir.github.io/phenoscapR/reference/ViolinPlot.md),
+  [`BoxPlot()`](https://cttir.github.io/phenoscapR/reference/BoxPlot.md),
+  [`RidgePlot()`](https://cttir.github.io/phenoscapR/reference/RidgePlot.md)
+  and
+  [`DotPlot()`](https://cttir.github.io/phenoscapR/reference/DotPlot.md)
+  build an empty plot for an object without cells instead of failing
+  while assembling their data;
+  [`MarkerHeatmap()`](https://cttir.github.io/phenoscapR/reference/MarkerHeatmap.md)
+  reports that there is no phenotype to summarise.
+- Summaries of Ripley’s K, the pair correlation function and cross
+  nearest-neighbour distances print without warnings when values are
+  unavailable, the per-sample summary accepts an empty result, and the
+  enrichment heatmap keeps finite colour limits when z-scores are
+  unavailable.
+
+### Input validation
+
+- Marker selections name the markers that do not exist.
+  [`NormaliseData()`](https://cttir.github.io/phenoscapR/reference/NormaliseData.md),
+  [`normalise_markers()`](https://cttir.github.io/phenoscapR/reference/normalise_markers.md),
+  [`RunPCA()`](https://cttir.github.io/phenoscapR/reference/RunPCA.md),
+  [`SpatialDomains()`](https://cttir.github.io/phenoscapR/reference/SpatialDomains.md),
+  [`MarkerHeatmap()`](https://cttir.github.io/phenoscapR/reference/MarkerHeatmap.md)
+  and
+  [`plot_heatmap()`](https://cttir.github.io/phenoscapR/reference/plot_heatmap.md)
+  used to drop a misspelt marker without any signal, so
+  `NormaliseData(obj, markers = "typo")` returned the raw values
+  silently. They now warn and continue with the markers that were found;
+  [`SpatialDomains()`](https://cttir.github.io/phenoscapR/reference/SpatialDomains.md)
+  stops when none remains.
+  [`FeaturePlot()`](https://cttir.github.io/phenoscapR/reference/FeaturePlot.md),
+  [`ViolinPlot()`](https://cttir.github.io/phenoscapR/reference/ViolinPlot.md),
+  [`BoxPlot()`](https://cttir.github.io/phenoscapR/reference/BoxPlot.md),
+  [`RidgePlot()`](https://cttir.github.io/phenoscapR/reference/RidgePlot.md)
+  and
+  [`DotPlot()`](https://cttir.github.io/phenoscapR/reference/DotPlot.md)
+  warn in the same way about features that do not exist, and
+  [`HistogramPlot()`](https://cttir.github.io/phenoscapR/reference/HistogramPlot.md)
+  and
+  [`QCPlot()`](https://cttir.github.io/phenoscapR/reference/QCPlot.md)
+  warn when the optional `group_by` or `colour_by` column does not exist
+  instead of drawing an ungrouped plot silently.
+- [`QCFilter()`](https://cttir.github.io/phenoscapR/reference/QCFilter.md)
+  and
+  [`qc_filter()`](https://cttir.github.io/phenoscapR/reference/qc_filter.md)
+  require each threshold to be `NULL` or one non-missing number. A
+  missing or non-numeric threshold used to remove every cell without a
+  message. `min_intensity = NULL` now applies no lower limit, as for the
+  other thresholds, instead of returning no cells.
+- [`RipleysK()`](https://cttir.github.io/phenoscapR/reference/RipleysK.md)
+  and
+  [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
+  reject empty, missing, infinite and negative radii,
+  [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
+  also a radius of zero, and
+  [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
+  requires one positive ring width, instead of returning values for
+  distances that do not exist. The automatic pair-correlation grid
+  started at one coordinate unit even when a quarter of the shorter
+  window side was not larger than that, which gave a descending grid
+  beyond the supported radii; such windows now get an ascending grid
+  scaled to the window. Larger windows keep their grid.
+- [`SpatialClusters()`](https://cttir.github.io/phenoscapR/reference/SpatialClusters.md),
+  [`spatial_clusters()`](https://cttir.github.io/phenoscapR/reference/spatial_clusters.md)
+  and
+  [`ExpressionClusters()`](https://cttir.github.io/phenoscapR/reference/ExpressionClusters.md)
+  require a whole cluster count between one and the number of cells;
+  [`ExpressionClusters()`](https://cttir.github.io/phenoscapR/reference/ExpressionClusters.md)
+  names unknown markers, stops when no marker remains or when k-means or
+  a Gaussian mixture meets a missing value, and documents
+  `method = "gmm"`. k-means reports that it needs fewer clusters than
+  cells, and Ward clustering reports cells that share no measured marker
+  with another cell, instead of failing inside ‘stats’.
+  [`DelaunayNetwork()`](https://cttir.github.io/phenoscapR/reference/DelaunayNetwork.md)
+  requires `max_edge` to be `NULL` or one nonnegative number. The help
+  pages state that spatial clustering pools the cells of all samples.
+- [`PhenotypeCells()`](https://cttir.github.io/phenoscapR/reference/PhenotypeCells.md)
+  and
+  [`phenotype_cells()`](https://cttir.github.io/phenoscapR/reference/phenotype_cells.md)
+  require `labels` to carry unique, nonblank signature names. An unnamed
+  label vector matched no signature and was ignored silently.
+- [`RunPCA()`](https://cttir.github.io/phenoscapR/reference/RunPCA.md)
+  rejects a component count below one or not finite, objects with fewer
+  than two cells and missing marker values with a clear message.
+  [`RunUMAP()`](https://cttir.github.io/phenoscapR/reference/RunUMAP.md),
+  [`RunTSNE()`](https://cttir.github.io/phenoscapR/reference/RunTSNE.md)
+  and
+  [`RunSONG()`](https://cttir.github.io/phenoscapR/reference/RunSONG.md)
+  warn about unknown markers in the same way as
+  [`RunPCA()`](https://cttir.github.io/phenoscapR/reference/RunPCA.md).
+- Cell subsetting (`object[i, ]`) rejects missing indices, which arise
+  from comparing a column that holds `NA`, instead of failing in the
+  validity check with a message about coordinates.
+- [`read_spatial()`](https://cttir.github.io/phenoscapR/reference/read_spatial.md)
+  and
+  [`ReadSpatial()`](https://cttir.github.io/phenoscapR/reference/ReadSpatial.md)
+  report an empty file and a path that is not one character string with
+  a clear message.
+
+### Documentation
+
+- [`RipleysK()`](https://cttir.github.io/phenoscapR/reference/RipleysK.md)
+  and
+  [`MoransI()`](https://cttir.github.io/phenoscapR/reference/MoransI.md)
+  cite their primary sources in the help pages, and
+  [`RipleysK()`](https://cttir.github.io/phenoscapR/reference/RipleysK.md)
+  and
+  [`PairCorrelation()`](https://cttir.github.io/phenoscapR/reference/PairCorrelation.md)
+  state the estimators as implemented (intensity estimate, edge
+  handling). The new help topic
+  [`?"phenoscapR-results"`](https://cttir.github.io/phenoscapR/reference/phenoscapR-results.md)
+  documents the result classes of the spatial statistics and their
+  [`print()`](https://rdrr.io/r/base/print.html) and
+  [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  methods.
+
+### Packaging
+
+- The minimum ‘ggplot2’ version is 3.5.0 rather than 3.0.0: the
+  manuscript theme and the logarithmic axes use minor axis ticks, which
+  older versions do not have, and plots and themes set line widths
+  through the `linewidth` argument.
+
 ## phenoscapR 1.0.0
 
 - Cap radius-search neighbour estimates before integer conversion so
@@ -9,7 +256,7 @@
   bounding-box window convention is documented.
 
 - Treat machine-precision Moran permutation ties consistently,
-  preserving two-sided theoretical-expectation centering and the Monte
+  preserving two-sided theoretical-expectation centring and the Monte
   Carlo correction. Numerically constant sampled nulls no longer produce
   artificial z-scores or scale-dependent tail probabilities.
 
@@ -17,10 +264,10 @@
   while exporting only named x/y to the spatial reduction; refuse
   conflicting metadata instead of overwriting it. SpatialExperiment
   retains named numeric dimensions across reordered columns and rejects
-  ambiguous names or nonnumeric coordinate annotations explicitly.
+  ambiguous names or non-numeric coordinate annotations explicitly.
 
 - Two-dimensional object analyses now project only the named x/y axes.
-  Extra coordinate metadata and column order no longer alter neighbor
+  Extra coordinate metadata and column order no longer alter neighbour
   geometry, weighting, clustering or graph calculations across native
   and fallback search engines; the original coordinate table remains
   stored unchanged.
@@ -33,22 +280,22 @@
   aggregate density areas, and enforces registered subset membership.
   Missing areas remain unsupported; no imputation is introduced.
 
-- Singleton samples no longer contribute zero vectors to neighborhood
-  clustering. Their cells retain NA neighborhood labels and explicit
-  availability records; centers use only defined cell compositions.
-  Empty/all-singleton inputs return zero-row centers without RNG use,
+- Singleton samples no longer contribute zero vectors to neighbourhood
+  clustering. Their cells retain NA neighbourhood labels and explicit
+  availability records; centres use only defined cell compositions.
+  Empty/all-singleton inputs return zero-row centres without RNG use,
   and the app reports unavailable compositions explicitly.
 
 - Phenotyping requires unique named, finite scalar thresholds. Reject
   recycled, missing, coerced and duplicate threshold definitions before
   assigning labels; selected marker columns must be unambiguous. Valid
-  named numeric vectors and the existing empty-threshold behavior remain
-  supported.
+  named numeric vectors and the existing empty-threshold behaviour
+  remain supported.
 
-- Neighborhood and Moran analyses reject malformed sample/phenotype
+- Neighbourhood and Moran analyses reject malformed sample/phenotype
   vectors and invalid integer controls before computation or RNG
   changes. Moran features must be finite real numeric vectors, and
-  inverse-distance weighting explicitly rejects coincident neighbors
+  inverse-distance weighting explicitly rejects coincident neighbours
   rather than returning undefined values from infinite weights.
 
 - Interaction tables reject missing phenotype labels and malformed
@@ -61,7 +308,7 @@
   sampled null counts have zero variance but differ from the
   observation: those undefined normal-approximation statistics are now
   NA. Matching zero-variance sampled nulls and positive-variance
-  formulas retain their existing behavior.
+  formulas retain their existing behaviour.
 
 - Interaction calculations now validate nonnegative finite radii before
   geometry shortcuts and validate permutation counts and signed integer
@@ -78,7 +325,7 @@
   Permutation calculations now return zero counts for samples with no
   eligible neighbour edges.
 
-- Standalone nearest-neighbour and density tables now require explicit
+- Stand-alone nearest-neighbour and density tables now require explicit
   complete sample identifiers and finite coordinates, rejecting
   malformed columns before any rows can disappear. Empty tables preserve
   their schema and receive typed empty results.

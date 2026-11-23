@@ -20,3 +20,15 @@ show(object)
 ## Value
 
 Invisibly `NULL`; called for printing a summary of the object.
+
+## Examples
+
+``` r
+data(phenoscapR_example)
+phenoscapR_example
+#> A SpatialCellData object
+#>   640 cells across 2 samples
+#>   Markers: CD3, CD4, CD8, CD20, CD68, ... (8 total) 
+#>   Normalised: FALSE 
+#>   Project: phenoscapR example (tonsil, simulated) 
+```

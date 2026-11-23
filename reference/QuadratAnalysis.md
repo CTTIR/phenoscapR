@@ -19,15 +19,16 @@ QuadratAnalysis(object, nx = 5L, ny = 5L, target = NULL, by_sample = FALSE)
 
 - nx:
 
-  Integer. Number of columns in the grid. Default `5`.
+  Integer. Number of columns in the grid, at least `1`. Default `5`.
 
 - ny:
 
-  Integer. Number of rows in the grid. Default `5`.
+  Integer. Number of rows in the grid, at least `1`. Default `5`.
 
 - target:
 
-  Character or `NULL`. Restrict to a phenotype.
+  Character or `NULL`. Restrict to a phenotype. At least one cell must
+  be retained.
 
 - by_sample:
 
