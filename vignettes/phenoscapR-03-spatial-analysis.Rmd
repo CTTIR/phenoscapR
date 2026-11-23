@@ -91,7 +91,9 @@ a
 A permutation test: it shuffles phenotype labels many times and asks whether
 each phenotype pair is observed as neighbours more (positive z) or less
 (negative z) often than the shuffles. The planted B-cell follicle shows up as
-strong B–B self-enrichment.
+strong B–B self-enrichment. The reported p-value is the two-sided normal
+approximation of the z-score, not a permutation tail probability, so it can be
+far smaller than one over the number of shuffles.
 
 ```{r enrichment}
 ne <- NeighbourhoodEnrichment(a, radius = 40, n_perm = 199, seed = 1)

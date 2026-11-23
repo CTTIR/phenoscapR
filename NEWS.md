@@ -19,7 +19,8 @@
   unavailable (`NA`) if the observed count differs from them, instead of the
   neutral `z = 0`, `p = 1`; a matching count stays neutral. This is the
   convention `InteractionMatrix(method = "permutation")` already follows. The
-  help page states that the p-value is a normal approximation of the z-score.
+  help page, the printed summary and the spatial-analysis vignette state that
+  the p-value is a normal approximation of the z-score.
 * `RipleysK()` and `PairCorrelation()` reject empty, missing, infinite and
   negative radii (the pair correlation function also zero) and
   `PairCorrelation()` requires one positive ring width, instead of returning

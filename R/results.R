@@ -207,7 +207,8 @@ autoplot.phenoscapR_quadrat <- function(object, ..., y_down = TRUE) {
 #' @export
 print.phenoscapR_enrichment <- function(x, ...) {
   if (.print_partial_result(x, c("from", "to", "z_score", "p_value"), ...)) return(invisible(x))
-  cat("<phenoscapR> Neighbourhood enrichment (permutation test)\n")
+  cat("<phenoscapR> Neighbourhood enrichment (label permutation)\n")
+  cat("  z-scores against permuted labels; p-values from the normal approximation\n")
   d <- as.data.frame(x)
   top <- d[order(-d$z_score), ][seq_len(min(5L, nrow(d))), ]
   cat("  top co-localised pairs (by z-score):\n")

@@ -250,3 +250,10 @@ test_that("cluster annotations mark every enriched marker", {
   expect_identical(unname(AnnotateClusters(flat, add_column = FALSE)), c("mixed", "mixed"))
   expect_error(AnnotateClusters(obj, group = "nope"), "Group column 'nope' not found")
 })
+
+test_that("the enrichment summary names the source of its p-values", {
+  res <- NeighbourhoodEnrichment(contract_object(120L), radius = 15, n_perm = 9L, seed = 2L)
+  expect_output(print(res), "Neighbourhood enrichment \\(label permutation\\)")
+  expect_output(print(res), "p-values from the normal approximation")
+  expect_output(print(res[, c("from", "to")]), "from")
+})
