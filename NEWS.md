@@ -65,7 +65,7 @@
 * Marker selections name the markers that do not exist. `NormaliseData()`,
   `normalise_markers()`, `RunPCA()`, `SpatialDomains()`, `MarkerHeatmap()` and
   `plot_heatmap()` used to drop a misspelt marker without any signal, so
-  `NormaliseData(obj, markers = "typo")` returned unnormalised data silently.
+  `NormaliseData(obj, markers = "typo")` returned the raw values silently.
   They now warn and continue with the markers that were found;
   `SpatialDomains()` stops when none remains. `FeaturePlot()`, `ViolinPlot()`,
   `BoxPlot()`, `RidgePlot()` and `DotPlot()` warn in the same way about
