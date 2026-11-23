@@ -862,9 +862,14 @@ QCPlot <- function(object, x, y, colour_by = NULL, pt_size = 0.5) {
 
   if (!is.null(colour_by) && colour_by %in% names(md)) {
     df$col <- md[[colour_by]]
+    # The package palette, as in the cell maps (see SetPalette()).
     p <- ggplot2::ggplot(df, ggplot2::aes(
       x = .data[["xval"]], y = .data[["yval"]], colour = .data[["col"]]
-    ))
+    )) + if (is.numeric(df$col)) {
+      .gg_continuous_scale("colour")
+    } else {
+      .gg_discrete_scale("colour", length(unique(df$col)))
+    }
   } else {
     p <- ggplot2::ggplot(df, ggplot2::aes(
       x = .data[["xval"]], y = .data[["yval"]]

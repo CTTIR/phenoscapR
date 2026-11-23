@@ -154,3 +154,15 @@ test_that("ridge densities are outlined in the colour of their fill", {
   expect_identical(built$colour, built$fill)
   expect_setequal(unique(built$fill), unname(chosen))
 })
+
+test_that("QC scatter plots use the package palette", {
+  obj <- contract_object()
+  built <- ggplot2::ggplot_build(
+    QCPlot(obj, x = "cell_area", y = "cell_area", colour_by = "phenotype"))$data[[1L]]
+  expect_identical(sort(unique(built$colour)), sort(PaletteDiscrete(3L)))
+  obj@meta_data$score <- seq_len(NCells(obj))
+  built <- ggplot2::ggplot_build(
+    QCPlot(obj, x = "cell_area", y = "cell_area", colour_by = "score"))$data[[1L]]
+  ends <- PaletteContinuous(256L)[c(1L, 256L)]
+  expect_identical(toupper(built$colour[c(1L, NCells(obj))]), toupper(ends))
+})
