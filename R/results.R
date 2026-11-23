@@ -7,6 +7,68 @@
 # for a consistent, discoverable API.
 # ============================================================================
 
+#' Classed Results of the Spatial Statistics
+#'
+#' The object-level spatial statistics return a light S3 class on top of their
+#' data frame, list or numeric vector. Element access with `$` and `[` and
+#' conversion with [as.data.frame()] work as for the underlying type, while
+#' `print()` gives a short summary and [ggplot2::autoplot()] a standard plot.
+#'
+#' | Function | Class | `autoplot()` |
+#' |---|---|---|
+#' | [RipleysK()] | `phenoscapR_ripley` | L(r) against r |
+#' | [PairCorrelation()] | `phenoscapR_pcf` | g(r) against r |
+#' | [MoransI()] | `phenoscapR_moran` | none |
+#' | [QuadratAnalysis()] | `phenoscapR_quadrat` | heatmap of quadrat counts |
+#' | [NeighbourhoodEnrichment()] | `phenoscapR_enrichment` | heatmap of z-scores |
+#' | [InteractionMatrix()] | `phenoscapR_interaction` | heatmap of interaction scores |
+#' | [CrossNNDistance()] | `phenoscapR_crossnn` | histogram of distances |
+#' | [DifferentialAbundance()] | `phenoscapR_diffabund` | none |
+#'
+#' With `by_sample = TRUE` the statistics return a named list of such results,
+#' one per sample, of class `phenoscapR_by_sample`.
+#'
+#' A column subset of a classed data frame that no longer holds the summarised
+#' columns prints as a plain data frame. Unavailable values (`NA`) are left out
+#' of the printed ranges and are drawn as missing tiles in the heatmaps.
+#'
+#' @section Quadrat heatmap orientation:
+#' The quadrat heatmap draws the quadrat rows downward by default, with the
+#' orientation of [CellMap()] for the same cells.
+#' `autoplot(x, y_down = FALSE)` draws them upward.
+#'
+#' @return The `print()` methods return `x` invisibly. The `autoplot()` methods
+#'   return a `ggplot` object.
+#'
+#' @examples
+#' set.seed(1)
+#' counts <- matrix(rnorm(400), nrow = 200,
+#'                  dimnames = list(NULL, c("CD3", "CD8")))
+#' coords <- data.frame(x = runif(200, 0, 200), y = runif(200, 0, 200))
+#' meta <- data.frame(cell_id = 1:200, sample_id = "s1",
+#'   phenotype = sample(c("A", "B"), 200, replace = TRUE))
+#' obj <- CreateSpatialObject(counts, coords, meta)
+#'
+#' rk <- RipleysK(obj, correction = "border")
+#' rk
+#' head(as.data.frame(rk), 3)
+#' ggplot2::autoplot(rk)
+#'
+#' qa <- QuadratAnalysis(obj, nx = 4, ny = 4)
+#' qa
+#' ggplot2::autoplot(qa)
+#'
+#' @name phenoscapR-results
+#' @aliases print.phenoscapR_ripley autoplot.phenoscapR_ripley
+#' @aliases print.phenoscapR_pcf autoplot.phenoscapR_pcf
+#' @aliases print.phenoscapR_moran
+#' @aliases print.phenoscapR_quadrat autoplot.phenoscapR_quadrat
+#' @aliases print.phenoscapR_enrichment autoplot.phenoscapR_enrichment
+#' @aliases print.phenoscapR_interaction autoplot.phenoscapR_interaction
+#' @aliases print.phenoscapR_crossnn autoplot.phenoscapR_crossnn
+#' @aliases print.phenoscapR_diffabund print.phenoscapR_by_sample
+NULL
+
 #' Tag a value with a phenoscapR result class
 #' @noRd
 .as_result <- function(x, subclass) {

@@ -41,6 +41,8 @@
   unavailable, the per-sample summary accepts an empty result, and the
   enrichment heatmap keeps finite colour limits when z-scores are unavailable.
 * `RipleysK()` and `MoransI()` cite their primary sources in the help pages.
+  The new help topic `?"phenoscapR-results"` documents the result classes of
+  the spatial statistics and their `print()` and `autoplot()` methods.
 
 * Marker selections name the markers that do not exist. `NormaliseData()`,
   `normalise_markers()`, `RunPCA()`, `SpatialDomains()`, `MarkerHeatmap()` and

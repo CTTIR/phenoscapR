@@ -135,6 +135,7 @@ reference:
       - RipleysK
       - MoransI
       - QuadratAnalysis
+      - phenoscapR-results
       - AssignFixedGrid
       - SummarizeFixedGrid
       - SummarizeGroupedCountFractions
