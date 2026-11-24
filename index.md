@@ -1,5 +1,8 @@
 # phenoscapR ![phenoscapR logo](reference/figures/logo-with-name.png)
 
+Zenodo DOI reserved for the release: `10.5281/zenodo.21889952` (not yet
+published).
+
 **phenoscapR** provides a complete toolkit for reading, processing,
 analysing, and visualising single-cell spatial biology data from
 multiplexed imaging platforms. It handles the full workflow from raw
